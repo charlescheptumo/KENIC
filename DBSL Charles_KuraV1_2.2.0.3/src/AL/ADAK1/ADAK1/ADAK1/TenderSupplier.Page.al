@@ -1,0 +1,55 @@
+#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006 // ForNAV settings
+Page 70030 "Tender Supplier"
+{
+    PageType = List;
+    SourceTable = "Tender Suppliers";
+    ApplicationArea = All;
+
+    layout
+    {
+        area(content)
+        {
+            repeater(Control1000000000)
+            {
+                field("Supplier Name"; Rec."Supplier Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Supplier Name field.';
+                }
+                field(Awarded; Rec.Awarded)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Awarded field.';
+                }
+                field(Remarks; Rec.Remarks)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Remarks field.';
+                }
+            }
+        }
+    }
+
+    actions
+    {
+        area(navigation)
+        {
+            group("Supplier Selection")
+            {
+                Caption = 'Supplier Selection';
+                action("Generate Order")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Generate Order';
+                    ToolTip = 'Executes the Generate Order action.';
+
+                    trigger OnAction()
+                    begin
+                        Rec.CreateQuote(Rec);
+                    end;
+                }
+            }
+        }
+    }
+}
+

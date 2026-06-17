@@ -1,0 +1,64 @@
+#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006 // ForNAV settings
+Page 50086 "Service Item Cards"
+{
+    PageType = Card;
+    SourceTable = "Service Items";
+    ApplicationArea = All;
+
+    layout
+    {
+        area(content)
+        {
+            group(General)
+            {
+                field("Service Code"; Rec."Service Code")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Service Code field.';
+                }
+                field("Service Name"; Rec."Service Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Service Name field.';
+                }
+                field("G/L Account"; Rec."G/L Account")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the G/L Account field.';
+                }
+                field("G/L Account Name"; Rec."G/L Account Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the G/L Account Name field.';
+                }
+                field("No. Series"; Rec."No. Series")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the No. Series field.';
+                }
+                field(Capex; Rec.Capex)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Capex field.';
+                }
+            }
+        }
+        area(factboxes)
+        {
+            systempart(Control10; Links)
+            {
+            }
+            systempart(Control11; Outlook)
+            {
+            }
+            systempart(Control12; MyNotes)
+            {
+            }
+        }
+    }
+
+    actions
+    {
+    }
+}
+

@@ -1,0 +1,1115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>dbf16fe0-8550-4318-b8c1-722e09c4d28e</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+      <Fields>
+        <Field Name="CIName">
+          <DataField>CIName</DataField>
+        </Field>
+        <Field Name="CIAddress">
+          <DataField>CIAddress</DataField>
+        </Field>
+        <Field Name="CIAddress2">
+          <DataField>CIAddress2</DataField>
+        </Field>
+        <Field Name="CICity">
+          <DataField>CICity</DataField>
+        </Field>
+        <Field Name="CIPhoneNo">
+          <DataField>CIPhoneNo</DataField>
+        </Field>
+        <Field Name="CIPhoneNo2">
+          <DataField>CIPhoneNo2</DataField>
+        </Field>
+        <Field Name="CIPic">
+          <DataField>CIPic</DataField>
+        </Field>
+        <Field Name="CIEmail">
+          <DataField>CIEmail</DataField>
+        </Field>
+        <Field Name="CIHomepage">
+          <DataField>CIHomepage</DataField>
+        </Field>
+        <Field Name="CIMotto">
+          <DataField>CIMotto</DataField>
+        </Field>
+        <Field Name="Recipient">
+          <DataField>Recipient</DataField>
+        </Field>
+        <Field Name="SenderSignature">
+          <DataField>SenderSignature</DataField>
+        </Field>
+        <Field Name="EmployeeTitle">
+          <DataField>EmployeeTitle</DataField>
+        </Field>
+        <Field Name="ApproverSignature">
+          <DataField>ApproverSignature</DataField>
+        </Field>
+        <Field Name="AuthorizerSignature">
+          <DataField>AuthorizerSignature</DataField>
+        </Field>
+        <Field Name="Authorization">
+          <DataField>Authorization</DataField>
+        </Field>
+        <Field Name="AuthorizaionDate_GeneralCorrespondenceHeader">
+          <DataField>AuthorizaionDate_GeneralCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="AuthorizationRemarks_GeneralCorrespondenceHeader">
+          <DataField>AuthorizationRemarks_GeneralCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="DocumentNo_InternalCorrespondenceHeader">
+          <DataField>DocumentNo_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="SenderName_InternalCorrespondenceHeader">
+          <DataField>SenderName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="SenderEmail_InternalCorrespondenceHeader">
+          <DataField>SenderEmail_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecipientNo_InternalCorrespondenceHeader">
+          <DataField>RecipientNo_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecipientName_InternalCorrespondenceHeader">
+          <DataField>RecipientName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="SenderDirectorateCode_InternalCorrespondenceHeader">
+          <DataField>SenderDirectorateCode_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="SenderDirectorateName_InternalCorrespondenceHeader">
+          <DataField>SenderDirectorateName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecipientDirectorateCode_InternalCorrespondenceHeader">
+          <DataField>RecipientDirectorateCode_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecipientDirectorateName_InternalCorrespondenceHeader">
+          <DataField>RecipientDirectorateName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="DocumentDate_InternalCorrespondenceHeader">
+          <DataField>DocumentDate_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="ExternalReferenceNo_InternalCorrespondenceHeader">
+          <DataField>ExternalReferenceNo_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="CommunicationSubject_InternalCorrespondenceHeader">
+          <DataField>CommunicationSubject_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecepientRegionName_InternalCorrespondenceHeader">
+          <DataField>RecepientRegionName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="SenderRegionName_InternalCorrespondenceHeader">
+          <DataField>SenderRegionName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="CommunicationSummary_InternalCorrespondenceHeader">
+          <DataField>CommunicationSummary_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="SenderDepartmentName_InternalCorrespondenceHeader">
+          <DataField>SenderDepartmentName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecipientDepartmentName_InternalCorrespondenceHeader">
+          <DataField>RecipientDepartmentName_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="SenderJobTitle_InternalCorrespondenceHeader">
+          <DataField>SenderJobTitle_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecipientJobTitle_InternalCorrespondenceHeader">
+          <DataField>RecipientJobTitle_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="ToallStaff_InternalCorrespondenceHeader">
+          <DataField>ToallStaff_InternalCorrespondenceHeader</DataField>
+        </Field>
+        <Field Name="RecipientNo_GeneralCorrespondenceLine">
+          <DataField>RecipientNo_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientName_GeneralCorrespondenceLine">
+          <DataField>RecipientName_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientEmail_GeneralCorrespondenceLine">
+          <DataField>RecipientEmail_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientDirectorateCode_GeneralCorrespondenceLine">
+          <DataField>RecipientDirectorateCode_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientDirectorateName_GeneralCorrespondenceLine">
+          <DataField>RecipientDirectorateName_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientDirectorateEmail_GeneralCorrespondenceLine">
+          <DataField>RecipientDirectorateEmail_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecepientRegionCode_GeneralCorrespondenceLine">
+          <DataField>RecepientRegionCode_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecepientRegionName_GeneralCorrespondenceLine">
+          <DataField>RecepientRegionName_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientDepartmentCode_GeneralCorrespondenceLine">
+          <DataField>RecipientDepartmentCode_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientDepartmentName_GeneralCorrespondenceLine">
+          <DataField>RecipientDepartmentName_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientJobID_GeneralCorrespondenceLine">
+          <DataField>RecipientJobID_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientJobTitle_GeneralCorrespondenceLine">
+          <DataField>RecipientJobTitle_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientAddress_GeneralCorrespondenceLine">
+          <DataField>RecipientAddress_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientAddress2_GeneralCorrespondenceLine">
+          <DataField>RecipientAddress2_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientCity_GeneralCorrespondenceLine">
+          <DataField>RecipientCity_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientPostCode_GeneralCorrespondenceLine">
+          <DataField>RecipientPostCode_GeneralCorrespondenceLine</DataField>
+        </Field>
+        <Field Name="RecipientType_GeneralCorrespondenceLine">
+          <DataField>RecipientType_GeneralCorrespondenceLine</DataField>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>DataSet</rd:DataSetName>
+        <rd:SchemaPath>Report.xsd</rd:SchemaPath>
+        <rd:TableName>Result</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="Textbox20">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>SUBJECT</Value>
+                    <Style>
+                      <FontFamily>Calibri</FontFamily>
+                      <FontSize>11pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox20</rd:DefaultName>
+            <Top>1.58519in</Top>
+            <Left>3.5263in</Left>
+            <Height>0.25in</Height>
+            <Width>1in</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox21">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!CommunicationSubject_InternalCorrespondenceHeader.Value</Value>
+                    <Style>
+                      <FontFamily>Calibri</FontFamily>
+                      <FontSize>11pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox21</rd:DefaultName>
+            <Top>1.98055in</Top>
+            <Left>0.46796in</Left>
+            <Height>0.25in</Height>
+            <Width>7.18945in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox22">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!CommunicationSummary_InternalCorrespondenceHeader.Value</Value>
+                    <Style>
+                      <FontFamily>Calibri</FontFamily>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox22</rd:DefaultName>
+            <Top>2.45277in</Top>
+            <Left>0.46796in</Left>
+            <Height>1.34722in</Height>
+            <Width>7.18945in</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Line Name="Line1">
+            <Top>2.35277in</Top>
+            <Left>0.15463in</Left>
+            <Height>0in</Height>
+            <Width>7.50278in</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </Border>
+            </Style>
+          </Line>
+          <Textbox Name="Textbox23">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!EmployeeTitle.Value</Value>
+                    <Style>
+                      <FontFamily>Calibri</FontFamily>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve"> </Value>
+                    <Style>
+                      <FontFamily>Calibri</FontFamily>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!SenderName_InternalCorrespondenceHeader.Value</Value>
+                    <Style>
+                      <FontFamily>Calibri</FontFamily>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox23</rd:DefaultName>
+            <Top>4.91111in</Top>
+            <Left>0.46796in</Left>
+            <Height>0.25in</Height>
+            <Width>7.18945in</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox24">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!SenderJobTitle_InternalCorrespondenceHeader.Value</Value>
+                    <Style>
+                      <FontFamily>Calibri</FontFamily>
+                      <FontWeight>Bold</FontWeight>
+                      <TextDecoration>Underline</TextDecoration>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox24</rd:DefaultName>
+            <Top>5.18889in</Top>
+            <Left>0.46796in</Left>
+            <Height>0.25in</Height>
+            <Width>7.18945in</Width>
+            <ZIndex>5</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Image Name="Image2">
+            <Source>Database</Source>
+            <Value>=First(Fields!SenderSignature.Value, "DataSet_Result")</Value>
+            <MIMEType>image/jpeg</MIMEType>
+            <Sizing>FitProportional</Sizing>
+            <Top>3.98499in</Top>
+            <Left>0.46796in</Left>
+            <Height>0.85667in</Height>
+            <Width>1.56667in</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Image>
+          <Rectangle Name="Rectangle2">
+            <ReportItems>
+              <Tablix Name="Tablix3">
+                <TablixBody>
+                  <TablixColumns>
+                    <TablixColumn>
+                      <Width>0.68056in</Width>
+                    </TablixColumn>
+                    <TablixColumn>
+                      <Width>2.39722in</Width>
+                    </TablixColumn>
+                  </TablixColumns>
+                  <TablixRows>
+                    <TablixRow>
+                      <Height>0.42886in</Height>
+                      <TablixCells>
+                        <TablixCell>
+                          <CellContents>
+                            <Textbox Name="Textbox6">
+                              <CanGrow>true</CanGrow>
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>From:</Value>
+                                      <Style>
+                                        <FontFamily>Calibri</FontFamily>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style />
+                                </Paragraph>
+                              </Paragraphs>
+                              <rd:DefaultName>Textbox4</rd:DefaultName>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <PaddingLeft>2pt</PaddingLeft>
+                                <PaddingRight>2pt</PaddingRight>
+                                <PaddingTop>2pt</PaddingTop>
+                                <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
+                          </CellContents>
+                        </TablixCell>
+                        <TablixCell>
+                          <CellContents>
+                            <Textbox Name="SenderJobTitle_InternalCorrespondenceHeader">
+                              <CanGrow>true</CanGrow>
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>=Fields!SenderJobTitle_InternalCorrespondenceHeader.Value</Value>
+                                      <Style>
+                                        <FontFamily>Calibri</FontFamily>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style />
+                                </Paragraph>
+                              </Paragraphs>
+                              <rd:DefaultName>SenderJobTitle_InternalCorrespondenceHeader</rd:DefaultName>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <PaddingLeft>2pt</PaddingLeft>
+                                <PaddingRight>2pt</PaddingRight>
+                                <PaddingTop>2pt</PaddingTop>
+                                <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
+                          </CellContents>
+                        </TablixCell>
+                      </TablixCells>
+                    </TablixRow>
+                    <TablixRow>
+                      <Height>0.42886in</Height>
+                      <TablixCells>
+                        <TablixCell>
+                          <CellContents>
+                            <Textbox Name="Textbox14">
+                              <CanGrow>true</CanGrow>
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>Ref:</Value>
+                                      <Style>
+                                        <FontFamily>Calibri</FontFamily>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style />
+                                </Paragraph>
+                              </Paragraphs>
+                              <rd:DefaultName>Textbox12</rd:DefaultName>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <PaddingLeft>2pt</PaddingLeft>
+                                <PaddingRight>2pt</PaddingRight>
+                                <PaddingTop>2pt</PaddingTop>
+                                <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
+                          </CellContents>
+                        </TablixCell>
+                        <TablixCell>
+                          <CellContents>
+                            <Textbox Name="ExternalReferenceNo_InternalCorrespondenceHeader">
+                              <CanGrow>true</CanGrow>
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>=Fields!ExternalReferenceNo_InternalCorrespondenceHeader.Value</Value>
+                                      <Style>
+                                        <FontFamily>Calibri</FontFamily>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style />
+                                </Paragraph>
+                              </Paragraphs>
+                              <rd:DefaultName>ExternalReferenceNo_InternalCorrespondenceHeader</rd:DefaultName>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <PaddingLeft>2pt</PaddingLeft>
+                                <PaddingRight>2pt</PaddingRight>
+                                <PaddingTop>2pt</PaddingTop>
+                                <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
+                          </CellContents>
+                        </TablixCell>
+                      </TablixCells>
+                    </TablixRow>
+                    <TablixRow>
+                      <Height>0.42886in</Height>
+                      <TablixCells>
+                        <TablixCell>
+                          <CellContents>
+                            <Textbox Name="Textbox17">
+                              <CanGrow>true</CanGrow>
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>Date:</Value>
+                                      <Style>
+                                        <FontFamily>Calibri</FontFamily>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style />
+                                </Paragraph>
+                              </Paragraphs>
+                              <rd:DefaultName>Textbox16</rd:DefaultName>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <PaddingLeft>2pt</PaddingLeft>
+                                <PaddingRight>2pt</PaddingRight>
+                                <PaddingTop>2pt</PaddingTop>
+                                <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
+                          </CellContents>
+                        </TablixCell>
+                        <TablixCell>
+                          <CellContents>
+                            <Textbox Name="DocumentDate_InternalCorrespondenceHeader">
+                              <CanGrow>true</CanGrow>
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>=Fields!DocumentDate_InternalCorrespondenceHeader.Value</Value>
+                                      <Style>
+                                        <FontFamily>Calibri</FontFamily>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style />
+                                </Paragraph>
+                              </Paragraphs>
+                              <rd:DefaultName>DocumentDate_InternalCorrespondenceHeader</rd:DefaultName>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <PaddingLeft>2pt</PaddingLeft>
+                                <PaddingRight>2pt</PaddingRight>
+                                <PaddingTop>2pt</PaddingTop>
+                                <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
+                          </CellContents>
+                        </TablixCell>
+                      </TablixCells>
+                    </TablixRow>
+                  </TablixRows>
+                </TablixBody>
+                <TablixColumnHierarchy>
+                  <TablixMembers>
+                    <TablixMember />
+                    <TablixMember />
+                  </TablixMembers>
+                </TablixColumnHierarchy>
+                <TablixRowHierarchy>
+                  <TablixMembers>
+                    <TablixMember />
+                    <TablixMember />
+                    <TablixMember />
+                  </TablixMembers>
+                </TablixRowHierarchy>
+                <Top>0.02778in</Top>
+                <Left>0.0639in</Left>
+                <Height>1.28658in</Height>
+                <Width>3.07778in</Width>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <RightBorder>
+                    <Color>Black</Color>
+                    <Style>Solid</Style>
+                    <Width>1pt</Width>
+                  </RightBorder>
+                </Style>
+              </Tablix>
+              <Rectangle Name="Rectangle3">
+                <ReportItems>
+                  <Textbox Name="Textbox46">
+                    <CanGrow>true</CanGrow>
+                    <KeepTogether>true</KeepTogether>
+                    <Paragraphs>
+                      <Paragraph>
+                        <TextRuns>
+                          <TextRun>
+                            <Value>To:</Value>
+                            <Style>
+                              <FontFamily>Calibri</FontFamily>
+                            </Style>
+                          </TextRun>
+                        </TextRuns>
+                        <Style />
+                      </Paragraph>
+                    </Paragraphs>
+                    <rd:DefaultName>Textbox46</rd:DefaultName>
+                    <Height>0.25in</Height>
+                    <Width>0.25in</Width>
+                    <Style>
+                      <Border>
+                        <Style>None</Style>
+                      </Border>
+                      <PaddingLeft>2pt</PaddingLeft>
+                      <PaddingRight>2pt</PaddingRight>
+                      <PaddingTop>2pt</PaddingTop>
+                      <PaddingBottom>2pt</PaddingBottom>
+                    </Style>
+                  </Textbox>
+                  <Tablix Name="Tablix7">
+                    <TablixBody>
+                      <TablixColumns>
+                        <TablixColumn>
+                          <Width>3.77in</Width>
+                        </TablixColumn>
+                      </TablixColumns>
+                      <TablixRows>
+                        <TablixRow>
+                          <Height>0.25in</Height>
+                          <TablixCells>
+                            <TablixCell>
+                              <CellContents>
+                                <Textbox Name="RecipientJobTitle_GeneralCorrespondenceLine">
+                                  <CanGrow>true</CanGrow>
+                                  <KeepTogether>true</KeepTogether>
+                                  <Paragraphs>
+                                    <Paragraph>
+                                      <TextRuns>
+                                        <TextRun>
+                                          <Value>=Fields!RecipientJobTitle_GeneralCorrespondenceLine.Value</Value>
+                                          <Style>
+                                            <FontFamily>Calibri</FontFamily>
+                                          </Style>
+                                        </TextRun>
+                                      </TextRuns>
+                                      <Style />
+                                    </Paragraph>
+                                  </Paragraphs>
+                                  <rd:DefaultName>RecipientJobTitle_GeneralCorrespondenceLine</rd:DefaultName>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                    <PaddingLeft>2pt</PaddingLeft>
+                                    <PaddingRight>2pt</PaddingRight>
+                                    <PaddingTop>2pt</PaddingTop>
+                                    <PaddingBottom>2pt</PaddingBottom>
+                                  </Style>
+                                </Textbox>
+                              </CellContents>
+                            </TablixCell>
+                          </TablixCells>
+                        </TablixRow>
+                      </TablixRows>
+                    </TablixBody>
+                    <TablixColumnHierarchy>
+                      <TablixMembers>
+                        <TablixMember />
+                      </TablixMembers>
+                    </TablixColumnHierarchy>
+                    <TablixRowHierarchy>
+                      <TablixMembers>
+                        <TablixMember>
+                          <Group Name="Details" />
+                        </TablixMember>
+                      </TablixMembers>
+                    </TablixRowHierarchy>
+                    <DataSetName>DataSet_Result</DataSetName>
+                    <Left>0.27778in</Left>
+                    <Height>0.25in</Height>
+                    <Width>3.77in</Width>
+                    <ZIndex>1</ZIndex>
+                    <Style>
+                      <Border>
+                        <Style>None</Style>
+                      </Border>
+                    </Style>
+                  </Tablix>
+                </ReportItems>
+                <KeepTogether>true</KeepTogether>
+                <Top>0.02778in</Top>
+                <Left>3.14167in</Left>
+                <Height>0.25in</Height>
+                <Width>4.04778in</Width>
+                <ZIndex>1</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <LeftBorder>
+                    <Color>Black</Color>
+                    <Style>Solid</Style>
+                    <Width>1pt</Width>
+                  </LeftBorder>
+                </Style>
+              </Rectangle>
+              <Textbox Name="Authorization">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>=Fields!Authorization.Value</Value>
+                        <Style>
+                          <FontStyle>Italic</FontStyle>
+                          <FontFamily>Calibri</FontFamily>
+                          <FontSize>12pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style />
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Authorization</rd:DefaultName>
+                <Top>0.29167in</Top>
+                <Left>4.93019in</Left>
+                <Height>0.25in</Height>
+                <Width>1.75in</Width>
+                <ZIndex>2</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="AuthorizationRemarks_GeneralCorrespondenceHeader">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>=Fields!AuthorizationRemarks_GeneralCorrespondenceHeader.Value</Value>
+                        <Style>
+                          <FontFamily>Calibri</FontFamily>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style />
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>AuthorizationRemarks_GeneralCorrespondenceHeader</rd:DefaultName>
+                <Top>0.54167in</Top>
+                <Left>4.93019in</Left>
+                <Height>0.25in</Height>
+                <Width>1.75in</Width>
+                <ZIndex>3</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Image Name="Image6">
+                <Source>Database</Source>
+                <Value>=First(Fields!AuthorizerSignature.Value, "DataSet_Result")</Value>
+                <MIMEType>image/jpeg</MIMEType>
+                <Sizing>FitProportional</Sizing>
+                <Top>0.98009in</Top>
+                <Left>4.93019in</Left>
+                <Height>0.33426in</Height>
+                <Width>0.68519in</Width>
+                <ZIndex>4</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                </Style>
+              </Image>
+              <Textbox Name="Textbox4">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>=Fields!AuthorizaionDate_GeneralCorrespondenceHeader.Value</Value>
+                        <Style>
+                          <FontFamily>Calibri</FontFamily>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style />
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox4</rd:DefaultName>
+                <Top>0.82037in</Top>
+                <Left>4.93019in</Left>
+                <Height>0.15972in</Height>
+                <Width>1.75in</Width>
+                <ZIndex>5</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+            </ReportItems>
+            <KeepTogether>true</KeepTogether>
+            <Top>0.05556in</Top>
+            <Left>0.46796in</Left>
+            <Height>1.35601in</Height>
+            <Width>7.31278in</Width>
+            <ZIndex>7</ZIndex>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </Border>
+              <TopBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </TopBorder>
+              <BottomBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </BottomBorder>
+              <LeftBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </LeftBorder>
+              <RightBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </RightBorder>
+            </Style>
+          </Rectangle>
+        </ReportItems>
+        <Height>5.60833in</Height>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <BackgroundColor>Pink</BackgroundColor>
+        </Style>
+      </Body>
+      <Width>7.90111in</Width>
+      <Page>
+        <PageHeader>
+          <Height>1.82167in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Image Name="Image1">
+              <Source>Database</Source>
+              <Value>=First(Fields!CIPic.Value, "DataSet_Result")</Value>
+              <MIMEType>image/jpeg</MIMEType>
+              <Sizing>FitProportional</Sizing>
+              <Top>0.105in</Top>
+              <Left>3.28833in</Left>
+              <Height>0.82222in</Height>
+              <Width>1.80833in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+              </Style>
+            </Image>
+            <Textbox Name="Textbox1">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>RT/78</Value>
+                      <Style>
+                        <FontStyle>Italic</FontStyle>
+                        <FontFamily>Calibri</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Top>0.105in</Top>
+              <Left>6.48in</Left>
+              <Height>0.16667in</Height>
+              <Width>0.41667in</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!CIName.Value, "DataSet_Result")</Value>
+                      <Style>
+                        <FontFamily>Calibri</FontFamily>
+                        <FontSize>12pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>0.99667in</Top>
+              <Left>2.61333in</Left>
+              <Height>0.34167in</Height>
+              <Width>3.15833in</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox3">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>INTERNAL MEMO</Value>
+                      <Style>
+                        <FontFamily>Calibri</FontFamily>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox3</rd:DefaultName>
+              <Top>1.40778in</Top>
+              <Left>2.92167in</Left>
+              <Height>0.25in</Height>
+              <Width>2.41667in</Width>
+              <ZIndex>3</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+            <BackgroundColor>Pink</BackgroundColor>
+          </Style>
+        </PageHeader>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <Code>Public Function BlankZero(ByVal Value As Decimal)
+    if Value = 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankPos(ByVal Value As Decimal)
+    if Value &gt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankZeroAndPos(ByVal Value As Decimal)
+    if Value &gt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNeg(ByVal Value As Decimal)
+    if Value &lt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNegAndZero(ByVal Value As Decimal)
+    if Value &lt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+</Code>
+  <Language>=User!Language</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+</Report>

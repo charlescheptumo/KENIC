@@ -1,0 +1,616 @@
+#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006 // ForNAV settings
+Page 75463 "Post Qual Bid Evaluation Card"
+{
+    Caption = 'Post Qualification Analysis';
+    PageType = Card;
+    SourceTable = "Bid Evaluation Register";
+    ApplicationArea = All;
+
+    layout
+    {
+        area(content)
+        {
+            group(General)
+            {
+                field("Code"; Rec.Code)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Code field.';
+                }
+                field("Evaluation Date"; Rec."Evaluation Date")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Evaluation Date field.';
+                }
+                field("Bid No."; Rec."Bid No.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Bid No. field.';
+                }
+                field("IFS Code"; Rec."IFS Code")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the IFS Code field.';
+                }
+                field("Vendor No."; Rec."Vendor No.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Vendor No. field.';
+                }
+                field("Bidder Name"; Rec."Bidder Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Bidder Name field.';
+                }
+                field(Description; Rec.Description)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Description field.';
+                }
+                field("Evaluation Venue"; Rec."Evaluation Venue")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Evaluation Venue field.';
+                }
+                field("Bid Scoring Document No."; Rec."Bid Scoring Document No.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Bid Scoring Document No. field.';
+                }
+                field("Bid Opening Register No."; Rec."Bid Opening Register No.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Bid Opening Register No. field.';
+                }
+                field("Bid Opening Date"; Rec."Bid Opening Date")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Bid Opening Date field.';
+                }
+                field("Tender Evaluation Deadline"; Rec."Tender Evaluation Deadline")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Tender Evaluation Deadline field.';
+                }
+                field("Appointed Bid Evaluation Commi"; Rec."Appointed Bid Evaluation Commi")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Evaluation Committe';
+                    ToolTip = 'Specifies the value of the Evaluation Committe field.';
+                }
+                field("Primary Region"; Rec."Primary Region")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Primary Region field.';
+                }
+                field("Bid Envelop Type"; Rec."Bid Envelop Type")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Bid Envelop Type field.';
+                }
+                field("Purchaser Code"; Rec."Purchaser Code")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Lead Procurement Officer';
+                    ToolTip = 'Specifies the value of the Lead Procurement Officer field.';
+                }
+                field("Evaluation Lead"; Rec."Evaluation Lead")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Evaluation Lead field.';
+                }
+                field("Evaluation Lead Name"; Rec."Evaluation Lead Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Evaluation Lead Name field.';
+                }
+                field("No of Requirements"; Rec."No of Requirements")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the No of Requirements field.';
+                }
+                field("No of Passed Requirements"; Rec."No of Passed Requirements")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the No of Passed Requirements field.';
+                }
+                field("No of Failed Requirements"; Rec."No of Failed Requirements")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the No of Failed Requirements field.';
+                }
+                field("Document Status"; Rec."Document Status")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Document Status field.';
+                }
+            }
+            part(Control12; "Bid Evaluation Score Entry")
+            {
+                SubPageLink = Code = field(Code);
+            }
+            group("Evaluation Result")
+            {
+                Caption = 'Evaluation Result';
+                field("Post Qu Evaluation  Decision"; Rec."Post Qu Evaluation  Decision")
+                {
+                    ApplicationArea = Basic;
+                    Editable = false;
+                    ToolTip = 'Specifies the value of the Post Qualification Evaluation  Decision field.';
+                }
+                field("Post Quali Comm Remarks"; Rec."Post Quali Comm Remarks")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Conclusion';
+                    MultiLine = true;
+                    ToolTip = 'Specifies the value of the Conclusion field.';
+                }
+                field("Post Qualification Reccommenda"; Rec."Post Qualification Reccommenda")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Recommendations';
+                    MultiLine = true;
+                    ToolTip = 'Specifies the value of the Recommendations field.';
+                }
+            }
+        }
+        area(factboxes)
+        {
+            systempart(Control33; Outlook)
+            {
+            }
+            systempart(Control34; Notes)
+            {
+            }
+            systempart(Control35; MyNotes)
+            {
+            }
+            systempart(Control36; Links)
+            {
+            }
+        }
+    }
+
+    actions
+    {
+        area(navigation)
+        {
+            group(IFP)
+            {
+                Caption = 'IFP';
+                Image = "Order";
+                action(Dimensions)
+                {
+                    AccessByPermission = TableData Dimension = R;
+                    ApplicationArea = Dimensions;
+                    Caption = 'Dimensions';
+                    Enabled = Rec."code" <> '';
+                    Image = Dimensions;
+                    Promoted = true;
+                    PromotedCategory = Category8;
+                    PromotedIsBig = true;
+                    ShortCutKey = 'Shift+Ctrl+D';
+                    ToolTip = 'View or edit dimensions, such as area, project, or department, that you can assign to sales and purchase documents to distribute costs and analyze transaction history.';
+
+                    trigger OnAction()
+                    begin
+                        //ShowDocDim;
+                        //CurrPage.SAVERECORD;
+                    end;
+                }
+                action(Approvals)
+                {
+                    AccessByPermission = TableData "Approval Entry" = R;
+                    ApplicationArea = Suite;
+                    Caption = 'Approvals';
+                    Image = Approvals;
+                    Promoted = true;
+                    PromotedCategory = Category8;
+                    ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
+
+                    trigger OnAction()
+                    var
+                        WorkflowsEntriesBuffer: Record "Workflows Entries Buffer";
+                    begin
+                        // ApprovalsMgmt.OpenApprovalEntriesPage(RecordId);
+                    end;
+                }
+                action("Co&mments")
+                {
+                    ApplicationArea = Comments;
+                    Caption = 'Co&mments';
+                    Image = ViewComments;
+                    Promoted = true;
+                    PromotedCategory = Category8;
+                    RunObject = Page "Purch. Comment Sheet";
+                    RunPageLink = "No." = field(Code);
+                    ToolTip = 'View or add comments for the record.';
+                }
+                action(DocAttach)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Attachments';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Category8;
+                    ToolTip = 'Add a file as an attachment. You can attach images as well as documents.';
+
+                    // trigger OnAction()
+                    // var
+                    //     DocumentAttachmentDetails: Page "Document Attachment Details";
+                    //     RecRef: RecordRef;
+                    // begin
+                    //     RecRef.GetTable(Rec);
+                    //     DocumentAttachmentDetails.OpenForRecRef(RecRef);
+                    //     DocumentAttachmentDetails.RunModal;
+                    // end;
+                }
+                action("Criteria Groups")
+                {
+                    ApplicationArea = Basic;
+                    Image = Navigate;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    RunObject = Page "Bid evaluation Criteria Group";
+                    RunPageLink = "Template ID" = field("Bid Scoring Document No."),
+                                  "Document No" = field(Code);
+                    ToolTip = 'Executes the Criteria Groups action.';
+                }
+                action("Attendance Register")
+                {
+                    ApplicationArea = Basic;
+                    Image = AllocatedCapacity;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    RunObject = Page "Bid Opening Bidder Attendance";
+                    RunPageLink = "IFS Code" = field("IFS Code");
+                    ToolTip = 'Executes the Attendance Register action.';
+                }
+                action(Print)
+                {
+                    ApplicationArea = Basic;
+                    Image = PrintAttachment;
+                    Promoted = true;
+                    PromotedCategory = "Report";
+                    ToolTip = 'Executes the Print action.';
+
+                    trigger OnAction()
+                    begin
+                        // Reset;
+                        // SetRange(Code,Code);
+                        // Report.Run(70125,true,true,Rec);
+                        //  FileDirectoryX:='C:\SCM\Tender\'+"IFS Code"+'\';
+                        // // //D:\CUENAV_BACKUP\CUENAV_Documents\CUEL\Awaiting Completeness Card\ACC043
+                        //  FileNameX:="IFS Code"+'_6_PostQualification.pdf';
+                        //   if FILE.Exists(FileDirectoryX+FileNameX) then
+                        //   FILE.Erase(FileDirectoryX+FileNameX);//51217
+                        // //MERGE PDF
+                        // FileDirectory:='C:\SCM\Tender\'+"IFS Code"+'\';
+                        // //D:\CUENAV_BACKUP\CUENAV_Documents\CUEL\Awaiting Completeness Card\ACC043
+                        // FileName:="IFS Code"+'_6_PostQualification.pdf';
+                        // // Report.SaveAsPdf(70125,FileDirectory+FileName,Rec);
+                    end;
+                }
+            }
+        }
+        area(processing)
+        {
+            group(Approval)
+            {
+                Caption = 'Approval';
+                action(Approve)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Approve';
+                    Image = Approve;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    PromotedOnly = true;
+                    ToolTip = 'Approve the requested changes.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+
+                    trigger OnAction()
+                    var
+                    //  ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        // ApprovalsMgmt.ApproveRecordApprovalRequest(RecordId);
+                    end;
+                }
+                action(Reject)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Reject';
+                    Image = Reject;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    PromotedOnly = true;
+                    ToolTip = 'Reject the requested changes.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+
+                    trigger OnAction()
+                    var
+                    // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        // ApprovalsMgmt.RejectRecordApprovalRequest(RecordId);
+                    end;
+                }
+                action(Delegate)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Delegate';
+                    Image = Delegate;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedOnly = true;
+                    ToolTip = 'Delegate the requested changes to the substitute approver.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+
+                    trigger OnAction()
+                    var
+                    // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        //  ApprovalsMgmt.DelegateRecordApprovalRequest(RecordId);
+                    end;
+                }
+                action(Comment)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Comments';
+                    Image = ViewComments;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedOnly = true;
+                    ToolTip = 'View or add comments for the record.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+
+                    trigger OnAction()
+                    var
+                    //   ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        //  ApprovalsMgmt.GetApprovalComment(Rec);
+                    end;
+                }
+            }
+            group(ActionGroup46)
+            {
+                Caption = 'Release';
+                Image = ReleaseDoc;
+                action(Release)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Re&lease';
+                    Image = ReleaseDoc;
+                    Promoted = true;
+                    PromotedCategory = Category5;
+                    PromotedIsBig = true;
+                    PromotedOnly = true;
+                    ShortCutKey = 'Ctrl+F9';
+                    ToolTip = 'Release the document to the next stage of processing. When a document is released, it will be included in all availability calculations from the expected receipt date of the items. You must reopen the document before you can make changes to it.';
+
+                    trigger OnAction()
+                    var
+                        ReleasePurchDoc: Codeunit "Release Approval Document";
+                    begin
+                        //ReleasePurchDoc.ReleaseVendDebarment(Rec);
+                        //Procurement.ReleaseSupplierRatingTemplate(Rec)
+                    end;
+                }
+                action(Reopen)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Re&open';
+                    Image = ReOpen;
+                    Promoted = true;
+                    PromotedCategory = Category5;
+                    PromotedOnly = true;
+                    ToolTip = 'Reopen the document to change it after it has been approved. Approved documents have the Released status and must be opened before they can be changed';
+
+                    trigger OnAction()
+                    var
+                        ReleasePurchDoc: Codeunit "Release Approval Document";
+                    begin
+                        //ReleasePurchDoc.ReopenVendDebarment(Rec);
+                        /*IF Released=FALSE THEN
+                          ERROR('Document must be Released');
+                        Released:=FALSE;
+                        MODIFY;
+                        MESSAGE('Supplier Rating Template %1 has been opened successfuly',Code);*/
+
+                    end;
+                }
+            }
+            group("F&unctions")
+            {
+                Caption = 'F&unctions';
+                Image = "Action";
+                Visible = false;
+                action("Bid Evaluation Tender Committee")
+                {
+                    ApplicationArea = Basic;
+                    Image = TeamSales;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    RunObject = Page "Bid Evaluation Committee";
+                    RunPageLink = "Document No." = field(Code);
+                    ToolTip = 'Executes the Bid Evaluation Tender Committee action.';
+                }
+                action("Filed Response Documents")
+                {
+                    ApplicationArea = Basic;
+                    Image = Document;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    RunObject = Page "Bid Filed Document";
+                    RunPageLink = "No." = field("Bid No."),
+                                  "Vendor No" = field("Vendor No.");
+                    ToolTip = 'Executes the Filed Response Documents action.';
+                }
+                action("Personnel Specifications")
+                {
+                    ApplicationArea = Basic;
+                    Image = Resource;
+                    Promoted = true;
+                    PromotedCategory = Category10;
+                    RunObject = Page "Bid Key Staff";
+                    RunPageLink = "Vendor No." = field("Vendor No."),
+                                  "No." = field("Bid No.");
+                    ToolTip = 'Executes the Personnel Specifications action.';
+                }
+                action("Equipment Specifications")
+                {
+                    ApplicationArea = Basic;
+                    Image = AllocatedCapacity;
+                    Promoted = true;
+                    PromotedCategory = Category10;
+                    RunObject = Page "Bid Equipment Specification";
+                    RunPageLink = "No." = field("Bid No.");
+                    ToolTip = 'Executes the Equipment Specifications action.';
+                }
+                action("Past Experience")
+                {
+                    ApplicationArea = Basic;
+                    Image = Relationship;
+                    Promoted = true;
+                    PromotedCategory = Category7;
+                    RunObject = Page "Bid Past Experience";
+                    RunPageLink = "Vendor No." = field("Vendor No."),
+                                  "No." = field("Bid No.");
+                    ToolTip = 'Executes the Past Experience action.';
+                }
+                action("Audited Balance Sheet")
+                {
+                    ApplicationArea = Basic;
+                    Image = Balance;
+                    Promoted = true;
+                    PromotedCategory = Category7;
+                    RunObject = Page "Bid Audited Balance Sheet";
+                    RunPageLink = "Vendor No." = field("Vendor No."),
+                                  "No." = field("Bid No.");
+                    ToolTip = 'Executes the Audited Balance Sheet action.';
+                }
+                action("Audited Income Statement")
+                {
+                    ApplicationArea = Basic;
+                    Image = GLAccountBalance;
+                    Promoted = true;
+                    PromotedCategory = Category7;
+                    RunObject = Page "Bid Audited Income Statement";
+                    RunPageLink = "Vendor No." = field("Vendor No."),
+                                  "No." = field("Bid No.");
+                    ToolTip = 'Executes the Audited Income Statement action.';
+                }
+                action("Bid Responses")
+                {
+                    ApplicationArea = Basic;
+                    Image = ResourceLedger;
+                    Promoted = true;
+                    PromotedCategory = Category7;
+                    RunObject = Page "Finance Evaluation Line";
+                    RunPageLink = "Document ID" = field(Code);
+                    ToolTip = 'Executes the Bid Responses action.';
+                }
+                action("Post Evaluation")
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Post Evaluation';
+                    Ellipsis = true;
+                    Image = PostDocument;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    ToolTip = 'Copy document lines and header information from another purchase document to this document. You can copy a posted purchase invoice into a new purchase invoice to quickly create a similar document.';
+
+                    trigger OnAction()
+                    begin
+                        //Finance Evaluation Line
+                        Procurement.FnPostQualification(Rec);
+                    end;
+                }
+            }
+            group("Request Approval")
+            {
+                Caption = 'Request Approval';
+                Visible = false;
+                action(SendApprovalRequest)
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Send A&pproval Request';
+                    Image = SendApprovalRequest;
+                    Promoted = true;
+                    PromotedCategory = Category9;
+                    PromotedIsBig = true;
+                    ToolTip = 'Request approval of the document.';
+
+                    trigger OnAction()
+                    var
+                    // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        // if ApprovalsMgmt.CheckBidEvaluationApprovalPossible(Rec) then
+                        //   ApprovalsMgmt.OnSendBidEvaluationForApproval(Rec);
+
+                    end;
+                }
+                action(CancelApprovalRequest)
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Cancel Approval Re&quest';
+                    Image = CancelApprovalRequest;
+                    Promoted = true;
+                    PromotedCategory = Category9;
+                    ToolTip = 'Cancel the approval request.';
+
+                    trigger OnAction()
+                    var
+                    // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    //  WorkflowWebhookMgt: Codeunit "Workflow Webhook Management";
+                    begin
+                        //  ApprovalsMgmt.OnCancelBidEvaluationApprovalRequest(Rec);
+                        //   WorkflowWebhookMgt.FindAndCancel(RecordId);
+                    end;
+                }
+            }
+        }
+    }
+
+    trigger OnAfterGetRecord()
+    begin
+        BidEvaluationScoreEntry.Reset;
+        BidEvaluationScoreEntry.SetRange(Code, Rec.Code);
+        BidEvaluationScoreEntry.SetRange("Evaluation Results", BidEvaluationScoreEntry."evaluation results"::Fail);
+        if BidEvaluationScoreEntry.FindFirst then begin
+            Rec."Post Qu Evaluation  Decision" := Rec."post qu evaluation  decision"::Fail;
+        end else begin
+
+
+            Rec."Post Qu Evaluation  Decision" := Rec."post qu evaluation  decision"::Pass;
+
+        end;
+    end;
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        Rec."Evaluation Type" := Rec."evaluation type"::"Post Qualification";
+        Rec."Evaluator Category" := Rec."evaluator category"::"Evaluation Committee";
+    end;
+
+    var
+        //ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+        OpenApprovalEntriesExistCurrUser: Boolean;
+        OpenApprovalEntriesExist: Boolean;
+        OpenApprovalEntriesExistForCurrUser: Boolean;
+        CanCancelApprovalForRecord: Boolean;
+        CanRequestApprovalForFlow: Boolean;
+        CanCancelApprovalForFlow: Boolean;
+        ShowWorkflowStatus: Boolean;
+        Procurement: Codeunit "Procurement Processing";
+        BidEvaluationReg: Record "Bid Evaluation Register";
+        PurchaseHeader: Record "Purchase Header";
+        BidEvaluationScoreEntry: Record "Bid Evaluation Score Entry";
+        BidEvaluationScoreEntry1: Record "Bid Evaluation Score Entry";
+        FileDirectoryX: Text;
+        FileNameX: Text;
+        FileName: Text;
+        FileDirectory: Text;
+}
+

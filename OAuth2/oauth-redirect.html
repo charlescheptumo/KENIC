@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Redirect</title>
+    <script>
+        (function () {
+            // Parse query string parameters from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const authorizationCode = urlParams.get("code");
+            const state = urlParams.get("state");
+
+            if (authorizationCode && state) {
+                console.log("Authorization Code:", authorizationCode);
+                console.log("State:", state);
+
+                // Send the authorization code and state to the parent window
+                if (window.opener) {
+                    window.opener.postMessage({ code: authorizationCode, state: state }, "*");
+                }
+
+                // Close the popup window
+                if (window.opener) {
+                    window.close();
+                }
+            } else {
+                console.error("Authorization code or state missing in the query string.");
+            }
+        })();
+    </script>
+</head>
+<body>
+    <p>Completing OAuth authentication...</p>
+</body>
+</html>

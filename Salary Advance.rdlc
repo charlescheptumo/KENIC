@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:SecurityType>None</rd:SecurityType>
+    </DataSource>
+  </DataSources>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <Height>2in</Height>
+        <Style />
+      </Body>
+      <Width>6.5in</Width>
+      <Page>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <Code>Public Function BlankZero(ByVal Value As Decimal)
+    if Value = 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankPos(ByVal Value As Decimal)
+    if Value &gt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankZeroAndPos(ByVal Value As Decimal)
+    if Value &gt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNeg(ByVal Value As Decimal)
+    if Value &lt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNegAndZero(ByVal Value As Decimal)
+    if Value &lt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+</Code>
+  <Language>=User!Language</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="Name">
+          <DataField>Name</DataField>
+        </Field>
+        <Field Name="Picture">
+          <DataField>Picture</DataField>
+        </Field>
+        <Field Name="Remarks_Rec">
+          <DataField>Remarks_Rec</DataField>
+        </Field>
+        <Field Name="Comments_Rec">
+          <DataField>Comments_Rec</DataField>
+        </Field>
+        <Field Name="AmountApproved_Rec">
+          <DataField>AmountApproved_Rec</DataField>
+        </Field>
+        <Field Name="AmountApproved_RecFormat">
+          <DataField>AmountApproved_RecFormat</DataField>
+        </Field>
+        <Field Name="EffectivefromMonth_Rec">
+          <DataField>EffectivefromMonth_Rec</DataField>
+        </Field>
+        <Field Name="SalaryAdvance_Rec">
+          <DataField>SalaryAdvance_Rec</DataField>
+        </Field>
+        <Field Name="SalaryAdvance_RecFormat">
+          <DataField>SalaryAdvance_RecFormat</DataField>
+        </Field>
+        <Field Name="SalaryLastDrawn_Rec">
+          <DataField>SalaryLastDrawn_Rec</DataField>
+        </Field>
+        <Field Name="SalaryLastDrawn_RecFormat">
+          <DataField>SalaryLastDrawn_RecFormat</DataField>
+        </Field>
+        <Field Name="DateofJoining_Rec">
+          <DataField>DateofJoining_Rec</DataField>
+        </Field>
+        <Field Name="Noofmonthsdeducted_Rec">
+          <DataField>Noofmonthsdeducted_Rec</DataField>
+        </Field>
+        <Field Name="Noofmonthsdeducted_RecFormat">
+          <DataField>Noofmonthsdeducted_RecFormat</DataField>
+        </Field>
+        <Field Name="AmountPending_Rec">
+          <DataField>AmountPending_Rec</DataField>
+        </Field>
+        <Field Name="AmountPending_RecFormat">
+          <DataField>AmountPending_RecFormat</DataField>
+        </Field>
+        <Field Name="RecoveryStartMonth_Rec">
+          <DataField>RecoveryStartMonth_Rec</DataField>
+        </Field>
+        <Field Name="MonthlyInstallment_Rec">
+          <DataField>MonthlyInstallment_Rec</DataField>
+        </Field>
+        <Field Name="MonthlyInstallment_RecFormat">
+          <DataField>MonthlyInstallment_RecFormat</DataField>
+        </Field>
+        <Field Name="Purpose_Rec">
+          <DataField>Purpose_Rec</DataField>
+        </Field>
+        <Field Name="DepartmentName_Rec">
+          <DataField>DepartmentName_Rec</DataField>
+        </Field>
+        <Field Name="ProjectName_Rec">
+          <DataField>ProjectName_Rec</DataField>
+        </Field>
+        <Field Name="No_Rec">
+          <DataField>No_Rec</DataField>
+        </Field>
+        <Field Name="Date_Rec">
+          <DataField>Date_Rec</DataField>
+        </Field>
+        <Field Name="AccountNo_Rec">
+          <DataField>AccountNo_Rec</DataField>
+        </Field>
+        <Field Name="AccountName_Rec">
+          <DataField>AccountName_Rec</DataField>
+        </Field>
+        <Field Name="Status_Rec">
+          <DataField>Status_Rec</DataField>
+        </Field>
+        <Field Name="Number_In_Words">
+          <DataField>Number_In_Words</DataField>
+        </Field>
+        <Field Name="PreparedBy">
+          <DataField>PreparedBy</DataField>
+        </Field>
+        <Field Name="DatePrepared">
+          <DataField>DatePrepared</DataField>
+        </Field>
+        <Field Name="PreparedBy_Signature">
+          <DataField>PreparedBy_Signature</DataField>
+        </Field>
+        <Field Name="ExaminedBy">
+          <DataField>ExaminedBy</DataField>
+        </Field>
+        <Field Name="DateExamined">
+          <DataField>DateExamined</DataField>
+        </Field>
+        <Field Name="ExaminedBy_Signature">
+          <DataField>ExaminedBy_Signature</DataField>
+        </Field>
+        <Field Name="VBC">
+          <DataField>VBC</DataField>
+        </Field>
+        <Field Name="VBCDate">
+          <DataField>VBCDate</DataField>
+        </Field>
+        <Field Name="VBC_Signature">
+          <DataField>VBC_Signature</DataField>
+        </Field>
+        <Field Name="Authorizer">
+          <DataField>Authorizer</DataField>
+        </Field>
+        <Field Name="DateAuthorized">
+          <DataField>DateAuthorized</DataField>
+        </Field>
+        <Field Name="Authorizer_Signature">
+          <DataField>Authorizer_Signature</DataField>
+        </Field>
+        <Field Name="Accounts">
+          <DataField>Accounts</DataField>
+        </Field>
+        <Field Name="DateAccounts">
+          <DataField>DateAccounts</DataField>
+        </Field>
+        <Field Name="Accounts_Signature">
+          <DataField>Accounts_Signature</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
+</Report>

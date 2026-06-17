@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:SecurityType>None</rd:SecurityType>
+    </DataSource>
+  </DataSources>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <Height>2in</Height>
+        <Style />
+      </Body>
+      <Width>6.5in</Width>
+      <Page>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <Code>Public Function BlankZero(ByVal Value As Decimal)
+    if Value = 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankPos(ByVal Value As Decimal)
+    if Value &gt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankZeroAndPos(ByVal Value As Decimal)
+    if Value &gt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNeg(ByVal Value As Decimal)
+    if Value &lt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNegAndZero(ByVal Value As Decimal)
+    if Value &lt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+</Code>
+  <Language>=User!Language</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="Description_FixedAsset">
+          <DataField>Description_FixedAsset</DataField>
+        </Field>
+        <Field Name="Financedby_FixedAsset">
+          <DataField>Financedby_FixedAsset</DataField>
+        </Field>
+        <Field Name="SerialNo_FixedAsset">
+          <DataField>SerialNo_FixedAsset</DataField>
+        </Field>
+        <Field Name="TagNo_FixedAsset">
+          <DataField>TagNo_FixedAsset</DataField>
+        </Field>
+        <Field Name="Make_FixedAsset">
+          <DataField>Make_FixedAsset</DataField>
+        </Field>
+        <Field Name="Model_FixedAsset">
+          <DataField>Model_FixedAsset</DataField>
+        </Field>
+        <Field Name="YearofPurchase_FixedAsset">
+          <DataField>YearofPurchase_FixedAsset</DataField>
+        </Field>
+        <Field Name="PVNumber_FixedAsset">
+          <DataField>PVNumber_FixedAsset</DataField>
+        </Field>
+        <Field Name="MainLocation_FixedAsset">
+          <DataField>MainLocation_FixedAsset</DataField>
+        </Field>
+        <Field Name="LocationCode_FixedAsset">
+          <DataField>LocationCode_FixedAsset</DataField>
+        </Field>
+        <Field Name="ReplacementDate_FixedAsset">
+          <DataField>ReplacementDate_FixedAsset</DataField>
+        </Field>
+        <Field Name="ResponsibleEmployee_FixedAsset">
+          <DataField>ResponsibleEmployee_FixedAsset</DataField>
+        </Field>
+        <Field Name="AssetCondition_FixedAsset">
+          <DataField>AssetCondition_FixedAsset</DataField>
+        </Field>
+        <Field Name="PresentLogbook_FixedAsset">
+          <DataField>PresentLogbook_FixedAsset</DataField>
+        </Field>
+        <Field Name="Notes_FixedAsset">
+          <DataField>Notes_FixedAsset</DataField>
+        </Field>
+        <Field Name="EmptyDate">
+          <DataField>EmptyDate</DataField>
+        </Field>
+        <Field Name="AcquisitionDate_FADepreciationBook">
+          <DataField>AcquisitionDate_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="AcquisitionCost_FADepreciationBook">
+          <DataField>AcquisitionCost_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="AcquisitionCost_FADepreciationBookFormat">
+          <DataField>AcquisitionCost_FADepreciationBookFormat</DataField>
+        </Field>
+        <Field Name="Appreciation_FADepreciationBook">
+          <DataField>Appreciation_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="Appreciation_FADepreciationBookFormat">
+          <DataField>Appreciation_FADepreciationBookFormat</DataField>
+        </Field>
+        <Field Name="BookValue_FADepreciationBook">
+          <DataField>BookValue_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="BookValue_FADepreciationBookFormat">
+          <DataField>BookValue_FADepreciationBookFormat</DataField>
+        </Field>
+        <Field Name="Depreciation_FADepreciationBook">
+          <DataField>Depreciation_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="Depreciation_FADepreciationBookFormat">
+          <DataField>Depreciation_FADepreciationBookFormat</DataField>
+        </Field>
+        <Field Name="StraightLine_FADepreciationBook">
+          <DataField>StraightLine_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="StraightLine_FADepreciationBookFormat">
+          <DataField>StraightLine_FADepreciationBookFormat</DataField>
+        </Field>
+        <Field Name="ProceedsonDisposal_FADepreciationBook">
+          <DataField>ProceedsonDisposal_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="ProceedsonDisposal_FADepreciationBookFormat">
+          <DataField>ProceedsonDisposal_FADepreciationBookFormat</DataField>
+        </Field>
+        <Field Name="DecliningBalance_FADepreciationBook">
+          <DataField>DecliningBalance_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="DecliningBalance_FADepreciationBookFormat">
+          <DataField>DecliningBalance_FADepreciationBookFormat</DataField>
+        </Field>
+        <Field Name="DisposalDate_FADepreciationBook">
+          <DataField>DisposalDate_FADepreciationBook</DataField>
+        </Field>
+        <Field Name="NilDispDat">
+          <DataField>NilDispDat</DataField>
+        </Field>
+        <Field Name="NilDispAmt">
+          <DataField>NilDispAmt</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
+</Report>
