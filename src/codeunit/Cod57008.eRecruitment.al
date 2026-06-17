@@ -4,7 +4,7 @@ Codeunit 57008 "eRecruitment"
 
     trigger OnRun()
     begin
-        // FnRegistration('12345678','testfname','testlname','testmname','wearealivess@gmail.com','0700789654');
+        //FnRegistration('12345678', 'testfname', 'testlname', 'testmname', 'wearealivess@gmail.com', '0700789654');
 
         // Contact_Test.Reset;
         // Contact_Test.SetRange("E-Mail", 'shanayaaprilo@gmail.com');
@@ -70,10 +70,12 @@ Codeunit 57008 "eRecruitment"
             Contact.Surname := lastname;
 
             if Contact.Insert(true) then begin
+                //Commit();
                 FnCreateApplicantAccountRequest(email);
                 FnSendEmaiNotificationOnApplicantAccountActivation(Contact);
                 status := 'success*Your Aplicant account was successfully created. Please check your email account for further guidelines on account activation.';
             end else begin
+
                 status := 'danger*Your Aplicant account was not created successfully.Kindly Contact System Administrator';
             end;
         end;
@@ -1852,6 +1854,7 @@ Codeunit 57008 "eRecruitment"
             status := 'danger*The Report Could not be generated';
         end
     end;
+
     procedure addCandidateSharepointLinks(candidateno: Code[50]; filename: Text; sharepointlink: Text) status: Text
     var
         Applicant: Record Applicant;
@@ -1906,6 +1909,6 @@ Codeunit 57008 "eRecruitment"
             end
         end;
     end;
-    
+
 }
 
