@@ -88,6 +88,27 @@ Codeunit 50032 NewEboard
         exit(CustomerNumber);
     end;
 
+    procedure fnLogin2(dirEmail: Text[100]; password: Text) status: Text
+    var
+        iExists: Boolean;
+    begin
+        objPortalUser.Reset;
+        objPortalUser.SetRange(objPortalUser.Email, dirEmail);
+        if objPortalUser.FindSet() then begin
+            if objPortalUser.Password = password then begin
+
+                status := 'success*' + objPortalUser."customer No" + '*' + objPortalUser.Email;
+                exit(status);
+            end else begin
+
+                status := 'danger*Invalid password';
+                exit(status);
+            end;
+        end;
+        // User not found
+        status := 'error*User not found';
+    end;
+
 
 
     // [scope('OnPrem')]
