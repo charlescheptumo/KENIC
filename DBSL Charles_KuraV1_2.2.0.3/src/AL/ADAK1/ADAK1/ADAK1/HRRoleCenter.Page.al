@@ -43,7 +43,7 @@ page 60002 "HR Role Center"
 
         area(Sections)
         {
-            //  PILLAR 1: PRE-HIRE (M1: Establishment & Work Environment) 
+            //  Pillar 1: Pre-hire (M1: Establishment & Work Environment) 
             group("Pre-Hire")
             {
                 Caption = 'Pre-Hire';
@@ -233,7 +233,7 @@ page 60002 "HR Role Center"
                     }
                 }
 
-                // ===== OCCUPATIONAL SAFETY & HEALTH (MOVED FROM TOP-LEVEL) =====
+                // OCCUPATIONAL SAFETY & HEALTH (MOVED FROM TOP-LEVEL) 
                 group("Occupational Safety & Health")
                 {
                     Visible = false;
@@ -1411,7 +1411,7 @@ page 60002 "HR Role Center"
                     }
                 }
 
-                // ===== M4: WORKFORCE OPERATIONS =====
+                //  M4: WORKFORCE OPERATIONS 
                 group("M4: Workforce Operations")
                 {
                     Caption = 'M4: Workforce Operations';
@@ -1979,7 +1979,7 @@ page 60002 "HR Role Center"
                     }
                 }
 
-                // ===== M5: PERFORMANCE MANAGEMENT =====
+                //  M5: PERFORMANCE MANAGEMENT 
                 group("M5: Performance Management")
                 {
                     Caption = 'M5: Performance Management';
@@ -2242,7 +2242,7 @@ page 60002 "HR Role Center"
                 }
             }
 
-            //  TOP-LEVEL GROUPS 
+            //  Top-level groups
             group("File Movement Management")
             {
                 Visible = false;
