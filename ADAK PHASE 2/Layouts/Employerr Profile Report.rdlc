@@ -10,139 +10,6 @@
       <rd:DataSourceID>18af4cb4-fdfc-4b1e-a0b1-e8a8f8b3fdaa</rd:DataSourceID>
     </DataSource>
   </DataSources>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-      <Fields>
-        <Field Name="CompanyName">
-          <DataField>CompanyName</DataField>
-        </Field>
-        <Field Name="CompanyName2">
-          <DataField>CompanyName2</DataField>
-        </Field>
-        <Field Name="Address">
-          <DataField>Address</DataField>
-        </Field>
-        <Field Name="Address2">
-          <DataField>Address2</DataField>
-        </Field>
-        <Field Name="City">
-          <DataField>City</DataField>
-        </Field>
-        <Field Name="PostCode">
-          <DataField>PostCode</DataField>
-        </Field>
-        <Field Name="County">
-          <DataField>County</DataField>
-        </Field>
-        <Field Name="CountryRegionCode">
-          <DataField>CountryRegionCode</DataField>
-        </Field>
-        <Field Name="PhoneNo">
-          <DataField>PhoneNo</DataField>
-        </Field>
-        <Field Name="FaxNo">
-          <DataField>FaxNo</DataField>
-        </Field>
-        <Field Name="Email">
-          <DataField>Email</DataField>
-        </Field>
-        <Field Name="HomePage">
-          <DataField>HomePage</DataField>
-        </Field>
-        <Field Name="RegistrationNo">
-          <DataField>RegistrationNo</DataField>
-        </Field>
-        <Field Name="VATRegistrationNo">
-          <DataField>VATRegistrationNo</DataField>
-        </Field>
-        <Field Name="Picture">
-          <DataField>Picture</DataField>
-        </Field>
-        <Field Name="CompActiveStaffCount">
-          <DataField>CompActiveStaffCount</DataField>
-        </Field>
-        <Field Name="CompEstablishedPositions">
-          <DataField>CompEstablishedPositions</DataField>
-        </Field>
-        <Field Name="CompTotalJobGrades">
-          <DataField>CompTotalJobGrades</DataField>
-        </Field>
-        <Field Name="CompApprovedDutyStations">
-          <DataField>CompApprovedDutyStations</DataField>
-        </Field>
-        <Field Name="JobGradeID">
-          <DataField>JobGradeID</DataField>
-        </Field>
-        <Field Name="JobGradeDescription">
-          <DataField>JobGradeDescription</DataField>
-        </Field>
-        <Field Name="OverallAppointmentAuthority">
-          <DataField>OverallAppointmentAuthority</DataField>
-        </Field>
-        <Field Name="DefaultSeniorityLevel">
-          <DataField>DefaultSeniorityLevel</DataField>
-        </Field>
-        <Field Name="NoOfValidPositions">
-          <DataField>NoOfValidPositions</DataField>
-        </Field>
-        <Field Name="JobGradeActiveStaffCount">
-          <DataField>JobGradeActiveStaffCount</DataField>
-        </Field>
-        <Field Name="PositionID">
-          <DataField>PositionID</DataField>
-        </Field>
-        <Field Name="JobTitle">
-          <DataField>JobTitle</DataField>
-        </Field>
-        <Field Name="DesignationGroup">
-          <DataField>DesignationGroup</DataField>
-        </Field>
-        <Field Name="PosJobGradeID">
-          <DataField>PosJobGradeID</DataField>
-        </Field>
-        <Field Name="Department">
-          <DataField>Department</DataField>
-        </Field>
-        <Field Name="PositionActiveStaffCount">
-          <DataField>PositionActiveStaffCount</DataField>
-        </Field>
-        <Field Name="TermsCode">
-          <DataField>TermsCode</DataField>
-        </Field>
-        <Field Name="TermsDescription">
-          <DataField>TermsDescription</DataField>
-        </Field>
-        <Field Name="EmploymentType">
-          <DataField>EmploymentType</DataField>
-        </Field>
-        <Field Name="MinAge">
-          <DataField>MinAge</DataField>
-        </Field>
-        <Field Name="MaxAge">
-          <DataField>MaxAge</DataField>
-        </Field>
-        <Field Name="TermsActiveStaffCount">
-          <DataField>TermsActiveStaffCount</DataField>
-        </Field>
-        <Field Name="DutyStationCode">
-          <DataField>DutyStationCode</DataField>
-        </Field>
-        <Field Name="DutyStationDescription">
-          <DataField>DutyStationDescription</DataField>
-        </Field>
-        <Field Name="RegionID">
-          <DataField>RegionID</DataField>
-        </Field>
-        <Field Name="DutyActiveStaffCount">
-          <DataField>DutyActiveStaffCount</DataField>
-        </Field>
-      </Fields>
-    </DataSet>
-  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -152,7 +19,7 @@
             <Value>=Fields!Picture.Value</Value>
             <MIMEType>image/png</MIMEType>
             <Top>0.1in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.6in</Height>
             <Width>0.6in</Width>
             <Style>
@@ -179,7 +46,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>0.1in</Top>
-            <Left>0.8in</Left>
+            <Left>1.03264in</Left>
             <Height>0.4in</Height>
             <Width>5.5in</Width>
             <ZIndex>1</ZIndex>
@@ -201,7 +68,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>0.5in</Top>
-            <Left>0.8in</Left>
+            <Left>1.03264in</Left>
             <Height>0.3in</Height>
             <Width>5.5in</Width>
             <ZIndex>2</ZIndex>
@@ -223,7 +90,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>0.8in</Top>
-            <Left>0.8in</Left>
+            <Left>1.03264in</Left>
             <Height>0.2in</Height>
             <Width>5.5in</Width>
             <ZIndex>3</ZIndex>
@@ -231,7 +98,7 @@
           </Textbox>
           <Line Name="HeaderLine">
             <Top>1.05in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.02in</Height>
             <Width>6.3in</Width>
             <ZIndex>4</ZIndex>
@@ -261,7 +128,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>1.15in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.5in</Height>
             <Width>6.3in</Width>
             <ZIndex>5</ZIndex>
@@ -284,7 +151,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>1.7in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
             <ZIndex>6</ZIndex>
@@ -311,7 +178,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>2.1in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
             <ZIndex>7</ZIndex>
@@ -595,7 +462,7 @@
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
             <Top>2.4in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>1.05in</Height>
             <Width>6.3in</Width>
             <ZIndex>8</ZIndex>
@@ -628,7 +495,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>3.7in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
             <ZIndex>9</ZIndex>
@@ -911,7 +778,7 @@
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
             <Top>4in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>1.05in</Height>
             <Width>6.3in</Width>
             <ZIndex>10</ZIndex>
@@ -944,7 +811,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>5.1in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
             <ZIndex>11</ZIndex>
@@ -1297,7 +1164,7 @@
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
             <Top>5.4in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.45in</Height>
             <Width>6.3in</Width>
             <ZIndex>12</ZIndex>
@@ -1330,7 +1197,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>8in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
             <ZIndex>13</ZIndex>
@@ -1364,7 +1231,7 @@
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="PosHeader1">
+                        <Textbox Name="PosHeader7">
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
@@ -1683,7 +1550,7 @@
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
             <Top>8.3in</Top>
-            <Left>0.1in</Left>
+            <Left>0.33264in</Left>
             <Height>0.45in</Height>
             <Width>6.3in</Width>
             <ZIndex>14</ZIndex>
@@ -1695,11 +1562,688 @@
               </Border>
             </Style>
           </Tablix>
+          <Textbox Name="SectionCTitle2">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>SECTION D: Terms of Service</Value>
+                    <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
+                      <FontSize>12pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <Color>#1a3c6e</Color>
+                      <PaddingLeft>4pt</PaddingLeft>
+                      <PaddingTop>2pt</PaddingTop>
+                      <PaddingBottom>2pt</PaddingBottom>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>9.225in</Top>
+            <Left>0.33264in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>15</ZIndex>
+            <Style />
+          </Textbox>
+          <Tablix Name="PositionTable2">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.2in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.7in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosHeader8">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CODE</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosHeader9">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>DESCRIPTION</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosHeader10">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>EMPLOYMENT TYPE</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosHeader11">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>MIN AGE (YEARS)</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosHeader12">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>MAX AGE (YEARS)</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosHeader13">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>ACTIVE STAFF COUNT</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.2in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosID2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TermsCode.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosTitle2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TermsDescription.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <PaddingLeft>2pt</PaddingLeft>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosGroup2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!EmploymentType.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosJG2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!MinAge.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosDept2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!MaxAge.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <PaddingLeft>2pt</PaddingLeft>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PosStaff2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TermsActiveStaffCount.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>9.53889in</Top>
+            <Left>0.33264in</Left>
+            <Height>0.45in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>16</ZIndex>
+            <Style>
+              <Border>
+                <Color>#cccccc</Color>
+                <Style>Solid</Style>
+                <Width>0.5pt</Width>
+              </Border>
+            </Style>
+          </Tablix>
+          <Textbox Name="SectionCTitle4">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>SECTION E: Duty Stations</Value>
+                    <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
+                      <FontSize>12pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <Color>#1a3c6e</Color>
+                      <PaddingLeft>4pt</PaddingLeft>
+                      <PaddingTop>2pt</PaddingTop>
+                      <PaddingBottom>2pt</PaddingBottom>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>10.23889in</Top>
+            <Left>0.33264in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>17</ZIndex>
+            <Style />
+          </Textbox>
+          <Tablix Name="JobGradeTable2">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>1in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.4in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.56944in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.33056in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGHeader7">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CODE</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGHeader8">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>DESCRIPTION</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGHeader9">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>REGION ID</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGHeader12">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>ACTIVE STAFF COUNT</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.2in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGID2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!DutyStationCode.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGDesc2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!DutyStationDescription.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <PaddingLeft>2pt</PaddingLeft>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGAuthority2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!RegionID.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="JGStaff2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!DutyActiveStaffCount.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style />
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>10.55in</Top>
+            <Left>0.33264in</Left>
+            <Height>0.45in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>18</ZIndex>
+            <Style>
+              <Border>
+                <Color>#cccccc</Color>
+                <Style>Solid</Style>
+                <Width>0.5pt</Width>
+              </Border>
+            </Style>
+          </Tablix>
+          <Rectangle Name="PageBreakToPage3">
+            <PageBreak>
+              <BreakLocation>Start</BreakLocation>
+            </PageBreak>
+            <Top>7.66167in</Top>
+            <Left>0.12847in</Left>
+            <Height>0.01in</Height>
+            <Width>6.96528in</Width>
+            <ZIndex>19</ZIndex>
+            <Style />
+          </Rectangle>
         </ReportItems>
         <Height>11in</Height>
         <Style />
       </Body>
-      <Width>6.5in</Width>
+      <Width>7.09375in</Width>
       <Page>
         <PageFooter>
           <Height>1in</Height>
@@ -1722,7 +2266,7 @@
                 </Paragraph>
               </Paragraphs>
               <Top>0.04167in</Top>
-              <Left>0in</Left>
+              <Left>0.23264in</Left>
               <Height>0.2in</Height>
               <Width>6.3in</Width>
               <Style />
@@ -1745,14 +2289,141 @@
       </Page>
     </ReportSection>
   </ReportSections>
-  <ReportParametersLayout>
-    <GridLayoutDefinition>
-      <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
-    </GridLayoutDefinition>
-  </ReportParametersLayout>
   <Language>=User!Language</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="CompanyName">
+          <DataField>CompanyName</DataField>
+        </Field>
+        <Field Name="CompanyName2">
+          <DataField>CompanyName2</DataField>
+        </Field>
+        <Field Name="Address">
+          <DataField>Address</DataField>
+        </Field>
+        <Field Name="Address2">
+          <DataField>Address2</DataField>
+        </Field>
+        <Field Name="City">
+          <DataField>City</DataField>
+        </Field>
+        <Field Name="PostCode">
+          <DataField>PostCode</DataField>
+        </Field>
+        <Field Name="County">
+          <DataField>County</DataField>
+        </Field>
+        <Field Name="CountryRegionCode">
+          <DataField>CountryRegionCode</DataField>
+        </Field>
+        <Field Name="PhoneNo">
+          <DataField>PhoneNo</DataField>
+        </Field>
+        <Field Name="FaxNo">
+          <DataField>FaxNo</DataField>
+        </Field>
+        <Field Name="Email">
+          <DataField>Email</DataField>
+        </Field>
+        <Field Name="HomePage">
+          <DataField>HomePage</DataField>
+        </Field>
+        <Field Name="RegistrationNo">
+          <DataField>RegistrationNo</DataField>
+        </Field>
+        <Field Name="VATRegistrationNo">
+          <DataField>VATRegistrationNo</DataField>
+        </Field>
+        <Field Name="Picture">
+          <DataField>Picture</DataField>
+        </Field>
+        <Field Name="CompActiveStaffCount">
+          <DataField>CompActiveStaffCount</DataField>
+        </Field>
+        <Field Name="CompEstablishedPositions">
+          <DataField>CompEstablishedPositions</DataField>
+        </Field>
+        <Field Name="CompTotalJobGrades">
+          <DataField>CompTotalJobGrades</DataField>
+        </Field>
+        <Field Name="CompApprovedDutyStations">
+          <DataField>CompApprovedDutyStations</DataField>
+        </Field>
+        <Field Name="JobGradeID">
+          <DataField>JobGradeID</DataField>
+        </Field>
+        <Field Name="JobGradeDescription">
+          <DataField>JobGradeDescription</DataField>
+        </Field>
+        <Field Name="OverallAppointmentAuthority">
+          <DataField>OverallAppointmentAuthority</DataField>
+        </Field>
+        <Field Name="DefaultSeniorityLevel">
+          <DataField>DefaultSeniorityLevel</DataField>
+        </Field>
+        <Field Name="NoOfValidPositions">
+          <DataField>NoOfValidPositions</DataField>
+        </Field>
+        <Field Name="JobGradeActiveStaffCount">
+          <DataField>JobGradeActiveStaffCount</DataField>
+        </Field>
+        <Field Name="PositionID">
+          <DataField>PositionID</DataField>
+        </Field>
+        <Field Name="JobTitle">
+          <DataField>JobTitle</DataField>
+        </Field>
+        <Field Name="DesignationGroup">
+          <DataField>DesignationGroup</DataField>
+        </Field>
+        <Field Name="PosJobGradeID">
+          <DataField>PosJobGradeID</DataField>
+        </Field>
+        <Field Name="Department">
+          <DataField>Department</DataField>
+        </Field>
+        <Field Name="PositionActiveStaffCount">
+          <DataField>PositionActiveStaffCount</DataField>
+        </Field>
+        <Field Name="TermsCode">
+          <DataField>TermsCode</DataField>
+        </Field>
+        <Field Name="TermsDescription">
+          <DataField>TermsDescription</DataField>
+        </Field>
+        <Field Name="EmploymentType">
+          <DataField>EmploymentType</DataField>
+        </Field>
+        <Field Name="MinAge">
+          <DataField>MinAge</DataField>
+        </Field>
+        <Field Name="MaxAge">
+          <DataField>MaxAge</DataField>
+        </Field>
+        <Field Name="TermsActiveStaffCount">
+          <DataField>TermsActiveStaffCount</DataField>
+        </Field>
+        <Field Name="DutyStationCode">
+          <DataField>DutyStationCode</DataField>
+        </Field>
+        <Field Name="DutyStationDescription">
+          <DataField>DutyStationDescription</DataField>
+        </Field>
+        <Field Name="RegionID">
+          <DataField>RegionID</DataField>
+        </Field>
+        <Field Name="DutyActiveStaffCount">
+          <DataField>DutyActiveStaffCount</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
 </Report>
