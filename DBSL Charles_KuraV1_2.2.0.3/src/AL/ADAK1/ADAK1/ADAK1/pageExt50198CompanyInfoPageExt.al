@@ -14,19 +14,19 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
     
     actions
     {
-        
         addlast(processing)
         {
+           
             group("Employer Profile")
             {
                 Caption = 'Employer Profile';
-                Image = Document; 
+                Image = Document;
 
                 action("Core Values")
                 {
                     ApplicationArea = All;
                     Caption = 'Core Values';
-                    Image = Walton; 
+                    Image = Walton;
                     RunObject = Page "Core Values";
                     ToolTip = 'View the core values of the organization.';
                 }
@@ -34,7 +34,7 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
                 {
                     ApplicationArea = All;
                     Caption = 'Departments';
-                    Image = ServiceDepartment; 
+                    Image = ServiceDepartment;
                     RunObject = Page "Responsibility Center List";
                     ToolTip = 'View the departments and responsibility centers.';
                 }
@@ -42,7 +42,7 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
                 {
                     ApplicationArea = All;
                     Caption = 'Job Grades';
-                    Image = CostAccountingSetup; 
+                    Image = CostAccountingSetup;
                     RunObject = Page "Job Grades";
                     ToolTip = 'View the job grading structure.';
                 }
@@ -50,7 +50,7 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
                 {
                     ApplicationArea = All;
                     Caption = 'Positions';
-                    Image = Job; 
+                    Image = Job;
                     RunObject = Page "Positions";
                     ToolTip = 'View all established positions.';
                 }
@@ -58,7 +58,7 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
                 {
                     ApplicationArea = All;
                     Caption = 'Duty Stations';
-                    Image = Allocations; 
+                    Image = Allocations;
                     RunObject = Page "Duty Station";
                     ToolTip = 'View all duty stations.';
                 }
@@ -66,7 +66,7 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
                 {
                     ApplicationArea = All;
                     Caption = 'Terms of Service';
-                    Image = Certificate; 
+                    Image = Certificate;
                     RunObject = Page "Terms of Service";
                     ToolTip = 'View all terms of service.';
                 }
@@ -74,7 +74,7 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
                 {
                     ApplicationArea = All;
                     Caption = 'Work Shifts';
-                    Image = WorkCenter; 
+                    Image = WorkCenter;
                     RunObject = Page "Employee Work Shift";
                     ToolTip = 'View all work shifts.';
                 }
@@ -83,11 +83,23 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
                     ApplicationArea = All;
                     Caption = 'Employer Profile';
                     Image = Report;
-                    
                     RunObject = report "Employer Profile Reports";
                     ToolTip = 'View the Employer Profile & Establishment Report.';
                 }
             }
+        }
+
+       
+        addlast(Promoted)
+        {
+            actionref("Core Values_Promoted"; "Core Values") {}
+            actionref("Departments_Promoted"; "Departments") {}
+            actionref("Job Grades_Promoted"; "Job Grades") {}
+            actionref("Positions_Promoted"; "Positions") {}
+            actionref("Duty Stations_Promoted"; "Duty Stations") {}
+            actionref("Terms of Service_Promoted"; "Terms of Service") {}
+            actionref("Work Shifts_Promoted"; "Work Shifts") {}
+            actionref("Employer Profile Report_Promoted"; "Employer Profile Report") {}
         }
     }
 }
