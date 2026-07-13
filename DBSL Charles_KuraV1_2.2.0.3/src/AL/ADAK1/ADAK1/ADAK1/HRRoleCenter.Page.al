@@ -1010,1049 +1010,1053 @@ page 60002 "HR Role Center"
             }
 
             //  PILLAR 3: RETENTION (M3, M4, M5) 
+ //  PILLAR 3: RETENTION
             group("Retention")
             {
                 Caption = 'Retention';
 
-                // M4: Workforce Operations 
-                group("Employee Management")
+                //  M3: TALENT GROWTH 
+                group("M3: Talent Growth")
                 {
-                    Caption = 'Employee Management';
-                    action("Employees12")
+                    Caption = 'M3: Talent Growth';
+
+                    group("Training Management")
                     {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employees';
-                        RunObject = page "Employee List-HR";
-                        ToolTip = 'Executes the Employees action.';
+                        Caption = 'Training Management';
+                        group("Training Setup")
+                        {
+                            Caption = 'Training Setup';
+                            action("Training Providers")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Providers';
+                                RunObject = page 69314;
+                                ToolTip = 'Executes the Training Providers action.';
+                            }
+                            action("Training Goal")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Goal';
+                                RunObject = page 69304;
+                                ToolTip = 'Executes the Training Goal action.';
+                            }
+                            action("Training Domains")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Domains';
+                                RunObject = page "Training Domains";
+                                ToolTip = 'Executes the Training Domains action.';
+                            }
+                            action("Training Courses")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Courses';
+                                RunObject = page "Training Courses Setup";
+                                ToolTip = 'Executes the Training Courses action.';
+                            }
+                            action("Rating Category setup")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Feedback Rating Category';
+                                RunObject = page "Rating Category Setup";
+                                ToolTip = 'Executes the Feedback Rating Category action.';
+                            }
+                            action("Competency Performance Template")
+                            {
+                                ApplicationArea = Basic;
+                                RunObject = Page 80108;
+                                ToolTip = 'Executes the Competency Performance Template action.';
+                            }
+                            action(RatingScales)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Rating Scales';
+                                RunObject = page "Rating Scales";
+                                ToolTip = 'Executes the Rating Scales action.';
+                            }
+                            action(CategoryRatingScale)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Category Rating Scale';
+                                RunObject = page "Category Rating Scale";
+                                ToolTip = 'Executes the Category Rating Scale action.';
+                            }
+                            action(TrainingNeedCategories)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Need Categories';
+                                RunObject = page "Training Need Categories";
+                                ToolTip = 'Executes the Training Need Categories action.';
+                            }
+                        }
+                        group("Training Needs Register")
+                        {
+                            caption = 'Training Needs Register';
+                            action(TrainingNeeds)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Needs Assessment';
+                                RunObject = page 69309;
+                                Visible = false;
+                                ToolTip = 'Executes the Training Needs Assessment action.';
+                            }
+                            action("Training Needs Requisition")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Needs Assessment Req.';
+                                RunObject = page "Training Need Requests";
+                                ToolTip = 'Executes the Training Needs Requisition action.';
+                            }
+                            action("Approved Training Needs Requisition")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Approved Training Needs Assessment Req.';
+                                RunObject = page "Approved Training Need Request";
+                                ToolTip = 'Executes the Approved Training Needs Requisition action.';
+                            }
+                            action("Submitted Training Needs")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Submitted Training Needs Assessment Req.';
+                                RunObject = page 50151;
+                                ToolTip = 'Executes the Submitted Training Needs Assessment Req. action.';
+                            }
+                        }
+                        group("Training Planning")
+                        {
+                            Caption = 'Training Planning';
+                            action(TrainingPlans)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Projection';
+                                RunObject = page 69194;
+                                ToolTip = 'Executes the Training Projection action.';
+                            }
+                            action(PendingTrainingPlans)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Pending Training Projection';
+                                RunObject = page "Pending Training Plans";
+                                ToolTip = 'Executes the Pending Training Projection action.';
+                            }
+                            action(ApprovedTrainingPlans)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Approved Training Projection';
+                                RunObject = page 69199;
+                                ToolTip = 'Executes the Approved Training Projection action.';
+                            }
+                        }
+                        group("Training Application")
+                        {
+                            caption = 'Training Applications';
+                            action(TrainingApplicationList)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Application List';
+                                RunObject = page 69220;
+                                ToolTip = 'Executes the Training Application List action.';
+                            }
+                            action(ApprovedTrainingApplicationList)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Approved Training Applications';
+                                RunObject = page 69280;
+                                ToolTip = 'Executes the Approved Training Applications action.';
+                            }
+                            action(ProcessedTrainingApplicationList)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Closed Training Applications';
+                                RunObject = page 69282;
+                                ToolTip = 'Executes the Closed Training Applications action.';
+                            }
+                        }
+                        group("Reports")
+                        {
+                            caption = 'Reports';
+                            action("TNA - Analysis Report")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'TNA - Analysis Report';
+                                RunObject = Report 50025;
+                            }
+                            action("TNA - Per FY")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'TNA Per Employee';
+                                RunObject = Report 50132;
+                            }
+                            action(AnnualTrainingPlans)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Annual Training Plans';
+                                ToolTip = 'Executes the Annual Training Plans action.';
+                                // RunObject = report 69145;
+                            }
+                            action(TotalsTrainingsPerEmployee)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Totals Trainings Per Employee';
+                                ToolTip = 'Executes the Totals Trainings Per Employee action.';
+                                // RunObject = report 69111;
+                            }
+                            action(DepartmentalTraining)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Departmental Trainings';
+                                ToolTip = 'Executes the Departmental Trainings action.';
+                                // RunObject = report 69112;
+                            }
+                            action(AnnualTrainingPlansStatistics)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Annual Training Plans Statistics';
+                                ToolTip = 'Executes the Annual Training Plans Statistics action.';
+                                // RunObject = report 69114;
+                            }
+                        }
                     }
-                    action("Employee List-Casual")
+
+                    group("Group2")
                     {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employee List-Casual';
-                        RunObject = page "Employee List-Casual";
-                        ToolTip = 'Executes the Employee List-Casual action.';
-                    }
-                    action("Employee List-Temporary")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employee List-Temporary';
-                        RunObject = page "Temporary Employees List";
-                        ToolTip = 'Executes the Employee List-Temporary action.';
-                    }
-                    action("Hardship Allowance Setup")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Hardship Allowance Setup';
-                        RunObject = page "Hardship Allowance Setup";
-                        ToolTip = 'Executes the Hardship Allowance Setup action.';
-                    }
-                    action("Employee Transfers History")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employee Transfers History';
-                        RunObject = page "Employee Transfers History";
-                        ToolTip = 'Executes the Employee Transfers History action.';
-                    }
-                    group("Reports2")
-                    {
-                        Caption = 'Reports and Analysis';
-                        action("Employee List Per Region/Towns")
+                        Caption = 'Setup';
+                        action("Human Resources Setup")
                         {
                             ApplicationArea = BasicHR;
-                            Caption = 'Employee List Per Region/Towns';
+                            Caption = 'Human Resources Setup';
+                            RunObject = page "Human Resources Setup";
+                            ToolTip = 'Executes the Human Resources Setup action.';
+                        }
+                        action("Human Resources Units of Measu")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Human Resources Units of Measure';
+                            RunObject = page "Human Res. Units of Measure";
+                            ToolTip = 'Executes the Human Resources Units of Measure action.';
+                        }
+                        action("Causes of Inactivity")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Causes of Inactivity';
+                            RunObject = page "Causes of Inactivity";
+                            ToolTip = 'Executes the Causes of Inactivity action.';
+                        }
+                        action("Grounds for Termination")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Grounds for Termination';
+                            RunObject = page "Grounds for Termination";
+                            ToolTip = 'Executes the Grounds for Termination action.';
+                        }
+                        action("Unions")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Unions';
+                            RunObject = page "Unions";
+                            ToolTip = 'Executes the Unions action.';
+                        }
+                        action("Employment Contracts")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employment Contracts';
+                            RunObject = page "Employment Contracts";
+                            ToolTip = 'Executes the Employment Contracts action.';
+                        }
+                        action("Relatives")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Relatives';
+                            RunObject = page "Relatives";
+                            ToolTip = 'Executes the Relatives action.';
+                        }
+                        action("Misc. Articles")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employee Misc. Articles';
+                            RunObject = page "Misc. Articles";
+                            ToolTip = 'Executes the Employee Misc. Articles action.';
+                        }
+                        action("Confidential")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Confidential';
+                            RunObject = page "Confidential";
+                            ToolTip = 'Executes the Confidential action.';
+                        }
+                        action("Qualifications")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Qualifications';
+                            RunObject = page "Qualifications";
+                            ToolTip = 'Executes the Qualifications action.';
+                        }
+                        action("Employee Statistics Groups")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employee Statistics Groups';
+                            RunObject = page "Employee Statistics Groups";
+                            ToolTip = 'Executes the Employee Statistics Groups action.';
+                        }
+                    }
+                }
+
+                //  M4: WORKFORCE OPERATIONS 
+                group("M4: Workforce Operations")
+                {
+                    Caption = 'M4: Workforce Operations';
+
+                    group("Employee Management")
+                    {
+                        Caption = 'Employee Management';
+                        action("Employees12")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employees';
+                            RunObject = page "Employee List-HR";
+                            ToolTip = 'Executes the Employees action.';
+                        }
+                        action("Employee List-Casual")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employee List-Casual';
+                            RunObject = page "Employee List-Casual";
+                            ToolTip = 'Executes the Employee List-Casual action.';
+                        }
+                        action("Employee List-Temporary")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employee List-Temporary';
+                            RunObject = page "Temporary Employees List";
+                            ToolTip = 'Executes the Employee List-Temporary action.';
+                        }
+                        action("Hardship Allowance Setup")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Hardship Allowance Setup';
+                            RunObject = page "Hardship Allowance Setup";
+                            ToolTip = 'Executes the Hardship Allowance Setup action.';
+                        }
+                        action("Employee Transfers History")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employee Transfers History';
+                            RunObject = page "Employee Transfers History";
+                            ToolTip = 'Executes the Employee Transfers History action.';
+                        }
+                        // Staff Exits and Staff Clearance Setup removed - moved to Offboarding
+                        group("Reports2")
+                        {
+                            Caption = 'Reports and Analysis';
+                            action("Employee List Per Region/Towns")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee List Per Region/Towns';
+                                RunObject = page "Employee List";
+                                ToolTip = 'Executes the Employee List Per Region/Towns action.';
+                            }
+                            action("Employee - Absences by Causes1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Absences by Causes';
+                                ToolTip = 'Executes the Employee Absences by Causes action.';
+                                //   RunObject = report "Employee - Absences by Causes";
+                            }
+                            action("Employee - Addresses1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Addresses';
+                                RunObject = report "Employee - Addresses";
+                                ToolTip = 'Executes the Employee Addresses action.';
+                            }
+                            action("Employee - Alt. Addresses1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Alt. Addresses';
+                                RunObject = report "Employee - Alt. Addresses";
+                                ToolTip = 'Executes the Employee Alt. Addresses action.';
+                            }
+                            action("Employee - Birthdays1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Birthdays';
+                                RunObject = report "Employee - Birthdays";
+                                ToolTip = 'Executes the Employee Birthdays action.';
+                            }
+                            action("Employee - Confidential Info.1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Confidential Info.';
+                                RunObject = report "Employee - Confidential Info.";
+                                ToolTip = 'Executes the Employee Confidential Info. action.';
+                            }
+                            action("Employee - Contracts1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Contracts';
+                                RunObject = report "Employee - Contracts";
+                                ToolTip = 'Executes the Employee Contracts action.';
+                            }
+                            action("Employee - Labels1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Labels';
+                                RunObject = report "Employee - Labels";
+                                ToolTip = 'Executes the Employee Labels action.';
+                            }
+                            action("Employee - List1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee List';
+                                RunObject = report "Employee - List";
+                                ToolTip = 'Executes the Employee List action.';
+                            }
+                            action("Employee - Misc. Article Info.1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Misc. Article Info.';
+                                RunObject = report "Employee - Misc. Article Info.";
+                                ToolTip = 'Executes the Employee Misc. Article Info. action.';
+                            }
+                            action("Employee - Qualifications1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Qualifications';
+                                RunObject = report "Employee - Qualifications";
+                                ToolTip = 'Executes the Employee Qualifications action.';
+                            }
+                            action("Employee - Relatives1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Relatives';
+                                RunObject = report "Employee - Relatives";
+                                ToolTip = 'Executes the Employee Relatives action.';
+                            }
+                            action("Employee - Staff Absences1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Staff Absences';
+                                ToolTip = 'Executes the Staff Absences action.';
+                                // RunObject = report "Employee - Staff Absences";
+                            }
+                            action("Employee - Unions1")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Unions';
+                                RunObject = report "Employee - Unions";
+                                ToolTip = 'Executes the Employee Unions action.';
+                            }
+                        }
+                    }
+                    group("Leave Management")
+                    {
+                        Caption = 'Leave Management';
+                        group("Setup")
+                        {
+                            action("HR Leave Periods")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'HR Leave Periods';
+                                RunObject = page "HR Leave Periods";
+                                ToolTip = 'Executes the HR Leave Periods action.';
+                            }
+                            action("Base Leave Calender")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Base Leave Calender';
+                                RunObject = page "Base Calendar Card";
+                                ToolTip = 'Executes the Base Leave Calender action.';
+                            }
+                            action("HR Leave Types")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'HR Leave Types';
+                                RunObject = page "HR Leave Types";
+                                ToolTip = 'Executes the HR Leave Types action.';
+                            }
+                            action("Leave Adjustment")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Leave Adjustment';
+                                RunObject = page "HR Leave Adjustment";
+                                ToolTip = 'Executes the Leave Adjustment action.';
+                            }
+                            action("Leave Batches")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Leave Batches';
+                                RunObject = page "HR Leave Batches";
+                                ToolTip = 'Executes the Leave Batches action.';
+                            }
+                        }
+                        group("Leave Management List")
+                        {
+                            action("Leave Application")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Leave Applications';
+                                RunObject = page "Leave Applications List";
+                                ToolTip = 'Executes the Leave Applications action.';
+                            }
+                            action("Leave Planner List")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Leave Planner List';
+                                RunObject = page "Leave Planner List";
+                                ToolTip = 'Executes the Leave Planner List action.';
+                            }
+                            action("Employee Leave Balances")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Leave Balances';
+                                RunObject = page "Employee Leave Balances";
+                                ToolTip = 'Executes the Employee Leave Balances action.';
+                            }
+                            action("Approved Leave Applications")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Approved Leave Applications';
+                                RunObject = page "Approved Leave Applications";
+                                ToolTip = 'Executes the Approved Leave Applications action.';
+                            }
+                            action("Posted Leave Applications")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Posted Leave Applications';
+                                RunObject = page "Posted Leave Applications..";
+                                ToolTip = 'Executes the Posted Leave Applications action.';
+                            }
+                            action("Leave Recall Application")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Leave Recall Applications';
+                                RunObject = page "Leave Application Recall";
+                                ToolTip = 'Executes the Leave Recall Applications action.';
+                            }
+                            action("Additional Leave Days Memos")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Additional Leave Days Memos';
+                                RunObject = page "Additional Leave Days Memos";
+                                ToolTip = 'Executes the Additional Leave Days Memos action.';
+                            }
+                            action("Approved Additional Leave Days Memos")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Approved Additional Leave Days Memos';
+                                RunObject = page "App. Add. Leave Days Memos";
+                                ToolTip = 'Executes the Approved Additional Leave Days Memos action.';
+                            }
+                            action("Posted Additional Leave Days Memos")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Posted Additional Leave Days Memos';
+                                RunObject = page "Posted Add. Leave Days Memos";
+                                ToolTip = 'Executes the Posted Additional Leave Days Memos action.';
+                            }
+                        }
+                        group("Leave Recall")
+                        {
+                            Visible = false;
+                            action("Leave Recalls")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Leave Recalls';
+                                RunObject = page "Leave Application Recall";
+                                ToolTip = 'Executes the Leave Recalls action.';
+                            }
+                        }
+                        group("Reports999999")
+                        {
+                            Caption = 'Reports';
+                            action("Employee Leave Approval ")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Leave Approval Report';
+                                RunObject = Report "Leave Approval Report";
+                                ToolTip = 'Executes the Employee Leave Approval Report action.';
+                            }
+                            action("Employee Leave Balance")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Leave Balances';
+                                RunObject = Report "HR Leave Balance";
+                                ToolTip = 'Executes the Employee Leave Balances action.';
+                            }
+                            action("Employee Leave Allowance Payment Status")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Leave Allowance Payment Status';
+                                RunObject = Report "HR Leave Allowance Status";
+                                ToolTip = 'Executes the Employee Leave Allowance Payment Status action.';
+                            }
+                        }
+                    }
+                    group("Welfare Management")
+                    {
+                        Caption = 'Welfare Management';
+                        Image = HumanResources;
+                        action("Request Welfare Membership")
+                        {
+                            ApplicationArea = Basic;
+                            Caption = 'Request Welfare Membership';
+                            Image = Employee;
+                            RunObject = Page "Requests Welfare Membership";
+                            ToolTip = 'Executes the Request Welfare Membership action.';
+                        }
+                        action("Welfare Members List")
+                        {
+                            ApplicationArea = Basic;
+                            Caption = 'Welfare Members List';
+                            Image = Employee;
+                            RunObject = Page "Welfare Members List";
+                            ToolTip = 'Executes the Welfare Members List action.';
+                        }
+                        action("Request Welfare benefit")
+                        {
+                            ApplicationArea = Basic;
+                            Caption = 'Request Welfare benefit';
+                            Image = Employee;
+                            RunObject = Page "Requests Welfare Benefit";
+                            ToolTip = 'Executes the Request Welfare benefit action.';
+                        }
+                        action("Welfare Contributions")
+                        {
+                            ApplicationArea = Basic;
+                            Caption = 'Welfare Contributions';
+                            Image = Employee;
+                            RunObject = Page "Welfare Contributions";
+                            ToolTip = 'Executes the Welfare Contributions action.';
+                        }
+                    }
+                    group("Discplinary Case Management")
+                    {
+                        Caption = 'Discplinary Case Management';
+                        action("Employee Discplinary List")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employee Discplinary List';
+                            RunObject = page "Hr New Discplinary List";
+                            ToolTip = 'Executes the Employee Discplinary List action.';
+                        }
+                        action("Discplinary Files List")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Discplinary Files List';
+                            RunObject = page "Hr Discplinary List";
+                            ToolTip = 'Executes the Discplinary Files List action.';
+                        }
+                        action("Disciplinary Committee")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Disciplinary Committee';
+                            RunObject = page "Disciplinary Committee";
+                            ToolTip = 'Executes the Disciplinary Committee action.';
+                        }
+                        action("Disciplinary Deduction Setup")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Disciplinary Deduction Setup';
+                            RunObject = page "Disciplinary Status";
+                            ToolTip = 'Executes the Disciplinary Deduction Setup action.';
+                            visible = false;
+                        }
+                        group("Reports2323")
+                        {
+                            Caption = 'Reports';
+                            action("Disciplinary Cases Report")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Disciplinary Cases Report';
+                                ToolTip = 'Executes the Disciplinary Cases Report action.';
+                                RunObject = report "HR Cases Report";
+                            }
+                            action("Disciplinary Cases Report per Employee")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Disciplinary Cases Report per Employee';
+                                ToolTip = 'Executes the Disciplinary Cases Report per Employee action.';
+                                RunObject = Report "Disciplinary Cases per Employe";
+                            }
+                            action("Disciplinary Cases Report per Year")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Disciplinary Cases Report per Year';
+                                ToolTip = 'Executes the Disciplinary Cases Report per Dept action.';
+                                RunObject = Report "Disciplinary Per Year";
+                            }
+                        }
+                    }
+                    group("Overtime Management")
+                    {
+                        Caption = 'Overtime Management';
+                        action("Overtime List")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Overtime List';
+                            RunObject = page "Overtime List";
+                            ToolTip = 'Executes the Overtime List action.';
+                        }
+                        action("Approved Overtime")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Approved Overtime';
+                            RunObject = page "Approved Overtime List";
+                            ToolTip = 'Executes the Approved Overtime action.';
+                        }
+                        action("Overtime Report")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Overtime Report';
+                            ToolTip = 'Executes the Overtime Report action.';
+                            //  RunObject = report "Overtime Report";
+                        }
+                        action("Overtime Types")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Overtime Types';
+                            RunObject = page "Overtime Types";
+                            ToolTip = 'Executes the Overtime Types action.';
+                        }
+                    }
+                    group("Absence Registration")
+                    {
+                        Caption = 'Absence Registration';
+                        Visible = false;
+                        action("Causes of Absence")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Causes of Absence';
+                            RunObject = page "Causes of Absence";
+                            ToolTip = 'Executes the Causes of Absence action.';
+                        }
+                        action("Absence Registration12")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Absence Registration';
+                            RunObject = page "Absence Registration";
+                            ToolTip = 'Executes the Absence Registration action.';
+                        }
+                        action("Staff Absences")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Staff Absences';
+                            RunObject = report "Employee - Staff Absences";
+                            ToolTip = 'Executes the Staff Absences action.';
+                        }
+                        action("Employee Absences by Causes")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employee Absences by Causes';
+                            RunObject = report "Employee - Absences by Causes";
+                            ToolTip = 'Executes the Employee Absences by Causes action.';
+                        }
+                    }
+                    group("Group")
+                    {
+                        Caption = 'Employees';
+                        action("Employees")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Employees';
                             RunObject = page "Employee List";
-                            ToolTip = 'Executes the Employee List Per Region/Towns action.';
+                            ToolTip = 'Executes the Employees action.';
                         }
-                        action("Employee - Absences by Causes1")
+                        action("Absence Registration1")
                         {
                             ApplicationArea = BasicHR;
-                            Caption = 'Employee Absences by Causes';
-                            ToolTip = 'Executes the Employee Absences by Causes action.';
-                            //   RunObject = report "Employee - Absences by Causes";
-                        }
-                        action("Employee - Addresses1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Addresses';
-                            RunObject = report "Employee - Addresses";
-                            ToolTip = 'Executes the Employee Addresses action.';
-                        }
-                        action("Employee - Alt. Addresses1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Alt. Addresses';
-                            RunObject = report "Employee - Alt. Addresses";
-                            ToolTip = 'Executes the Employee Alt. Addresses action.';
-                        }
-                        action("Employee - Birthdays1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Birthdays';
-                            RunObject = report "Employee - Birthdays";
-                            ToolTip = 'Executes the Employee Birthdays action.';
-                        }
-                        action("Employee - Confidential Info.1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Confidential Info.';
-                            RunObject = report "Employee - Confidential Info.";
-                            ToolTip = 'Executes the Employee Confidential Info. action.';
-                        }
-                        action("Employee - Contracts1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Contracts';
-                            RunObject = report "Employee - Contracts";
-                            ToolTip = 'Executes the Employee Contracts action.';
-                        }
-                        action("Employee - Labels1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Labels';
-                            RunObject = report "Employee - Labels";
-                            ToolTip = 'Executes the Employee Labels action.';
-                        }
-                        action("Employee - List1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee List';
-                            RunObject = report "Employee - List";
-                            ToolTip = 'Executes the Employee List action.';
-                        }
-                        action("Employee - Misc. Article Info.1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Misc. Article Info.';
-                            RunObject = report "Employee - Misc. Article Info.";
-                            ToolTip = 'Executes the Employee Misc. Article Info. action.';
-                        }
-                        action("Employee - Qualifications1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Qualifications';
-                            RunObject = report "Employee - Qualifications";
-                            ToolTip = 'Executes the Employee Qualifications action.';
-                        }
-                        action("Employee - Relatives1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Relatives';
-                            RunObject = report "Employee - Relatives";
-                            ToolTip = 'Executes the Employee Relatives action.';
-                        }
-                        action("Employee - Staff Absences1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Staff Absences';
-                            ToolTip = 'Executes the Staff Absences action.';
-                            // RunObject = report "Employee - Staff Absences";
-                        }
-                        action("Employee - Unions1")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Unions';
-                            RunObject = report "Employee - Unions";
-                            ToolTip = 'Executes the Employee Unions action.';
-                        }
-                    }
-                }
-
-                //  M4: Workforce Operations (continued) 
-                group("Leave Management")
-                {
-                    Caption = 'Leave Management';
-                    group("Setup")
-                    {
-                        action("HR Leave Periods")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'HR Leave Periods';
-                            RunObject = page "HR Leave Periods";
-                            ToolTip = 'Executes the HR Leave Periods action.';
-                        }
-                        action("Base Leave Calender")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Base Leave Calender';
-                            RunObject = page "Base Calendar Card";
-                            ToolTip = 'Executes the Base Leave Calender action.';
-                        }
-                        action("HR Leave Types")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'HR Leave Types';
-                            RunObject = page "HR Leave Types";
-                            ToolTip = 'Executes the HR Leave Types action.';
-                        }
-                        action("Leave Adjustment")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Leave Adjustment';
-                            RunObject = page "HR Leave Adjustment";
-                            ToolTip = 'Executes the Leave Adjustment action.';
-                        }
-                        action("Leave Batches")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Leave Batches';
-                            RunObject = page "HR Leave Batches";
-                            ToolTip = 'Executes the Leave Batches action.';
-                        }
-                    }
-                    group("Leave Management List")
-                    {
-                        action("Leave Application")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Leave Applications';
-                            RunObject = page "Leave Applications List";
-                            ToolTip = 'Executes the Leave Applications action.';
-                        }
-                        action("Leave Planner List")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Leave Planner List';
-                            RunObject = page "Leave Planner List";
-                            ToolTip = 'Executes the Leave Planner List action.';
-                        }
-                        action("Employee Leave Balances")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Leave Balances';
-                            RunObject = page "Employee Leave Balances";
-                            ToolTip = 'Executes the Employee Leave Balances action.';
-                        }
-                        action("Approved Leave Applications")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Approved Leave Applications';
-                            RunObject = page "Approved Leave Applications";
-                            ToolTip = 'Executes the Approved Leave Applications action.';
-                        }
-                        action("Posted Leave Applications")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Posted Leave Applications';
-                            RunObject = page "Posted Leave Applications..";
-                            ToolTip = 'Executes the Posted Leave Applications action.';
-                        }
-                        action("Leave Recall Application")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Leave Recall Applications';
-                            RunObject = page "Leave Application Recall";
-                            ToolTip = 'Executes the Leave Recall Applications action.';
-                        }
-                        action("Additional Leave Days Memos")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Additional Leave Days Memos';
-                            RunObject = page "Additional Leave Days Memos";
-                            ToolTip = 'Executes the Additional Leave Days Memos action.';
-                        }
-                        action("Approved Additional Leave Days Memos")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Approved Additional Leave Days Memos';
-                            RunObject = page "App. Add. Leave Days Memos";
-                            ToolTip = 'Executes the Approved Additional Leave Days Memos action.';
-                        }
-                        action("Posted Additional Leave Days Memos")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Posted Additional Leave Days Memos';
-                            RunObject = page "Posted Add. Leave Days Memos";
-                            ToolTip = 'Executes the Posted Additional Leave Days Memos action.';
-                        }
-                    }
-                    group("Leave Recall")
-                    {
-                        Visible = false;
-                        action("Leave Recalls")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Leave Recalls';
-                            RunObject = page "Leave Application Recall";
-                            ToolTip = 'Executes the Leave Recalls action.';
-                        }
-                    }
-                    group("Reports999999")
-                    {
-                        Caption = 'Reports';
-                        action("Employee Leave Approval ")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Leave Approval Report';
-                            RunObject = Report "Leave Approval Report";
-                            ToolTip = 'Executes the Employee Leave Approval Report action.';
-                        }
-                        action("Employee Leave Balance")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Leave Balances';
-                            RunObject = Report "HR Leave Balance";
-                            ToolTip = 'Executes the Employee Leave Balances action.';
-                        }
-                        action("Employee Leave Allowance Payment Status")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Leave Allowance Payment Status';
-                            RunObject = Report "HR Leave Allowance Status";
-                            ToolTip = 'Executes the Employee Leave Allowance Payment Status action.';
-                        }
-                    }
-                }
-
-                //  M4: Workforce Operations (continued) 
-                group("Welfare Management")
-                {
-                    Caption = 'Welfare Management';
-                    Image = HumanResources;
-                    action("Request Welfare Membership")
-                    {
-                        ApplicationArea = Basic;
-                        Caption = 'Request Welfare Membership';
-                        Image = Employee;
-                        RunObject = Page "Requests Welfare Membership";
-                        ToolTip = 'Executes the Request Welfare Membership action.';
-                    }
-                    action("Welfare Members List")
-                    {
-                        ApplicationArea = Basic;
-                        Caption = 'Welfare Members List';
-                        Image = Employee;
-                        RunObject = Page "Welfare Members List";
-                        ToolTip = 'Executes the Welfare Members List action.';
-                    }
-                    action("Request Welfare benefit")
-                    {
-                        ApplicationArea = Basic;
-                        Caption = 'Request Welfare benefit';
-                        Image = Employee;
-                        RunObject = Page "Requests Welfare Benefit";
-                        ToolTip = 'Executes the Request Welfare benefit action.';
-                    }
-                    action("Welfare Contributions")
-                    {
-                        ApplicationArea = Basic;
-                        Caption = 'Welfare Contributions';
-                        Image = Employee;
-                        RunObject = Page "Welfare Contributions";
-                        ToolTip = 'Executes the Welfare Contributions action.';
-                    }
-                }
-
-                //  M4: Workforce Operations 
-                group("Discplinary Case Management")
-                {
-                    Caption = 'Discplinary Case Management';
-                    action("Employee Discplinary List")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employee Discplinary List';
-                        RunObject = page "Hr New Discplinary List";
-                        ToolTip = 'Executes the Employee Discplinary List action.';
-                    }
-                    action("Discplinary Files List")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Discplinary Files List';
-                        RunObject = page "Hr Discplinary List";
-                        ToolTip = 'Executes the Discplinary Files List action.';
-                    }
-                    action("Disciplinary Committee")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Disciplinary Committee';
-                        RunObject = page "Disciplinary Committee";
-                        ToolTip = 'Executes the Disciplinary Committee action.';
-                    }
-                    action("Disciplinary Deduction Setup")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Disciplinary Deduction Setup';
-                        RunObject = page "Disciplinary Status";
-                        ToolTip = 'Executes the Disciplinary Deduction Setup action.';
-                        visible = false;
-                    }
-                    group("Reports2323")
-                    {
-                        Caption = 'Reports';
-                        action("Disciplinary Cases Report")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Disciplinary Cases Report';
-                            ToolTip = 'Executes the Disciplinary Cases Report action.';
-                            RunObject = report "HR Cases Report";
-                        }
-                        action("Disciplinary Cases Report per Employee")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Disciplinary Cases Report per Employee';
-                            ToolTip = 'Executes the Disciplinary Cases Report per Employee action.';
-                            RunObject = Report "Disciplinary Cases per Employe";
-                        }
-                        action("Disciplinary Cases Report per Year")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Disciplinary Cases Report per Year';
-                            ToolTip = 'Executes the Disciplinary Cases Report per Dept action.';
-                            RunObject = Report "Disciplinary Per Year";
-                        }
-                    }
-                }
-
-                //  M4: Workforce Operations 
-                group("Overtime Management")
-                {
-                    Caption = 'Overtime Management';
-                    action("Overtime List")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Overtime List';
-                        RunObject = page "Overtime List";
-                        ToolTip = 'Executes the Overtime List action.';
-                    }
-                    action("Approved Overtime")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Approved Overtime';
-                        RunObject = page "Approved Overtime List";
-                        ToolTip = 'Executes the Approved Overtime action.';
-                    }
-                    action("Overtime Report")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Overtime Report';
-                        ToolTip = 'Executes the Overtime Report action.';
-                        //  RunObject = report "Overtime Report";
-                    }
-                    action("Overtime Types")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Overtime Types';
-                        RunObject = page "Overtime Types";
-                        ToolTip = 'Executes the Overtime Types action.';
-                    }
-                }
-
-                //  M4: Workforce Operations 
-                group("Absence Registration")
-                {
-                    Caption = 'Absence Registration';
-                    Visible = false;
-                    action("Causes of Absence")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Causes of Absence';
-                        RunObject = page "Causes of Absence";
-                        ToolTip = 'Executes the Causes of Absence action.';
-                    }
-                    action("Absence Registration12")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Absence Registration';
-                        RunObject = page "Absence Registration";
-                        ToolTip = 'Executes the Absence Registration action.';
-                    }
-                    action("Staff Absences")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Staff Absences';
-                        RunObject = report "Employee - Staff Absences";
-                        ToolTip = 'Executes the Staff Absences action.';
-                    }
-                    action("Employee Absences by Causes")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employee Absences by Causes';
-                        RunObject = report "Employee - Absences by Causes";
-                        ToolTip = 'Executes the Employee Absences by Causes action.';
-                    }
-                }
-
-                //  M4: Workforce Operations 
-                group("Group")
-                {
-                    Caption = 'Employees';
-                    action("Employees")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employees';
-                        RunObject = page "Employee List";
-                        ToolTip = 'Executes the Employees action.';
-                    }
-                    action("Absence Registration1")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Absence Registration';
-                        RunObject = page "Absence Registration";
-                        ToolTip = 'Executes the Absence Registration action.';
-                        Visible = false;
-                    }
-                    group("Group1")
-                    {
-                        Caption = 'Reports';
-                        action("Employee - Absences by Causes")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Absences by Causes';
-                            ToolTip = 'Executes the Employee Absences by Causes action.';
+                            Caption = 'Absence Registration';
+                            RunObject = page "Absence Registration";
+                            ToolTip = 'Executes the Absence Registration action.';
                             Visible = false;
-                            //   RunObject = report "Employee - Absences by Causes";
                         }
-                        action("Employee - Addresses")
+                        group("Group1")
                         {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Addresses';
-                            RunObject = report "Employee - Addresses";
-                            ToolTip = 'Executes the Employee Addresses action.';
-                        }
-                        action("Employee - Alt. Addresses")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Alt. Addresses';
-                            RunObject = report "Employee - Alt. Addresses";
-                            ToolTip = 'Executes the Employee Alt. Addresses action.';
-                        }
-                        action("Employee - Birthdays")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Birthdays';
-                            RunObject = report "Employee - Birthdays";
-                            ToolTip = 'Executes the Employee Birthdays action.';
-                        }
-                        action("Employee - Confidential Info.")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Confidential Info.';
-                            RunObject = report "Employee - Confidential Info.";
-                            ToolTip = 'Executes the Employee Confidential Info. action.';
-                        }
-                        action("Employee - Contracts")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Contracts';
-                            RunObject = report "Employee - Contracts";
-                            ToolTip = 'Executes the Employee Contracts action.';
-                        }
-                        action("Employee - Labels")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Labels';
-                            RunObject = report "Employee - Labels";
-                            ToolTip = 'Executes the Employee Labels action.';
-                        }
-                        action("Employee - List")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee List';
-                            RunObject = report "Employee - List";
-                            ToolTip = 'Executes the Employee List action.';
-                        }
-                        action("Employee - Misc. Article Info.")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Misc. Article Info.';
-                            RunObject = report "Employee - Misc. Article Info.";
-                            ToolTip = 'Executes the Employee Misc. Article Info. action.';
-                        }
-                        action("Employee - Qualifications")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Qualifications';
-                            RunObject = report "Employee - Qualifications";
-                            ToolTip = 'Executes the Employee Qualifications action.';
-                        }
-                        action("Employee - Relatives")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Relatives';
-                            RunObject = report "Employee - Relatives";
-                            ToolTip = 'Executes the Employee Relatives action.';
-                        }
-                        action("Employee - Staff Absences")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Staff Absences';
-                            ToolTip = 'Executes the Staff Absences action.';
-                            // RunObject = report "Employee - Staff Absences";
-                        }
-                        action("Employee - Unions")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Employee Unions';
-                            RunObject = report "Employee - Unions";
-                            ToolTip = 'Executes the Employee Unions action.';
+                            Caption = 'Reports';
+                            action("Employee - Absences by Causes")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Absences by Causes';
+                                ToolTip = 'Executes the Employee Absences by Causes action.';
+                                Visible = false;
+                                //   RunObject = report "Employee - Absences by Causes";
+                            }
+                            action("Employee - Addresses")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Addresses';
+                                RunObject = report "Employee - Addresses";
+                                ToolTip = 'Executes the Employee Addresses action.';
+                            }
+                            action("Employee - Alt. Addresses")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Alt. Addresses';
+                                RunObject = report "Employee - Alt. Addresses";
+                                ToolTip = 'Executes the Employee Alt. Addresses action.';
+                            }
+                            action("Employee - Birthdays")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Birthdays';
+                                RunObject = report "Employee - Birthdays";
+                                ToolTip = 'Executes the Employee Birthdays action.';
+                            }
+                            action("Employee - Confidential Info.")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Confidential Info.';
+                                RunObject = report "Employee - Confidential Info.";
+                                ToolTip = 'Executes the Employee Confidential Info. action.';
+                            }
+                            action("Employee - Contracts")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Contracts';
+                                RunObject = report "Employee - Contracts";
+                                ToolTip = 'Executes the Employee Contracts action.';
+                            }
+                            action("Employee - Labels")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Labels';
+                                RunObject = report "Employee - Labels";
+                                ToolTip = 'Executes the Employee Labels action.';
+                            }
+                            action("Employee - List")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee List';
+                                RunObject = report "Employee - List";
+                                ToolTip = 'Executes the Employee List action.';
+                            }
+                            action("Employee - Misc. Article Info.")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Misc. Article Info.';
+                                RunObject = report "Employee - Misc. Article Info.";
+                                ToolTip = 'Executes the Employee Misc. Article Info. action.';
+                            }
+                            action("Employee - Qualifications")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Qualifications';
+                                RunObject = report "Employee - Qualifications";
+                                ToolTip = 'Executes the Employee Qualifications action.';
+                            }
+                            action("Employee - Relatives")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Relatives';
+                                RunObject = report "Employee - Relatives";
+                                ToolTip = 'Executes the Employee Relatives action.';
+                            }
+                            action("Employee - Staff Absences")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Staff Absences';
+                                ToolTip = 'Executes the Staff Absences action.';
+                                // RunObject = report "Employee - Staff Absences";
+                            }
+                            action("Employee - Unions")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Employee Unions';
+                                RunObject = report "Employee - Unions";
+                                ToolTip = 'Executes the Employee Unions action.';
+                            }
                         }
                     }
                 }
 
-                //  M4: Workforce Operations 
-                group("Group2")
+                //  M5: PERFORMANCE MANAGEMENT 
+                group("M5: Performance Management")
                 {
-                    Caption = 'Setup';
-                    action("Human Resources Setup")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Human Resources Setup';
-                        RunObject = page "Human Resources Setup";
-                        ToolTip = 'Executes the Human Resources Setup action.';
-                    }
-                    action("Human Resources Units of Measu")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Human Resources Units of Measure';
-                        RunObject = page "Human Res. Units of Measure";
-                        ToolTip = 'Executes the Human Resources Units of Measure action.';
-                    }
-                    action("Causes of Inactivity")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Causes of Inactivity';
-                        RunObject = page "Causes of Inactivity";
-                        ToolTip = 'Executes the Causes of Inactivity action.';
-                    }
-                    action("Grounds for Termination")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Grounds for Termination';
-                        RunObject = page "Grounds for Termination";
-                        ToolTip = 'Executes the Grounds for Termination action.';
-                    }
-                    action("Unions")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Unions';
-                        RunObject = page "Unions";
-                        ToolTip = 'Executes the Unions action.';
-                    }
-                    action("Employment Contracts")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employment Contracts';
-                        RunObject = page "Employment Contracts";
-                        ToolTip = 'Executes the Employment Contracts action.';
-                    }
-                    action("Relatives")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Relatives';
-                        RunObject = page "Relatives";
-                        ToolTip = 'Executes the Relatives action.';
-                    }
-                    action("Misc. Articles")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employee Misc. Articles';
-                        RunObject = page "Misc. Articles";
-                        ToolTip = 'Executes the Employee Misc. Articles action.';
-                    }
-                    action("Confidential")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Confidential';
-                        RunObject = page "Confidential";
-                        ToolTip = 'Executes the Confidential action.';
-                    }
-                    action("Qualifications")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Qualifications';
-                        RunObject = page "Qualifications";
-                        ToolTip = 'Executes the Qualifications action.';
-                    }
-                    action("Employee Statistics Groups")
-                    {
-                        ApplicationArea = BasicHR;
-                        Caption = 'Employee Statistics Groups';
-                        RunObject = page "Employee Statistics Groups";
-                        ToolTip = 'Executes the Employee Statistics Groups action.';
-                    }
-                }
+                    Caption = 'M5: Performance Management';
 
-                //  M3: Talent Growth (Training)
-                group("Training Management")
-                {
-                    Caption = 'Training Management';
-                    group("Training Setup")
+                    group("Performance Evaluation")
                     {
-                        Caption = 'Training Setup';
-                        action("Training Providers")
+                        Caption = 'Performance Management';
+                        group(PSetups)
                         {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Providers';
-                            RunObject = page 69314;
-                            ToolTip = 'Executes the Training Providers action.';
+                            Caption = 'Setups';
+                            action(SPMGeneralSetup)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Performance Management General Setup';
+                                RunObject = Page "Strategy General Setup";
+                                ToolTip = 'Executes the Performance Management General Setup action.';
+                            }
+                            action("Appraisal Periods")
+                            {
+                                ApplicationArea = BasicHr;
+                                Caption = 'Appraisal Periods';
+                                Runobject = Page "Appraisal Periods";
+                                ToolTip = 'Executes the Appraisal Periods action.';
+                            }
+                            action("Performance Evaluation Template")
+                            {
+                                ApplicationArea = Basic;
+                                RunObject = Page 80045;
+                                Caption = 'Annual Performance Management Template';
+                                ToolTip = 'Executes the Annual Performance Management Template action.';
+                            }
+                            action("Performance Rating Scale")
+                            {
+                                ApplicationArea = Basic;
+                                RunObject = Page 80063;
+                                ToolTip = 'Executes the Performance Rating Scale action.';
+                            }
+                            action("Proficiency Rating Scale")
+                            {
+                                ApplicationArea = Basic;
+                                RunObject = Page 80060;
+                                ToolTip = 'Executes the Proficiency Rating Scale action.';
+                            }
+                            action("Departmental Objectives")
+                            {
+                                ApplicationArea = BasicHr;
+                                RunObject = Page "Functional Annual Workplans";
+                                Caption = 'Departmental Objectives';
+                                ToolTip = 'Executes the Departmental Objectives action.';
+                            }
+                            action("Approved Departmental Objectives")
+                            {
+                                ApplicationArea = Basic;
+                                RunObject = Page "Approved Functional Workplans";
+                                Caption = 'Approved Departmental Objectives';
+                                ToolTip = 'Executes the Approved Departmental Objectives action.';
+                            }
+                            action("All Performance Contracts")
+                            {
+                                ApplicationArea = BasicHR;
+                                RunObject = Page "All Performance Contracts";
+                                ToolTip = 'Executes the All Performance Contracts action.';
+                                Caption = 'Staff Perfomance Contract';
+                            }
+                            action("Performance Logs")
+                            {
+                                ApplicationArea = BasicHR;
+                                RunObject = Page "Performance Diary Logs";
+                                ToolTip = 'Executes the Performance Logs.';
+                            }
+                            action("Approved Performance Logs")
+                            {
+                                ApplicationArea = BasicHR;
+                                RunObject = Page "Appr Dept Perf Contract Logs";
+                                ToolTip = 'Executes the Approved Performance Logs.';
+                            }
+                            action("Posted Performance Logs")
+                            {
+                                ApplicationArea = BasicHR;
+                                RunObject = Page "Posted Perf Contract Logs";
+                                ToolTip = 'Executes the Posted Performance Logs.';
+                            }
                         }
-                        action("Training Goal")
+                        group("Standard Appraisal")
                         {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Goal';
-                            RunObject = page 69304;
-                            ToolTip = 'Executes the Training Goal action.';
+                            action(StandardPerformanceAppraisal)
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Standard Performance Appraisal';
+                                RunObject = Page "Standard Perfomance Appraisal";
+                                ToolTip = 'Executes the Standard Performance Appraisal action.';
+                            }
+                            action("Standard Appraisal Evaluation")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Standard Appraisal Evaluation';
+                                RunObject = Page "Standard Appraisal-Evaluation";
+                                ToolTip = 'Executes the Standard Appraisal Evaluation action.';
+                            }
+                            action("Submitted Standard Appraisal")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Submitted Standard Appraisal';
+                                RunObject = Page "Standard Appraisal-Submitted";
+                                ToolTip = 'Executes the Submitted Standard Appraisal action.';
+                            }
+                            action("Closed Standard Appraisal")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Closed Standard Appraisal';
+                                RunObject = Page "Standard Appraisal-Closed";
+                                ToolTip = 'Executes the Closed Standard Appraisal action.';
+                            }
                         }
-                        action("Training Domains")
+                        group("Employee-Supervisor Appraisal")
                         {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Domains';
-                            RunObject = page "Training Domains";
-                            ToolTip = 'Executes the Training Domains action.';
-                        }
-                        action("Training Courses")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Courses';
-                            RunObject = page "Training Courses Setup";
-                            ToolTip = 'Executes the Training Courses action.';
-                        }
-                        action("Rating Category setup")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Feedback Rating Category';
-                            RunObject = page "Rating Category Setup";
-                            ToolTip = 'Executes the Feedback Rating Category action.';
-                        }
-                        action("Competency Performance Template")
-                        {
-                            ApplicationArea = Basic;
-                            RunObject = Page 80108;
-                            Caption = 'Competency Performance Template';
-                            ToolTip = 'Executes the Competency Performance Template action.';
-                        }
-                        action(RatingScales)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Rating Scales';
-                            RunObject = page "Rating Scales";
-                            ToolTip = 'Executes the Rating Scales action.';
-                        }
-                        action(CategoryRatingScale)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Category Rating Scale';
-                            RunObject = page "Category Rating Scale";
-                            ToolTip = 'Executes the Category Rating Scale action.';
-                        }
-                        action(TrainingNeedCategories)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Need Categories';
-                            RunObject = page "Training Need Categories";
-                            ToolTip = 'Executes the Training Need Categories action.';
-                        }
-                    }
-                    group("Training Needs Register")
-                    {
-                        caption = 'Training Needs Register';
-                        action(TrainingNeeds)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Needs Assessment';
-                            RunObject = page 69309;
                             Visible = false;
-                            ToolTip = 'Executes the Training Needs Assessment action.';
+                            action("Self-Supervisor Appraisals")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Self-Supervisor Appraisals';
+                                RunObject = Page "Self-Supervisor Appraisals";
+                                ToolTip = 'Executes the Self-Supervisor Appraisals action.';
+                            }
+                            action("Self Supervisor Appraisals Under Evaluation")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Self Supervisor Appraisals Under Evaluation';
+                                RunObject = Page "Self-Supervisor Appraisals-E";
+                                ToolTip = 'Executes the Self Supervisor Appraisals Under Evaluation action.';
+                            }
+                            action("Submitted Self-Supervisor Appraisals")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Submitted Self-Supervisor Appraisals';
+                                RunObject = Page "Self-Supervisor Appraisals-Sub";
+                                ToolTip = 'Executes the Submitted Self-Supervisor Appraisals action.';
+                            }
+                            action("Closed Self-Supervisor Appraisals")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Closed Self-Supervisor Appraisals';
+                                RunObject = Page "SelfSupervisorAppraisal-Closed";
+                                ToolTip = 'Executes the Closed Self-Supervisor Appraisals action.';
+                            }
                         }
-                        action("Training Needs Requisition")
+                        group("360 Degree-Appraisal")
                         {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Needs Assessment Req.';
-                            RunObject = page "Training Need Requests";
-                            ToolTip = 'Executes the Training Needs Assessment Req. action.';
+                            Visible = false;
+                            action("360 Degree Appraisals")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = '360 Degree Appraisals';
+                                RunObject = Page "Group Appraisals";
+                                ToolTip = 'Executes the 360 Degree Appraisals action.';
+                            }
+                            action("Group Appraisals Under Evaluation")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Group Appraisals Under Evaluation';
+                                RunObject = Page "Group Appraisal-Evaluations";
+                                ToolTip = 'Executes the Group Appraisals Under Evaluation action.';
+                            }
+                            action("Submitted Group Appraisals")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Submitted Group Appraisals';
+                                RunObject = Page "Group Appraisal-Submitted";
+                                ToolTip = 'Executes the Submitted Group Appraisals action.';
+                            }
+                            action("Closed Group Appraisals")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Closed Group Appraisals';
+                                RunObject = Page "Group Appraisal-Closed";
+                                ToolTip = 'Executes the Closed Group Appraisals action.';
+                            }
                         }
-                        action("Approved Training Needs Requisition")
+                        group(AppraisalReports)
                         {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Approved Training Needs Assessment Req.';
-                            RunObject = page "Approved Training Need Request";
-                            ToolTip = 'Executes the Approved Training Needs Assessment Req. action.';
+                            Caption = 'Reports';
+                            Visible = false;
                         }
-                        action("Submitted Training Needs")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Submitted Training Needs Assessment Req.';
-                            RunObject = page 50151;
-                            ToolTip = 'Executes the Submitted Training Needs Assessment Req. action.';
-                        }
-                    }
-                    group("Training Planning")
-                    {
-                        Caption = 'Training Planning';
-                        action(TrainingPlans)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Projection';
-                            RunObject = page 69194;
-                            ToolTip = 'Executes the Training Projection action.';
-                        }
-                        action(PendingTrainingPlans)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Pending Training Projection';
-                            RunObject = page "Pending Training Plans";
-                            ToolTip = 'Executes the Pending Training Projection action.';
-                        }
-                        action(ApprovedTrainingPlans)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Approved Training Projection';
-                            RunObject = page 69199;
-                            ToolTip = 'Executes the Approved Training Projection action.';
-                        }
-                    }
-                    group("Training Application")
-                    {
-                        caption = 'Training Applications';
-                        action(TrainingApplicationList)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Training Application List';
-                            RunObject = page 69220;
-                            ToolTip = 'Executes the Training Application List action.';
-                        }
-                        action(ApprovedTrainingApplicationList)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Approved Training Applications';
-                            RunObject = page 69280;
-                            ToolTip = 'Executes the Approved Training Applications action.';
-                        }
-                        action(ProcessedTrainingApplicationList)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Closed Training Applications';
-                            RunObject = page 69282;
-                            ToolTip = 'Executes the Closed Training Applications action.';
-                        }
-                    }
-                    group("Reports")
-                    {
-                        caption = 'Reports';
-                        action("TNA - Analysis Report")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'TNA - Analysis Report';
-                            RunObject = Report 50025;
-                        }
-                        action("TNA - Per FY")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'TNA Per Employee';
-                            RunObject = Report 50132;
-                        }
-                        action(AnnualTrainingPlans)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Annual Training Plans';
-                            ToolTip = 'Executes the Annual Training Plans action.';
-                            // RunObject = report 69145;
-                        }
-                        action(TotalsTrainingsPerEmployee)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Totals Trainings Per Employee';
-                            ToolTip = 'Executes the Totals Trainings Per Employee action.';
-                            // RunObject = report 69111;
-                        }
-                        action(DepartmentalTraining)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Departmental Trainings';
-                            ToolTip = 'Executes the Departmental Trainings action.';
-                            // RunObject = report 69112;
-                        }
-                        action(AnnualTrainingPlansStatistics)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Annual Training Plans Statistics';
-                            ToolTip = 'Executes the Annual Training Plans Statistics action.';
-                            // RunObject = report 69114;
-                        }
-                    }
-                }
-
-                //  M5: Performance Management 
-                group("Performance Evaluation")
-                {
-                    Caption = 'Performance Management';
-                    group(PSetups)
-                    {
-                        Caption = 'Setups';
-                        action(SPMGeneralSetup)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Performance Management General Setup';
-                            RunObject = Page "Strategy General Setup";
-                            ToolTip = 'Executes the Performance Management General Setup action.';
-                        }
-                        action("Appraisal Periods")
-                        {
-                            ApplicationArea = BasicHr;
-                            Caption = 'Appraisal Periods';
-                            Runobject = Page "Appraisal Periods";
-                            ToolTip = 'Executes the Appraisal Periods action.';
-                        }
-                        action("Performance Evaluation Template")
-                        {
-                            ApplicationArea = Basic;
-                            RunObject = Page 80045;
-                            Caption = 'Annual Performance Management Template';
-                            ToolTip = 'Executes the Annual Performance Management Template action.';
-                        }
-                        action("Performance Rating Scale")
-                        {
-                            ApplicationArea = Basic;
-                            RunObject = Page 80063;
-                            ToolTip = 'Executes the Performance Rating Scale action.';
-                        }
-                        action("Proficiency Rating Scale")
-                        {
-                            ApplicationArea = Basic;
-                            RunObject = Page 80060;
-                            ToolTip = 'Executes the Proficiency Rating Scale action.';
-                        }
-                        action("Departmental Objectives")
-                        {
-                            ApplicationArea = BasicHr;
-                            RunObject = Page "Functional Annual Workplans";
-                            Caption = 'Departmental Objectives';
-                            ToolTip = 'Executes the Departmental Objectives action.';
-                        }
-                        action("Approved Departmental Objectives")
-                        {
-                            ApplicationArea = Basic;
-                            RunObject = Page "Approved Functional Workplans";
-                            Caption = 'Approved Departmental Objectives';
-                            ToolTip = 'Executes the Approved Departmental Objectives action.';
-                        }
-                        action("All Performance Contracts")
-                        {
-                            ApplicationArea = BasicHR;
-                            RunObject = Page "All Performance Contracts";
-                            ToolTip = 'Executes the All Performance Contracts action.';
-                            Caption = 'Staff Perfomance Contract';
-                        }
-                        action("Performance Logs")
-                        {
-                            ApplicationArea = BasicHR;
-                            RunObject = Page "Performance Diary Logs";
-                            ToolTip = 'Executes the Performance Logs.';
-                        }
-                        action("Approved Performance Logs")
-                        {
-                            ApplicationArea = BasicHR;
-                            RunObject = Page "Appr Dept Perf Contract Logs";
-                            ToolTip = 'Executes the Approved Performance Logs.';
-                        }
-                        action("Posted Performance Logs")
-                        {
-                            ApplicationArea = BasicHR;
-                            RunObject = Page "Posted Perf Contract Logs";
-                            ToolTip = 'Executes the Posted Performance Logs.';
-                        }
-                    }
-                    group("Standard Appraisal")
-                    {
-                        action(StandardPerformanceAppraisal)
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Standard Performance Appraisal';
-                            RunObject = Page "Standard Perfomance Appraisal";
-                            ToolTip = 'Executes the Standard Performance Appraisal action.';
-                        }
-                        action("Standard Appraisal Evaluation")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Standard Appraisal Evaluation';
-                            RunObject = Page "Standard Appraisal-Evaluation";
-                            ToolTip = 'Executes the Standard Appraisal Evaluation action.';
-                        }
-                        action("Submitted Standard Appraisal")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Submitted Standard Appraisal';
-                            RunObject = Page "Standard Appraisal-Submitted";
-                            ToolTip = 'Executes the Submitted Standard Appraisal action.';
-                        }
-                        action("Closed Standard Appraisal")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Closed Standard Appraisal';
-                            RunObject = Page "Standard Appraisal-Closed";
-                            ToolTip = 'Executes the Closed Standard Appraisal action.';
-                        }
-                    }
-                    group("Employee-Supervisor Appraisal")
-                    {
-                        Visible = false;
-                        action("Self-Supervisor Appraisals")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Self-Supervisor Appraisals';
-                            RunObject = Page "Self-Supervisor Appraisals";
-                            ToolTip = 'Executes the Self-Supervisor Appraisals action.';
-                        }
-                        action("Self Supervisor Appraisals Under Evaluation")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Self Supervisor Appraisals Under Evaluation';
-                            RunObject = Page "Self-Supervisor Appraisals-E";
-                            ToolTip = 'Executes the Self Supervisor Appraisals Under Evaluation action.';
-                        }
-                        action("Submitted Self-Supervisor Appraisals")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Submitted Self-Supervisor Appraisals';
-                            RunObject = Page "Self-Supervisor Appraisals-Sub";
-                            ToolTip = 'Executes the Submitted Self-Supervisor Appraisals action.';
-                        }
-                        action("Closed Self-Supervisor Appraisals")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Closed Self-Supervisor Appraisals';
-                            RunObject = Page "SelfSupervisorAppraisal-Closed";
-                            ToolTip = 'Executes the Closed Self-Supervisor Appraisals action.';
-                        }
-                    }
-                    group("360 Degree-Appraisal")
-                    {
-                        Visible = false;
-                        action("360 Degree Appraisals")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = '360 Degree Appraisals';
-                            RunObject = Page "Group Appraisals";
-                            ToolTip = 'Executes the 360 Degree Appraisals action.';
-                        }
-                        action("Group Appraisals Under Evaluation")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Group Appraisals Under Evaluation';
-                            RunObject = Page "Group Appraisal-Evaluations";
-                            ToolTip = 'Executes the Group Appraisals Under Evaluation action.';
-                        }
-                        action("Submitted Group Appraisals")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Submitted Group Appraisals';
-                            RunObject = Page "Group Appraisal-Submitted";
-                            ToolTip = 'Executes the Submitted Group Appraisals action.';
-                        }
-                        action("Closed Group Appraisals")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Closed Group Appraisals';
-                            RunObject = Page "Group Appraisal-Closed";
-                            ToolTip = 'Executes the Closed Group Appraisals action.';
-                        }
-                    }
-                    group(AppraisalReports)
-                    {
-                        Caption = 'Reports';
-                        Visible = false;
                     }
                 }
             }
+
 
             // PILLAR 4: OFFBOARDING (M7: Separation & Transition) 
             group("Offboarding")
@@ -2061,7 +2065,7 @@ page 60002 "HR Role Center"
 
                 group("Exit Management")
                 {
-                    Caption = 'Exit Management';
+                    Caption = 'Separation & Transition Management';
                     action("Exit Methods")
                     {
                         ApplicationArea = Basic;

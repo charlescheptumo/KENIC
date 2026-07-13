@@ -7,7 +7,7 @@
         <DataProvider>SQL</DataProvider>
         <ConnectString />
       </ConnectionProperties>
-      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>18af4cb4-fdfc-4b1e-a0b1-e8a8f8b3fdaa</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
@@ -140,31 +140,21 @@
         <Field Name="DutyActiveStaffCount">
           <DataField>DutyActiveStaffCount</DataField>
         </Field>
-        <Field Name="CreatedBy">
-          <DataField>CreatedBy</DataField>
-        </Field>
-        <Field Name="CreatedDate">
-          <DataField>CreatedDate</DataField>
-        </Field>
-        <Field Name="DateEstablished">
-          <DataField>DateEstablished</DataField>
-        </Field>
       </Fields>
     </DataSet>
   </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
-        <Height>11in</Height>
         <ReportItems>
           <Image Name="Logo">
-            <Height>0.6in</Height>
-            <Width>0.6in</Width>
-            <Top>0.1in</Top>
-            <Left>0.1in</Left>
             <Source>Database</Source>
             <Value>=Fields!Picture.Value</Value>
             <MIMEType>image/png</MIMEType>
+            <Top>0.1in</Top>
+            <Left>0.1in</Left>
+            <Height>0.6in</Height>
+            <Width>0.6in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -172,10 +162,6 @@
             </Style>
           </Image>
           <Textbox Name="CompanyName">
-            <Height>0.4in</Height>
-            <Width>5.5in</Width>
-            <Top>0.1in</Top>
-            <Left>0.8in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
@@ -184,19 +170,22 @@
                     <Style>
                       <FontSize>14pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#1A3C6E</Color>
                       <TextAlign>Center</TextAlign>
+                      <Color>#1a3c6e</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>0.1in</Top>
+            <Left>0.8in</Left>
+            <Height>0.4in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>1</ZIndex>
+            <Style />
           </Textbox>
           <Textbox Name="CompanyAddress">
-            <Height>0.3in</Height>
-            <Width>5.5in</Width>
-            <Top>0.5in</Top>
-            <Left>0.8in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
@@ -208,14 +197,17 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>0.5in</Top>
+            <Left>0.8in</Left>
+            <Height>0.3in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>2</ZIndex>
+            <Style />
           </Textbox>
           <Textbox Name="ContactInfo">
-            <Height>0.2in</Height>
-            <Width>5.5in</Width>
-            <Top>0.8in</Top>
-            <Left>0.8in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
@@ -227,27 +219,31 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>0.8in</Top>
+            <Left>0.8in</Left>
+            <Height>0.2in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>3</ZIndex>
+            <Style />
           </Textbox>
           <Line Name="HeaderLine">
-            <Height>0.02in</Height>
-            <Width>6.3in</Width>
             <Top>1.05in</Top>
             <Left>0.1in</Left>
+            <Height>0.02in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>4</ZIndex>
             <Style>
               <Border>
-                <Color>#1A3C6E</Color>
+                <Color>#1a3c6e</Color>
                 <Style>Solid</Style>
                 <Width>2pt</Width>
               </Border>
             </Style>
           </Line>
           <Textbox Name="ReportTitle">
-            <Height>0.5in</Height>
-            <Width>6.3in</Width>
-            <Top>1.15in</Top>
-            <Left>0.1in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
@@ -256,64 +252,72 @@
                     <Style>
                       <FontSize>16pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#1A3C6E</Color>
                       <TextAlign>Center</TextAlign>
+                      <Color>#1a3c6e</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>1.15in</Top>
+            <Left>0.1in</Left>
+            <Height>0.5in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>5</ZIndex>
+            <Style />
           </Textbox>
           <Textbox Name="ReportMeta">
-            <Height>0.3in</Height>
-            <Width>6.3in</Width>
-            <Top>1.7in</Top>
-            <Left>0.1in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
                     <Value>="Created By: " &amp; First(Fields!CreatedBy.Value, "DataSet_Result") &amp; " | Created Date: " &amp; First(Fields!CreatedDate.Value, "DataSet_Result") &amp; " | Module: Establishment &amp; Manpower Planning (E&amp;MP) | Report ID: REP-70001-EMP"</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
                       <FontStyle>Italic</FontStyle>
+                      <FontSize>8pt</FontSize>
                       <TextAlign>Center</TextAlign>
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
-          </Textbox>
-          <Textbox Name="SectionATitle">
+            <Top>1.7in</Top>
+            <Left>0.1in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
-            <Top>2.1in</Top>
-            <Left>0.1in</Left>
+            <ZIndex>6</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="SectionATitle">
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
                     <Value>SECTION A: STATUTORY INFORMATION</Value>
                     <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
                       <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#1A3C6E</Color>
-                      <BackgroundColor>#E8F0FE</BackgroundColor>
+                      <Color>#1a3c6e</Color>
                       <PaddingLeft>4pt</PaddingLeft>
                       <PaddingTop>2pt</PaddingTop>
                       <PaddingBottom>2pt</PaddingBottom>
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>2.1in</Top>
+            <Left>0.1in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>7</ZIndex>
+            <Style />
           </Textbox>
           <Tablix Name="StatutoryTable">
-            <Height>1.2in</Height>
-            <Width>6.3in</Width>
-            <Top>2.4in</Top>
-            <Left>0.1in</Left>
-            <DataSetName>DataSet_Result</DataSetName>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -336,19 +340,20 @@
                                 <TextRun>
                                   <Value>STATUTORY PARAMETER</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>9pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -362,19 +367,20 @@
                                 <TextRun>
                                   <Value>REGISTERED REFERENCE / DOCUMENT NUMBER</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>9pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -398,8 +404,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -417,8 +425,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -441,8 +451,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -456,13 +468,15 @@
                                   <Value>=Fields!DateEstablished.Value</Value>
                                   <Style>
                                     <FontSize>9pt</FontSize>
-                                    <PaddingLeft>4pt</PaddingLeft>
                                     <Format>dd-MMM-yyyy</Format>
+                                    <PaddingLeft>4pt</PaddingLeft>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -485,8 +499,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -504,8 +520,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -528,8 +546,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -547,8 +567,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -558,71 +580,61 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>2.4in</Top>
+            <Left>0.1in</Left>
+            <Height>1.05in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>8</ZIndex>
             <Style>
               <Border>
+                <Color>#cccccc</Color>
                 <Style>Solid</Style>
-                <Color>#CCCCCC</Color>
                 <Width>0.5pt</Width>
               </Border>
             </Style>
           </Tablix>
           <Textbox Name="SectionBTitle">
-            <Height>0.3in</Height>
-            <Width>6.3in</Width>
-            <Top>3.7in</Top>
-            <Left>0.1in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
                     <Value>SECTION B: ESTABLISHMENT SUMMARY</Value>
                     <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
                       <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#1A3C6E</Color>
-                      <BackgroundColor>#E8F0FE</BackgroundColor>
+                      <Color>#1a3c6e</Color>
                       <PaddingLeft>4pt</PaddingLeft>
                       <PaddingTop>2pt</PaddingTop>
                       <PaddingBottom>2pt</PaddingBottom>
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>3.7in</Top>
+            <Left>0.1in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>9</ZIndex>
+            <Style />
           </Textbox>
           <Tablix Name="SummaryTable">
-            <Height>1in</Height>
-            <Width>6.3in</Width>
-            <Top>4.0in</Top>
-            <Left>0.1in</Left>
-            <DataSetName>DataSet_Result</DataSetName>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -645,19 +657,20 @@
                                 <TextRun>
                                   <Value>ESTABLISHMENT METRIC</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>9pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -671,19 +684,20 @@
                                 <TextRun>
                                   <Value>INDICATOR</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>9pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -707,8 +721,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -726,8 +742,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -750,8 +768,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -769,8 +789,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -793,8 +815,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -812,8 +836,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -836,8 +862,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -855,8 +883,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -866,81 +896,71 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>4in</Top>
+            <Left>0.1in</Left>
+            <Height>1.05in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>10</ZIndex>
             <Style>
               <Border>
+                <Color>#cccccc</Color>
                 <Style>Solid</Style>
-                <Color>#CCCCCC</Color>
                 <Width>0.5pt</Width>
               </Border>
             </Style>
           </Tablix>
           <Textbox Name="JobGradeTitle">
-            <Height>0.3in</Height>
-            <Width>6.3in</Width>
-            <Top>5.1in</Top>
-            <Left>0.1in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
                     <Value>JOB GRADING STRUCTURE</Value>
                     <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
                       <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#1A3C6E</Color>
-                      <BackgroundColor>#E8F0FE</BackgroundColor>
+                      <Color>#1a3c6e</Color>
                       <PaddingLeft>4pt</PaddingLeft>
                       <PaddingTop>2pt</PaddingTop>
                       <PaddingBottom>2pt</PaddingBottom>
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>5.1in</Top>
+            <Left>0.1in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>11</ZIndex>
+            <Style />
           </Textbox>
           <Tablix Name="JobGradeTable">
-            <Height>2.5in</Height>
-            <Width>6.3in</Width>
-            <Top>5.4in</Top>
-            <Left>0.1in</Left>
-            <DataSetName>DataSet_Result</DataSetName>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.0in</Width>
+                  <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.8in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.0in</Width>
+                  <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.8in</Width>
@@ -965,20 +985,21 @@
                                 <TextRun>
                                   <Value>JOB GRADE ID</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -992,20 +1013,21 @@
                                 <TextRun>
                                   <Value>DESCRIPTION</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1019,20 +1041,21 @@
                                 <TextRun>
                                   <Value>OVERALL APPOINTMENT AUTHORITY</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1046,20 +1069,21 @@
                                 <TextRun>
                                   <Value>DEFAULT SENIORITY LEVEL</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1073,20 +1097,21 @@
                                 <TextRun>
                                   <Value>NO. OF VALID POSITIONS</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1100,20 +1125,21 @@
                                 <TextRun>
                                   <Value>ACTIVE STAFF COUNT</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1137,8 +1163,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1156,8 +1184,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1175,8 +1205,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1194,8 +1226,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1213,8 +1247,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1232,8 +1268,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1243,74 +1281,62 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>5.4in</Top>
+            <Left>0.1in</Left>
+            <Height>0.45in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>12</ZIndex>
             <Style>
               <Border>
+                <Color>#cccccc</Color>
                 <Style>Solid</Style>
-                <Color>#CCCCCC</Color>
                 <Width>0.5pt</Width>
               </Border>
             </Style>
           </Tablix>
           <Textbox Name="SectionCTitle">
-            <Height>0.3in</Height>
-            <Width>6.3in</Width>
-            <Top>8.0in</Top>
-            <Left>0.1in</Left>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
                     <Value>SECTION C: POSITION MANAGEMENT</Value>
                     <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
                       <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#1A3C6E</Color>
-                      <BackgroundColor>#E8F0FE</BackgroundColor>
+                      <Color>#1a3c6e</Color>
                       <PaddingLeft>4pt</PaddingLeft>
                       <PaddingTop>2pt</PaddingTop>
                       <PaddingBottom>2pt</PaddingBottom>
                     </Style>
                   </TextRun>
                 </TextRuns>
+                <Style />
               </Paragraph>
             </Paragraphs>
+            <Top>8in</Top>
+            <Left>0.1in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>13</ZIndex>
+            <Style />
           </Textbox>
           <Tablix Name="PositionTable">
-            <Height>1.5in</Height>
-            <Width>6.3in</Width>
-            <Top>8.3in</Top>
-            <Left>0.1in</Left>
-            <DataSetName>DataSet_Result</DataSetName>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -1320,7 +1346,7 @@
                   <Width>1.8in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.0in</Width>
+                  <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.8in</Width>
@@ -1345,20 +1371,21 @@
                                 <TextRun>
                                   <Value>POSITION ID</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1372,20 +1399,21 @@
                                 <TextRun>
                                   <Value>JOB TITLE / DESIGNATION</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1399,20 +1427,21 @@
                                 <TextRun>
                                   <Value>DESIGNATION GROUP</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1426,20 +1455,21 @@
                                 <TextRun>
                                   <Value>JOB GRADE ID</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1453,20 +1483,21 @@
                                 <TextRun>
                                   <Value>DEPARTMENT</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1480,20 +1511,21 @@
                                 <TextRun>
                                   <Value>ACTIVE STAFF COUNT</Value>
                                   <Style>
-                                    <Color>White</Color>
-                                    <FontWeight>Bold</FontWeight>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
                           <Style>
-                            <BackgroundColor>#1A3C6E</BackgroundColor>
-                            <Color>White</Color>
-                            <FontWeight>Bold</FontWeight>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
                             <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
                             <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1517,8 +1549,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1536,8 +1570,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1555,8 +1591,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1574,8 +1612,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1593,8 +1633,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1612,8 +1654,10 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
+                          <Style />
                         </Textbox>
                       </CellContents>
                     </TablixCell>
@@ -1623,80 +1667,90 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>8.3in</Top>
+            <Left>0.1in</Left>
+            <Height>0.45in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>14</ZIndex>
             <Style>
               <Border>
+                <Color>#cccccc</Color>
                 <Style>Solid</Style>
-                <Color>#CCCCCC</Color>
                 <Width>0.5pt</Width>
               </Border>
             </Style>
           </Tablix>
-          <Textbox Name="PageNumber">
-            <Height>0.2in</Height>
-            <Width>6.3in</Width>
-            <Top>10.5in</Top>
-            <Left>0.1in</Left>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>="Page " &amp; Globals!PageNumber &amp; " of " &amp; Globals!TotalPages</Value>
-                    <Style>
-                      <FontSize>8pt</FontSize>
-                      <TextAlign>Center</TextAlign>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-              </Paragraph>
-            </Paragraphs>
-          </Textbox>
         </ReportItems>
+        <Height>11in</Height>
         <Style />
       </Body>
       <Width>6.5in</Width>
       <Page>
+        <PageFooter>
+          <Height>1in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="PageNumber">
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Page " &amp; Globals!PageNumber &amp; " of " &amp; Globals!TotalPages</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <TextAlign>Center</TextAlign>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <Top>0.04167in</Top>
+              <Left>0in</Left>
+              <Height>0.2in</Height>
+              <Width>6.3in</Width>
+              <Style />
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
         <PageHeight>11.69in</PageHeight>
         <PageWidth>8.27in</PageWidth>
         <LeftMargin>0.4in</LeftMargin>
         <RightMargin>0.4in</RightMargin>
         <TopMargin>0.3in</TopMargin>
         <BottomMargin>0.3in</BottomMargin>
-        <Columns>1</Columns>
         <ColumnSpacing>0in</ColumnSpacing>
         <Style />
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <Language>=User!Language</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
