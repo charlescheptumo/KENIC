@@ -2885,6 +2885,11 @@ TableExtension 50117 "Employee Ext" extends Employee
             Caption = 'Responsibility Center';
             TableRelation = "Responsibility Center";
         }
+             field(70096; "Duty Station"; Code[10])
+        {
+            Caption = 'Duty Station';
+            TableRelation = "Duty Station";
+        }
 
     }
     keys

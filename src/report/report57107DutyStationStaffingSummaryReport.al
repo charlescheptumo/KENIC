@@ -13,7 +13,6 @@ report 57107 "Duty Station Staffing Summary"
 
     dataset
     {
-        
         dataitem(Summary; "Duty Station")
         {
             DataItemTableView = sorting(Code);
@@ -48,38 +47,33 @@ report 57107 "Duty Station Staffing Summary"
                 EmpRec: Record "Employee";
                 StationCalc: Record "Duty Station";
             begin
-                
                 if IsSummaryCalculated then
                     CurrReport.Skip();
 
-                
                 EmpRec.Reset();
                 EmpRec.SetRange(Status, EmpRec.Status::Active);
                 TotalActiveStaff := EmpRec.Count();
 
-                
                 EmpRec.SetRange(Gender, EmpRec.Gender::Male);
                 ActiveStaffMale := EmpRec.Count();
 
                 EmpRec.SetRange(Gender, EmpRec.Gender::Female);
                 ActiveStaffFemale := EmpRec.Count();
 
-                
                 EmpRec.Reset();
                 EmpRec.SetRange(Status, EmpRec.Status::Terminated);
                 ExitedStaffCount := EmpRec.Count();
 
-               
                 TotalEstablishment := 0;
                 StationCalc.Reset();
                 StationCalc.SetRange(Blocked, false);
                 if StationCalc.FindSet() then
                     repeat
-                        StationCalc.CalcFields("Approved Establishment");
+                        
                         TotalEstablishment += StationCalc."Approved Establishment";
                     until StationCalc.Next() = 0;
 
-                // Calculate percentages
+                
                 if TotalActiveStaff > 0 then begin
                     ActiveStaffMalePercent := (ActiveStaffMale / TotalActiveStaff) * 100;
                     ActiveStaffFemalePercent := (ActiveStaffFemale / TotalActiveStaff) * 100;
@@ -98,7 +92,6 @@ report 57107 "Duty Station Staffing Summary"
             end;
         }
 
-       
         dataitem(DutyStation; "Duty Station")
         {
             DataItemTableView = sorting(Code) where(Blocked = const(false));
@@ -141,15 +134,16 @@ report 57107 "Duty Station Staffing Summary"
             var
                 EmpRec: Record "Employee";
             begin
-               
                 MaleCount := 0;
                 FemaleCount := 0;
                 ExitedStaff := 0;
 
-                DutyStation.CalcFields("No. of Active Employees", "Approved Establishment");
+             
+                DutyStation.CalcFields("No. of Active Employees");
 
+                
                 EmpRec.Reset();
-                EmpRec.SetRange("Job Title", DutyStation.Description);
+                EmpRec.SetRange("Duty Station", DutyStation.Code); 
                 EmpRec.SetRange(Status, EmpRec.Status::Active);
                 
                 EmpRec.SetRange(Gender, EmpRec.Gender::Male);
@@ -158,9 +152,9 @@ report 57107 "Duty Station Staffing Summary"
                 EmpRec.SetRange(Gender, EmpRec.Gender::Female);
                 FemaleCount := EmpRec.Count();
 
-                // Terminated count
+               
                 EmpRec.Reset();
-                EmpRec.SetRange("Job Title", DutyStation.Description);
+                EmpRec.SetRange("Duty Station", DutyStation.Code); 
                 EmpRec.SetRange(Status, EmpRec.Status::Terminated);
                 ExitedStaff := EmpRec.Count();
 
