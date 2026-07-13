@@ -2880,6 +2880,11 @@ TableExtension 50117 "Employee Ext" extends Employee
             Caption = 'Employee No Sort Key';
             Editable = false;
         }
+        field(70095; "Responsibility Center"; Code[10])
+        {
+            Caption = 'Responsibility Center';
+            TableRelation = "Responsibility Center";
+        }
 
     }
     keys
