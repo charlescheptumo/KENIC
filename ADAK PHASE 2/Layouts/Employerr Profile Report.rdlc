@@ -10,6 +10,139 @@
       <rd:DataSourceID>18af4cb4-fdfc-4b1e-a0b1-e8a8f8b3fdaa</rd:DataSourceID>
     </DataSource>
   </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+      <Fields>
+        <Field Name="CompanyName">
+          <DataField>CompanyName</DataField>
+        </Field>
+        <Field Name="CompanyName2">
+          <DataField>CompanyName2</DataField>
+        </Field>
+        <Field Name="Address">
+          <DataField>Address</DataField>
+        </Field>
+        <Field Name="Address2">
+          <DataField>Address2</DataField>
+        </Field>
+        <Field Name="City">
+          <DataField>City</DataField>
+        </Field>
+        <Field Name="PostCode">
+          <DataField>PostCode</DataField>
+        </Field>
+        <Field Name="County">
+          <DataField>County</DataField>
+        </Field>
+        <Field Name="CountryRegionCode">
+          <DataField>CountryRegionCode</DataField>
+        </Field>
+        <Field Name="PhoneNo">
+          <DataField>PhoneNo</DataField>
+        </Field>
+        <Field Name="FaxNo">
+          <DataField>FaxNo</DataField>
+        </Field>
+        <Field Name="Email">
+          <DataField>Email</DataField>
+        </Field>
+        <Field Name="HomePage">
+          <DataField>HomePage</DataField>
+        </Field>
+        <Field Name="RegistrationNo">
+          <DataField>RegistrationNo</DataField>
+        </Field>
+        <Field Name="VATRegistrationNo">
+          <DataField>VATRegistrationNo</DataField>
+        </Field>
+        <Field Name="Picture">
+          <DataField>Picture</DataField>
+        </Field>
+        <Field Name="CompActiveStaffCount">
+          <DataField>CompActiveStaffCount</DataField>
+        </Field>
+        <Field Name="CompEstablishedPositions">
+          <DataField>CompEstablishedPositions</DataField>
+        </Field>
+        <Field Name="CompTotalJobGrades">
+          <DataField>CompTotalJobGrades</DataField>
+        </Field>
+        <Field Name="CompApprovedDutyStations">
+          <DataField>CompApprovedDutyStations</DataField>
+        </Field>
+        <Field Name="JobGradeID">
+          <DataField>JobGradeID</DataField>
+        </Field>
+        <Field Name="JobGradeDescription">
+          <DataField>JobGradeDescription</DataField>
+        </Field>
+        <Field Name="OverallAppointmentAuthority">
+          <DataField>OverallAppointmentAuthority</DataField>
+        </Field>
+        <Field Name="DefaultSeniorityLevel">
+          <DataField>DefaultSeniorityLevel</DataField>
+        </Field>
+        <Field Name="NoOfValidPositions">
+          <DataField>NoOfValidPositions</DataField>
+        </Field>
+        <Field Name="JobGradeActiveStaffCount">
+          <DataField>JobGradeActiveStaffCount</DataField>
+        </Field>
+        <Field Name="PositionID">
+          <DataField>PositionID</DataField>
+        </Field>
+        <Field Name="JobTitle">
+          <DataField>JobTitle</DataField>
+        </Field>
+        <Field Name="DesignationGroup">
+          <DataField>DesignationGroup</DataField>
+        </Field>
+        <Field Name="PosJobGradeID">
+          <DataField>PosJobGradeID</DataField>
+        </Field>
+        <Field Name="Department">
+          <DataField>Department</DataField>
+        </Field>
+        <Field Name="PositionActiveStaffCount">
+          <DataField>PositionActiveStaffCount</DataField>
+        </Field>
+        <Field Name="TermsCode">
+          <DataField>TermsCode</DataField>
+        </Field>
+        <Field Name="TermsDescription">
+          <DataField>TermsDescription</DataField>
+        </Field>
+        <Field Name="EmploymentType">
+          <DataField>EmploymentType</DataField>
+        </Field>
+        <Field Name="MinAge">
+          <DataField>MinAge</DataField>
+        </Field>
+        <Field Name="MaxAge">
+          <DataField>MaxAge</DataField>
+        </Field>
+        <Field Name="TermsActiveStaffCount">
+          <DataField>TermsActiveStaffCount</DataField>
+        </Field>
+        <Field Name="DutyStationCode">
+          <DataField>DutyStationCode</DataField>
+        </Field>
+        <Field Name="DutyStationDescription">
+          <DataField>DutyStationDescription</DataField>
+        </Field>
+        <Field Name="RegionID">
+          <DataField>RegionID</DataField>
+        </Field>
+        <Field Name="DutyActiveStaffCount">
+          <DataField>DutyActiveStaffCount</DataField>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -129,7 +262,7 @@
             </Paragraphs>
             <Top>1.15in</Top>
             <Left>0.33264in</Left>
-            <Height>0.5in</Height>
+            <Height>0.29167in</Height>
             <Width>6.3in</Width>
             <ZIndex>5</ZIndex>
             <Style />
@@ -139,7 +272,10 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="Created By: " &amp; First(Fields!CreatedBy.Value, "DataSet_Result") &amp; " | Created Date: " &amp; First(Fields!CreatedDate.Value, "DataSet_Result") &amp; " | Module: Establishment &amp; Manpower Planning (E&amp;MP) | Report ID: REP-70001-EMP"</Value>
+                    <Value>="Created By: " &amp; User!UserID &amp;
+" | Created Date: " &amp; Format(Globals!ExecutionTime, "dd-MMM-yyyy hh:mm tt") &amp;
+" | Module: Establishment &amp; Manpower Planning (E&amp;MP)" &amp;
+" | Report ID: REP-70001-EMP"</Value>
                     <Style>
                       <FontStyle>Italic</FontStyle>
                       <FontSize>8pt</FontSize>
@@ -150,9 +286,9 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>1.7in</Top>
+            <Top>1.51111in</Top>
             <Left>0.33264in</Left>
-            <Height>0.3in</Height>
+            <Height>0.60278in</Height>
             <Width>6.3in</Width>
             <ZIndex>6</ZIndex>
             <Style />
@@ -177,9 +313,9 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>2.1in</Top>
+            <Top>2.14167in</Top>
             <Left>0.33264in</Left>
-            <Height>0.3in</Height>
+            <Height>0.24444in</Height>
             <Width>6.3in</Width>
             <ZIndex>7</ZIndex>
             <Style />
@@ -332,7 +468,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!DateEstablished.Value</Value>
+                                  <Value />
                                   <Style>
                                     <FontSize>9pt</FontSize>
                                     <Format>dd-MMM-yyyy</Format>
@@ -2289,141 +2425,14 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <Language>=User!Language</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Fields>
-        <Field Name="CompanyName">
-          <DataField>CompanyName</DataField>
-        </Field>
-        <Field Name="CompanyName2">
-          <DataField>CompanyName2</DataField>
-        </Field>
-        <Field Name="Address">
-          <DataField>Address</DataField>
-        </Field>
-        <Field Name="Address2">
-          <DataField>Address2</DataField>
-        </Field>
-        <Field Name="City">
-          <DataField>City</DataField>
-        </Field>
-        <Field Name="PostCode">
-          <DataField>PostCode</DataField>
-        </Field>
-        <Field Name="County">
-          <DataField>County</DataField>
-        </Field>
-        <Field Name="CountryRegionCode">
-          <DataField>CountryRegionCode</DataField>
-        </Field>
-        <Field Name="PhoneNo">
-          <DataField>PhoneNo</DataField>
-        </Field>
-        <Field Name="FaxNo">
-          <DataField>FaxNo</DataField>
-        </Field>
-        <Field Name="Email">
-          <DataField>Email</DataField>
-        </Field>
-        <Field Name="HomePage">
-          <DataField>HomePage</DataField>
-        </Field>
-        <Field Name="RegistrationNo">
-          <DataField>RegistrationNo</DataField>
-        </Field>
-        <Field Name="VATRegistrationNo">
-          <DataField>VATRegistrationNo</DataField>
-        </Field>
-        <Field Name="Picture">
-          <DataField>Picture</DataField>
-        </Field>
-        <Field Name="CompActiveStaffCount">
-          <DataField>CompActiveStaffCount</DataField>
-        </Field>
-        <Field Name="CompEstablishedPositions">
-          <DataField>CompEstablishedPositions</DataField>
-        </Field>
-        <Field Name="CompTotalJobGrades">
-          <DataField>CompTotalJobGrades</DataField>
-        </Field>
-        <Field Name="CompApprovedDutyStations">
-          <DataField>CompApprovedDutyStations</DataField>
-        </Field>
-        <Field Name="JobGradeID">
-          <DataField>JobGradeID</DataField>
-        </Field>
-        <Field Name="JobGradeDescription">
-          <DataField>JobGradeDescription</DataField>
-        </Field>
-        <Field Name="OverallAppointmentAuthority">
-          <DataField>OverallAppointmentAuthority</DataField>
-        </Field>
-        <Field Name="DefaultSeniorityLevel">
-          <DataField>DefaultSeniorityLevel</DataField>
-        </Field>
-        <Field Name="NoOfValidPositions">
-          <DataField>NoOfValidPositions</DataField>
-        </Field>
-        <Field Name="JobGradeActiveStaffCount">
-          <DataField>JobGradeActiveStaffCount</DataField>
-        </Field>
-        <Field Name="PositionID">
-          <DataField>PositionID</DataField>
-        </Field>
-        <Field Name="JobTitle">
-          <DataField>JobTitle</DataField>
-        </Field>
-        <Field Name="DesignationGroup">
-          <DataField>DesignationGroup</DataField>
-        </Field>
-        <Field Name="PosJobGradeID">
-          <DataField>PosJobGradeID</DataField>
-        </Field>
-        <Field Name="Department">
-          <DataField>Department</DataField>
-        </Field>
-        <Field Name="PositionActiveStaffCount">
-          <DataField>PositionActiveStaffCount</DataField>
-        </Field>
-        <Field Name="TermsCode">
-          <DataField>TermsCode</DataField>
-        </Field>
-        <Field Name="TermsDescription">
-          <DataField>TermsDescription</DataField>
-        </Field>
-        <Field Name="EmploymentType">
-          <DataField>EmploymentType</DataField>
-        </Field>
-        <Field Name="MinAge">
-          <DataField>MinAge</DataField>
-        </Field>
-        <Field Name="MaxAge">
-          <DataField>MaxAge</DataField>
-        </Field>
-        <Field Name="TermsActiveStaffCount">
-          <DataField>TermsActiveStaffCount</DataField>
-        </Field>
-        <Field Name="DutyStationCode">
-          <DataField>DutyStationCode</DataField>
-        </Field>
-        <Field Name="DutyStationDescription">
-          <DataField>DutyStationDescription</DataField>
-        </Field>
-        <Field Name="RegionID">
-          <DataField>RegionID</DataField>
-        </Field>
-        <Field Name="DutyActiveStaffCount">
-          <DataField>DutyActiveStaffCount</DataField>
-        </Field>
-      </Fields>
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-    </DataSet>
-  </DataSets>
 </Report>
