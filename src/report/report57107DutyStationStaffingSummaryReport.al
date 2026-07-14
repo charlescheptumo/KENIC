@@ -25,44 +25,33 @@ report 57107 "Duty Station Staffing Summary"
             column(CompanyEmail; "E-Mail") { }
             column(CompanyHomePage; "Home Page") { }
             column(CompanyPhone; "Phone No.") { }
+
+            trigger OnAfterGetRecord()
+            begin
+                CompanyInfos.CalcFields(Picture);
+            end;
         }
         dataitem(Summary; "Duty Station")
         {
             DataItemTableView = sorting(Code);
 
-            column(TotalEstablishment; TotalEstablishment)
-            {
-            }
-            column(TotalActiveStaff; TotalActiveStaff)
-            {
-            }
-            column(ActiveStaffMale; ActiveStaffMale)
-            {
-            }
-            column(ActiveStaffFemale; ActiveStaffFemale)
-            {
-            }
-            column(ActiveStaffMalePercent; ActiveStaffMalePercent)
-            {
-            }
-            column(ActiveStaffFemalePercent; ActiveStaffFemalePercent)
-            {
-            }
-            column(ExitedStaffCount; ExitedStaffCount)
-            {
-            }
-            column(OverallRetentionRate; OverallRetentionRate)
-            {
-            }
+            column(TotalEstablishment; TotalEstablishment) { }
+            column(TotalActiveStaff; TotalActiveStaff) { }
+            column(ActiveStaffMale; ActiveStaffMale) { }
+            column(ActiveStaffFemale; ActiveStaffFemale) { }
+            column(ActiveStaffMalePercent; ActiveStaffMalePercent) { }
+            column(ActiveStaffFemalePercent; ActiveStaffFemalePercent) { }
+            column(ExitedStaffCount; ExitedStaffCount) { }
+            column(OverallRetentionRate; OverallRetentionRate) { }
 
-            trigger OnAfterGetRecord()
+            trigger OnPreDataItem()
             var
                 EmpRec: Record "Employee";
                 StationCalc: Record "Duty Station";
             begin
-                if IsSummaryCalculated then
-                    CurrReport.Skip();
+                IsSummaryCalculated := false;
 
+                // Execute heavy calculations exactly once before rows are processed
                 EmpRec.Reset();
                 EmpRec.SetRange(Status, EmpRec.Status::Active);
                 TotalActiveStaff := EmpRec.Count();
@@ -82,11 +71,9 @@ report 57107 "Duty Station Staffing Summary"
                 StationCalc.SetRange(Blocked, false);
                 if StationCalc.FindSet() then
                     repeat
-                        
                         TotalEstablishment += StationCalc."Approved Establishment";
                     until StationCalc.Next() = 0;
 
-                
                 if TotalActiveStaff > 0 then begin
                     ActiveStaffMalePercent := (ActiveStaffMale / TotalActiveStaff) * 100;
                     ActiveStaffFemalePercent := (ActiveStaffFemale / TotalActiveStaff) * 100;
@@ -95,11 +82,17 @@ report 57107 "Duty Station Staffing Summary"
                     ActiveStaffFemalePercent := 0;
                 end;
 
-                // Calculate retention rate
                 if (TotalActiveStaff + ExitedStaffCount) > 0 then
                     OverallRetentionRate := (TotalActiveStaff / (TotalActiveStaff + ExitedStaffCount)) * 100
                 else
                     OverallRetentionRate := 0;
+            end;
+
+            trigger OnAfterGetRecord()
+            begin
+                // Stop subsequent rows immediately before running code or writing duplicates
+                if IsSummaryCalculated then
+                    CurrReport.Skip();
 
                 IsSummaryCalculated := true;
             end;
@@ -109,39 +102,17 @@ report 57107 "Duty Station Staffing Summary"
         {
             DataItemTableView = sorting(Code) where(Blocked = const(false));
 
-            column(StationCode; Code)
-            {
-            }
-            column(StationDescription; Description)
-            {
-            }
-            column(RegionID; "Region ID")
-            {
-            }
-            column(BudgetedEst; "Approved Establishment")
-            {
-            }
-            column(ActiveFTE; "No. of Active Employees")
-            {
-            }
-            column(Vacancies; Vacancies)
-            {
-            }
-            column(FilledUpPercent; FilledUpPercent)
-            {
-            }
-            column(MaleCount; MaleCount)
-            {
-            }
-            column(FemaleCount; FemaleCount)
-            {
-            }
-            column(ExitedStaff; ExitedStaff)
-            {
-            }
-            column(RetentionPercent; RetentionPercent)
-            {
-            }
+            column(StationCode; Code) { }
+            column(StationDescription; Description) { }
+            column(RegionID; "Region ID") { }
+            column(BudgetedEst; "Approved Establishment") { }
+            column(ActiveFTE; "No. of Active Employees") { }
+            column(Vacancies; Vacancies) { }
+            column(FilledUpPercent; FilledUpPercent) { }
+            column(MaleCount; MaleCount) { }
+            column(FemaleCount; FemaleCount) { }
+            column(ExitedStaff; ExitedStaff) { }
+            column(RetentionPercent; RetentionPercent) { }
 
             trigger OnAfterGetRecord()
             var
@@ -151,10 +122,8 @@ report 57107 "Duty Station Staffing Summary"
                 FemaleCount := 0;
                 ExitedStaff := 0;
 
-             
                 DutyStation.CalcFields("No. of Active Employees");
 
-                
                 EmpRec.Reset();
                 EmpRec.SetRange("Current Duty Station", DutyStation.Code); 
                 EmpRec.SetRange(Status, EmpRec.Status::Active);
@@ -165,25 +134,21 @@ report 57107 "Duty Station Staffing Summary"
                 EmpRec.SetRange(Gender, EmpRec.Gender::Female);
                 FemaleCount := EmpRec.Count();
 
-               
                 EmpRec.Reset();
                 EmpRec.SetRange("Current Duty Station", DutyStation.Code); 
                 EmpRec.SetRange(Status, EmpRec.Status::Terminated);
                 ExitedStaff := EmpRec.Count();
 
-                // Calculate vacancies
                 if DutyStation."Approved Establishment" > DutyStation."No. of Active Employees" then
                     Vacancies := DutyStation."Approved Establishment" - DutyStation."No. of Active Employees"
                 else
                     Vacancies := 0;
 
-                // Calculate filled up percentage
                 if DutyStation."Approved Establishment" > 0 then
                     FilledUpPercent := (DutyStation."No. of Active Employees" / DutyStation."Approved Establishment") * 100
                 else
                     FilledUpPercent := 0;
 
-                // Calculate retention percentage
                 if (DutyStation."No. of Active Employees" + ExitedStaff) > 0 then
                     RetentionPercent := (DutyStation."No. of Active Employees" / (DutyStation."No. of Active Employees" + ExitedStaff)) * 100
                 else
@@ -198,16 +163,12 @@ report 57107 "Duty Station Staffing Summary"
         {
             area(Content)
             {
-                group(GroupName)
-                {
-                }
+                group(GroupName) { }
             }
         }
         actions
         {
-            area(Processing)
-            {
-            }
+            area(Processing) { }
         }
     }
 

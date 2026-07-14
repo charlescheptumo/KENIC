@@ -31,11 +31,10 @@ report 59134 "Org. Structure Summary"
             column(CreatedBy; UserId) { }
             column(CreatedDate; CurrentDateTime) { }
 
-            
+            // SECTION A & B: Board (Board) & Executive (Company-Level)
             dataitem(BoardAndCEO; "Responsibility Center")
             {
-                
-                DataItemTableView = sorting(Code) where("Operating Unit Type" = filter("Company-Level" | Board ));
+                DataItemTableView = sorting(Code) where("Operating Unit Type" = filter(Board | "Company-Level"));
                 
                 column(L12_Code; Code) { }
                 column(L12_Name; Name) { }
@@ -44,6 +43,7 @@ report 59134 "Org. Structure Summary"
                 column(L12_HeadTitle; "Headed By (Title)") { }
                 column(L12_HeadName; "Current Head Name") { }
                 column(L12_StaffCount; L12_StaffCount) { }
+                column(L12_UnitType; Format("Operating Unit Type")) { } 
 
                 trigger OnAfterGetRecord()
                 begin
@@ -51,7 +51,7 @@ report 59134 "Org. Structure Summary"
                 end;
             }
 
-           
+            // SECTION C: DIRECTORATES & DIVISIONS (LEVEL 3)
             dataitem(Directorates; "Responsibility Center")
             {
                 DataItemTableView = sorting(Code) where("Operating Unit Type" = const(Directorate));
@@ -68,9 +68,10 @@ report 59134 "Org. Structure Summary"
                 end;
             }
 
-            
+            // SECTION D: DEPARTMENTS & BRANCHES (LEVEL 4)
             dataitem(Departments; "Responsibility Center")
             {
+               
                 DataItemTableView = sorting(Code) where("Operating Unit Type" = const("Department/Center"));
                 
                 column(L4_Code; Code) { }
@@ -102,7 +103,6 @@ report 59134 "Org. Structure Summary"
         Employee: Record Employee;
     begin
         Employee.Reset();
-        
         Employee.SetRange("Responsibility Center", RCCode);
         Employee.SetRange(Status, Employee.Status::Active);
         exit(Employee.Count());

@@ -10,6 +10,97 @@
       <rd:DataSourceID>8be48bfc-0334-4a7c-8459-401e86d7f738</rd:DataSourceID>
     </DataSource>
   </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+      <Fields>
+        <Field Name="CompanyName">
+          <DataField>CompanyName</DataField>
+        </Field>
+        <Field Name="CompanyAddress">
+          <DataField>CompanyAddress</DataField>
+        </Field>
+        <Field Name="CompanyAddress2">
+          <DataField>CompanyAddress2</DataField>
+        </Field>
+        <Field Name="CompanyLogo">
+          <DataField>CompanyLogo</DataField>
+        </Field>
+        <Field Name="CompanyMotto">
+          <DataField>CompanyMotto</DataField>
+        </Field>
+        <Field Name="CompanyEmail">
+          <DataField>CompanyEmail</DataField>
+        </Field>
+        <Field Name="CompanyHomePage">
+          <DataField>CompanyHomePage</DataField>
+        </Field>
+        <Field Name="CompanyPhone">
+          <DataField>CompanyPhone</DataField>
+        </Field>
+        <Field Name="CreatedBy">
+          <DataField>CreatedBy</DataField>
+        </Field>
+        <Field Name="CreatedDate">
+          <DataField>CreatedDate</DataField>
+        </Field>
+        <Field Name="L12_Code">
+          <DataField>L12_Code</DataField>
+        </Field>
+        <Field Name="L12_Name">
+          <DataField>L12_Name</DataField>
+        </Field>
+        <Field Name="L12_Level">
+          <DataField>L12_Level</DataField>
+        </Field>
+        <Field Name="L12_Overview">
+          <DataField>L12_Overview</DataField>
+        </Field>
+        <Field Name="L12_HeadTitle">
+          <DataField>L12_HeadTitle</DataField>
+        </Field>
+        <Field Name="L12_HeadName">
+          <DataField>L12_HeadName</DataField>
+        </Field>
+        <Field Name="L12_StaffCount">
+          <DataField>L12_StaffCount</DataField>
+        </Field>
+        <Field Name="L3_Code">
+          <DataField>L3_Code</DataField>
+        </Field>
+        <Field Name="L3_Name">
+          <DataField>L3_Name</DataField>
+        </Field>
+        <Field Name="L3_Overview">
+          <DataField>L3_Overview</DataField>
+        </Field>
+        <Field Name="L3_HeadName">
+          <DataField>L3_HeadName</DataField>
+        </Field>
+        <Field Name="L3_LinkedUnits">
+          <DataField>L3_LinkedUnits</DataField>
+        </Field>
+        <Field Name="L4_Code">
+          <DataField>L4_Code</DataField>
+        </Field>
+        <Field Name="L4_Name">
+          <DataField>L4_Name</DataField>
+        </Field>
+        <Field Name="L4_ReportingLine">
+          <DataField>L4_ReportingLine</DataField>
+        </Field>
+        <Field Name="L4_HeadName">
+          <DataField>L4_HeadName</DataField>
+        </Field>
+        <Field Name="L4_StaffCount">
+          <DataField>L4_StaffCount</DataField>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -28,12 +119,143 @@
               </Border>
             </Style>
           </Image>
-          <Textbox Name="SectionDTitle">
+          <Textbox Name="CompanyName">
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>SECTION D: DEPARTMENTS &amp; BRANCHES (LEVEL 4)</Value>
+                    <Value>=Fields!CompanyName.Value</Value>
+                    <Style>
+                      <FontSize>12pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <TextAlign>Center</TextAlign>
+                      <Color>#1a3c6e</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.05in</Top>
+            <Left>0.8in</Left>
+            <Height>0.3in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>1</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="CompanyMotto">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!CompanyMotto.Value</Value>
+                    <Style>
+                      <FontStyle>Italic</FontStyle>
+                      <FontSize>9pt</FontSize>
+                      <TextAlign>Center</TextAlign>
+                      <Color>#555555</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.35in</Top>
+            <Left>0.8in</Left>
+            <Height>0.2in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>2</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="CompanyAddress">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!CompanyAddress.Value &amp; " | Tel: " &amp; Fields!CompanyPhone.Value &amp; " | Email: " &amp; Fields!CompanyEmail.Value</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                      <TextAlign>Center</TextAlign>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.55in</Top>
+            <Left>0.8in</Left>
+            <Height>0.15in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>3</ZIndex>
+            <Style />
+          </Textbox>
+          <Line Name="HeaderLine">
+            <Top>0.75in</Top>
+            <Left>0.1in</Left>
+            <Height>0.02in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border>
+                <Color>#1a3c6e</Color>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </Border>
+            </Style>
+          </Line>
+          <Textbox Name="ReportTitle">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>ORGANIZATION STRUCTURE SUMMARY</Value>
+                    <Style>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <TextAlign>Center</TextAlign>
+                      <Color>#1a3c6e</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.85in</Top>
+            <Left>0.1in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>5</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="ReportMeta">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="Created By: " &amp; First(Fields!CreatedBy.Value, "DataSet_Result") &amp; " | Created Date: " &amp; First(Fields!CreatedDate.Value, "DataSet_Result") &amp; " | Module: Establishment &amp; Manpower Planning (E&amp;MP) | Report ID: REP-70002-ORG"</Value>
+                    <Style>
+                      <FontStyle>Italic</FontStyle>
+                      <FontSize>8pt</FontSize>
+                      <TextAlign>Center</TextAlign>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>1.2in</Top>
+            <Left>0.1in</Left>
+            <Height>0.3in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>6</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="SectionATitle">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>SECTION A: BOARD GOVERNANCE (LEVEL 1)</Value>
                     <Style>
                       <BackgroundColor>#e8f0fe</BackgroundColor>
                       <FontSize>11pt</FontSize>
@@ -48,17 +270,523 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>5.5in</Top>
+            <Top>1.6in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
-            <ZIndex>1</ZIndex>
-            <Style>
-              <Border>
-                <Color>White</Color>
-                <Style>Solid</Style>
-              </Border>
-            </Style>
+            <ZIndex>7</ZIndex>
+            <Style />
+          </Textbox>
+          <Tablix Name="BoardTable">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.5in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BoardHeader1">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CODE</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BoardHeader2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>NAME</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BoardHeader3">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>MANDATE &amp; OVERVIEW</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.55in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BoardValue1">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!L12_Code.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <Border>
+                              <Color>#cccccc</Color>
+                              <Style>Solid</Style>
+                              <Width>0.5pt</Width>
+                            </Border>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BoardValue2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!L12_Name.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <PaddingLeft>2pt</PaddingLeft>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <Border>
+                              <Color>#cccccc</Color>
+                              <Style>Solid</Style>
+                              <Width>0.5pt</Width>
+                            </Border>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BoardValue3">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!L12_Overview.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <PaddingLeft>2pt</PaddingLeft>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <Border>
+                              <Color>#cccccc</Color>
+                              <Style>Solid</Style>
+                              <Width>0.5pt</Width>
+                            </Border>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>1.85in</Top>
+            <Left>0.1in</Left>
+            <Height>0.8in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>8</ZIndex>
+            <Style />
+          </Tablix>
+          <Textbox Name="BoardNote">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>* Note: Details of other board members are maintained on e-Board Module.</Value>
+                    <Style>
+                      <FontStyle>Italic</FontStyle>
+                      <FontSize>7pt</FontSize>
+                      <Color>#666666</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>2.7in</Top>
+            <Left>0.1in</Left>
+            <Height>0.2in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>9</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="SectionBTitle">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>SECTION B: EXECUTIVE TIER (LEVEL 2)</Value>
+                    <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
+                      <FontSize>11pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <Color>#1a3c6e</Color>
+                      <PaddingLeft>4pt</PaddingLeft>
+                      <PaddingTop>2pt</PaddingTop>
+                      <PaddingBottom>2pt</PaddingBottom>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>2.95in</Top>
+            <Left>0.1in</Left>
+            <Height>0.25in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>10</ZIndex>
+            <Style />
+          </Textbox>
+          <Tablix Name="ExecutiveTable">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>1in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3.5in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.8in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="ExecHeader1">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CODE</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="ExecHeader2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CURRENT CEO / MD</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="ExecHeader3">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>ACTIVE STAFF COUNT</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <BackgroundColor>#1a3c6e</BackgroundColor>
+                            <FontSize>8pt</FontSize>
+                            <FontWeight>Bold</FontWeight>
+                            <TextAlign>Center</TextAlign>
+                            <Color>White</Color>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="ExecValue1">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!L12_Code.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <Border>
+                              <Color>#cccccc</Color>
+                              <Style>Solid</Style>
+                              <Width>0.5pt</Width>
+                            </Border>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="ExecValue2">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!L12_HeadTitle.Value &amp; " " &amp; Fields!L12_HeadName.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <PaddingLeft>2pt</PaddingLeft>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <Border>
+                              <Color>#cccccc</Color>
+                              <Style>Solid</Style>
+                              <Width>0.5pt</Width>
+                            </Border>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="ExecValue3">
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!L12_StaffCount.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <Style>
+                            <Border>
+                              <Color>#cccccc</Color>
+                              <Style>Solid</Style>
+                              <Width>0.5pt</Width>
+                            </Border>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
+            <Top>3.2in</Top>
+            <Left>0.1in</Left>
+            <Height>0.6in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>11</ZIndex>
+            <Style />
+          </Tablix>
+          <Textbox Name="SectionCTitle">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>SECTION C: DIRECTORATES &amp; DIVISIONS (LEVEL 3)</Value>
+                    <Style>
+                      <BackgroundColor>#e8f0fe</BackgroundColor>
+                      <FontSize>11pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <Color>#1a3c6e</Color>
+                      <PaddingLeft>4pt</PaddingLeft>
+                      <PaddingTop>2pt</PaddingTop>
+                      <PaddingBottom>2pt</PaddingBottom>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>4.28in</Top>
+            <Left>0.1in</Left>
+            <Height>0.25in</Height>
+            <Width>6.3in</Width>
+            <ZIndex>12</ZIndex>
+            <Style />
           </Textbox>
           <Tablix Name="DirectorateTable">
             <TablixBody>
@@ -389,11 +1117,11 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
-            <Top>4.53194in</Top>
+            <Top>4.53in</Top>
             <Left>0.1in</Left>
             <Height>0.55in</Height>
             <Width>6.3in</Width>
-            <ZIndex>2</ZIndex>
+            <ZIndex>13</ZIndex>
             <Style>
               <Border>
                 <Color>#cccccc</Color>
@@ -402,12 +1130,12 @@
               </Border>
             </Style>
           </Tablix>
-          <Textbox Name="SectionCTitle">
+          <Textbox Name="SectionDTitle">
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>SECTION C: DIRECTORATES &amp; DIVISIONS (LEVEL 3)</Value>
+                    <Value>SECTION D: DEPARTMENTS &amp; BRANCHES (LEVEL 4)</Value>
                     <Style>
                       <BackgroundColor>#e8f0fe</BackgroundColor>
                       <FontSize>11pt</FontSize>
@@ -422,288 +1150,11 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>4.28194in</Top>
+            <Top>5.5in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
-            <ZIndex>3</ZIndex>
-            <Style>
-              <Border>
-                <Color>White</Color>
-                <Style>Solid</Style>
-              </Border>
-            </Style>
-          </Textbox>
-          <Tablix Name="ExecutiveTable">
-            <TablixBody>
-              <TablixColumns>
-                <TablixColumn>
-                  <Width>1in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>3.5in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.8in</Width>
-                </TablixColumn>
-              </TablixColumns>
-              <TablixRows>
-                <TablixRow>
-                  <Height>0.25in</Height>
-                  <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="ExecHeader1">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>CODE</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                    <Color>White</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                            <FontSize>8pt</FontSize>
-                            <FontWeight>Bold</FontWeight>
-                            <TextAlign>Center</TextAlign>
-                            <Color>White</Color>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="ExecHeader2">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>CURRENT CEO / MD</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                    <Color>White</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                            <FontSize>8pt</FontSize>
-                            <FontWeight>Bold</FontWeight>
-                            <TextAlign>Center</TextAlign>
-                            <Color>White</Color>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="ExecHeader3">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>ACTIVE STAFF COUNT</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                    <Color>White</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                            <FontSize>8pt</FontSize>
-                            <FontWeight>Bold</FontWeight>
-                            <TextAlign>Center</TextAlign>
-                            <Color>White</Color>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-                <TablixRow>
-                  <Height>0.35in</Height>
-                  <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="ExecValue1">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!L12_Code.Value</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="ExecValue2">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!L12_HeadTitle.Value &amp; " " &amp; Fields!L12_HeadName.Value</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <PaddingLeft>2pt</PaddingLeft>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="ExecValue3">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!L12_StaffCount.Value</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-              </TablixRows>
-            </TablixBody>
-            <TablixColumnHierarchy>
-              <TablixMembers>
-                <TablixMember />
-                <TablixMember />
-                <TablixMember />
-              </TablixMembers>
-            </TablixColumnHierarchy>
-            <TablixRowHierarchy>
-              <TablixMembers>
-                <TablixMember />
-                <TablixMember />
-              </TablixMembers>
-            </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
-            <Top>3.2in</Top>
-            <Left>0.1in</Left>
-            <Height>0.6in</Height>
-            <Width>6.3in</Width>
-            <ZIndex>4</ZIndex>
-            <Style />
-          </Tablix>
-          <Textbox Name="SectionBTitle">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>SECTION B: EXECUTIVE TIER (LEVEL 2)</Value>
-                    <Style>
-                      <BackgroundColor>#e8f0fe</BackgroundColor>
-                      <FontSize>11pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                      <Color>#1a3c6e</Color>
-                      <PaddingLeft>4pt</PaddingLeft>
-                      <PaddingTop>2pt</PaddingTop>
-                      <PaddingBottom>2pt</PaddingBottom>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>2.95in</Top>
-            <Left>0.1in</Left>
-            <Height>0.25in</Height>
-            <Width>6.3in</Width>
-            <ZIndex>5</ZIndex>
-            <Style>
-              <Border>
-                <Color>White</Color>
-                <Style>Solid</Style>
-              </Border>
-            </Style>
-          </Textbox>
-          <Textbox Name="BoardNote">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>* Note: Details of other board members are maintained on e-Board Module.</Value>
-                    <Style>
-                      <FontStyle>Italic</FontStyle>
-                      <FontSize>7pt</FontSize>
-                      <Color>#666666</Color>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>2.7in</Top>
-            <Left>0.1in</Left>
-            <Height>0.2in</Height>
-            <Width>6.36528in</Width>
-            <ZIndex>6</ZIndex>
+            <ZIndex>14</ZIndex>
             <Style />
           </Textbox>
           <Tablix Name="DepartmentTable">
@@ -1038,7 +1489,7 @@
             <Left>0.1in</Left>
             <Height>0.45in</Height>
             <Width>6.3in</Width>
-            <ZIndex>7</ZIndex>
+            <ZIndex>15</ZIndex>
             <Style>
               <Border>
                 <Color>#cccccc</Color>
@@ -1047,389 +1498,14 @@
               </Border>
             </Style>
           </Tablix>
-          <Tablix Name="BoardTable">
-            <TablixBody>
-              <TablixColumns>
-                <TablixColumn>
-                  <Width>0.8in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>2.5in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>3.06528in</Width>
-                </TablixColumn>
-              </TablixColumns>
-              <TablixRows>
-                <TablixRow>
-                  <Height>0.25in</Height>
-                  <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="BoardHeader1">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>CODE</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                    <Color>White</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                            <FontSize>8pt</FontSize>
-                            <FontWeight>Bold</FontWeight>
-                            <TextAlign>Center</TextAlign>
-                            <Color>White</Color>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="BoardHeader2">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>NAME</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                    <Color>White</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                            <FontSize>8pt</FontSize>
-                            <FontWeight>Bold</FontWeight>
-                            <TextAlign>Center</TextAlign>
-                            <Color>White</Color>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="BoardHeader3">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>MANDATE &amp; OVERVIEW</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                    <Color>White</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                            <FontSize>8pt</FontSize>
-                            <FontWeight>Bold</FontWeight>
-                            <TextAlign>Center</TextAlign>
-                            <Color>White</Color>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-                <TablixRow>
-                  <Height>0.55in</Height>
-                  <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="BoardValue1">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!L12_Code.Value</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <TextAlign>Center</TextAlign>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="BoardValue2">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!L12_Name.Value</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <PaddingLeft>2pt</PaddingLeft>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="BoardValue3">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!L12_Overview.Value</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <PaddingLeft>2pt</PaddingLeft>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-              </TablixRows>
-            </TablixBody>
-            <TablixColumnHierarchy>
-              <TablixMembers>
-                <TablixMember />
-                <TablixMember />
-                <TablixMember />
-              </TablixMembers>
-            </TablixColumnHierarchy>
-            <TablixRowHierarchy>
-              <TablixMembers>
-                <TablixMember />
-                <TablixMember />
-              </TablixMembers>
-            </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
-            <Top>1.85in</Top>
-            <Left>0.1in</Left>
-            <Height>0.8in</Height>
-            <Width>6.36528in</Width>
-            <ZIndex>8</ZIndex>
-            <Style />
-          </Tablix>
-          <Textbox Name="ReportMeta">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>="Created By: " &amp; First(Fields!CreatedBy.Value, "DataSet_Result") &amp; " | Created Date: " &amp; First(Fields!CreatedDate.Value, "DataSet_Result") &amp; " | Module: Establishment &amp; Manpower Planning (E&amp;MP) | Report ID: REP-70002-ORG"</Value>
-                    <Style>
-                      <FontStyle>Italic</FontStyle>
-                      <FontSize>8pt</FontSize>
-                      <TextAlign>Center</TextAlign>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>1.20139in</Top>
-            <Left>0.1in</Left>
-            <Height>0.29861in</Height>
-            <Width>6.3in</Width>
-            <ZIndex>9</ZIndex>
-            <Style />
-          </Textbox>
-          <Textbox Name="ReportTitle">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>ORGANIZATION STRUCTURE SUMMARY</Value>
-                    <Style>
-                      <FontSize>14pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                      <TextAlign>Center</TextAlign>
-                      <Color>#1a3c6e</Color>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>0.85in</Top>
-            <Left>0.1in</Left>
-            <Height>0.28194in</Height>
-            <Width>6.3in</Width>
-            <ZIndex>10</ZIndex>
-            <Style />
-          </Textbox>
-          <Line Name="HeaderLine">
-            <Top>0.75in</Top>
-            <Left>0.1in</Left>
-            <Height>0in</Height>
-            <Width>6.3in</Width>
-            <ZIndex>11</ZIndex>
-            <Style>
-              <Border>
-                <Color>#1a3c6e</Color>
-                <Style>Solid</Style>
-                <Width>2pt</Width>
-              </Border>
-            </Style>
-          </Line>
-          <Textbox Name="CompanyAddress">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Fields!CompanyAddress.Value &amp; " | Tel: " &amp; Fields!CompanyPhone.Value &amp; " | Email: " &amp; Fields!CompanyEmail.Value</Value>
-                    <Style>
-                      <FontSize>8pt</FontSize>
-                      <TextAlign>Center</TextAlign>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>0.55in</Top>
-            <Left>0.8in</Left>
-            <Height>0.15in</Height>
-            <Width>5.5in</Width>
-            <ZIndex>12</ZIndex>
-            <Style />
-          </Textbox>
-          <Textbox Name="CompanyMotto">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Fields!CompanyMotto.Value</Value>
-                    <Style>
-                      <FontStyle>Italic</FontStyle>
-                      <FontSize>9pt</FontSize>
-                      <TextAlign>Center</TextAlign>
-                      <Color>#555555</Color>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>0.35in</Top>
-            <Left>0.8in</Left>
-            <Height>0.2in</Height>
-            <Width>5.5in</Width>
-            <ZIndex>13</ZIndex>
-            <Style />
-          </Textbox>
-          <Textbox Name="CompanyName">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Fields!CompanyName.Value</Value>
-                    <Style>
-                      <FontSize>12pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                      <TextAlign>Center</TextAlign>
-                      <Color>#1a3c6e</Color>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>0.05in</Top>
-            <Left>0.8in</Left>
-            <Height>0.3in</Height>
-            <Width>5.5in</Width>
-            <ZIndex>14</ZIndex>
-            <Style />
-          </Textbox>
-          <Textbox Name="SectionATitle">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>SECTION A: BOARD GOVERNANCE (LEVEL 1)</Value>
-                    <Style>
-                      <BackgroundColor>#e8f0fe</BackgroundColor>
-                      <FontSize>11pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                      <Color>#1a3c6e</Color>
-                      <PaddingLeft>4pt</PaddingLeft>
-                      <PaddingTop>2pt</PaddingTop>
-                      <PaddingBottom>2pt</PaddingBottom>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>1.6in</Top>
-            <Left>0.1in</Left>
-            <Height>0.25in</Height>
-            <Width>6.3in</Width>
-            <ZIndex>15</ZIndex>
-            <Style />
-          </Textbox>
         </ReportItems>
         <Height>6.2in</Height>
         <Style />
       </Body>
-      <Width>6.46528in</Width>
+      <Width>6.5in</Width>
       <Page>
         <PageFooter>
-          <Height>1in</Height>
+          <Height>0.5in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1448,7 +1524,7 @@
                   <Style />
                 </Paragraph>
               </Paragraphs>
-              <Top>0.04167in</Top>
+              <Top>0.1in</Top>
               <Left>0.1in</Left>
               <Height>0.2in</Height>
               <Width>6.3in</Width>
@@ -1472,99 +1548,14 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <Language>=User!Language</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Fields>
-        <Field Name="CompanyName">
-          <DataField>CompanyName</DataField>
-        </Field>
-        <Field Name="CompanyAddress">
-          <DataField>CompanyAddress</DataField>
-        </Field>
-        <Field Name="CompanyAddress2">
-          <DataField>CompanyAddress2</DataField>
-        </Field>
-        <Field Name="CompanyLogo">
-          <DataField>CompanyLogo</DataField>
-        </Field>
-        <Field Name="CompanyMotto">
-          <DataField>CompanyMotto</DataField>
-        </Field>
-        <Field Name="CompanyEmail">
-          <DataField>CompanyEmail</DataField>
-        </Field>
-        <Field Name="CompanyHomePage">
-          <DataField>CompanyHomePage</DataField>
-        </Field>
-        <Field Name="CompanyPhone">
-          <DataField>CompanyPhone</DataField>
-        </Field>
-        <Field Name="CreatedBy">
-          <DataField>CreatedBy</DataField>
-        </Field>
-        <Field Name="CreatedDate">
-          <DataField>CreatedDate</DataField>
-        </Field>
-        <Field Name="L12_Code">
-          <DataField>L12_Code</DataField>
-        </Field>
-        <Field Name="L12_Name">
-          <DataField>L12_Name</DataField>
-        </Field>
-        <Field Name="L12_Level">
-          <DataField>L12_Level</DataField>
-        </Field>
-        <Field Name="L12_Overview">
-          <DataField>L12_Overview</DataField>
-        </Field>
-        <Field Name="L12_HeadTitle">
-          <DataField>L12_HeadTitle</DataField>
-        </Field>
-        <Field Name="L12_HeadName">
-          <DataField>L12_HeadName</DataField>
-        </Field>
-        <Field Name="L12_StaffCount">
-          <DataField>L12_StaffCount</DataField>
-        </Field>
-        <Field Name="L3_Code">
-          <DataField>L3_Code</DataField>
-        </Field>
-        <Field Name="L3_Name">
-          <DataField>L3_Name</DataField>
-        </Field>
-        <Field Name="L3_Overview">
-          <DataField>L3_Overview</DataField>
-        </Field>
-        <Field Name="L3_HeadName">
-          <DataField>L3_HeadName</DataField>
-        </Field>
-        <Field Name="L3_LinkedUnits">
-          <DataField>L3_LinkedUnits</DataField>
-        </Field>
-        <Field Name="L4_Code">
-          <DataField>L4_Code</DataField>
-        </Field>
-        <Field Name="L4_Name">
-          <DataField>L4_Name</DataField>
-        </Field>
-        <Field Name="L4_ReportingLine">
-          <DataField>L4_ReportingLine</DataField>
-        </Field>
-        <Field Name="L4_HeadName">
-          <DataField>L4_HeadName</DataField>
-        </Field>
-        <Field Name="L4_StaffCount">
-          <DataField>L4_StaffCount</DataField>
-        </Field>
-      </Fields>
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-    </DataSet>
-  </DataSets>
 </Report>
