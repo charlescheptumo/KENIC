@@ -139,10 +139,10 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="Created By: " &amp; User!UserID &amp;
-" | Created Date: " &amp; Format(Globals!ExecutionTime, "dd-MMM-yyyy hh:mm tt") &amp;
+                    <Value>="Created By: " &amp; First(Fields!CreatedBy.Value, "DataSet_Result") &amp;
+" | Created Date: " &amp; Format(First(Fields!CreatedDate.Value, "DataSet_Result"), "dd-MMM-yyyy hh:mm tt") &amp;
 " | Module: Establishment &amp; Manpower Planning (E&amp;MP)" &amp;
-" | Report ID: REP-70001-EMP"</Value>
+" | Report ID: REP-70002-ORG"</Value>
                     <Style>
                       <FontStyle>Italic</FontStyle>
                       <FontSize>8pt</FontSize>
@@ -335,7 +335,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value />
+                                  <Value>=Fields!CompDateEstablished.Value</Value>
                                   <Style>
                                     <FontSize>9pt</FontSize>
                                     <Format>dd-MMM-yyyy</Format>
@@ -343,7 +343,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style />
@@ -2305,6 +2307,12 @@
         <Field Name="CompanyName2">
           <DataField>CompanyName2</DataField>
         </Field>
+        <Field Name="CreatedBy">
+          <DataField>CreatedBy</DataField>
+        </Field>
+        <Field Name="CreatedDate">
+          <DataField>CreatedDate</DataField>
+        </Field>
         <Field Name="Address">
           <DataField>Address</DataField>
         </Field>
@@ -2349,6 +2357,9 @@
         </Field>
         <Field Name="CompEstablishedPositions">
           <DataField>CompEstablishedPositions</DataField>
+        </Field>
+        <Field Name="CompDateEstablished">
+          <DataField>CompDateEstablished</DataField>
         </Field>
         <Field Name="CompTotalJobGrades">
           <DataField>CompTotalJobGrades</DataField>

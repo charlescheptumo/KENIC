@@ -156,7 +156,7 @@ report 57107 "Duty Station Staffing Summary"
 
                 
                 EmpRec.Reset();
-                EmpRec.SetRange("Duty Station", DutyStation.Code); 
+                EmpRec.SetRange("Current Duty Station", DutyStation.Code); 
                 EmpRec.SetRange(Status, EmpRec.Status::Active);
                 
                 EmpRec.SetRange(Gender, EmpRec.Gender::Male);
@@ -167,7 +167,7 @@ report 57107 "Duty Station Staffing Summary"
 
                
                 EmpRec.Reset();
-                EmpRec.SetRange("Duty Station", DutyStation.Code); 
+                EmpRec.SetRange("Current Duty Station", DutyStation.Code); 
                 EmpRec.SetRange(Status, EmpRec.Status::Terminated);
                 ExitedStaff := EmpRec.Count();
 

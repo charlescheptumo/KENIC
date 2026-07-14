@@ -7,7 +7,7 @@ report 53948 "Employer Profile Reports"
     Caption = 'Employer Profile Report';
     UsageCategory = ReportsAndAnalysis;
     DefaultLayout = RDLC;
-    RDLCLayout = './ADAK PHASE 2/Layouts/Employer Profile Report.rdlc';
+    RDLCLayout = './ADAK PHASE 2/Layouts/Employerr Profile Report.rdlc';
 
     dataset
     {
@@ -20,6 +20,14 @@ report 53948 "Employer Profile Reports"
             column(CompanyName2; "Name 2")
             {
             }
+            column(CreatedBy; UserId)
+            { 
+
+            }
+             column(CreatedDate; CurrentDateTime) 
+             { 
+                
+             }
             column(Address; Address)
             {
             }

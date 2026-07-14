@@ -115,6 +115,9 @@ End Function
         <Field Name="CompEstablishedPositions">
           <DataField>CompEstablishedPositions</DataField>
         </Field>
+        <Field Name="CompDateEstablished">
+          <DataField>CompDateEstablished</DataField>
+        </Field>
         <Field Name="CompTotalJobGrades">
           <DataField>CompTotalJobGrades</DataField>
         </Field>
