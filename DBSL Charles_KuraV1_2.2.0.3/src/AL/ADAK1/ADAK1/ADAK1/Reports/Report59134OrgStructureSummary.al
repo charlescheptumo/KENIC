@@ -2,7 +2,6 @@ namespace Microsoft.Inventory.Location;
 
 using Microsoft.Foundation.Company;
 using Microsoft.HumanResources.Employee;
-using Microsoft.Inventory.Location;
 using System.Text;
 
 report 59134 "Org. Structure Summary"
@@ -35,12 +34,13 @@ report 59134 "Org. Structure Summary"
             
             dataitem(BoardAndCEO; "Responsibility Center")
             {
-                DataItemTableView = sorting(Code) where("Hierarchical  Level ID" = filter("Level 1" | "Level 2"));
+                
+                DataItemTableView = sorting(Code) where("Operating Unit Type" = filter("Company-Level" | Board ));
                 
                 column(L12_Code; Code) { }
                 column(L12_Name; Name) { }
                 column(L12_Level; "Hierarchical  Level ID") { }
-                column(L12_Overview; Mission) { } // Reuses SPM Mission as mandate
+                column(L12_Overview; Mission) { } 
                 column(L12_HeadTitle; "Headed By (Title)") { }
                 column(L12_HeadName; "Current Head Name") { }
                 column(L12_StaffCount; L12_StaffCount) { }
@@ -51,10 +51,10 @@ report 59134 "Org. Structure Summary"
                 end;
             }
 
-            
+           
             dataitem(Directorates; "Responsibility Center")
             {
-                DataItemTableView = sorting(Code) where("Hierarchical  Level ID" = const("Level 3"));
+                DataItemTableView = sorting(Code) where("Operating Unit Type" = const(Directorate));
                 
                 column(L3_Code; Code) { }
                 column(L3_Name; Name) { }
@@ -64,15 +64,14 @@ report 59134 "Org. Structure Summary"
 
                 trigger OnAfterGetRecord()
                 begin
-                   
                     L3_LinkedUnits := CalculateLinkedUnits(Code);
                 end;
             }
 
-        
+            
             dataitem(Departments; "Responsibility Center")
             {
-                DataItemTableView = sorting(Code) where("Hierarchical  Level ID" = const("Level 4"));
+                DataItemTableView = sorting(Code) where("Operating Unit Type" = const("Department/Center"));
                 
                 column(L4_Code; Code) { }
                 column(L4_Name; Name) { }
@@ -103,7 +102,7 @@ report 59134 "Org. Structure Summary"
         Employee: Record Employee;
     begin
         Employee.Reset();
-        // Filters active employees mapped to this Responsibility Center code
+        
         Employee.SetRange("Responsibility Center", RCCode);
         Employee.SetRange(Status, Employee.Status::Active);
         exit(Employee.Count());
@@ -117,5 +116,4 @@ report 59134 "Org. Structure Summary"
         SubUnits.SetRange("Direct Reports To", ParentRCCode);
         exit(SubUnits.Count());
     end;
-
-   }
+}

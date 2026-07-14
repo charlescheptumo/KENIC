@@ -41,6 +41,35 @@ Table 69015 "Salary Scales"
         {
             DataClassification = ToBeClassified;
         }
+        field(11; "Overall Appointment Authority"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(12; "Default Seniority Level"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(13; "No. of Valid Positions"; Integer)
+        {
+            FieldClass = FlowField;
+            CalcFormula = count("Company Positions" where("Job Grade ID" = field(Scale)));
+            Editable = false;
+        }
+        field(14; "No. of Active Employees"; Integer)
+        {
+            FieldClass = FlowField;
+         
+            CalcFormula = count(Employee where("Salary Scale" = field(Scale), Status = const(Active)));
+            Editable = false;
+        }
+        field(15; "Effective Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(16; Blocked; Boolean)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
@@ -55,4 +84,3 @@ Table 69015 "Salary Scales"
     {
     }
 }
-

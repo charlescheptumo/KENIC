@@ -27,6 +27,19 @@ Page 69616 "Duty Station"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Region ID field.';
                 }
+
+                field("Location Code"; Rec."Location Code")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Location Code field.';
+                }
+
+                field("Station Category"; Rec."Station Category")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Station Category field.';
+                }
+
                 field("Approved Establishment"; Rec."Approved Establishment")
                 {
                     ApplicationArea = Basic;
@@ -46,25 +59,25 @@ Page 69616 "Duty Station"
         }
     }
 
-actions
-{
-    area(navigation)
+    actions
     {
-        action(StaffingSummaryReport)
+        area(navigation)
         {
-            ApplicationArea = All;
-            Caption = 'Staffing Summary Report';
-            Image = Report;
-            RunObject = report "Duty Station Staffing Summary";
-            ToolTip = 'View the Duty Station Staffing Summary Report.';
+            action(StaffingSummaryReport)
+            {
+                ApplicationArea = All;
+                Caption = 'Staffing Summary Report';
+                Image = Report;
+                RunObject = report "Duty Station Staffing Summary";
+                ToolTip = 'View the Duty Station Staffing Summary Report.';
+            }
         }
-    }
 
-    area(Promoted)
-    {
-        actionref(StaffingSummaryReport_Promoted; StaffingSummaryReport)
+        area(Promoted)
         {
+            actionref(StaffingSummaryReport_Promoted; StaffingSummaryReport)
+            {
+            }
         }
     }
-}
 }

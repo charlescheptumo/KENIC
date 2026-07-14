@@ -268,6 +268,10 @@ TableExtension 50134 tableextension50134 extends "Responsibility Center"
         {
             DataClassification = ToBeClassified;
         }
+           field(80019; "Station Category"; Text[250])
+        {
+            Description = 'Station Category';
+        }
     }
 
     keys

@@ -17,6 +17,7 @@ Page 69687 "Job Grades"
                 field(Scale; Rec.Scale)
                 {
                     ApplicationArea = Basic;
+                    Caption = 'Job Grade ID';
                     ToolTip = 'Specifies the value of the Scale field.';
                 }
                 field(Description; Rec.Description)
@@ -24,28 +25,64 @@ Page 69687 "Job Grades"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Description field.';
                 }
-                // field("Appointment Authorit y";"Appointment Authority")
-                // {
-                //     ApplicationArea = Basic;
-                //     Caption = 'Overall Appointment Authority';
-                // }
-                // field("Seniority Leve l";"Seniority Level")
-                // {
-                //     ApplicationArea = Basic;
-                //     Caption = 'Default Seniority Level';
-                // }
-                // field("Valid Position s";"Valid Positions")
-                // {
-                //     ApplicationArea = Basic;
-                // }
-                // field("Active Employee s";"Active Employees")
-                // {
-                //     ApplicationArea = Basic;
-                // }
-                // field(Block ed;Blocked)
-                //{
-                //     ApplicationArea = Basic;
-                // }
+                field("Overall Appointment Authority"; Rec."Overall Appointment Authority")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the overall appointment authority.';
+                }
+                field("Default Seniority Level"; Rec."Default Seniority Level")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the default seniority level.';
+                }
+                field("No. of Valid Positions"; Rec."No. of Valid Positions")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the number of valid positions. Click to view the positions list.';
+
+                    trigger OnDrillDown()
+                    var
+                        CompanyPositions: Record "Company Positions";
+                        CompanyPositionsList: Page "Positions"; 
+                    begin
+                        CompanyPositions.Reset();
+                        CompanyPositions.SetRange("Job Grade ID", Rec.Scale);
+                        if CompanyPositions.FindSet() then begin
+                            CompanyPositionsList.SetTableView(CompanyPositions);
+                            CompanyPositionsList.Run();
+                        end;
+                    end;
+                }
+                field("No. of Active Employees"; Rec."No. of Active Employees")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the number of active employees. Click to view the employee list.';
+
+                    trigger OnDrillDown()
+                    var
+                        Employee: Record Employee;
+                        EmployeeList: Page "Employee List"; 
+                    begin
+                        Employee.Reset();
+                        Employee.SetRange("Salary Scale", Rec.Scale);
+                        Employee.SetRange(Status, Employee.Status::Active);
+                        if Employee.FindSet() then begin
+                            EmployeeList.SetTableView(Employee);
+                            EmployeeList.Run();
+                        end;
+                    end;
+                }
+            
+                field("Effective Date"; Rec."Effective Date")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the effective date.';
+                }
+                field(Blocked; Rec.Blocked)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies if the scale is blocked.';
+                }
             }
         }
         area(factboxes)
@@ -69,4 +106,3 @@ Page 69687 "Job Grades"
     {
     }
 }
-

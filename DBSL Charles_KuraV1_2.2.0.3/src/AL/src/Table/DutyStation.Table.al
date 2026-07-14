@@ -30,6 +30,18 @@ Table 69606 "Duty Station"
         {
             DataClassification = ToBeClassified;
         }
+
+        field(7; "Location Code"; Code[10])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = "Responsibility Center";
+        }
+        field(8; "Station Category"; Text[30])
+        {
+            DataClassification = ToBeClassified;
+             TableRelation = "Responsibility Center";
+            
+        }
     }
 
     keys
