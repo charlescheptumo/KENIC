@@ -47,56 +47,32 @@
         <Field Name="CreatedDate">
           <DataField>CreatedDate</DataField>
         </Field>
-        <Field Name="L12_Code">
-          <DataField>L12_Code</DataField>
+        <Field Name="RC_Code">
+          <DataField>RC_Code</DataField>
         </Field>
-        <Field Name="L12_Name">
-          <DataField>L12_Name</DataField>
+        <Field Name="RC_Name">
+          <DataField>RC_Name</DataField>
         </Field>
-        <Field Name="L12_Level">
-          <DataField>L12_Level</DataField>
+        <Field Name="RC_Level">
+          <DataField>RC_Level</DataField>
         </Field>
-        <Field Name="L12_Overview">
-          <DataField>L12_Overview</DataField>
+        <Field Name="RC_Overview">
+          <DataField>RC_Overview</DataField>
         </Field>
-        <Field Name="L12_HeadTitle">
-          <DataField>L12_HeadTitle</DataField>
+        <Field Name="RC_HeadTitle">
+          <DataField>RC_HeadTitle</DataField>
         </Field>
-        <Field Name="L12_HeadName">
-          <DataField>L12_HeadName</DataField>
+        <Field Name="RC_HeadName">
+          <DataField>RC_HeadName</DataField>
         </Field>
-        <Field Name="L12_StaffCount">
-          <DataField>L12_StaffCount</DataField>
+        <Field Name="RC_ReportingLine">
+          <DataField>RC_ReportingLine</DataField>
         </Field>
-        <Field Name="L3_Code">
-          <DataField>L3_Code</DataField>
+        <Field Name="RC_StaffCount">
+          <DataField>RC_StaffCount</DataField>
         </Field>
-        <Field Name="L3_Name">
-          <DataField>L3_Name</DataField>
-        </Field>
-        <Field Name="L3_Overview">
-          <DataField>L3_Overview</DataField>
-        </Field>
-        <Field Name="L3_HeadName">
-          <DataField>L3_HeadName</DataField>
-        </Field>
-        <Field Name="L3_LinkedUnits">
-          <DataField>L3_LinkedUnits</DataField>
-        </Field>
-        <Field Name="L4_Code">
-          <DataField>L4_Code</DataField>
-        </Field>
-        <Field Name="L4_Name">
-          <DataField>L4_Name</DataField>
-        </Field>
-        <Field Name="L4_ReportingLine">
-          <DataField>L4_ReportingLine</DataField>
-        </Field>
-        <Field Name="L4_HeadName">
-          <DataField>L4_HeadName</DataField>
-        </Field>
-        <Field Name="L4_StaffCount">
-          <DataField>L4_StaffCount</DataField>
+        <Field Name="RC_LinkedUnits">
+          <DataField>RC_LinkedUnits</DataField>
         </Field>
       </Fields>
     </DataSet>
@@ -104,7 +80,9 @@
   <ReportSections>
     <ReportSection>
       <Body>
+        <Height>13.5in</Height>
         <ReportItems>
+          <!-- Header -->
           <Image Name="Logo">
             <Source>Database</Source>
             <Value>=Fields!CompanyLogo.Value</Value>
@@ -140,8 +118,6 @@
             <Left>0.8in</Left>
             <Height>0.3in</Height>
             <Width>5.5in</Width>
-            <ZIndex>1</ZIndex>
-            <Style />
           </Textbox>
           <Textbox Name="CompanyMotto">
             <Paragraphs>
@@ -164,8 +140,6 @@
             <Left>0.8in</Left>
             <Height>0.2in</Height>
             <Width>5.5in</Width>
-            <ZIndex>2</ZIndex>
-            <Style />
           </Textbox>
           <Textbox Name="CompanyAddress">
             <Paragraphs>
@@ -186,15 +160,12 @@
             <Left>0.8in</Left>
             <Height>0.15in</Height>
             <Width>5.5in</Width>
-            <ZIndex>3</ZIndex>
-            <Style />
           </Textbox>
           <Line Name="HeaderLine">
             <Top>0.75in</Top>
             <Left>0.1in</Left>
             <Height>0.02in</Height>
             <Width>6.3in</Width>
-            <ZIndex>4</ZIndex>
             <Style>
               <Border>
                 <Color>#1a3c6e</Color>
@@ -224,15 +195,13 @@
             <Left>0.1in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
-            <ZIndex>5</ZIndex>
-            <Style />
           </Textbox>
           <Textbox Name="ReportMeta">
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="Created By: " &amp; First(Fields!CreatedBy.Value, "DataSet_Result") &amp; " | Created Date: " &amp; First(Fields!CreatedDate.Value, "DataSet_Result") &amp; " | Module: Establishment &amp; Manpower Planning (E&amp;MP) | Report ID: REP-70002-ORG"</Value>
+                    <Value>="Created By: " &amp; First(Fields!CreatedBy.Value, "DataSet_Result") &amp; " | Created Date: " &amp; Format(First(Fields!CreatedDate.Value, "DataSet_Result"), "dd-MMM-yyyy hh:mm tt") &amp; " | Module: Establishment &amp; Manpower Planning (E&amp;MP) | Report ID: REP-70002-ORG"</Value>
                     <Style>
                       <FontStyle>Italic</FontStyle>
                       <FontSize>8pt</FontSize>
@@ -247,9 +216,9 @@
             <Left>0.1in</Left>
             <Height>0.3in</Height>
             <Width>6.3in</Width>
-            <ZIndex>6</ZIndex>
-            <Style />
           </Textbox>
+
+          <!-- SECTION A: BOARD GOVERNANCE (LEVEL 1) -->
           <Textbox Name="SectionATitle">
             <Paragraphs>
               <Paragraph>
@@ -274,10 +243,20 @@
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
-            <ZIndex>7</ZIndex>
-            <Style />
           </Textbox>
+
+          <!-- BOARD TABLE - FIXED -->
           <Tablix Name="BoardTable">
+            <DataSetName>DataSet_Result</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!RC_Level.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>Level 1</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -287,10 +266,11 @@
                   <Width>2.5in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3in</Width>
+                  <Width>3.0in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
+                <!-- Header Row - Static -->
                 <TablixRow>
                   <Height>0.25in</Height>
                   <TablixCells>
@@ -383,6 +363,7 @@
                     </TablixCell>
                   </TablixCells>
                 </TablixRow>
+                <!-- Detail Row - Inside Group -->
                 <TablixRow>
                   <Height>0.55in</Height>
                   <TablixCells>
@@ -393,7 +374,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L12_Code.Value</Value>
+                                  <Value>=Fields!RC_Code.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -421,7 +402,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L12_Name.Value</Value>
+                                  <Value>=Fields!RC_Name.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -449,7 +430,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L12_Overview.Value</Value>
+                                  <Value>=Fields!RC_Overview.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <PaddingLeft>2pt</PaddingLeft>
@@ -482,41 +463,25 @@
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember />
-                <TablixMember />
+                <TablixMember>
+                  <KeepWithGroup>None</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="BoardGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!RC_Code.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
             <Top>1.85in</Top>
             <Left>0.1in</Left>
             <Height>0.8in</Height>
             <Width>6.3in</Width>
-            <ZIndex>8</ZIndex>
-            <Style />
           </Tablix>
-          <Textbox Name="BoardNote">
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>* Note: Details of other board members are maintained on e-Board Module.</Value>
-                    <Style>
-                      <FontStyle>Italic</FontStyle>
-                      <FontSize>7pt</FontSize>
-                      <Color>#666666</Color>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <Top>2.7in</Top>
-            <Left>0.1in</Left>
-            <Height>0.2in</Height>
-            <Width>6.3in</Width>
-            <ZIndex>9</ZIndex>
-            <Style />
-          </Textbox>
+
+          <!-- SECTION B: EXECUTIVE TIER (LEVEL 2) -->
           <Textbox Name="SectionBTitle">
             <Paragraphs>
               <Paragraph>
@@ -537,18 +502,50 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>2.95in</Top>
+            <Top>2.85in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
-            <ZIndex>10</ZIndex>
-            <Style />
           </Textbox>
+
+          <Textbox Name="BoardNote">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>* Note: Details of other board members are maintained on e-Board Module.</Value>
+                    <Style>
+                      <FontStyle>Italic</FontStyle>
+                      <FontSize>7pt</FontSize>
+                      <Color>#666666</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>2.7in</Top>
+            <Left>0.1in</Left>
+            <Height>0.2in</Height>
+            <Width>6.3in</Width>
+          </Textbox>
+
+          <!-- EXECUTIVE TABLE - FIXED -->
           <Tablix Name="ExecutiveTable">
+            <DataSetName>DataSet_Result</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!RC_Level.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>Level 2</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>1.0in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>3.5in</Width>
@@ -558,6 +555,7 @@
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
+                <!-- Header Row - Static -->
                 <TablixRow>
                   <Height>0.25in</Height>
                   <TablixCells>
@@ -650,6 +648,7 @@
                     </TablixCell>
                   </TablixCells>
                 </TablixRow>
+                <!-- Detail Row - Inside Group -->
                 <TablixRow>
                   <Height>0.35in</Height>
                   <TablixCells>
@@ -660,7 +659,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L12_Code.Value</Value>
+                                  <Value>=Fields!RC_Code.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -688,7 +687,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L12_HeadTitle.Value &amp; " " &amp; Fields!L12_HeadName.Value</Value>
+                                  <Value>=Fields!RC_HeadTitle.Value &amp; " " &amp; Fields!RC_HeadName.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <PaddingLeft>2pt</PaddingLeft>
@@ -715,7 +714,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L12_StaffCount.Value</Value>
+                                  <Value>=Fields!RC_StaffCount.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -749,18 +748,25 @@
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember />
-                <TablixMember />
+                <TablixMember>
+                  <KeepWithGroup>None</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="ExecutiveGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!RC_Code.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
-            <Top>3.2in</Top>
+            <Top>3.1in</Top>
             <Left>0.1in</Left>
             <Height>0.6in</Height>
             <Width>6.3in</Width>
-            <ZIndex>11</ZIndex>
-            <Style />
           </Tablix>
+
+          <!-- SECTION C: DIRECTORATES & DIVISIONS (LEVEL 3) -->
           <Textbox Name="SectionCTitle">
             <Paragraphs>
               <Paragraph>
@@ -781,14 +787,24 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>4.28in</Top>
+            <Top>3.85in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
-            <ZIndex>12</ZIndex>
-            <Style />
           </Textbox>
+
+          <!-- DIRECTORATE TABLE - FIXED -->
           <Tablix Name="DirectorateTable">
+            <DataSetName>DataSet_Result</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!RC_Level.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>Level 3</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -801,13 +817,14 @@
                   <Width>2.3in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>1.0in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.8in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
+                <!-- Header Row - Static -->
                 <TablixRow>
                   <Height>0.25in</Height>
                   <TablixCells>
@@ -958,6 +975,7 @@
                     </TablixCell>
                   </TablixCells>
                 </TablixRow>
+                <!-- Detail Row - Inside Group -->
                 <TablixRow>
                   <Height>0.3in</Height>
                   <TablixCells>
@@ -968,7 +986,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L3_Code.Value</Value>
+                                  <Value>=Fields!RC_Code.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <TextAlign>Center</TextAlign>
@@ -995,7 +1013,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L3_Name.Value</Value>
+                                  <Value>=Fields!RC_Name.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -1023,7 +1041,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L3_Overview.Value</Value>
+                                  <Value>=Fields!RC_Overview.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <PaddingLeft>2pt</PaddingLeft>
@@ -1050,7 +1068,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L3_HeadName.Value</Value>
+                                  <Value>=Fields!RC_HeadName.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <TextAlign>Center</TextAlign>
@@ -1077,7 +1095,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L3_LinkedUnits.Value</Value>
+                                  <Value>=Fields!RC_LinkedUnits.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <TextAlign>Center</TextAlign>
@@ -1112,16 +1130,22 @@
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember />
-                <TablixMember />
+                <TablixMember>
+                  <KeepWithGroup>None</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="DirectorateGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!RC_Code.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
-            <Top>4.53in</Top>
+            <Top>4.1in</Top>
             <Left>0.1in</Left>
             <Height>0.55in</Height>
             <Width>6.3in</Width>
-            <ZIndex>13</ZIndex>
             <Style>
               <Border>
                 <Color>#cccccc</Color>
@@ -1130,6 +1154,8 @@
               </Border>
             </Style>
           </Tablix>
+
+          <!-- SECTION D: DEPARTMENTS & BRANCHES (LEVEL 4) -->
           <Textbox Name="SectionDTitle">
             <Paragraphs>
               <Paragraph>
@@ -1150,14 +1176,24 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>5.5in</Top>
+            <Top>4.85in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
-            <ZIndex>14</ZIndex>
-            <Style />
           </Textbox>
+
+          <!-- DEPARTMENT TABLE - FIXED -->
           <Tablix Name="DepartmentTable">
+            <DataSetName>DataSet_Result</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!RC_Level.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>Level 4</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -1177,6 +1213,7 @@
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
+                <!-- Header Row - Static -->
                 <TablixRow>
                   <Height>0.25in</Height>
                   <TablixCells>
@@ -1327,6 +1364,7 @@
                     </TablixCell>
                   </TablixCells>
                 </TablixRow>
+                <!-- Detail Row - Inside Group -->
                 <TablixRow>
                   <Height>0.2in</Height>
                   <TablixCells>
@@ -1337,7 +1375,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L4_Code.Value</Value>
+                                  <Value>=Fields!RC_Code.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <TextAlign>Center</TextAlign>
@@ -1364,7 +1402,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L4_Name.Value</Value>
+                                  <Value>=Fields!RC_Name.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <PaddingLeft>2pt</PaddingLeft>
@@ -1391,7 +1429,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L4_ReportingLine.Value</Value>
+                                  <Value>=Fields!RC_ReportingLine.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <TextAlign>Center</TextAlign>
@@ -1418,7 +1456,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L4_HeadName.Value</Value>
+                                  <Value>=Fields!RC_HeadName.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <TextAlign>Center</TextAlign>
@@ -1445,7 +1483,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!L4_StaffCount.Value</Value>
+                                  <Value>=Fields!RC_StaffCount.Value</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <TextAlign>Center</TextAlign>
@@ -1480,16 +1518,22 @@
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember />
-                <TablixMember />
+                <TablixMember>
+                  <KeepWithGroup>None</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="DepartmentGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!RC_Code.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
-            <Top>5.75in</Top>
+            <Top>5.1in</Top>
             <Left>0.1in</Left>
             <Height>0.45in</Height>
             <Width>6.3in</Width>
-            <ZIndex>15</ZIndex>
             <Style>
               <Border>
                 <Color>#cccccc</Color>
@@ -1499,13 +1543,12 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>6.2in</Height>
         <Style />
       </Body>
       <Width>6.5in</Width>
       <Page>
         <PageFooter>
-          <Height>0.5in</Height>
+          <Height>1in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1524,11 +1567,10 @@
                   <Style />
                 </Paragraph>
               </Paragraphs>
-              <Top>0.1in</Top>
+              <Top>0.04167in</Top>
               <Left>0.1in</Left>
               <Height>0.2in</Height>
               <Width>6.3in</Width>
-              <Style />
             </Textbox>
           </ReportItems>
           <Style>
@@ -1537,7 +1579,7 @@
             </Border>
           </Style>
         </PageFooter>
-        <PageHeight>11.69in</PageHeight>
+        <PageHeight>14.5in</PageHeight>
         <PageWidth>8.27in</PageWidth>
         <LeftMargin>0.4in</LeftMargin>
         <RightMargin>0.4in</RightMargin>

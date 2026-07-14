@@ -10,101 +10,10 @@
       <rd:DataSourceID>ea603bc7-93c9-4f1c-8b4b-c2168a422c3f</rd:DataSourceID>
     </DataSource>
   </DataSources>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-      <Fields>
-        <Field Name="CompanyName">
-          <DataField>CompanyName</DataField>
-        </Field>
-        <Field Name="CompanyAddress">
-          <DataField>CompanyAddress</DataField>
-        </Field>
-        <Field Name="CompanyAddress2">
-          <DataField>CompanyAddress2</DataField>
-        </Field>
-        <Field Name="CompanyLogo">
-          <DataField>CompanyLogo</DataField>
-        </Field>
-        <Field Name="CompanyMotto">
-          <DataField>CompanyMotto</DataField>
-        </Field>
-        <Field Name="CompanyEmail">
-          <DataField>CompanyEmail</DataField>
-        </Field>
-        <Field Name="CompanyHomePage">
-          <DataField>CompanyHomePage</DataField>
-        </Field>
-        <Field Name="CompanyPhone">
-          <DataField>CompanyPhone</DataField>
-        </Field>
-        <Field Name="TotalEstablishment">
-          <DataField>TotalEstablishment</DataField>
-        </Field>
-        <Field Name="TotalActiveStaff">
-          <DataField>TotalActiveStaff</DataField>
-        </Field>
-        <Field Name="ActiveStaffMale">
-          <DataField>ActiveStaffMale</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemale">
-          <DataField>ActiveStaffFemale</DataField>
-        </Field>
-        <Field Name="ActiveStaffMalePercent">
-          <DataField>ActiveStaffMalePercent</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemalePercent">
-          <DataField>ActiveStaffFemalePercent</DataField>
-        </Field>
-        <Field Name="ExitedStaffCount">
-          <DataField>ExitedStaffCount</DataField>
-        </Field>
-        <Field Name="OverallRetentionRate">
-          <DataField>OverallRetentionRate</DataField>
-        </Field>
-        <Field Name="StationCode">
-          <DataField>StationCode</DataField>
-        </Field>
-        <Field Name="StationDescription">
-          <DataField>StationDescription</DataField>
-        </Field>
-        <Field Name="RegionID">
-          <DataField>RegionID</DataField>
-        </Field>
-        <Field Name="BudgetedEst">
-          <DataField>BudgetedEst</DataField>
-        </Field>
-        <Field Name="ActiveFTE">
-          <DataField>ActiveFTE</DataField>
-        </Field>
-        <Field Name="Vacancies">
-          <DataField>Vacancies</DataField>
-        </Field>
-        <Field Name="FilledUpPercent">
-          <DataField>FilledUpPercent</DataField>
-        </Field>
-        <Field Name="MaleCount">
-          <DataField>MaleCount</DataField>
-        </Field>
-        <Field Name="FemaleCount">
-          <DataField>FemaleCount</DataField>
-        </Field>
-        <Field Name="ExitedStaff">
-          <DataField>ExitedStaff</DataField>
-        </Field>
-        <Field Name="RetentionPercent">
-          <DataField>RetentionPercent</DataField>
-        </Field>
-      </Fields>
-    </DataSet>
-  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
-        <Height>3.98in</Height>
+        <Height>8.5in</Height>
         <ReportItems>
           <Image Name="Image1">
             <Source>Database</Source>
@@ -229,6 +138,8 @@
               </Border>
             </Style>
           </Line>
+
+          <!-- SECTION A: SUMMARY STATISTICS -->
           <Textbox Name="SummaryTitle">
             <Paragraphs>
               <Paragraph>
@@ -248,39 +159,42 @@
                 </TextRuns>
               </Paragraph>
             </Paragraphs>
-            <Top>1.51in</Top>
+            <Top>1.55in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.9in</Width>
           </Textbox>
+
+          <!-- SUMMARY TABLE -->
           <Tablix Name="SummaryTable">
+            <DataSetName>DataSet_Result</DataSetName>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.2in</Width>
+                  <Width>1.0in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.8in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.8in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.9in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.9in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.9in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.9in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.9in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.2in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>0.42in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -481,7 +395,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.33in</Height>
+                  <Height>0.3in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -681,27 +595,13 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
@@ -714,12 +614,20 @@
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
-            <Top>1.76in</Top>
+            <Top>1.85in</Top>
             <Left>0.1in</Left>
-            <Height>0.75in</Height>
+            <Height>0.65in</Height>
             <Width>6.9in</Width>
+            <Style>
+              <Border>
+                <Color>#CCCCCC</Color>
+                <Style>Solid</Style>
+                <Width>0.5pt</Width>
+              </Border>
+            </Style>
           </Tablix>
+
+          <!-- SECTION B: DETAILED STAFFING -->
           <Textbox Name="DetailTitle">
             <Paragraphs>
               <Paragraph>
@@ -739,19 +647,22 @@
                 </TextRuns>
               </Paragraph>
             </Paragraphs>
-            <Top>2.71in</Top>
+            <Top>2.8in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.9in</Width>
           </Textbox>
+
+          <!-- DETAIL TABLE -->
           <Tablix Name="DetailTable">
+            <DataSetName>DataSet_Result</DataSetName>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
                   <Width>0.7in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.7in</Width>
+                  <Width>1.5in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.6in</Width>
@@ -779,8 +690,9 @@
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
+                <!-- HEADER ROW - Static, outside the group -->
                 <TablixRow>
-                  <Height>0.56in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -817,7 +729,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>DESCRIPTION / BRANCH SCOPE</Value>
+                                  <Value>DESCRIPTION</Value>
                                   <Style>
                                     <Color>White</Color>
                                     <FontWeight>Bold</FontWeight>
@@ -1064,8 +976,9 @@
                     </TablixCell>
                   </TablixCells>
                 </TablixRow>
+                <!-- DETAIL ROW - Inside the group -->
                 <TablixRow>
-                  <Height>0.46in</Height>
+                  <Height>0.3in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -1335,52 +1248,37 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
-                </TablixMember>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
+                <!-- Header row - Static -->
                 <TablixMember>
                   <KeepWithGroup>None</KeepWithGroup>
                 </TablixMember>
+                <!-- Detail row - Inside the group -->
                 <TablixMember>
-                  <KeepWithGroup>None</KeepWithGroup>
+                  <Group Name="DetailGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!StationCode.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>DataSet_Result</DataSetName>
-            <Top>2.96in</Top>
+            <Top>3.1in</Top>
             <Left>0.1in</Left>
-            <Height>1.02in</Height>
+            <Height>0.65in</Height>
             <Width>6.9in</Width>
             <Style>
               <Border>
@@ -1442,4 +1340,95 @@
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="CompanyName">
+          <DataField>CompanyName</DataField>
+        </Field>
+        <Field Name="CompanyAddress">
+          <DataField>CompanyAddress</DataField>
+        </Field>
+        <Field Name="CompanyAddress2">
+          <DataField>CompanyAddress2</DataField>
+        </Field>
+        <Field Name="CompanyLogo">
+          <DataField>CompanyLogo</DataField>
+        </Field>
+        <Field Name="CompanyMotto">
+          <DataField>CompanyMotto</DataField>
+        </Field>
+        <Field Name="CompanyEmail">
+          <DataField>CompanyEmail</DataField>
+        </Field>
+        <Field Name="CompanyHomePage">
+          <DataField>CompanyHomePage</DataField>
+        </Field>
+        <Field Name="CompanyPhone">
+          <DataField>CompanyPhone</DataField>
+        </Field>
+        <Field Name="TotalEstablishment">
+          <DataField>TotalEstablishment</DataField>
+        </Field>
+        <Field Name="TotalActiveStaff">
+          <DataField>TotalActiveStaff</DataField>
+        </Field>
+        <Field Name="ActiveStaffMale">
+          <DataField>ActiveStaffMale</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemale">
+          <DataField>ActiveStaffFemale</DataField>
+        </Field>
+        <Field Name="ActiveStaffMalePercent">
+          <DataField>ActiveStaffMalePercent</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemalePercent">
+          <DataField>ActiveStaffFemalePercent</DataField>
+        </Field>
+        <Field Name="ExitedStaffCount">
+          <DataField>ExitedStaffCount</DataField>
+        </Field>
+        <Field Name="OverallRetentionRate">
+          <DataField>OverallRetentionRate</DataField>
+        </Field>
+        <Field Name="StationCode">
+          <DataField>StationCode</DataField>
+        </Field>
+        <Field Name="StationDescription">
+          <DataField>StationDescription</DataField>
+        </Field>
+        <Field Name="RegionID">
+          <DataField>RegionID</DataField>
+        </Field>
+        <Field Name="BudgetedEst">
+          <DataField>BudgetedEst</DataField>
+        </Field>
+        <Field Name="ActiveFTE">
+          <DataField>ActiveFTE</DataField>
+        </Field>
+        <Field Name="Vacancies">
+          <DataField>Vacancies</DataField>
+        </Field>
+        <Field Name="FilledUpPercent">
+          <DataField>FilledUpPercent</DataField>
+        </Field>
+        <Field Name="MaleCount">
+          <DataField>MaleCount</DataField>
+        </Field>
+        <Field Name="FemaleCount">
+          <DataField>FemaleCount</DataField>
+        </Field>
+        <Field Name="ExitedStaff">
+          <DataField>ExitedStaff</DataField>
+        </Field>
+        <Field Name="RetentionPercent">
+          <DataField>RetentionPercent</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
 </Report>

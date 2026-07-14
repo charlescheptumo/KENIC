@@ -14,6 +14,7 @@ report 59134 "Org. Structure Summary"
 
     dataset
     {
+       
         dataitem(CompanyInfo; "Company Information")
         {
             DataItemTableView = sorting("Primary Key");
@@ -27,76 +28,41 @@ report 59134 "Org. Structure Summary"
             column(CompanyHomePage; "Home Page") { }
             column(CompanyPhone; "Phone No.") { }
             
-            // System Auditing Metadata
             column(CreatedBy; UserId) { }
             column(CreatedDate; CurrentDateTime) { }
-
-            // SECTION A & B: Board (Board) & Executive (Company-Level)
-            dataitem(BoardAndCEO; "Responsibility Center")
-            {
-                DataItemTableView = sorting(Code) where("Operating Unit Type" = filter(Board | "Company-Level"));
-                
-                column(L12_Code; Code) { }
-                column(L12_Name; Name) { }
-                column(L12_Level; "Hierarchical  Level ID") { }
-                column(L12_Overview; Mission) { } 
-                column(L12_HeadTitle; "Headed By (Title)") { }
-                column(L12_HeadName; "Current Head Name") { }
-                column(L12_StaffCount; L12_StaffCount) { }
-                column(L12_UnitType; Format("Operating Unit Type")) { } 
-
-                trigger OnAfterGetRecord()
-                begin
-                    L12_StaffCount := CalculateStaffCount(Code);
-                end;
-            }
-
-            // SECTION C: DIRECTORATES & DIVISIONS (LEVEL 3)
-            dataitem(Directorates; "Responsibility Center")
-            {
-                DataItemTableView = sorting(Code) where("Operating Unit Type" = const(Directorate));
-                
-                column(L3_Code; Code) { }
-                column(L3_Name; Name) { }
-                column(L3_Overview; Mission) { }
-                column(L3_HeadName; "Current Head Name") { }
-                column(L3_LinkedUnits; L3_LinkedUnits) { }
-
-                trigger OnAfterGetRecord()
-                begin
-                    L3_LinkedUnits := CalculateLinkedUnits(Code);
-                end;
-            }
-
-            // SECTION D: DEPARTMENTS & BRANCHES (LEVEL 4)
-            dataitem(Departments; "Responsibility Center")
-            {
-               
-                DataItemTableView = sorting(Code) where("Operating Unit Type" = const("Department/Center"));
-                
-                column(L4_Code; Code) { }
-                column(L4_Name; Name) { }
-                column(L4_ReportingLine; "Direct Reports To") { }
-                column(L4_HeadName; "Current Head Name") { }
-                column(L4_StaffCount; L4_StaffCount) { }
-
-                trigger OnAfterGetRecord()
-                begin
-                    L4_StaffCount := CalculateStaffCount(Code);
-                end;
-            }
 
             trigger OnAfterGetRecord()
             begin
                 CalcFields(Picture);
             end;
         }
+
+      
+        dataitem(ResponsibilityCenter; "Responsibility Center")
+        {
+            DataItemTableView = sorting("Hierarchical  Level ID", Code);
+            
+            column(RC_Code; Code) { }
+            column(RC_Name; Name) { }
+            column(RC_Level; "Hierarchical  Level ID") { }
+            column(RC_Overview; Mission) { } 
+            column(RC_HeadTitle; "Headed By (Title)") { }
+            column(RC_HeadName; "Current Head Name") { }
+            column(RC_ReportingLine; "Direct Reports To") { }
+            column(RC_StaffCount; StaffCount) { }
+            column(RC_LinkedUnits; LinkedUnits) { }
+
+            trigger OnAfterGetRecord()
+            begin
+                StaffCount := CalculateStaffCount(Code);
+                LinkedUnits := CalculateLinkedUnits(Code);
+            end;
+        }
     }
 
     var
-        L12_StaffCount: Integer;
-        L3_LinkedUnits: Integer;
-        L4_StaffCount: Integer;
+        StaffCount: Integer;
+        LinkedUnits: Integer;
 
     local procedure CalculateStaffCount(RCCode: Code[50]): Integer
     var
