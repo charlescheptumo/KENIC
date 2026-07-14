@@ -11,7 +11,7 @@ report 53948 "Employer Profile Reports"
 
     dataset
     {
-    //statory info
+        //statory info
         dataitem(CompanyInfo; "Company Information")
         {
             column(CompanyName; Name)
@@ -59,11 +59,14 @@ report 53948 "Employer Profile Reports"
             column(Picture; Picture)
             {
             }
-           
+
             column(CompActiveStaffCount; "Active Staff Count")
             {
             }
             column(CompEstablishedPositions; "Established Positions")
+            {
+            }
+            column(CompDateEstablished; "Date Established")
             {
             }
             column(CompTotalJobGrades; "Total Job Grades")
@@ -75,12 +78,12 @@ report 53948 "Employer Profile Reports"
 
             trigger OnAfterGetRecord()
             begin
-             
+
                 CompanyInfo.CalcFields("Active Staff Count", "Established Positions", "Total Job Grades", "Approved Duty Stations");
             end;
         }
 
-      //job grading structure
+        //job grading structure
         dataitem(JobGrade; "Salary Scales")
         {
             DataItemTableView = sorting(Scale);
@@ -105,7 +108,7 @@ report 53948 "Employer Profile Reports"
             }
         }
 
-     //position management
+        //position management
         dataitem(Position; "Company Positions")
         {
             DataItemTableView = sorting("Position ID");
@@ -129,7 +132,7 @@ report 53948 "Employer Profile Reports"
             {
             }
         }
-//terms of service
+        //terms of service
         dataitem(TermsOfService; "Terms of Service")
         {
             DataItemTableView = sorting(Code);
