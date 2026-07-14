@@ -1405,8 +1405,8 @@
           <Line Name="HeaderLine">
             <Top>0.75in</Top>
             <Left>0.1in</Left>
-            <Height>0.02in</Height>
-            <Width>6.3in</Width>
+            <Height>0in</Height>
+            <Width>6.09167in</Width>
             <ZIndex>11</ZIndex>
             <Style>
               <Border>
@@ -1517,7 +1517,7 @@
         <Height>6.2in</Height>
         <Style />
       </Body>
-      <Width>6.43472in</Width>
+      <Width>6.46528in</Width>
       <Page>
         <PageFooter>
           <Height>1in</Height>

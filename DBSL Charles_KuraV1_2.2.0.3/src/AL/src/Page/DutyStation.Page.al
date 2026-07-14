@@ -57,6 +57,8 @@ actions
                 Image = Report;
                 RunObject = report "Duty Station Staffing Summary"; 
                 ToolTip = 'View the Duty Station Staffing Summary Report.';
+                Promoted = true;
+                PromotedIsBig = true;
             }
         }
     }

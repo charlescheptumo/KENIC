@@ -13,6 +13,19 @@ report 57107 "Duty Station Staffing Summary"
 
     dataset
     {
+        dataitem(CompanyInfos; "Company Information")
+        {
+            DataItemTableView = sorting("Primary Key");
+            
+            column(CompanyName; Name) { }
+            column(CompanyAddress; Address) { }
+            column(CompanyAddress2; "Address 2") { }
+            column(CompanyLogo; Picture) { }
+            column(CompanyMotto; Motto) { }
+            column(CompanyEmail; "E-Mail") { }
+            column(CompanyHomePage; "Home Page") { }
+            column(CompanyPhone; "Phone No.") { }
+        }
         dataitem(Summary; "Duty Station")
         {
             DataItemTableView = sorting(Code);

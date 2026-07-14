@@ -10,6 +10,88 @@
       <rd:DataSourceID>ea603bc7-93c9-4f1c-8b4b-c2168a422c3f</rd:DataSourceID>
     </DataSource>
   </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+      <Fields>
+        <Field Name="TotalEstablishment">
+          <DataField>TotalEstablishment</DataField>
+        </Field>
+        <Field Name="TotalActiveStaff">
+          <DataField>TotalActiveStaff</DataField>
+        </Field>
+        <Field Name="ActiveStaffMale">
+          <DataField>ActiveStaffMale</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemale">
+          <DataField>ActiveStaffFemale</DataField>
+        </Field>
+        <Field Name="ActiveStaffMalePercent">
+          <DataField>ActiveStaffMalePercent</DataField>
+        </Field>
+        <Field Name="ActiveStaffMalePercentFormat">
+          <DataField>ActiveStaffMalePercentFormat</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemalePercent">
+          <DataField>ActiveStaffFemalePercent</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemalePercentFormat">
+          <DataField>ActiveStaffFemalePercentFormat</DataField>
+        </Field>
+        <Field Name="ExitedStaffCount">
+          <DataField>ExitedStaffCount</DataField>
+        </Field>
+        <Field Name="OverallRetentionRate">
+          <DataField>OverallRetentionRate</DataField>
+        </Field>
+        <Field Name="OverallRetentionRateFormat">
+          <DataField>OverallRetentionRateFormat</DataField>
+        </Field>
+        <Field Name="StationCode">
+          <DataField>StationCode</DataField>
+        </Field>
+        <Field Name="StationDescription">
+          <DataField>StationDescription</DataField>
+        </Field>
+        <Field Name="RegionID">
+          <DataField>RegionID</DataField>
+        </Field>
+        <Field Name="BudgetedEst">
+          <DataField>BudgetedEst</DataField>
+        </Field>
+        <Field Name="ActiveFTE">
+          <DataField>ActiveFTE</DataField>
+        </Field>
+        <Field Name="Vacancies">
+          <DataField>Vacancies</DataField>
+        </Field>
+        <Field Name="FilledUpPercent">
+          <DataField>FilledUpPercent</DataField>
+        </Field>
+        <Field Name="FilledUpPercentFormat">
+          <DataField>FilledUpPercentFormat</DataField>
+        </Field>
+        <Field Name="MaleCount">
+          <DataField>MaleCount</DataField>
+        </Field>
+        <Field Name="FemaleCount">
+          <DataField>FemaleCount</DataField>
+        </Field>
+        <Field Name="ExitedStaff">
+          <DataField>ExitedStaff</DataField>
+        </Field>
+        <Field Name="RetentionPercent">
+          <DataField>RetentionPercent</DataField>
+        </Field>
+        <Field Name="RetentionPercentFormat">
+          <DataField>RetentionPercentFormat</DataField>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -28,20 +110,27 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>0.05in</Top>
+            <Top>1.0625in</Top>
             <Left>0.1in</Left>
-            <Height>0.5in</Height>
-            <Width>6.3in</Width>
-            <Style />
+            <Height>0.29861in</Height>
+            <Width>6.68889in</Width>
+            <Style>
+              <Border>
+                <Color>White</Color>
+                <Style>Solid</Style>
+              </Border>
+            </Style>
           </Textbox>
           <Line Name="HeaderLine">
-            <Top>0.6in</Top>
+            <Top>1.41111in</Top>
             <Left>0.1in</Left>
-            <Height>0.02in</Height>
-            <Width>6.3in</Width>
+            <Height>0in</Height>
+            <Width>6.9in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -71,7 +160,7 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>0.7in</Top>
+            <Top>1.51111in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
@@ -105,7 +194,7 @@
                   <Width>0.9in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.9in</Width>
+                  <Width>1.2in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -334,7 +423,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -362,7 +453,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -390,7 +483,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -418,7 +513,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -442,11 +539,14 @@
                                   <Value>=Fields!ActiveStaffMalePercentFormat.Value</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>0.00%</Format>
                                     <TextAlign>Center</TextAlign>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -470,11 +570,14 @@
                                   <Value>=Fields!ActiveStaffFemalePercentFormat.Value</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>0.00%</Format>
                                     <TextAlign>Center</TextAlign>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -498,11 +601,14 @@
                                   <Value>=Fields!OverallRetentionRateFormat.Value</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>0.00%</Format>
                                     <TextAlign>Center</TextAlign>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -538,10 +644,10 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
-            <Top>0.95in</Top>
+            <Top>1.76111in</Top>
             <Left>0.1in</Left>
             <Height>0.74306in</Height>
-            <Width>6.6in</Width>
+            <Width>6.9in</Width>
             <ZIndex>3</ZIndex>
             <Style />
           </Tablix>
@@ -565,7 +671,7 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>1.9in</Top>
+            <Top>2.71111in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
             <Width>6.3in</Width>
@@ -1113,7 +1219,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -1140,7 +1248,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <Style>
@@ -1205,7 +1315,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
-            <Top>2.15in</Top>
+            <Top>2.96111in</Top>
             <Left>0.1in</Left>
             <Height>1.0125in</Height>
             <Width>6.9in</Width>
@@ -1218,11 +1328,111 @@
               </Border>
             </Style>
           </Tablix>
+          <Image Name="Image1">
+            <Source>Database</Source>
+            <Value>=Fields!CompanyLogo.Value</Value>
+            <MIMEType>image/png</MIMEType>
+            <Sizing>FitProportional</Sizing>
+            <Top>0.025in</Top>
+            <Left>0.23056in</Left>
+            <Height>0.72222in</Height>
+            <Width>1.2in</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Image>
+          <Textbox Name="CompanyName">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!CompanyName.Value</Value>
+                    <Style>
+                      <FontSize>12pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <TextAlign>Center</TextAlign>
+                      <Color>#1a3c6e</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.04167in</Top>
+            <Left>1.5in</Left>
+            <Height>0.3in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>7</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="CompanyMotto">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!CompanyMotto.Value</Value>
+                    <Style>
+                      <FontStyle>Italic</FontStyle>
+                      <FontSize>9pt</FontSize>
+                      <TextAlign>Center</TextAlign>
+                      <Color>#555555</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.36944in</Top>
+            <Left>1.5in</Left>
+            <Height>0.2in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>8</ZIndex>
+            <Style />
+          </Textbox>
+          <Textbox Name="CompanyAddress">
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!CompanyAddress.Value &amp; " | Tel: " &amp; Fields!CompanyPhone.Value &amp; " | Email: " &amp; Fields!CompanyEmail.Value</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                      <TextAlign>Center</TextAlign>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.59722in</Top>
+            <Left>1.5in</Left>
+            <Height>0.15in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>9</ZIndex>
+            <Style />
+          </Textbox>
+          <Line Name="HeaderLine3">
+            <Top>0.84722in</Top>
+            <Left>0.1in</Left>
+            <Height>0in</Height>
+            <Width>6.9in</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border>
+                <Color>#1a3c6e</Color>
+                <Style>Solid</Style>
+                <Width>2pt</Width>
+              </Border>
+            </Style>
+          </Line>
         </ReportItems>
-        <Height>3.1625in</Height>
+        <Height>3.97361in</Height>
         <Style />
       </Body>
-      <Width>7in</Width>
+      <Width>7.09944in</Width>
       <Page>
         <PageFooter>
           <Height>1in</Height>
@@ -1268,90 +1478,14 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <Language>=User!Language</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Fields>
-        <Field Name="TotalEstablishment">
-          <DataField>TotalEstablishment</DataField>
-        </Field>
-        <Field Name="TotalActiveStaff">
-          <DataField>TotalActiveStaff</DataField>
-        </Field>
-        <Field Name="ActiveStaffMale">
-          <DataField>ActiveStaffMale</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemale">
-          <DataField>ActiveStaffFemale</DataField>
-        </Field>
-        <Field Name="ActiveStaffMalePercent">
-          <DataField>ActiveStaffMalePercent</DataField>
-        </Field>
-        <Field Name="ActiveStaffMalePercentFormat">
-          <DataField>ActiveStaffMalePercentFormat</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemalePercent">
-          <DataField>ActiveStaffFemalePercent</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemalePercentFormat">
-          <DataField>ActiveStaffFemalePercentFormat</DataField>
-        </Field>
-        <Field Name="ExitedStaffCount">
-          <DataField>ExitedStaffCount</DataField>
-        </Field>
-        <Field Name="OverallRetentionRate">
-          <DataField>OverallRetentionRate</DataField>
-        </Field>
-        <Field Name="OverallRetentionRateFormat">
-          <DataField>OverallRetentionRateFormat</DataField>
-        </Field>
-        <Field Name="StationCode">
-          <DataField>StationCode</DataField>
-        </Field>
-        <Field Name="StationDescription">
-          <DataField>StationDescription</DataField>
-        </Field>
-        <Field Name="RegionID">
-          <DataField>RegionID</DataField>
-        </Field>
-        <Field Name="BudgetedEst">
-          <DataField>BudgetedEst</DataField>
-        </Field>
-        <Field Name="ActiveFTE">
-          <DataField>ActiveFTE</DataField>
-        </Field>
-        <Field Name="Vacancies">
-          <DataField>Vacancies</DataField>
-        </Field>
-        <Field Name="FilledUpPercent">
-          <DataField>FilledUpPercent</DataField>
-        </Field>
-        <Field Name="FilledUpPercentFormat">
-          <DataField>FilledUpPercentFormat</DataField>
-        </Field>
-        <Field Name="MaleCount">
-          <DataField>MaleCount</DataField>
-        </Field>
-        <Field Name="FemaleCount">
-          <DataField>FemaleCount</DataField>
-        </Field>
-        <Field Name="ExitedStaff">
-          <DataField>ExitedStaff</DataField>
-        </Field>
-        <Field Name="RetentionPercent">
-          <DataField>RetentionPercent</DataField>
-        </Field>
-        <Field Name="RetentionPercentFormat">
-          <DataField>RetentionPercentFormat</DataField>
-        </Field>
-      </Fields>
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-    </DataSet>
-  </DataSets>
 </Report>
