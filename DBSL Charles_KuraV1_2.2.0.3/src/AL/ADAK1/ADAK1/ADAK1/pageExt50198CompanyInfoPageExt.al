@@ -2,6 +2,26 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
 {
     layout
     {
+        addafter(Name)
+        {
+            field(Mission; Rec.Mission)
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the mission of the organization.';
+            }
+
+            field(Vision; Rec.Vision)
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the vision of the organization.';
+            }
+
+            field("Date Established"; Rec."Date Established")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the date the organization was established.';
+            }
+        }
         addfirst(factboxes)
         {
             part(EstablishmentStats; "EstablishmentStatsFactBox")
@@ -103,3 +123,4 @@ pageextension 50198 "CompanyInfoPageExt" extends "Company Information"
         }
     }
 }
+

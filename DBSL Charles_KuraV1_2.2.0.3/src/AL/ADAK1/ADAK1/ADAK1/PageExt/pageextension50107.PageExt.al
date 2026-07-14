@@ -49,21 +49,22 @@ pageextension 50107 "pageextension50107" extends "Responsibility Center List"
         {
             action(PrintOrgStructureSummary)
             {
-                ApplicationArea = Basic;
+                ApplicationArea = Basic, Suite;
                 Caption = 'Organization Structure Summary';
                 Image = PrintReport;
                 ToolTip = 'Prints the summary of the hierarchical operating units within the organization, showing their levels, mandates, and headcount details.';
 
                 trigger OnAction()
                 var
-                    RespCenter: Record "Responsibility Center";
+                    OrgStructureSummary: Report "Org. Structure Summary";
                 begin
-                    RespCenter.Reset();
-                   
-                    Report.RunModal(50134, true, false, RespCenter);
+
+                    Clear(OrgStructureSummary);
+                    OrgStructureSummary.Run();
                 end;
             }
         }
+
         addlast(Category_Process)
         {
             actionref(PrintOrgStructureSummary_Promoted; PrintOrgStructureSummary)

@@ -33,5 +33,11 @@ tableextension 50199 "CompanyInformationExt" extends "Company Information"
             CalcFormula = count("Duty Station" where(Blocked = const(false)));
             Editable = false;
         }
+
+        field(50104; "Date Established"; Date)
+        {
+            Caption = 'Date Established';
+            DataClassification = CustomerContent;
+        }
     }
 }

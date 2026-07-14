@@ -10,88 +10,6 @@
       <rd:DataSourceID>ea603bc7-93c9-4f1c-8b4b-c2168a422c3f</rd:DataSourceID>
     </DataSource>
   </DataSources>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-      <Fields>
-        <Field Name="TotalEstablishment">
-          <DataField>TotalEstablishment</DataField>
-        </Field>
-        <Field Name="TotalActiveStaff">
-          <DataField>TotalActiveStaff</DataField>
-        </Field>
-        <Field Name="ActiveStaffMale">
-          <DataField>ActiveStaffMale</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemale">
-          <DataField>ActiveStaffFemale</DataField>
-        </Field>
-        <Field Name="ActiveStaffMalePercent">
-          <DataField>ActiveStaffMalePercent</DataField>
-        </Field>
-        <Field Name="ActiveStaffMalePercentFormat">
-          <DataField>ActiveStaffMalePercentFormat</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemalePercent">
-          <DataField>ActiveStaffFemalePercent</DataField>
-        </Field>
-        <Field Name="ActiveStaffFemalePercentFormat">
-          <DataField>ActiveStaffFemalePercentFormat</DataField>
-        </Field>
-        <Field Name="ExitedStaffCount">
-          <DataField>ExitedStaffCount</DataField>
-        </Field>
-        <Field Name="OverallRetentionRate">
-          <DataField>OverallRetentionRate</DataField>
-        </Field>
-        <Field Name="OverallRetentionRateFormat">
-          <DataField>OverallRetentionRateFormat</DataField>
-        </Field>
-        <Field Name="StationCode">
-          <DataField>StationCode</DataField>
-        </Field>
-        <Field Name="StationDescription">
-          <DataField>StationDescription</DataField>
-        </Field>
-        <Field Name="RegionID">
-          <DataField>RegionID</DataField>
-        </Field>
-        <Field Name="BudgetedEst">
-          <DataField>BudgetedEst</DataField>
-        </Field>
-        <Field Name="ActiveFTE">
-          <DataField>ActiveFTE</DataField>
-        </Field>
-        <Field Name="Vacancies">
-          <DataField>Vacancies</DataField>
-        </Field>
-        <Field Name="FilledUpPercent">
-          <DataField>FilledUpPercent</DataField>
-        </Field>
-        <Field Name="FilledUpPercentFormat">
-          <DataField>FilledUpPercentFormat</DataField>
-        </Field>
-        <Field Name="MaleCount">
-          <DataField>MaleCount</DataField>
-        </Field>
-        <Field Name="FemaleCount">
-          <DataField>FemaleCount</DataField>
-        </Field>
-        <Field Name="ExitedStaff">
-          <DataField>ExitedStaff</DataField>
-        </Field>
-        <Field Name="RetentionPercent">
-          <DataField>RetentionPercent</DataField>
-        </Field>
-        <Field Name="RetentionPercentFormat">
-          <DataField>RetentionPercentFormat</DataField>
-        </Field>
-      </Fields>
-    </DataSet>
-  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -1478,14 +1396,114 @@
       </Page>
     </ReportSection>
   </ReportSections>
-  <ReportParametersLayout>
-    <GridLayoutDefinition>
-      <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
-    </GridLayoutDefinition>
-  </ReportParametersLayout>
   <Language>=User!Language</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="CompanyName">
+          <DataField>CompanyName</DataField>
+        </Field>
+        <Field Name="CompanyAddress">
+          <DataField>CompanyAddress</DataField>
+        </Field>
+        <Field Name="CompanyAddress2">
+          <DataField>CompanyAddress2</DataField>
+        </Field>
+        <Field Name="CompanyLogo">
+          <DataField>CompanyLogo</DataField>
+        </Field>
+        <Field Name="CompanyMotto">
+          <DataField>CompanyMotto</DataField>
+        </Field>
+        <Field Name="CompanyEmail">
+          <DataField>CompanyEmail</DataField>
+        </Field>
+        <Field Name="CompanyHomePage">
+          <DataField>CompanyHomePage</DataField>
+        </Field>
+        <Field Name="CompanyPhone">
+          <DataField>CompanyPhone</DataField>
+        </Field>
+        <Field Name="TotalEstablishment">
+          <DataField>TotalEstablishment</DataField>
+        </Field>
+        <Field Name="TotalActiveStaff">
+          <DataField>TotalActiveStaff</DataField>
+        </Field>
+        <Field Name="ActiveStaffMale">
+          <DataField>ActiveStaffMale</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemale">
+          <DataField>ActiveStaffFemale</DataField>
+        </Field>
+        <Field Name="ActiveStaffMalePercent">
+          <DataField>ActiveStaffMalePercent</DataField>
+        </Field>
+        <Field Name="ActiveStaffMalePercentFormat">
+          <DataField>ActiveStaffMalePercentFormat</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemalePercent">
+          <DataField>ActiveStaffFemalePercent</DataField>
+        </Field>
+        <Field Name="ActiveStaffFemalePercentFormat">
+          <DataField>ActiveStaffFemalePercentFormat</DataField>
+        </Field>
+        <Field Name="ExitedStaffCount">
+          <DataField>ExitedStaffCount</DataField>
+        </Field>
+        <Field Name="OverallRetentionRate">
+          <DataField>OverallRetentionRate</DataField>
+        </Field>
+        <Field Name="OverallRetentionRateFormat">
+          <DataField>OverallRetentionRateFormat</DataField>
+        </Field>
+        <Field Name="StationCode">
+          <DataField>StationCode</DataField>
+        </Field>
+        <Field Name="StationDescription">
+          <DataField>StationDescription</DataField>
+        </Field>
+        <Field Name="RegionID">
+          <DataField>RegionID</DataField>
+        </Field>
+        <Field Name="BudgetedEst">
+          <DataField>BudgetedEst</DataField>
+        </Field>
+        <Field Name="ActiveFTE">
+          <DataField>ActiveFTE</DataField>
+        </Field>
+        <Field Name="Vacancies">
+          <DataField>Vacancies</DataField>
+        </Field>
+        <Field Name="FilledUpPercent">
+          <DataField>FilledUpPercent</DataField>
+        </Field>
+        <Field Name="FilledUpPercentFormat">
+          <DataField>FilledUpPercentFormat</DataField>
+        </Field>
+        <Field Name="MaleCount">
+          <DataField>MaleCount</DataField>
+        </Field>
+        <Field Name="FemaleCount">
+          <DataField>FemaleCount</DataField>
+        </Field>
+        <Field Name="ExitedStaff">
+          <DataField>ExitedStaff</DataField>
+        </Field>
+        <Field Name="RetentionPercent">
+          <DataField>RetentionPercent</DataField>
+        </Field>
+        <Field Name="RetentionPercentFormat">
+          <DataField>RetentionPercentFormat</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
 </Report>
