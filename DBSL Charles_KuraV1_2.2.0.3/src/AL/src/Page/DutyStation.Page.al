@@ -47,19 +47,24 @@ Page 69616 "Duty Station"
     }
 
 actions
+{
+    area(navigation)
     {
-        area(navigation)
+        action(StaffingSummaryReport)
         {
-            action("Staffing Summary Report")
-            {
-                ApplicationArea = All;
-                Caption = 'Staffing Summary Report';
-                Image = Report;
-                RunObject = report "Duty Station Staffing Summary"; 
-                ToolTip = 'View the Duty Station Staffing Summary Report.';
-                Promoted = true;
-                PromotedIsBig = true;
-            }
+            ApplicationArea = All;
+            Caption = 'Staffing Summary Report';
+            Image = Report;
+            RunObject = report "Duty Station Staffing Summary";
+            ToolTip = 'View the Duty Station Staffing Summary Report.';
         }
     }
+
+    area(Promoted)
+    {
+        actionref(StaffingSummaryReport_Promoted; StaffingSummaryReport)
+        {
+        }
+    }
+}
 }

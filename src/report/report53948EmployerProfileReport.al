@@ -7,7 +7,7 @@ report 53948 "Employer Profile Reports"
     Caption = 'Employer Profile Report';
     UsageCategory = ReportsAndAnalysis;
     DefaultLayout = RDLC;
-    RDLCLayout = './ADAK PHASE 2/Layouts/Employerr Profile Report.rdlc';
+    RDLCLayout = './ADAK PHASE 2/Layouts/Employer Profile Report.rdlc';
 
     dataset
     {
