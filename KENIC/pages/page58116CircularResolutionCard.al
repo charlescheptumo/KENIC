@@ -138,7 +138,6 @@ page 58116 "Circular Resolution Card"
             {
                 Caption = 'Member Generation';
                 Image = Employee;
-                Visible = IsDocumentEditable;
 
                 action(GenerateMembers)
                 {
@@ -148,29 +147,18 @@ page 58116 "Circular Resolution Card"
                     Image = Add;
                     Promoted = true;
                     PromotedCategory = Process;
+                    PromotedIsBig = true;
 
                     trigger OnAction()
                     var
-                        Selection: Integer;
+                        MemberMgt: Codeunit "Resolution Management";
                     begin
                         Rec.TestField("No.");
                         if not IsDocumentEditable then
                             exit;
 
-                        Selection := StrMenu(
-                            'Employee,Responsibility Center,Operating Unit Type,Branch',
-                            1);
-
-                        case Selection of
-                            1:
-                                AddEmployee();
-                            2:
-                                AddByResponsibilityCenter();
-                            3:
-                                AddByOperatingUnitType();
-                            4:
-                                AddByBranch();
-                        end;
+                        
+                        MemberMgt.RunGenerator(Rec."No.");
                         CurrPage.Update(false);
                     end;
                 }
@@ -186,7 +174,7 @@ page 58116 "Circular Resolution Card"
 
                     trigger OnAction()
                     var
-                        ResVote: Record "Circular Resolution Vote";
+                        ResVote: Record "Circular Resolution lines";
                     begin
                         Rec.TestField("No.");
                         if not IsDocumentEditable then
@@ -368,145 +356,6 @@ page 58116 "Circular Resolution Card"
         OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RecordId);
         OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RecordId);
         IsDocumentEditable := Rec."Approval Status" = Rec."Approval Status"::Open;
-    end;
-
-    local procedure InsertVoter(EmployeeNo: Code[20]): Boolean
-    var
-        ResVote: Record "Circular Resolution Vote";
-        NextLineNo: Integer;
-    begin
-        if EmployeeNo = '' then
-            exit(false);
-        ResVote.Reset();
-        ResVote.SetRange("Resolution No.", Rec."No.");
-        ResVote.SetRange("Employee No.", EmployeeNo);
-        if not ResVote.IsEmpty() then
-            exit(false);
-        ResVote.Reset();
-        ResVote.SetRange("Resolution No.", Rec."No.");
-        if ResVote.FindLast() then
-            NextLineNo := ResVote."Line No." + 1
-        else
-            NextLineNo := 10000;
-        ResVote.Init();
-        ResVote."Resolution No." := Rec."No.";
-        ResVote."Line No." := NextLineNo;
-        ResVote.Validate("Employee No.", EmployeeNo);
-        ResVote."Vote Status" := ResVote."Vote Status"::Pending;
-        ResVote."Notification Sent" := false;
-        ResVote.Insert(true);
-        exit(true);
-    end;
-
-    local procedure AddEmployee()
-    var
-        Employee: Record Employee;
-    begin
-        Employee.Reset();
-        Employee.SetRange(Status, Employee.Status::Active);
-        if Page.RunModal(Page::"Employee List", Employee) = Action::LookupOK then begin
-            if InsertVoter(Employee."No.") then
-                Message('Employee %1 has been added as a voter.', Employee."No.")
-            else
-                Message('Employee %1 is already a voter for this resolution.', Employee."No.");
-        end;
-    end;
-
-    local procedure AddByResponsibilityCenter()
-    var
-        RespCenter: Record "Responsibility Center";
-        Employee: Record Employee;
-        AddedCount: Integer;
-        SkippedCount: Integer;
-    begin
-        RespCenter.Reset();
-        if Page.RunModal(Page::"Responsibility Center List", RespCenter) = Action::LookupOK then begin
-            Employee.Reset();
-            Employee.SetRange(Status, Employee.Status::Active);
-            Employee.SetRange("Responsibility Center", RespCenter.Code);
-            if Employee.FindSet() then begin
-                repeat
-                    if InsertVoter(Employee."No.") then
-                        AddedCount += 1
-                    else
-                        SkippedCount += 1;
-                until Employee.Next() = 0;
-                Message('%1 eligible employees added from Responsibility Center %2. %3 were already voters.', 
-                    AddedCount, RespCenter.Code, SkippedCount);
-            end else
-                Message('No active employees found under Responsibility Center %1.', RespCenter.Code);
-        end;
-    end;
-
-    local procedure AddByOperatingUnitType()
-    var
-        RespCenterSelect: Record "Responsibility Center";
-        RespCenterFilter: Record "Responsibility Center";
-        Employee: Record Employee;
-        AddedCount: Integer;
-        SkippedCount: Integer;
-        FilterText: Text;
-    begin
-        RespCenterSelect.Reset();
-        if Page.RunModal(Page::"Responsibility Center List", RespCenterSelect) = Action::LookupOK then begin
-            RespCenterFilter.Reset();
-            RespCenterFilter.SetRange("Operating Unit Type", RespCenterSelect."Operating Unit Type");
-            if RespCenterFilter.FindSet() then begin
-                FilterText := '';
-                repeat
-                    if FilterText <> '' then
-                        FilterText += '|' + RespCenterFilter.Code
-                    else
-                        FilterText := RespCenterFilter.Code;
-                until RespCenterFilter.Next() = 0;
-
-                Employee.Reset();
-                Employee.SetRange(Status, Employee.Status::Active);
-                Employee.SetFilter("Responsibility Center", FilterText);
-                if Employee.FindSet() then begin
-                    repeat
-                        if InsertVoter(Employee."No.") then
-                            AddedCount += 1
-                        else
-                            SkippedCount += 1;
-                    until Employee.Next() = 0;
-                    
-                    Message('%1 active employees added from all %2 structures (%3 total departments/units). %4 were already voters.', 
-                        AddedCount, 
-                        Format(RespCenterSelect."Operating Unit Type"), 
-                        RespCenterFilter.Count(), 
-                        SkippedCount);
-                end else
-                    Message('No active employees found belonging to any %1 structures.', Format(RespCenterSelect."Operating Unit Type"));
-            end;
-        end;
-    end;
-
-    local procedure AddByBranch()
-    var
-        DimVal: Record "Dimension Value";
-        Employee: Record Employee;
-        AddedCount: Integer;
-        SkippedCount: Integer;
-    begin
-        DimVal.Reset();
-        DimVal.SetRange("Dimension Code", 'BRANCH');
-        if Page.RunModal(Page::"Dimension Values", DimVal) = Action::LookupOK then begin
-            Employee.Reset();
-            Employee.SetRange(Status, Employee.Status::Active);
-            Employee.SetRange("Branch", DimVal.Code);
-            if Employee.FindSet() then begin
-                repeat
-                    if InsertVoter(Employee."No.") then
-                        AddedCount += 1
-                    else
-                        SkippedCount += 1;
-                until Employee.Next() = 0;
-                Message('%1 active employees added from Branch %2. %3 were already voters.', 
-                    AddedCount, DimVal.Name, SkippedCount);
-            end else
-                Message('No active employees found belonging to Branch %1.', DimVal.Name);
-        end;
     end;
 
     var

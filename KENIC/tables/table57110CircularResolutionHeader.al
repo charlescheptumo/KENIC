@@ -70,14 +70,14 @@ table 57110 "Circular Resolution Header"
         {
             Caption = 'Total Members';
             FieldClass = FlowField;
-            CalcFormula = count("Circular Resolution Vote" where("Resolution No." = field("No.")));
+            CalcFormula = count("Circular Resolution lines" where("Resolution No." = field("No.")));
             Editable = false;
         }
         field(13; "Total Votes Cast"; Integer)
         {
             Caption = 'Total Votes Cast';
             FieldClass = FlowField;
-            CalcFormula = count("Circular Resolution Vote" where("Resolution No." = field("No."), "Vote Status" = const(Voted)));
+            CalcFormula = count("Circular Resolution lines" where("Resolution No." = field("No."), "Vote Status" = const(Voted)));
             Editable = false;
         }
         field(14; "Winning Option"; Code[20])
@@ -109,7 +109,7 @@ table 57110 "Circular Resolution Header"
     trigger OnDelete()
     var
         ResolutionOption: Record "Circular Resolution Option";
-        ResolutionVote: Record "Circular Resolution Vote";
+        ResolutionVote: Record "Circular Resolution lines";
     begin
        
         ResolutionOption.SetRange("Resolution No.", "No.");

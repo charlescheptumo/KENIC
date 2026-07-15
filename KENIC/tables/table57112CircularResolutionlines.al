@@ -1,4 +1,4 @@
-table 57112 "Circular Resolution Vote"
+table 57112 "Circular Resolution lines"
 {
     Caption = 'Circular Resolution Vote';
     DataClassification = CustomerContent;

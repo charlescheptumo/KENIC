@@ -39,7 +39,7 @@ table 57111 "Circular Resolution Option"
             Caption = 'Vote Count';
             FieldClass = FlowField;
 
-            CalcFormula = count("Circular Resolution Vote" where(
+            CalcFormula = count("Circular Resolution lines" where(
                 "Resolution No." = field("Resolution No."),
                 "Selected Option Code" = field("Option Code")
             ));

@@ -1,9 +1,12 @@
 page 57113 "Resolution Votes Subform"
 {
     PageType = ListPart;
-    SourceTable = "Circular Resolution Vote";
+    SourceTable = "Circular Resolution lines";
     Caption = 'Resolution Votes';
     AutoSplitKey = true;
+    InsertAllowed = false;
+    DeleteAllowed = false;
+    ModifyAllowed = false;
 
     layout
     {
@@ -35,16 +38,19 @@ page 57113 "Resolution Votes Subform"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies whether this member is pending or has completed voting.';
+                    Editable = false;
                 }
                 field("Selected Option Code"; Rec."Selected Option Code")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Displays the code of the option they selected.';
+                    Editable = false;
                 }
                 field("Vote DateTime"; Rec."Vote DateTime")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Displays the timestamp when their vote was submitted.';
+                    Editable = false;
                 }
                 field(Remarks; Rec.Remarks)
                 {
@@ -55,21 +61,23 @@ page 57113 "Resolution Votes Subform"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies if an email notification regarding this vote was sent.';
+                    Editable = false;
                 }
                 field("Notification DateTime"; Rec."Notification DateTime")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Displays the timestamp when the email notification went out.';
+                    Editable = false;
                 }
             }
         }
     }
 
-    trigger OnAfterGetCurrRecord()
-    begin
-        if Rec."Line No." = 0 then
-            Rec."Line No." := Rec."Line No." + 1;
-    end;
+    // trigger OnAfterGetCurrRecord()
+    // begin
+    //     if Rec."Line No." = 0 then
+    //         Rec."Line No." := Rec."Line No." + 1;
+    // end;
 
 
 }
