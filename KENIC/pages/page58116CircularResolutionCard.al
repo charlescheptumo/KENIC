@@ -134,31 +134,61 @@ page 58116 "Circular Resolution Card"
     {
         area(Processing)
         {
-            group("Member Generation")
+            group("Board Members Group")
             {
-                Caption = 'Member Generation';
+                Caption = 'Board Members';
                 Image = Employee;
 
-                action(GenerateMembers)
+                action(GenerateBoardMembers)
                 {
                     ApplicationArea = All;
-                    Caption = 'Generate Members';
-                    ToolTip = 'Add voters to this resolution using various criteria.';
-                    Image = Add;
+                    Caption = 'Board Members';
+                    ToolTip = 'Open the resolution lines to add or edit board members for notification and voting.';
+                    Image = Employee;
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedIsBig = true;
 
                     trigger OnAction()
                     var
-                        MemberMgt: Codeunit "Resolution Management";
+                        ResLines: Record "Circular Resolution lines";
+                        ResLinesCard: Page "Resolution lines Card";
                     begin
                         Rec.TestField("No.");
                         if not IsDocumentEditable then
                             exit;
 
-                        
-                        MemberMgt.RunGenerator(Rec."No.");
+
+                        ResLines.Reset();
+                        ResLines.SetRange("Resolution No.", Rec."No.");
+
+
+                        Clear(ResLinesCard);
+                        ResLinesCard.SetTableView(ResLines);
+                        ResLinesCard.RunModal();
+
+                        CurrPage.Update(false);
+                    end;
+                }
+                action(NotifyBoardMembers)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Notify Board Members';
+                    ToolTip = 'Send voting notifications to all board members.';
+                    Image = SendMail;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    Enabled = Rec.Status = Rec.Status::Approved;
+
+                    trigger OnAction()
+                    var
+                        ResolutionMgt: Codeunit "Resolution Management";
+                    begin
+                        Rec.TestField(Status, Rec.Status::Approved);
+
+                        ResolutionMgt.NotifyMembersToVote(Rec);
+
+                        Message('Notifications have been sent successfully.');
                         CurrPage.Update(false);
                     end;
                 }
@@ -212,14 +242,14 @@ page 58116 "Circular Resolution Card"
                         ResOption: Record "Circular Resolution Option";
                     begin
                         Rec.TestField("Approval Status", Rec."Approval Status"::Open);
-                        
+
                         ResOption.Reset();
                         ResOption.SetRange("Resolution No.", Rec."No.");
                         if ResOption.IsEmpty() then begin
                             Error('You must add at least one voting option before sending for approval.');
                             exit;
                         end;
-                        
+
                         VarVariant := Rec;
                         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
                             CustomApprovals.OnSendDocForApproval(VarVariant);

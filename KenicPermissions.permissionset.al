@@ -6,6 +6,7 @@ using Microsoft.Finance.GeneralLedger.Reports;
 using Microsoft.Inventory.Location;
 using MyCompany.PhysInventoryDateFix;
 using Microsoft.Finance.RoleCenters;
+using KENIC.KENIC;
 
 permissionset 50001 KenicPermissions
 {
@@ -8858,5 +8859,9 @@ permissionset 50001 KenicPermissions
         query worksCategory=X,
         query WorksEquipmentTemplate=X,
         query WorkType=X,
-        query WorkTypes=X;
+        query WorkTypes=X,
+        tabledata "Resolution Members"=RIMD,
+        table "Resolution Members"=X,
+        codeunit "Resolution Management"=X,
+        page "Resolution Member Generator"=X;
 }
