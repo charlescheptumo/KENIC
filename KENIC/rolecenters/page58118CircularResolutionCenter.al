@@ -53,6 +53,13 @@ page 58118 "Head of E-Board"
                     RunObject = page "Rejected Circular Resolution";
                 }
 
+                action("Circular Resolution Archive")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Circular Resolution Archive';
+                    RunObject = page "Circular Resolution Archive";
+                }
+
             }
             group("E-signing")
             {
