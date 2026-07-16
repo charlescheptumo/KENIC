@@ -20,40 +20,70 @@ page 58118 "Head of E-Board"
                 action("Circular Resolution List")
                 {
                     ApplicationArea = All;
-                    Caption = 'Circular Resolutions';
+                    Caption = 'Pending Circular Resolutions';
                     RunObject = page "Circular Resolution List";
                 }
-            }
-            group("Intelligence And Investigations")
-            {
-                action("Intelligence Entries")
+
+                action("Approved Circular Resolution List")
                 {
                     ApplicationArea = All;
-                    Caption = 'Intelligence Entry List';
+                    Caption = 'Approved Circular Resolutions';
+                    RunObject = page "Approved Circular Resolution";
+                }
+
+
+                action("Posted Circular Resolution")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Approved Circular Resolutions';
+                    RunObject = page "Posted Circular Resolution";
+                }
+
+                action("Cancelled Circular Resolution")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Approved Circular Resolutions';
+                    RunObject = page "Cancelled Circular Resolution";
+                }
+
+                action("Rejected Circular Resolution")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Rejected Circular Resolutions';
+                    RunObject = page "Rejected Circular Resolution";
+                }
+
+            }
+            group("E-signing")
+            {
+                action("E-signing List")
+                {
+                    ApplicationArea = All;
+                    Caption = 'E-signing';
                     // RunObject = page "Intelligence Entry List";
                 }
-         
+
             }
-            group("Initial Review")
+            group("Compliance calendar")
             {
-                action("Initial Review Case List ")
+                action("Compliance calendar List ")
                 {
                     ApplicationArea = All;
-                    Caption = 'Initial Review Case List';
+                    Caption = 'Compliance calendar';
                     // RunObject = page "Initial Review Case List";
                 }
 
             }
             group(Reports)
             {
-                action("Intelligence Report")
+                action("E-Board Report")
                 {
                     ApplicationArea = All;
-                    Caption = 'Intelligence Report';
+                    Caption = 'E-Board Reports';
                     // RunObject = report "Intelligence Report";
                 }
-               
-              
+
+
             }
             group(Setup)
             {
@@ -61,7 +91,7 @@ page 58118 "Head of E-Board"
                 {
                     ApplicationArea = All;
                     Caption = 'E-Board Setup';
-                     RunObject = page "E-Board Setup";
+                    RunObject = page "E-Board Setup";
                 }
             }
         }
