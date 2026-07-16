@@ -5,4 +5,5 @@ enum 57112 "Resolution Approval Status"
     value(1; "Pending Approval") { Caption = 'Pending Approval'; }
     value(2; Released) { Caption = 'Released'; }
     value(3; Rejected) { Caption = 'Rejected'; }
+    
 }

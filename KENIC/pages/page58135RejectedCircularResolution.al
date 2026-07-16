@@ -1,16 +1,16 @@
-page 58137 "Approved Circular Resolution"
+page 58138 "Rejected Circular Resolution"
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = "Circular Resolution Header";
-    Caption = 'Approved Circular Resolutions';
+    Caption = 'Rejected Circular Resolutions';
     Editable = false;
     CardPageId = "Circular Resolution Card";
     SourceTableView =
                         where(
-                            Status = filter(Approved),
-                            "Approval Status" = filter(Released)
+                            Status = filter(Rejected),
+                            "Approval Status" = filter(Rejected)
                         );
 
     layout
