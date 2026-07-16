@@ -8863,5 +8863,10 @@ permissionset 50001 KenicPermissions
         tabledata "Resolution Members"=RIMD,
         table "Resolution Members"=X,
         codeunit "Resolution Management"=X,
-        page "Resolution Member Generator"=X;
+        page "Resolution Member Generator"=X,
+        page "Approved Circular Resolution"=X,
+        page "Cancelled Circular Resolution"=X,
+        page "Posted Circular Resolution"=X,
+        page "Rejected Circular Resolution"=X,
+        page "Resolution lines Card"=X;
 }

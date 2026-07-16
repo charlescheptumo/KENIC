@@ -262,12 +262,12 @@ page 58116 "Circular Resolution Card"
                         Rec.TestField("No.");
                         if not IsDocumentEditable then
                             exit;
-                        if Confirm('Are you sure you want to delete all resolution lines from this resolution?', false) then begin
+                        if Confirm('Are you sure you want to remove all board members from this circular resolution?', false) then begin
                             ResVote.Reset();
                             ResVote.SetRange("Resolution No.", Rec."No.");
                             if not ResVote.IsEmpty() then begin
                                 ResVote.DeleteAll(true);
-                                Message('All resolution lines have been cleared.');
+                                Message('All board members have been removed.');
                             end;
                             CurrPage.Update(false);
                         end;
@@ -288,11 +288,14 @@ page 58116 "Circular Resolution Card"
                     PromotedCategory = Process;
                     PromotedIsBig = true;
                     ToolTip = 'Upload documents for this Circular Resolution.';
+                     Enabled = IsDocumentEditable;
 
                     trigger OnAction()
                     var
                         DMSManagement: Codeunit "DMS Management";
                     begin
+                        if not IsDocumentEditable then
+                            Error('Documents cannot be uploaded after the resolution has been sent for approval or posted.');
                         Rec.TestField("No.");
                         Rec.TestField("Department Code");
                         DMSManagement.UploadCircularResolutionDocuments(Rec."No.", 'Circular Resolutions', Rec.RecordId, Rec."Department Code");
