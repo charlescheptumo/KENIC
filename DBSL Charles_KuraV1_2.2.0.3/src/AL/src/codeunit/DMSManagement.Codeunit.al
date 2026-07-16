@@ -32,6 +32,7 @@ Codeunit 50009 "DMS Management"
         ValueClose: label '</Value>';
         XmlFileName: Text;
         CashManagementSetup: Record "Cash Management Setup";
+        EBoardSetup: Record "E-Board Setup";
 
 
     procedure UploadDocument(DocumentType: Option; DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
@@ -3789,5 +3790,81 @@ Codeunit 50009 "DMS Management"
         Message('Document Link Created Successfully');
 
     end;
+
+    procedure UploadCircularResolutionDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID; Region: Code[100]): Boolean
+var
+    EBoardSetup: Record "E-Board Setup";
+begin
+    EBoardSetup.GetRecordOnce();
+    if EBoardSetup.Find('-') then begin
+        //Uploade File to folder
+        Docname := DocNo;
+        Docname := ConvertStr(Docname, ':', '_');
+        Docname := ConvertStr(Docname, ':', '_');
+        //FileName := Filer.OpenFileDialog('Select Document To Upload', 'Select Document To Upload', 'PDF Files (*.PDF)|*.PDF|All files (*.*)|*.*');
+        FileName2 := '\\192.168.1.121\DocumentsPath\' + Docname + '_' + Filer.GetFileName(FileName);
+        FileDesc := Docname + '_' + Filer.GetFileName(FileName);
+        //Filer.CopyClientFile(FileName, FileName2, true);
+        // Filer.MoveFile(FileName2, '\\192.168.1.121\DocumentsPath\' + FileDesc);
+        // CopyClientFile(FileName,'X:\'+FileName2,TRUE);
+        //Insert Link
+        DocLink.Init;
+        DocLink."Link ID" := 0;
+        DocLink.URL1 := EBoardSetup."SharePoint Site Link" + '/' + EBoardSetup."SharePoint Site Main Library" + '/' + EBoardSetup."SharePoint Document Library" + '/' + Region + '/' + EBoardSetup."Circular Resolution DMS Link" + '/'
+        + Docname + '/' + FileDesc;
+        DocLink.Description := FileDesc;
+        DocLink.Type := DocLink.Type::Link;
+        DocLink.Company := COMPANYNAME;
+        DocLink."User ID" := UserId;
+        DocLink.Created := CreateDatetime(Today, Time);
+        DocLink."Record ID" := TabID;
+        DocLink.Insert;
+
+        //Create Xml Document
+        EBoardSetup.Get;
+        if EBoardSetup.Find('-') then begin
+            XmlFileName := '\\192.168.1.121\DocumentsPath\' + FileDesc + '.xml';
+            FileName := '\\192.168.1.121\DocumentsPath\' + FileDesc + '.xml';
+            //FileName :=Docname+'.xml';
+            // if IsNull(xmlWriter) then
+            //xmlWriter := xmlWriter.XmlTextWriter(XmlFileName, EncodingText.UTF8);
+            //xmlWriter.WriteStartDocument();
+            //Create Parent element
+            //xmlWriter.WriteStartElement('Columns');
+            //xmlWriter.WriteStartElement('Params');
+            //xmlWriter.WriteElementString('Library', EBoardSetup."SharePoint Site Main Library");
+            //xmlWriter.WriteElementString('Folder', EBoardSetup."SharePoint Document Library" + '/' + Region + '/' + EBoardSetup."Circular Resolution DMS Link" + '/' + Docname);
+            //xmlWriter.WriteEndElement();
+            //xmlWriter.WriteStartElement('Files');
+            //xmlWriter.WriteElementString('Filename', FileDesc);
+            //xmlWriter.WriteEndElement();
+            //Region Metadata
+            //xmlWriter.WriteStartElement('Column');
+            // REPEAT
+            //Create Child elements
+            //xmlWriter.WriteElementString('Title', 'Region');
+            //xmlWriter.WriteElementString('Value', '');
+            // //xmlWriter.WriteEndElement();
+            // UNTIL DocLines.NEXT = 0;
+            //End writing top element and XML document
+            //xmlWriter.WriteEndElement();
+            //Constituency Metadata
+            //xmlWriter.WriteStartElement('Column');
+            //xmlWriter.WriteElementString('Title', 'Constituency');
+            //xmlWriter.WriteElementString('Value', '');
+            //xmlWriter.WriteEndElement();
+            //Employee Metadata
+            //xmlWriter.WriteStartElement('Column');
+            //xmlWriter.WriteElementString('Title', 'Employee');
+            //xmlWriter.WriteElementString('Value', UserId);
+            //xmlWriter.WriteEndElement();
+            //xmlWriter.WriteEndDocument();
+            //xmlWriter.Close();
+        end;
+        // //Filer.CopyClientFile(FileName,'X:\'+Docname+'.xml',TRUE);
+        // Filer.MoveFile(FileName, '\\192.168.1.121\DocumentsPath\' + FileDesc + '.xml');
+    end;
+    Message('Documents Uploaded Successffully');
+end;
 }
 

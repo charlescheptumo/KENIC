@@ -135,6 +135,12 @@ page 58116 "Circular Resolution Card"
         }
         area(factboxes)
         {
+            part("Circular Resolution Attachments"; "Sharepoint File List")
+            {
+                ApplicationArea = All;
+                Caption = 'Attachments';
+                SubPageLink = "No." = field("No.");
+            }
             systempart(Control1000000019; Notes)
             {
                 ApplicationArea = All;
@@ -289,7 +295,7 @@ page 58116 "Circular Resolution Card"
                     begin
                         Rec.TestField("No.");
                         Rec.TestField("Department Code");
-                        DMSManagement.UploadDocuments(Rec."No.", 'Circular Resolutions', Rec.RecordId, Rec."Department Code");
+                        DMSManagement.UploadCircularResolutionDocuments(Rec."No.", 'Circular Resolutions', Rec.RecordId, Rec."Department Code");
                     end;
                 }
 
