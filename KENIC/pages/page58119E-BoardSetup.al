@@ -1,13 +1,13 @@
 page 58119 "E-Board Setup"
 {
-    PageType = Card;
     ApplicationArea = All;
-    UsageCategory = Administration;
-    SourceTable = "E-Board Setup";
     Caption = 'E-Board Setup';
+    PageType = Card;
+    SourceTable = "E-Board Setup";
+    UsageCategory = Administration;
     InsertAllowed = false;
     DeleteAllowed = false;
-
+    
     layout
     {
         area(Content)
@@ -15,97 +15,92 @@ page 58119 "E-Board Setup"
             group(General)
             {
                 Caption = 'General';
-
-                field("Default Voting Duration (Days)"; Rec."Default Voting Duration (Days)")
+                
+                field("Primary Key"; Rec."Primary Key")
                 {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the default number of days a circular resolution remains open for voting before it closes.';
+                    ToolTip = 'Primary key for the setup record.';
+                    Visible = false;
                 }
-                field("Enable Approval Workflow"; Rec."Enable Approval Workflow")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies whether circular resolutions must undergo an approval workflow before board members can vote.';
-                }
-            }
 
-            group("Number Series")
-            {
-                Caption = 'Number Series';
-
+                // Number Series Fields
                 field("Circular Resolution Nos."; Rec."Circular Resolution Nos.")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the number series code used to generate numbers for new Circular Resolutions.';
                 }
                 field("E-Signing Nos."; Rec."E-Signing Nos.")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the number series code used for tracking E-Signing requests.';
                 }
                 field("Compliance Entry Nos."; Rec."Compliance Entry Nos.")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the number series code used for tracking Compliance Calendar Entries.';
                 }
                 field("Board Member Nos."; Rec."Board Member Nos.")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the number series code used for board member records, if tracking them via a unique ID.';
                 }
-            }
 
-            group("Voting Restrictions")
-            {
-                Caption = 'Voting Eligibility & Target Options';
-
+                // Voting Settings
+                field("Default Voting Duration (Days)"; Rec."Default Voting Duration (Days)")
+                {
+                    ToolTip = 'Specifies the default number of days a circular resolution remains open for voting before it closes.';
+                }
+                field("Enable Approval Workflow"; Rec."Enable Approval Workflow")
+                {
+                    ToolTip = 'Specifies whether circular resolutions must undergo an approval workflow before board members can vote.';
+                }
                 field("Allow Department Voting"; Rec."Allow Department Voting")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies if you can target specific organizational departments to vote on a resolution.';
                 }
                 field("Allow Individual Voting"; Rec."Allow Individual Voting")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies if you can manually add individual board members to a voting campaign instead of broad categories.';
                 }
-            }
 
-            group("Portal Integration")
-            {
-                Caption = 'Portal Integration';
-
-                field("E-Board Portal URL"; Rec."E-Board Portal URL")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the base URL of your external E-Board web portal.';
-                     Visible = false;
-                }
-                field("Portal Tenant ID"; Rec."Portal Tenant ID")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the tenant identifier associated with your cloud portal environment.';
-                    Visible = false;
-                }
-            }
-
-            group("Notifications & Quorums")
-            {
-                Caption = 'Notifications & Quorums';
-
+                // Quorum & Notifications
                 field("Default Quorum Percentage"; Rec."Default Quorum Percentage")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the default percentage of active voters required to consider a resolution valid.';
                 }
                 field("Reminder Frequency (Days)"; Rec."Reminder Frequency (Days)")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies how often automated email/portal reminders should be sent to pending voters (set to 0 to disable).';
+                }
+
+                // Portal Integration
+                // field("E-Board Portal URL"; Rec."E-Board Portal URL")
+                // {
+                //     ToolTip = 'Specifies the base URL of your external E-Board web portal.';
+                //     Visible = false;
+                // }
+                // field("Portal Tenant ID"; Rec."Portal Tenant ID")
+                // {
+                //     ToolTip = 'Specifies the tenant identifier associated with your cloud portal environment.';
+                //     Visible = false;
+                // }
+
+                // SharePoint Integration
+                field("SharePoint Site Link"; Rec."SharePoint Site Link")
+                {
+                    ToolTip = 'The base SharePoint site URL (e.g., https://company.sharepoint.com/sites/eboard)';
+                }
+                field("SharePoint Site Main Library"; Rec."SharePoint Site Main Library")
+                {
+                    ToolTip = 'The main document library name (e.g., "Documents" or "Shared Documents")';
+                }
+                field("SharePoint Document Library"; Rec."SharePoint Document Library")
+                {
+                    ToolTip = 'The document library folder for circular resolutions';
+                }
+                field("Circular Resolution DMS Link"; Rec."Circular Resolution DMS Link")
+                {
+                    ToolTip = 'The folder name within the document library for circular resolutions';
                 }
             }
         }
     }
-
+    
     trigger OnOpenPage()
     begin
         Rec.Reset();

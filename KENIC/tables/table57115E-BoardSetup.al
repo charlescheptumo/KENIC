@@ -47,26 +47,48 @@ table 57115 "E-Board Setup"
             Caption = 'Allow Individual Voting';
         }
 
-      
-        field(50; "E-Board Portal URL"; Text[250]) 
-        { 
-            Caption = 'E-Board Portal URL'; 
-            ExtendedDatatype = URL; 
+
+        field(50; "E-Board Portal URL"; Text[250])
+        {
+            Caption = 'E-Board Portal URL';
+            ExtendedDatatype = URL;
         }
-        field(51; "Portal Tenant ID"; Text[50]) 
-        { 
-            Caption = 'Portal Tenant ID'; 
+        field(51; "Portal Tenant ID"; Text[50])
+        {
+            Caption = 'Portal Tenant ID';
         }
-        field(52; "Default Quorum Percentage"; Decimal) 
-        { 
-            Caption = 'Default Quorum %'; 
-            MinValue = 0; 
-            MaxValue = 100; 
-        }
-        field(60; "Reminder Frequency (Days)"; Integer) 
-        { 
-            Caption = 'Reminder Frequency (Days)'; 
+        field(52; "Default Quorum Percentage"; Decimal)
+        {
+            Caption = 'Default Quorum %';
             MinValue = 0;
+            MaxValue = 100;
+        }
+        field(60; "Reminder Frequency (Days)"; Integer)
+        {
+            Caption = 'Reminder Frequency (Days)';
+            MinValue = 0;
+        }
+
+        field(70; "SharePoint Site Link"; Text[250])
+        {
+            Caption = 'SharePoint Site Link';
+            ExtendedDatatype = URL;
+            ToolTip = 'The base SharePoint site URL (e.g., https://company.sharepoint.com/sites/eboard)';
+        }
+        field(71; "SharePoint Site Main Library"; Text[100])
+        {
+            Caption = 'SharePoint Main Library';
+            ToolTip = 'The main document library name (e.g., "Documents" or "Shared Documents")';
+        }
+        field(72; "SharePoint Document Library"; Text[100])
+        {
+            Caption = 'SharePoint Document Library';
+            ToolTip = 'The document library folder for circular resolutions';
+        }
+        field(73; "Circular Resolution DMS Link"; Text[100])
+        {
+            Caption = 'Circular Resolution DMS Link';
+            ToolTip = 'The folder name within the document library for circular resolutions';
         }
     }
 

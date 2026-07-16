@@ -187,7 +187,7 @@ page 58116 "Circular Resolution Card"
                     end;
                 }
 
-         action(PostResolution)
+                action(PostResolution)
                 {
                     ApplicationArea = All;
                     Caption = 'Post';
@@ -222,18 +222,18 @@ page 58116 "Circular Resolution Card"
                             Rec.Posted := true;
                             Rec."Posting Date" := Today();
                             Rec."Posted By" := UserId();
-                            
-                        
-                            Rec.Status := Rec.Status::Voting; 
+
+
+                            Rec.Status := Rec.Status::Voting;
                             Rec.Modify(true);
 
                             Rec.Get(Rec."No.");
 
-                           
+
                             ResolutionMgt.NotifyMembersToVote(Rec);
 
                             Message('Circular Resolution %1 has been posted successfully and member notifications have been dispatched.', Rec."No.");
-                            
+
                             SetControlAppearance();
                             CurrPage.Update(true);
                         end;
@@ -273,7 +273,26 @@ page 58116 "Circular Resolution Card"
             {
                 Caption = 'F&unctions';
                 Image = "Action";
-                
+                action(UploadDocument)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Upload Document';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload documents for this Circular Resolution.';
+
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        Rec.TestField("No.");
+                        Rec.TestField("Department Code");
+                        DMSManagement.UploadDocuments(Rec."No.", 'Circular Resolutions', Rec.RecordId, Rec."Department Code");
+                    end;
+                }
+
                 action(SendApprovalRequest)
                 {
                     ApplicationArea = Basic;
