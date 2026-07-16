@@ -91,12 +91,32 @@ table 57110 "Circular Resolution Header"
             TableRelation = "No. Series";
             Editable = false;
         }
-      
+
         field(16; "Department Code"; Code[20])
         {
             Caption = 'Department Code';
             TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1)); // Maps to your primary Department Dimension (Shortcut Dimension 1)
         }
+        field(18; Posted; Boolean)
+        {
+            Caption = 'Posted';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(19; "Posting Date"; Date)
+        {
+            Caption = 'Posting Date';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(20; "Posted By"; Code[50])
+        {
+            Caption = 'Posted By';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
     }
 
     keys
@@ -111,12 +131,13 @@ table 57110 "Circular Resolution Header"
         ResolutionOption: Record "Circular Resolution Option";
         ResolutionVote: Record "Circular Resolution lines";
     begin
-       
+        // Only documents still in Open status can be deleted.
+        TestField("Approval Status", "Approval Status"::Open);
+
         ResolutionOption.SetRange("Resolution No.", "No.");
         if not ResolutionOption.IsEmpty() then
             ResolutionOption.DeleteAll(true);
 
-       
         ResolutionVote.SetRange("Resolution No.", "No.");
         if not ResolutionVote.IsEmpty() then
             ResolutionVote.DeleteAll(true);
@@ -133,10 +154,10 @@ table 57110 "Circular Resolution Header"
             EBoardSetup.TestField("Circular Resolution Nos.");
             "No." := NoSeries.GetNextNo(EBoardSetup."Circular Resolution Nos.", WorkDate(), true);
             "No. Series" := EBoardSetup."Circular Resolution Nos.";
-            
-            
+
+
             if EBoardSetup."Default Voting Duration (Days)" > 0 then begin
-                DaysDuration := EBoardSetup."Default Voting Duration (Days)" * 24 * 60 * 60 * 1000; 
+                DaysDuration := EBoardSetup."Default Voting Duration (Days)" * 24 * 60 * 60 * 1000;
                 "Voting Deadline" := CurrentDateTime + DaysDuration;
             end;
         end;
@@ -158,7 +179,7 @@ table 57110 "Circular Resolution Header"
     begin
         GetEBoardSetup(EBoardSetup);
         EBoardSetup.TestField("Circular Resolution Nos.");
-        
+
         if NoSeries.LookupRelatedNoSeries(EBoardSetup."Circular Resolution Nos.", OldRec."No. Series", "No. Series") then begin
             "No." := NoSeries.GetNextNo("No. Series", WorkDate(), true);
             exit(true);
@@ -167,9 +188,9 @@ table 57110 "Circular Resolution Header"
 
     local procedure GetEBoardSetup(var EBoardSetup: Record "E-Board Setup")
     begin
-        
+
         EBoardSetup.GetRecordOnce();
-        
+
         // Alternatively, if it utilizes standard setup patterns, fallback to:
         // if not EBoardSetup.Get() then begin
         //     EBoardSetup.Init();

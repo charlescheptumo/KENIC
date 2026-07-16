@@ -3,7 +3,6 @@ namespace KENIC.KENIC;
 using System.Email;
 using Microsoft.Foundation.Company;
 using System.Security.User;
-using System.Automation;
 
 codeunit 50048 "Resolution Management"
 {
@@ -20,8 +19,8 @@ codeunit 50048 "Resolution Management"
         Body: Text;
         DisplayDeadline: Text;
     begin
-        // Only notify approved resolutions
-        if CircularResolution.Status <> CircularResolution.Status::Approved then
+      
+        if (not CircularResolution.Posted) or (CircularResolution.Status <> CircularResolution.Status::Voting) then
             exit;
 
         CompanyInfo.Get();
@@ -38,14 +37,15 @@ codeunit 50048 "Resolution Management"
 
         ResolutionLine.Reset();
         ResolutionLine.SetRange("Resolution No.", CircularResolution."No.");
-        ResolutionLine.SetFilter(Email, '<>%1', '');
+        
+        ResolutionLine.SetFilter("Email", '<>%1', '');
         ResolutionLine.SetRange("Notification Sent", false);
 
         if ResolutionLine.FindSet(true) then
             repeat
                 Body := StrSubstNo('Dear %1,<br><br>', ResolutionLine."Employee Name");
                 Body += StrSubstNo(
-                    'Circular Resolution <b>%1</b> has been formally approved and is open for voting.<br><br>',
+                    'Circular Resolution <b>%1</b> has been formally posted and is now open for voting.<br><br>',
                     CircularResolution."No.");
 
                 Body += '<b>Subject:</b> ' + CircularResolution.Title + '<br>';
@@ -82,25 +82,6 @@ codeunit 50048 "Resolution Management"
                 end;
 
             until ResolutionLine.Next() = 0;
-    end;
-
-    [EventSubscriber(ObjectType::Codeunit,
-                     Codeunit::"Approvals Mgmt.",
-                     'OnApproveApprovalRequest',
-                     '',
-                     false,
-                     false)]
-    local procedure OnApproveCircularResolution(var ApprovalEntry: Record "Approval Entry")
-    var
-        CircularResolution: Record "Circular Resolution Header";
-    begin
-        if ApprovalEntry."Table ID" <> Database::"Circular Resolution Header" then
-            exit;
-
-        if not CircularResolution.Get(ApprovalEntry."Document No.") then
-            exit;
-
-        NotifyMembersToVote(CircularResolution);
     end;
 
     procedure GetUserEmail(UserID: Code[100]): Text

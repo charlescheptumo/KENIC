@@ -62,6 +62,24 @@ page 58116 "Circular Resolution Card"
                     ToolTip = 'Specifies the final deadline for accepting votes.';
                     Editable = IsDocumentEditable;
                 }
+                field(Posted; Rec.Posted)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies if this resolution has been posted.';
+                    Editable = false;
+                }
+                field("Posting Date"; Rec."Posting Date")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the date the resolution was posted.';
+                    Editable = false;
+                }
+                field("Posted By"; Rec."Posted By")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the user who posted the resolution.';
+                    Editable = false;
+                }
             }
 
             part(OptionsSubform; "Resolution Options Subform")
@@ -158,10 +176,8 @@ page 58116 "Circular Resolution Card"
                         if not IsDocumentEditable then
                             exit;
 
-
                         ResLines.Reset();
                         ResLines.SetRange("Resolution No.", Rec."No.");
-
 
                         Clear(ResLinesCard);
                         ResLinesCard.SetTableView(ResLines);
@@ -170,34 +186,65 @@ page 58116 "Circular Resolution Card"
                         CurrPage.Update(false);
                     end;
                 }
-                action(NotifyBoardMembers)
+
+         action(PostResolution)
                 {
                     ApplicationArea = All;
-                    Caption = 'Notify Board Members';
-                    ToolTip = 'Send voting notifications to all board members.';
-                    Image = SendMail;
+                    Caption = 'Post';
+                    ToolTip = 'Post the resolution and notify all board members via email.';
+                    Image = PostDocument;
                     Promoted = true;
                     PromotedCategory = Process;
-                    Enabled = Rec.Status = Rec.Status::Approved;
+                    PromotedIsBig = true;
+                    Enabled = (not Rec.Posted) and (Rec."Approval Status" = Rec."Approval Status"::Released);
 
                     trigger OnAction()
                     var
                         ResolutionMgt: Codeunit "Resolution Management";
+                        ResolutionLine: Record "Circular Resolution lines";
+                        ResOption: Record "Circular Resolution Option";
                     begin
-                        Rec.TestField(Status, Rec.Status::Approved);
+                        Rec.TestField("No.");
+                        Rec.TestField(Posted, false);
+                        Rec.TestField("Approval Status", Rec."Approval Status"::Released);
 
-                        ResolutionMgt.NotifyMembersToVote(Rec);
+                        ResolutionLine.Reset();
+                        ResolutionLine.SetRange("Resolution No.", Rec."No.");
+                        if ResolutionLine.IsEmpty() then
+                            Error('Please add at least one board member before posting.');
 
-                        Message('Notifications have been sent successfully.');
-                        CurrPage.Update(false);
+                        ResOption.Reset();
+                        ResOption.SetRange("Resolution No.", Rec."No.");
+                        if ResOption.IsEmpty() then
+                            Error('You must add at least one voting option before posting.');
+
+                        if Confirm('Do you want to post this Circular Resolution?', false) then begin
+                            Rec.Posted := true;
+                            Rec."Posting Date" := Today();
+                            Rec."Posted By" := UserId();
+                            
+                        
+                            Rec.Status := Rec.Status::Voting; 
+                            Rec.Modify(true);
+
+                            Rec.Get(Rec."No.");
+
+                           
+                            ResolutionMgt.NotifyMembersToVote(Rec);
+
+                            Message('Circular Resolution %1 has been posted successfully and member notifications have been dispatched.', Rec."No.");
+                            
+                            SetControlAppearance();
+                            CurrPage.Update(true);
+                        end;
                     end;
                 }
 
                 action(RemoveAllVoters)
                 {
                     ApplicationArea = All;
-                    Caption = 'Remove All Voters';
-                    ToolTip = 'Remove all voters currently listed under this circular resolution.';
+                    Caption = 'Remove All Members';
+                    ToolTip = 'Remove all members currently listed under this circular resolution.';
                     Image = Delete;
                     Promoted = true;
                     PromotedCategory = Process;
@@ -209,12 +256,12 @@ page 58116 "Circular Resolution Card"
                         Rec.TestField("No.");
                         if not IsDocumentEditable then
                             exit;
-                        if Confirm('Are you sure you want to delete all voter lines from this resolution?', false) then begin
+                        if Confirm('Are you sure you want to delete all resolution lines from this resolution?', false) then begin
                             ResVote.Reset();
                             ResVote.SetRange("Resolution No.", Rec."No.");
                             if not ResVote.IsEmpty() then begin
                                 ResVote.DeleteAll(true);
-                                Message('All voter lines have been cleared.');
+                                Message('All resolution lines have been cleared.');
                             end;
                             CurrPage.Update(false);
                         end;
@@ -226,6 +273,7 @@ page 58116 "Circular Resolution Card"
             {
                 Caption = 'F&unctions';
                 Image = "Action";
+                
                 action(SendApprovalRequest)
                 {
                     ApplicationArea = Basic;
@@ -245,10 +293,8 @@ page 58116 "Circular Resolution Card"
 
                         ResOption.Reset();
                         ResOption.SetRange("Resolution No.", Rec."No.");
-                        if ResOption.IsEmpty() then begin
+                        if ResOption.IsEmpty() then
                             Error('You must add at least one voting option before sending for approval.');
-                            exit;
-                        end;
 
                         VarVariant := Rec;
                         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
@@ -375,17 +421,13 @@ page 58116 "Circular Resolution Card"
         SetControlAppearance();
     end;
 
-    trigger OnOpenPage()
-    begin
-    end;
-
     local procedure SetControlAppearance()
     var
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
     begin
         OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RecordId);
         OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RecordId);
-        IsDocumentEditable := Rec."Approval Status" = Rec."Approval Status"::Open;
+        IsDocumentEditable := (Rec."Approval Status" = Rec."Approval Status"::Open) and (not Rec.Posted);
     end;
 
     var
