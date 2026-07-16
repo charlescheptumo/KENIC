@@ -464,6 +464,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         OnCancelSalaryIncreamentApprovalRequestTxt: label 'An Approval of a Salary Increament Voucher Document is canceled';
         RunWorkflowOnCancelSalaryIncreamentForApprovalCode: label 'RUNWORKFLOWONCANCELSALARYINCREAMENTFORAPPROVAL';
 
+        //Circular Resolution
+        OnSendCircularResolutionApprovalRequestTxt: label 'Approval of a Circular Resolution is requested';
+        RunWorkflowOnSendCircularResolutionForApprovalCode: label 'RUNWORKFLOWONSENDCIRCULARRESOLUTIONFORAPPROVAL';
+        OnCancelCircularResolutionApprovalRequestTxt: label 'An Approval of a Circular Resolution is canceled';
+        RunWorkflowOnCancelCircularResolutionForApprovalCode: label 'RUNWORKFLOWONCANCELCIRCULARRESOLUTIONFORAPPROVAL';
+
 
     procedure CheckApprovalsWorkflowEnabled(var Variant: Variant): Boolean
     var
@@ -723,6 +729,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //HR Salary Increament
             Database::"HR Salary Increament Header":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendSalaryIncreamentForApprovalCode));
+
+            //Circular Resolution
+            Database::"Circular Resolution Header":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendCircularResolutionForApprovalCode));
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1182,6 +1192,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelSalaryIncreamentForApprovalCode, Database::"HR Salary Increament Header", OnCancelSalaryIncreamentApprovalRequestTxt, 0, false);
 
+        //Circular Resolution
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendCircularResolutionForApprovalCode, Database::"Circular Resolution Header", OnSendCircularResolutionApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelCircularResolutionForApprovalCode, Database::"Circular Resolution Header", OnCancelCircularResolutionApprovalRequestTxt, 0, false);
+
     end;
 
     local procedure RunWorkflowOnSendApprovalRequestCode(): Code[128]
@@ -1448,6 +1464,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //salary Increament
             Database::"HR Salary Increament Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendSalaryIncreamentForApprovalCode, Variant);
+
+            //Circular Resolution
+            Database::"Circular Resolution Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendCircularResolutionForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1713,6 +1733,9 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Contract Renewal
             Database::"HR Salary Increament Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendSalaryIncreamentForApprovalCode, Variant);
+            //Circular Resolution
+            Database::"Circular Resolution Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelCircularResolutionForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1838,6 +1861,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         ContractTermination: Record "Contract Termination";
         ContractRenewal: Record ContractRenewal;
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
+        CircularResolutionHeader: Record "Circular Resolution Header";
     begin
         case RecRef.Number of
 
@@ -2551,6 +2575,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Handled := true;
                 end;
 
+            //Circular Resolution
+            Database::"Circular Resolution Header":
+                begin
+                    RecRef.SetTable(CircularResolutionHeader);
+                    CircularResolutionHeader.Validate("Approval Status", CircularResolutionHeader."Approval Status"::Open);
+                    CircularResolutionHeader.Modify();
+                    Variant := CircularResolutionHeader;
+                    Handled := true;
+                end;
+
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end
@@ -2675,6 +2709,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         ContractTermination: Record "Contract Termination";
         ContractRenewal: Record ContractRenewal;
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
+        CircularResolutionHeader: Record "Circular Resolution Header";
     begin
         Handled := true;
         case RecRef.Number of
@@ -3363,6 +3398,15 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Variant := HRSalaryIncreamentHeader;
 
                 end;
+
+            //Circular Resolution
+            Database::"Circular Resolution Header":
+                begin
+                    RecRef.SetTable(CircularResolutionHeader);
+                    CircularResolutionHeader.Validate("Approval Status", CircularResolutionHeader."Approval Status"::Released);
+                    CircularResolutionHeader.Modify();
+                    Variant := CircularResolutionHeader;
+                end;
             else
                 Handled := false;
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
@@ -3613,6 +3657,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         ContractTermination: Record "Contract Termination";
         ContractRenewal: Record ContractRenewal;
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
+        CircularResolutionHeader: Record "Circular Resolution Header";
     begin
         RecRef.GetTable(Variant);
 
@@ -3769,7 +3814,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     IsHandled := true;
                 end;
 
-                //board meetings
+            //board meetings
             Database::"Board Meetings":
                 begin
                     RecRef.SetTable(boardmeetings)
@@ -4373,6 +4418,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Variant := HRSalaryIncreamentHeader;
                     IsHandled := true;
                 end;
+
+            //Circular Resolution
+            Database::"Circular Resolution Header":
+                begin
+                    RecRef.SetTable(CircularResolutionHeader);
+                    CircularResolutionHeader.Validate("Approval Status", CircularResolutionHeader."Approval Status"::"Pending Approval");
+                    CircularResolutionHeader.Modify();
+                    Variant := CircularResolutionHeader;
+                    IsHandled := true;
+                end;
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
 
@@ -4934,6 +4989,13 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                     RecNo := FieldRef.Value;
                     DocumentAttachment.SetRange("No.", RecNo);
                 end;
+
+            DATABASE::"Circular Resolution Header":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.SetRange("No.", RecNo);
+                end;
         end;
     end;
     //cc
@@ -5244,6 +5306,13 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                     RecNo := FieldRef.Value;
                     DocumentAttachment.Validate("No.", RecNo);
                 end;
+
+            DATABASE::"Circular Resolution Header":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.Validate("No.", RecNo);
+                end;
         end;
     end;
 
@@ -5298,6 +5367,7 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
         ContractRenewal: Record ContractRenewal;
         GeneralCorrespondenceHeader: Record "General Correspondence Header";
         IncomingCorrespondenceHeader: Record "Incoming Correspondence Header";
+        CircularResolutionHeader: Record "Circular Resolution Header";
     begin
         case DocumentAttachment."Table ID" of
             DATABASE::"Payments":
@@ -5638,6 +5708,14 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                     RecRef.Open(Database::"Incoming Correspondence Header");
                     if IncomingCorrespondenceHeader.Get(DocumentAttachment."No.") then
                         RecRef.GetTable(IncomingCorrespondenceHeader);
+                end;
+            DATABASE::"Circular Resolution Header":
+                begin
+                    RecRef.Open(DATABASE::"Circular Resolution Header");
+                    CircularResolutionHeader.Reset();
+                    CircularResolutionHeader.SetRange("No.", DocumentAttachment."No.");
+                    if CircularResolutionHeader.findfirst() then
+                        RecRef.GetTable(CircularResolutionHeader);
                 end;
         end;
     end;
