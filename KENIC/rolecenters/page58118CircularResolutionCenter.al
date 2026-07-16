@@ -35,14 +35,14 @@ page 58118 "Head of E-Board"
                 action("Posted Circular Resolution")
                 {
                     ApplicationArea = All;
-                    Caption = 'Approved Circular Resolutions';
+                    Caption = 'Posted Circular Resolutions';
                     RunObject = page "Posted Circular Resolution";
                 }
 
                 action("Cancelled Circular Resolution")
                 {
                     ApplicationArea = All;
-                    Caption = 'Approved Circular Resolutions';
+                    Caption = 'Cancelled Circular Resolutions';
                     RunObject = page "Cancelled Circular Resolution";
                 }
 

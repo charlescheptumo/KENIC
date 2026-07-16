@@ -25,6 +25,22 @@ page 58116 "Circular Resolution Card"
                             CurrPage.Update();
                     end;
                 }
+                field("Iniator No."; Rec."Employee No.")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Iniator Name"; Rec."Employee Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Department Code"; Rec."Department Code")
+                {
+                    ApplicationArea = All;
+                    Editable = IsDocumentEditable;
+                }
                 field(Title; Rec.Title)
                 {
                     ApplicationArea = All;
@@ -176,18 +192,16 @@ page 58116 "Circular Resolution Card"
                     trigger OnAction()
                     var
                         ResLines: Record "Circular Resolution lines";
-                        ResLinesCard: Page "Resolution lines Card";
                     begin
                         Rec.TestField("No.");
+
                         if not IsDocumentEditable then
                             exit;
 
                         ResLines.Reset();
                         ResLines.SetRange("Resolution No.", Rec."No.");
 
-                        Clear(ResLinesCard);
-                        ResLinesCard.SetTableView(ResLines);
-                        ResLinesCard.RunModal();
+                        Page.RunModal(Page::"Resolution lines Card", ResLines);
 
                         CurrPage.Update(false);
                     end;
@@ -254,6 +268,7 @@ page 58116 "Circular Resolution Card"
                     Image = Delete;
                     Promoted = true;
                     PromotedCategory = Process;
+                    Visible = false;
 
                     trigger OnAction()
                     var
@@ -288,7 +303,7 @@ page 58116 "Circular Resolution Card"
                     PromotedCategory = Process;
                     PromotedIsBig = true;
                     ToolTip = 'Upload documents for this Circular Resolution.';
-                     Enabled = IsDocumentEditable;
+                    Enabled = IsDocumentEditable;
 
                     trigger OnAction()
                     var
