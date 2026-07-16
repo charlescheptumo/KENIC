@@ -1,12 +1,17 @@
-page 58117 "Circular Resolution List"
+page 58137 "Approved Circular Resolution"
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = "Circular Resolution Header";
-    Caption = 'Circular Resolutions';
+    Caption = 'Pending Circular Resolutions';
     Editable = false;
     CardPageId = "Circular Resolution Card";
+    SourceTableView =
+                        where(
+                            Status = filter(Approved),
+                            "Approval Status" = filter(Released)
+                        );
 
     layout
     {
