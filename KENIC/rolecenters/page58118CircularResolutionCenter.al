@@ -1,7 +1,7 @@
 page 58118 "Head of E-Board"
 {
     ApplicationArea = All;
-    Caption = 'Head of E-Board';
+    Caption = 'E-Board Role';
     PageType = RoleCenter;
 
     layout
@@ -108,5 +108,5 @@ profile "Head of E-Board"
 {
     ProfileDescription = 'Head of E-Board';
     RoleCenter = "Head of E-Board";
-    Caption = 'Head of E-Board';
+    Caption = 'E-Board Role';
 }
