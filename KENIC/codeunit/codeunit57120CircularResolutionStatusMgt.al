@@ -11,6 +11,7 @@ codeunit 57120 "Circular Resolution Mgt."
     var
 
         ResolutionHeader: Record "Circular Resolution Header";
+        ResolutionMgt: Codeunit "Resolution Management";
 
     begin
 
@@ -35,7 +36,10 @@ codeunit 57120 "Circular Resolution Mgt."
                 ResolutionHeader.UpdateStatusBasedOnDeadline();
 
             until ResolutionHeader.Next() = 0;
-
+        // Send reminder emails
+        ResolutionMgt.SendAutomatedVotingReminders();
     end;
+
+      
 
 }

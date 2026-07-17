@@ -222,4 +222,103 @@ codeunit 50048 "Resolution Management"
     
 //     UpdateWinningOption(ResolutionHeader);
 // end;
+procedure SendAutomatedVotingReminders()
+var
+    CircularResolution: Record "Circular Resolution Header";
+    ResolutionLine: Record "Circular Resolution lines";
+    Email: Codeunit Email;
+    EmailMessage: Codeunit "Email Message";
+    Subject: Text;
+    Body: Text;
+    DisplayDeadline: Text;
+    TimeUntilDeadline: Duration;
+    Send24HReminder: Boolean;
+    Send30MReminder: Boolean;
+    AnyEmailSentSuccessfully: Boolean;
+begin
+    GetEBoardSetup(EBoardSetup);
+   
+    if not EBoardSetup."Enable Reminders" then
+        exit;
+
+    CompanyInfo.Get();
+
+   
+    CircularResolution.Reset();
+    CircularResolution.SetRange(Posted, true);
+    CircularResolution.SetRange(Status, CircularResolution.Status::Voting);
+  
+    CircularResolution.SetRange("Approval Status", CircularResolution."Approval Status"::Released);
+    CircularResolution.SetFilter("Voting Deadline", '>%1', CurrentDateTime());
+
+    if CircularResolution.FindSet(true) then
+        repeat
+            TimeUntilDeadline := CircularResolution."Voting Deadline" - CurrentDateTime();
+            Send24HReminder := false;
+            Send30MReminder := false;
+            AnyEmailSentSuccessfully := false;
+
+            // Tier 1: 24-Hour Notice 
+            if (TimeUntilDeadline <= 86400000) and (TimeUntilDeadline > 1800000) and (not CircularResolution."24H Reminder Sent") then begin
+                
+                if CircularResolution."Posting Date" < Today() then begin
+                    Send24HReminder := true;
+                    Subject := StrSubstNo('REMINDER: Voting on Circular Resolution %1 closes in 24 Hours', CircularResolution."No.");
+                end;
+            end;
+
+            // Tier 2: 30-Minute Urgent Final Call
+            if (TimeUntilDeadline <= 1800000) and (TimeUntilDeadline > 0) and (not CircularResolution."30M Reminder Sent") then begin
+                Send30MReminder := true;
+                Subject := StrSubstNo('URGENT: Final 30 Minutes to Vote on Circular Resolution %1', CircularResolution."No.");
+            end;
+
+           
+            if Send24HReminder or Send30MReminder then begin
+                DisplayDeadline := Format(CircularResolution."Voting Deadline");
+
+                ResolutionLine.Reset();
+                ResolutionLine.SetRange("Resolution No.", CircularResolution."No.");
+                ResolutionLine.SetFilter("Email", '<>%1', '');
+                
+                ResolutionLine.SetRange("Vote Status", ResolutionLine."Vote Status"::Pending);
+
+                if ResolutionLine.FindSet() then
+                    repeat
+                        Body := StrSubstNo('Dear %1,<br><br>', ResolutionLine."Employee Name");
+                        Body += StrSubstNo('This is a reminder that you have a pending vote for Circular Resolution <b>%1</b>.<br><br>', CircularResolution."No.");
+                        Body += '<b>Subject:</b> ' + CircularResolution.Title + '<br>';
+                        Body += '<b>CLOSING DEADLINE:</b> <span style="color: #d83b01; font-weight: bold;">' + DisplayDeadline + '</span><br><br>';
+
+                        if EBoardSetup."E-Board Portal URL" <> '' then begin
+                            Body += 'Please log in to the portal immediately to submit your vote:<br><br>';
+                            Body += StrSubstNo(
+                                '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Cast Your Vote Now</a><br><br>',
+                                EBoardSetup."E-Board Portal URL");
+                        end;
+
+                        Body += 'Regards,<br>';
+                        Body += CompanyInfo.Name + '<br><br>';
+                        Body += '<i>This is an automated system notification. Please do not reply.</i>';
+
+                        Clear(EmailMessage);
+                        EmailMessage.Create(ResolutionLine.Email, Subject, Body, true);
+                        
+                        
+                        if Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then
+                            AnyEmailSentSuccessfully := true;
+                    until ResolutionLine.Next() = 0;
+
+                
+                if AnyEmailSentSuccessfully then begin
+                    if Send24HReminder then
+                        CircularResolution."24H Reminder Sent" := true;
+                    if Send30MReminder then
+                        CircularResolution."30M Reminder Sent" := true;
+                   
+                    CircularResolution.Modify(true);
+                end;
+            end;
+        until CircularResolution.Next() = 0;
+end;
 }
