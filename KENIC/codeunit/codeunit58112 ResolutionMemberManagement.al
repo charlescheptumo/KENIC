@@ -58,7 +58,7 @@ codeunit 50048 "Resolution Management"
                         '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;">Access E-Board Portal</a><br><br>',
                         EBoardSetup."E-Board Portal URL");
                 end;
-                
+
                 Body += 'Regards,<br>';
                 Body += CompanyInfo.Name + '<br><br>';
                 Body += '<i>This is a system-generated email. Please do not reply.</i>';
@@ -98,34 +98,33 @@ codeunit 50048 "Resolution Management"
     var
         ResolutionOption: Record "Circular Resolution Option";
     begin
-
         ResolutionOption.SetRange("Resolution No.", ResolutionNo);
 
         if not ResolutionOption.IsEmpty() then
             exit;
 
-
-        // Create FOR option
+        // FOR
         ResolutionOption.Init();
         ResolutionOption."Resolution No." := ResolutionNo;
+        ResolutionOption."Line No." := 1;
         ResolutionOption."Option Code" := 'FOR';
         ResolutionOption."Option Description" := 'For';
         ResolutionOption."Display Order" := 1;
         ResolutionOption.Insert(true);
 
-
-        // Create AGAINST option
+        // AGAINST
         ResolutionOption.Init();
         ResolutionOption."Resolution No." := ResolutionNo;
+        ResolutionOption."Line No." := 2;
         ResolutionOption."Option Code" := 'AGAINST';
         ResolutionOption."Option Description" := 'Against';
         ResolutionOption."Display Order" := 2;
         ResolutionOption.Insert(true);
 
-
-        // Create ABSTAIN option
+        // ABSTAIN
         ResolutionOption.Init();
         ResolutionOption."Resolution No." := ResolutionNo;
+        ResolutionOption."Line No." := 3;
         ResolutionOption."Option Code" := 'ABSTAIN';
         ResolutionOption."Option Description" := 'Abstain';
         ResolutionOption."Display Order" := 3;
@@ -168,157 +167,157 @@ codeunit 50048 "Resolution Management"
         end;
     end;
 
-    //Portal
-//    procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
-// var
-//     VoteLine: Record "Circular Resolution lines";
-//     ResolutionHeader: Record "Circular Resolution Header";
-//     ResolutionOption: Record "Circular Resolution Option";
-// begin
-   
-//     if not ResolutionHeader.Get(ResolutionNo) then
-//         Error('Circular Resolution %1 was not found.', ResolutionNo);
+    //Portal Guide
+    //    procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
+    // var
+    //     VoteLine: Record "Circular Resolution lines";
+    //     ResolutionHeader: Record "Circular Resolution Header";
+    //     ResolutionOption: Record "Circular Resolution Option";
+    // begin
+
+    //     if not ResolutionHeader.Get(ResolutionNo) then
+    //         Error('Circular Resolution %1 was not found.', ResolutionNo);
 
 
-//     if not ResolutionHeader.Posted then
-//         Error('This Circular Resolution has not been posted for voting.');
+    //     if not ResolutionHeader.Posted then
+    //         Error('This Circular Resolution has not been posted for voting.');
 
-    
-//     ResolutionHeader.UpdateStatusBasedOnDeadline();
 
-    
-//     ResolutionHeader.Get(ResolutionNo);
+    //     ResolutionHeader.UpdateStatusBasedOnDeadline();
 
-    
-//     if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
-//         Error('Voting is not available for this Circular Resolution.');
 
-   
-//     if ResolutionHeader."Approval Status" <> ResolutionHeader."Approval Status"::Released then
-//         Error('This Circular Resolution has not been released for voting.');
+    //     ResolutionHeader.Get(ResolutionNo);
 
-    
-//     ResolutionOption.SetRange("Resolution No.", ResolutionNo);
-//     ResolutionOption.SetRange("Line No.", SelectedOption);
-//     if not ResolutionOption.FindFirst() then
-//         Error('Invalid voting option selected.');
 
-    
-//     VoteLine.SetRange("Resolution No.", ResolutionNo);
-//     VoteLine.SetRange("Employee No.", EmployeeNo);
+    //     if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
+    //         Error('Voting is not available for this Circular Resolution.');
 
-//     if not VoteLine.FindFirst() then
-//         Error('You are not an authorized member for this Circular Resolution.');
 
-    
-//     if VoteLine."Vote Status" = VoteLine."Vote Status"::Voted then
-//         Error('You have already submitted your vote.');
+    //     if ResolutionHeader."Approval Status" <> ResolutionHeader."Approval Status"::Released then
+    //         Error('This Circular Resolution has not been released for voting.');
 
-    
-//     VoteLine.Validate("Selected Option Line No.", SelectedOption);
-//     VoteLine.Remarks := Remarks;
-//     VoteLine.Modify(true);
 
-    
-//     UpdateWinningOption(ResolutionHeader);
-// end;
-procedure SendAutomatedVotingReminders()
-var
-    CircularResolution: Record "Circular Resolution Header";
-    ResolutionLine: Record "Circular Resolution lines";
-    Email: Codeunit Email;
-    EmailMessage: Codeunit "Email Message";
-    Subject: Text;
-    Body: Text;
-    DisplayDeadline: Text;
-    TimeUntilDeadline: Duration;
-    Send24HReminder: Boolean;
-    Send30MReminder: Boolean;
-    AnyEmailSentSuccessfully: Boolean;
-begin
-    GetEBoardSetup(EBoardSetup);
-   
-    if not EBoardSetup."Enable Reminders" then
-        exit;
+    //     ResolutionOption.SetRange("Resolution No.", ResolutionNo);
+    //     ResolutionOption.SetRange("Line No.", SelectedOption);
+    //     if not ResolutionOption.FindFirst() then
+    //         Error('Invalid voting option selected.');
 
-    CompanyInfo.Get();
 
-   
-    CircularResolution.Reset();
-    CircularResolution.SetRange(Posted, true);
-    CircularResolution.SetRange(Status, CircularResolution.Status::Voting);
-  
-    CircularResolution.SetRange("Approval Status", CircularResolution."Approval Status"::Released);
-    CircularResolution.SetFilter("Voting Deadline", '>%1', CurrentDateTime());
+    //     VoteLine.SetRange("Resolution No.", ResolutionNo);
+    //     VoteLine.SetRange("Employee No.", EmployeeNo);
 
-    if CircularResolution.FindSet(true) then
-        repeat
-            TimeUntilDeadline := CircularResolution."Voting Deadline" - CurrentDateTime();
-            Send24HReminder := false;
-            Send30MReminder := false;
-            AnyEmailSentSuccessfully := false;
+    //     if not VoteLine.FindFirst() then
+    //         Error('You are not an authorized member for this Circular Resolution.');
 
-            // Tier 1: 24-Hour Notice 
-            if (TimeUntilDeadline <= 86400000) and (TimeUntilDeadline > 1800000) and (not CircularResolution."24H Reminder Sent") then begin
-                
-                if CircularResolution."Posting Date" < Today() then begin
-                    Send24HReminder := true;
-                    Subject := StrSubstNo('REMINDER: Voting on Circular Resolution %1 closes in 24 Hours', CircularResolution."No.");
+
+    //     if VoteLine."Vote Status" = VoteLine."Vote Status"::Voted then
+    //         Error('You have already submitted your vote.');
+
+
+    //     VoteLine.Validate("Selected Option Line No.", SelectedOption);
+    //     VoteLine.Remarks := Remarks;
+    //     VoteLine.Modify(true);
+
+
+    //     UpdateWinningOption(ResolutionHeader);
+    // end;
+    procedure SendAutomatedVotingReminders()
+    var
+        CircularResolution: Record "Circular Resolution Header";
+        ResolutionLine: Record "Circular Resolution lines";
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Subject: Text;
+        Body: Text;
+        DisplayDeadline: Text;
+        TimeUntilDeadline: Duration;
+        Send24HReminder: Boolean;
+        Send30MReminder: Boolean;
+        AnyEmailSentSuccessfully: Boolean;
+    begin
+        GetEBoardSetup(EBoardSetup);
+
+        if not EBoardSetup."Enable Reminders" then
+            exit;
+
+        CompanyInfo.Get();
+
+
+        CircularResolution.Reset();
+        CircularResolution.SetRange(Posted, true);
+        CircularResolution.SetRange(Status, CircularResolution.Status::Voting);
+
+        CircularResolution.SetRange("Approval Status", CircularResolution."Approval Status"::Released);
+        CircularResolution.SetFilter("Voting Deadline", '>%1', CurrentDateTime());
+
+        if CircularResolution.FindSet(true) then
+            repeat
+                TimeUntilDeadline := CircularResolution."Voting Deadline" - CurrentDateTime();
+                Send24HReminder := false;
+                Send30MReminder := false;
+                AnyEmailSentSuccessfully := false;
+
+                // Tier 1: 24-Hour Notice 
+                if (TimeUntilDeadline <= 86400000) and (TimeUntilDeadline > 1800000) and (not CircularResolution."24H Reminder Sent") then begin
+
+                    if CircularResolution."Posting Date" < Today() then begin
+                        Send24HReminder := true;
+                        Subject := StrSubstNo('REMINDER: Voting on Circular Resolution %1 closes in 24 Hours', CircularResolution."No.");
+                    end;
                 end;
-            end;
 
-            // Tier 2: 30-Minute Urgent Final Call
-            if (TimeUntilDeadline <= 1800000) and (TimeUntilDeadline > 0) and (not CircularResolution."30M Reminder Sent") then begin
-                Send30MReminder := true;
-                Subject := StrSubstNo('URGENT: Final 30 Minutes to Vote on Circular Resolution %1', CircularResolution."No.");
-            end;
-
-           
-            if Send24HReminder or Send30MReminder then begin
-                DisplayDeadline := Format(CircularResolution."Voting Deadline");
-
-                ResolutionLine.Reset();
-                ResolutionLine.SetRange("Resolution No.", CircularResolution."No.");
-                ResolutionLine.SetFilter("Email", '<>%1', '');
-                
-                ResolutionLine.SetRange("Vote Status", ResolutionLine."Vote Status"::Pending);
-
-                if ResolutionLine.FindSet() then
-                    repeat
-                        Body := StrSubstNo('Dear %1,<br><br>', ResolutionLine."Employee Name");
-                        Body += StrSubstNo('This is a reminder that you have a pending vote for Circular Resolution <b>%1</b>.<br><br>', CircularResolution."No.");
-                        Body += '<b>Subject:</b> ' + CircularResolution.Title + '<br>';
-                        Body += '<b>CLOSING DEADLINE:</b> <span style="color: #d83b01; font-weight: bold;">' + DisplayDeadline + '</span><br><br>';
-
-                        if EBoardSetup."E-Board Portal URL" <> '' then begin
-                            Body += 'Please log in to the portal immediately to submit your vote:<br><br>';
-                            Body += StrSubstNo(
-                                '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Cast Your Vote Now</a><br><br>',
-                                EBoardSetup."E-Board Portal URL");
-                        end;
-
-                        Body += 'Regards,<br>';
-                        Body += CompanyInfo.Name + '<br><br>';
-                        Body += '<i>This is an automated system notification. Please do not reply.</i>';
-
-                        Clear(EmailMessage);
-                        EmailMessage.Create(ResolutionLine.Email, Subject, Body, true);
-                        
-                        
-                        if Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then
-                            AnyEmailSentSuccessfully := true;
-                    until ResolutionLine.Next() = 0;
-
-                
-                if AnyEmailSentSuccessfully then begin
-                    if Send24HReminder then
-                        CircularResolution."24H Reminder Sent" := true;
-                    if Send30MReminder then
-                        CircularResolution."30M Reminder Sent" := true;
-                   
-                    CircularResolution.Modify(true);
+                // Tier 2: 30-Minute Urgent Final Call
+                if (TimeUntilDeadline <= 1800000) and (TimeUntilDeadline > 0) and (not CircularResolution."30M Reminder Sent") then begin
+                    Send30MReminder := true;
+                    Subject := StrSubstNo('URGENT: Final 30 Minutes to Vote on Circular Resolution %1', CircularResolution."No.");
                 end;
-            end;
-        until CircularResolution.Next() = 0;
-end;
+
+
+                if Send24HReminder or Send30MReminder then begin
+                    DisplayDeadline := Format(CircularResolution."Voting Deadline");
+
+                    ResolutionLine.Reset();
+                    ResolutionLine.SetRange("Resolution No.", CircularResolution."No.");
+                    ResolutionLine.SetFilter("Email", '<>%1', '');
+
+                    ResolutionLine.SetRange("Vote Status", ResolutionLine."Vote Status"::Pending);
+
+                    if ResolutionLine.FindSet() then
+                        repeat
+                            Body := StrSubstNo('Dear %1,<br><br>', ResolutionLine."Employee Name");
+                            Body += StrSubstNo('This is a reminder that you have a pending vote for Circular Resolution <b>%1</b>.<br><br>', CircularResolution."No.");
+                            Body += '<b>Subject:</b> ' + CircularResolution.Title + '<br>';
+                            Body += '<b>CLOSING DEADLINE:</b> <span style="color: #d83b01; font-weight: bold;">' + DisplayDeadline + '</span><br><br>';
+
+                            if EBoardSetup."E-Board Portal URL" <> '' then begin
+                                Body += 'Please log in to the portal immediately to submit your vote:<br><br>';
+                                Body += StrSubstNo(
+                                    '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Cast Your Vote Now</a><br><br>',
+                                    EBoardSetup."E-Board Portal URL");
+                            end;
+
+                            Body += 'Regards,<br>';
+                            Body += CompanyInfo.Name + '<br><br>';
+                            Body += '<i>This is an automated system notification. Please do not reply.</i>';
+
+                            Clear(EmailMessage);
+                            EmailMessage.Create(ResolutionLine.Email, Subject, Body, true);
+
+
+                            if Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then
+                                AnyEmailSentSuccessfully := true;
+                        until ResolutionLine.Next() = 0;
+
+
+                    if AnyEmailSentSuccessfully then begin
+                        if Send24HReminder then
+                            CircularResolution."24H Reminder Sent" := true;
+                        if Send30MReminder then
+                            CircularResolution."30M Reminder Sent" := true;
+
+                        CircularResolution.Modify(true);
+                    end;
+                end;
+            until CircularResolution.Next() = 0;
+    end;
 }

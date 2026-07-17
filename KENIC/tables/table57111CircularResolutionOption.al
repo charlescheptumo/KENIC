@@ -59,18 +59,20 @@ table 57111 "Circular Resolution Option"
             Unique = true;
         }
     }
-    trigger OnInsert()
-    var
-        ResolutionOption: Record "Circular Resolution Option";
-    begin
-        if "Line No." = 0 then begin
-            ResolutionOption.Reset();
-            ResolutionOption.SetRange("Resolution No.", "Resolution No.");
+   // trigger OnInsert()
+    //var
+       // ResolutionOption: Record "Circular Resolution Option";
+   // begin
+        // if "Line No." = 0 then begin
+        //     ResolutionOption.Reset();
+        //     ResolutionOption.SetRange("Resolution No.", "Resolution No.");
 
-            if ResolutionOption.FindLast() then
-                "Line No." := ResolutionOption."Line No." + 1
-            else
-                "Line No." := 1;
-        end;
-    end;
+        //     if ResolutionOption.FindLast() then
+        //         "Line No." := ResolutionOption."Line No." + 1
+        //     else
+        //         "Line No." := 1;
+        // end;
+   // end;
+
+
 }
