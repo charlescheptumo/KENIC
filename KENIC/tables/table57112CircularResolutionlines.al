@@ -67,21 +67,31 @@ table 57112 "Circular Resolution lines"
             trigger OnValidate()
             var
                 Option: Record "Circular Resolution Option";
+                ResolutionHeader: Record "Circular Resolution Header";
+                ResolutionMgt: Codeunit "Resolution Management";
             begin
                 if "Vote Status" = "Vote Status"::Voted then
                     Error('You have already submitted your vote. Voting is allowed only once.');
                 if "Selected Option Line No." <> 0 then begin
                     if not Option.Get("Resolution No.", "Selected Option Line No.") then
-                     Error('Invalid voting option selected.');
-                  //  Option.Get("Resolution No.", "Selected Option Line No.");
+                        Error('Invalid voting option selected.');
+                    //  Option.Get("Resolution No.", "Selected Option Line No.");
                     "Selected Option Code" := Option."Option Code";
                     "Vote Status" := "Vote Status"::Voted;
                     "Vote DateTime" := CurrentDateTime;
+
+
                 end else begin
                     "Selected Option Code" := '';
                     "Vote Status" := "Vote Status"::Pending;
                     "Vote DateTime" := 0DT;
+
+                    
                 end;
+
+                // Update the current winning option
+                    if ResolutionHeader.Get("Resolution No.") then
+                        ResolutionMgt.UpdateWinningOption(ResolutionHeader);
             end;
         }
         field(9; "Selected Option Code"; Code[20])

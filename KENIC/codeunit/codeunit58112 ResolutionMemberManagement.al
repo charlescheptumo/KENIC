@@ -98,12 +98,12 @@ codeunit 50048 "Resolution Management"
         Setup.GetRecordOnce();
     end;
 
-//Voting options
+    //Voting options
     procedure CreateDefaultVotingOptions(ResolutionNo: Code[20])
     var
         ResolutionOption: Record "Circular Resolution Option";
     begin
-        
+
         ResolutionOption.SetRange("Resolution No.", ResolutionNo);
 
         if not ResolutionOption.IsEmpty() then
@@ -136,4 +136,95 @@ codeunit 50048 "Resolution Management"
         ResolutionOption."Display Order" := 3;
         ResolutionOption.Insert(true);
     end;
+
+    //Highest Winning option
+    procedure UpdateWinningOption(var ResolutionHeader: Record "Circular Resolution Header")
+    var
+        ResolutionOption: Record "Circular Resolution Option";
+        HighestVotes: Integer;
+        WinningOption: Code[20];
+        Tie: Boolean;
+    begin
+        HighestVotes := -1;
+        WinningOption := '';
+        Tie := false;
+
+        ResolutionOption.SetRange("Resolution No.", ResolutionHeader."No.");
+
+        if ResolutionOption.FindSet() then
+            repeat
+                ResolutionOption.CalcFields("Vote Count");
+
+                if ResolutionOption."Vote Count" > HighestVotes then begin
+                    HighestVotes := ResolutionOption."Vote Count";
+                    WinningOption := ResolutionOption."Option Code";
+                    Tie := false;
+                end else
+                    if ResolutionOption."Vote Count" = HighestVotes then
+                        Tie := true;
+            until ResolutionOption.Next() = 0;
+
+        if Tie then
+            WinningOption := '';
+
+        if ResolutionHeader."Winning Option" <> WinningOption then begin
+            ResolutionHeader."Winning Option" := WinningOption;
+            ResolutionHeader.Modify(true);
+        end;
+    end;
+
+    //Portal
+   procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
+var
+    VoteLine: Record "Circular Resolution lines";
+    ResolutionHeader: Record "Circular Resolution Header";
+    ResolutionOption: Record "Circular Resolution Option";
+begin
+   
+    if not ResolutionHeader.Get(ResolutionNo) then
+        Error('Circular Resolution %1 was not found.', ResolutionNo);
+
+
+    if not ResolutionHeader.Posted then
+        Error('This Circular Resolution has not been posted for voting.');
+
+    
+    ResolutionHeader.UpdateStatusBasedOnDeadline();
+
+    
+    ResolutionHeader.Get(ResolutionNo);
+
+    
+    if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
+        Error('Voting is not available for this Circular Resolution.');
+
+   
+    if ResolutionHeader."Approval Status" <> ResolutionHeader."Approval Status"::Released then
+        Error('This Circular Resolution has not been released for voting.');
+
+    
+    ResolutionOption.SetRange("Resolution No.", ResolutionNo);
+    ResolutionOption.SetRange("Line No.", SelectedOption);
+    if not ResolutionOption.FindFirst() then
+        Error('Invalid voting option selected.');
+
+    
+    VoteLine.SetRange("Resolution No.", ResolutionNo);
+    VoteLine.SetRange("Employee No.", EmployeeNo);
+
+    if not VoteLine.FindFirst() then
+        Error('You are not an authorized member for this Circular Resolution.');
+
+    
+    if VoteLine."Vote Status" = VoteLine."Vote Status"::Voted then
+        Error('You have already submitted your vote.');
+
+    
+    VoteLine.Validate("Selected Option Line No.", SelectedOption);
+    VoteLine.Remarks := Remarks;
+    VoteLine.Modify(true);
+
+    
+    UpdateWinningOption(ResolutionHeader);
+end;
 }
