@@ -190,6 +190,7 @@ table 57110 "Circular Resolution Header"
         DaysDuration: Duration;
         UserSetup: Record "User Setup";
         Emp: Record Employee;
+        ResolutionMgt: Codeunit "Resolution Management";
     begin
         if "No." = '' then begin
             GetEBoardSetup(EBoardSetup);
@@ -214,6 +215,7 @@ table 57110 "Circular Resolution Header"
                     "Department Code" := Emp."Department Code";
             end;
         end;
+         ResolutionMgt.CreateDefaultVotingOptions("No.");
     end;
 
     trigger OnModify()

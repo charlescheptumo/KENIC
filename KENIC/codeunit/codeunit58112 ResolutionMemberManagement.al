@@ -19,7 +19,7 @@ codeunit 50048 "Resolution Management"
         Body: Text;
         DisplayDeadline: Text;
     begin
-      
+
         if (not CircularResolution.Posted) or (CircularResolution.Status <> CircularResolution.Status::Voting) then
             exit;
 
@@ -37,7 +37,7 @@ codeunit 50048 "Resolution Management"
 
         ResolutionLine.Reset();
         ResolutionLine.SetRange("Resolution No.", CircularResolution."No.");
-        
+
         ResolutionLine.SetFilter("Email", '<>%1', '');
         ResolutionLine.SetRange("Notification Sent", false);
 
@@ -96,5 +96,44 @@ codeunit 50048 "Resolution Management"
     local procedure GetEBoardSetup(var Setup: Record "E-Board Setup")
     begin
         Setup.GetRecordOnce();
+    end;
+
+//Voting options
+    procedure CreateDefaultVotingOptions(ResolutionNo: Code[20])
+    var
+        ResolutionOption: Record "Circular Resolution Option";
+    begin
+        
+        ResolutionOption.SetRange("Resolution No.", ResolutionNo);
+
+        if not ResolutionOption.IsEmpty() then
+            exit;
+
+
+        // Create FOR option
+        ResolutionOption.Init();
+        ResolutionOption."Resolution No." := ResolutionNo;
+        ResolutionOption."Option Code" := 'FOR';
+        ResolutionOption."Option Description" := 'For';
+        ResolutionOption."Display Order" := 1;
+        ResolutionOption.Insert();
+
+
+        // Create AGAINST option
+        ResolutionOption.Init();
+        ResolutionOption."Resolution No." := ResolutionNo;
+        ResolutionOption."Option Code" := 'AGAINST';
+        ResolutionOption."Option Description" := 'Against';
+        ResolutionOption."Display Order" := 2;
+        ResolutionOption.Insert();
+
+
+        // Create ABSTAIN option
+        ResolutionOption.Init();
+        ResolutionOption."Resolution No." := ResolutionNo;
+        ResolutionOption."Option Code" := 'ABSTAIN';
+        ResolutionOption."Option Description" := 'Abstain';
+        ResolutionOption."Display Order" := 3;
+        ResolutionOption.Insert();
     end;
 }
