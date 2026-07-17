@@ -156,6 +156,16 @@ table 57110 "Circular Resolution Header"
             CaptionClass = '1,2,1';
             TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1));
         }
+        field(24; "24H Reminder Sent"; Boolean)
+        {
+            Caption = '24H Reminder Sent';
+            Editable = false;
+        }
+        field(25; "30M Reminder Sent"; Boolean)
+        {
+            Caption = '30M Reminder Sent';
+            Editable = false;
+        }
 
     }
 
@@ -215,7 +225,7 @@ table 57110 "Circular Resolution Header"
                     "Department Code" := Emp."Department Code";
             end;
         end;
-         ResolutionMgt.CreateDefaultVotingOptions("No.");
+        ResolutionMgt.CreateDefaultVotingOptions("No.");
     end;
 
     trigger OnModify()
@@ -252,10 +262,10 @@ table 57110 "Circular Resolution Header"
 
     procedure UpdateStatusBasedOnDeadline()
     begin
-        
+
         if ("Voting Deadline" <> 0DT) and ("Voting Deadline" <= CurrentDateTime) then begin
 
-            
+
             if (Status = Status::"Pending Approval") or
                (Status = Status::Approved) or
                (Status = Status::Voting) then begin

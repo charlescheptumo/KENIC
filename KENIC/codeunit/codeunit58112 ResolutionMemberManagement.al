@@ -32,7 +32,7 @@ codeunit 50048 "Resolution Management"
             DisplayDeadline := 'Not Set';
 
         Subject := StrSubstNo(
-            'Action Required: Vote on Circular Resolution – %1',
+            'Vote on Circular Resolution – %1',
             CircularResolution."No.");
 
         ResolutionLine.Reset();
@@ -58,12 +58,7 @@ codeunit 50048 "Resolution Management"
                         '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;">Access E-Board Portal</a><br><br>',
                         EBoardSetup."E-Board Portal URL");
                 end;
-
-                if EBoardSetup."Reminder Frequency (Days)" > 0 then
-                    Body += StrSubstNo(
-                        '<i>Automatic reminders will be sent every %1 day(s) until you vote.</i><br><br>',
-                        EBoardSetup."Reminder Frequency (Days)");
-
+                
                 Body += 'Regards,<br>';
                 Body += CompanyInfo.Name + '<br><br>';
                 Body += '<i>This is a system-generated email. Please do not reply.</i>';
@@ -174,57 +169,57 @@ codeunit 50048 "Resolution Management"
     end;
 
     //Portal
-   procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
-var
-    VoteLine: Record "Circular Resolution lines";
-    ResolutionHeader: Record "Circular Resolution Header";
-    ResolutionOption: Record "Circular Resolution Option";
-begin
+//    procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
+// var
+//     VoteLine: Record "Circular Resolution lines";
+//     ResolutionHeader: Record "Circular Resolution Header";
+//     ResolutionOption: Record "Circular Resolution Option";
+// begin
    
-    if not ResolutionHeader.Get(ResolutionNo) then
-        Error('Circular Resolution %1 was not found.', ResolutionNo);
+//     if not ResolutionHeader.Get(ResolutionNo) then
+//         Error('Circular Resolution %1 was not found.', ResolutionNo);
 
 
-    if not ResolutionHeader.Posted then
-        Error('This Circular Resolution has not been posted for voting.');
-
-    
-    ResolutionHeader.UpdateStatusBasedOnDeadline();
+//     if not ResolutionHeader.Posted then
+//         Error('This Circular Resolution has not been posted for voting.');
 
     
-    ResolutionHeader.Get(ResolutionNo);
+//     ResolutionHeader.UpdateStatusBasedOnDeadline();
 
     
-    if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
-        Error('Voting is not available for this Circular Resolution.');
+//     ResolutionHeader.Get(ResolutionNo);
+
+    
+//     if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
+//         Error('Voting is not available for this Circular Resolution.');
 
    
-    if ResolutionHeader."Approval Status" <> ResolutionHeader."Approval Status"::Released then
-        Error('This Circular Resolution has not been released for voting.');
+//     if ResolutionHeader."Approval Status" <> ResolutionHeader."Approval Status"::Released then
+//         Error('This Circular Resolution has not been released for voting.');
 
     
-    ResolutionOption.SetRange("Resolution No.", ResolutionNo);
-    ResolutionOption.SetRange("Line No.", SelectedOption);
-    if not ResolutionOption.FindFirst() then
-        Error('Invalid voting option selected.');
+//     ResolutionOption.SetRange("Resolution No.", ResolutionNo);
+//     ResolutionOption.SetRange("Line No.", SelectedOption);
+//     if not ResolutionOption.FindFirst() then
+//         Error('Invalid voting option selected.');
 
     
-    VoteLine.SetRange("Resolution No.", ResolutionNo);
-    VoteLine.SetRange("Employee No.", EmployeeNo);
+//     VoteLine.SetRange("Resolution No.", ResolutionNo);
+//     VoteLine.SetRange("Employee No.", EmployeeNo);
 
-    if not VoteLine.FindFirst() then
-        Error('You are not an authorized member for this Circular Resolution.');
-
-    
-    if VoteLine."Vote Status" = VoteLine."Vote Status"::Voted then
-        Error('You have already submitted your vote.');
+//     if not VoteLine.FindFirst() then
+//         Error('You are not an authorized member for this Circular Resolution.');
 
     
-    VoteLine.Validate("Selected Option Line No.", SelectedOption);
-    VoteLine.Remarks := Remarks;
-    VoteLine.Modify(true);
+//     if VoteLine."Vote Status" = VoteLine."Vote Status"::Voted then
+//         Error('You have already submitted your vote.');
 
     
-    UpdateWinningOption(ResolutionHeader);
-end;
+//     VoteLine.Validate("Selected Option Line No.", SelectedOption);
+//     VoteLine.Remarks := Remarks;
+//     VoteLine.Modify(true);
+
+    
+//     UpdateWinningOption(ResolutionHeader);
+// end;
 }

@@ -62,11 +62,13 @@ table 57115 "E-Board Setup"
             Caption = 'Default Quorum %';
             MinValue = 0;
             MaxValue = 100;
+
         }
-        field(60; "Reminder Frequency (Days)"; Integer)
+        field(60; "Enable Reminders"; Boolean)
         {
-            Caption = 'Reminder Frequency (Days)';
-            MinValue = 0;
+            Caption = 'Enable Reminders';
+            InitValue = true;
+            ToolTip = 'Specifies whether automated email reminders should be sent to pending voters.';
         }
 
         field(70; "SharePoint Site Link"; Text[250])

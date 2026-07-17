@@ -7,7 +7,7 @@ page 58119 "E-Board Setup"
     UsageCategory = Administration;
     InsertAllowed = false;
     DeleteAllowed = false;
-    
+
     layout
     {
         area(Content)
@@ -15,7 +15,7 @@ page 58119 "E-Board Setup"
             group(General)
             {
                 Caption = 'General';
-                
+
                 field("Primary Key"; Rec."Primary Key")
                 {
                     ToolTip = 'Primary key for the setup record.';
@@ -48,32 +48,35 @@ page 58119 "E-Board Setup"
                 field("Enable Approval Workflow"; Rec."Enable Approval Workflow")
                 {
                     ToolTip = 'Specifies whether circular resolutions must undergo an approval workflow before board members can vote.';
+                    Visible = false;
                 }
                 field("Allow Department Voting"; Rec."Allow Department Voting")
                 {
                     ToolTip = 'Specifies if you can target specific organizational departments to vote on a resolution.';
+                    Visible = false;
                 }
                 field("Allow Individual Voting"; Rec."Allow Individual Voting")
                 {
                     ToolTip = 'Specifies if you can manually add individual board members to a voting campaign instead of broad categories.';
+                    Visible = false;
                 }
 
                 // Quorum & Notifications
                 field("Default Quorum Percentage"; Rec."Default Quorum Percentage")
                 {
                     ToolTip = 'Specifies the default percentage of active voters required to consider a resolution valid.';
+                    Visible = false;
                 }
-                field("Reminder Frequency (Days)"; Rec."Reminder Frequency (Days)")
+                field("Enable Reminders"; Rec."Enable Reminders")
                 {
-                    ToolTip = 'Specifies how often automated email/portal reminders should be sent to pending voters (set to 0 to disable).';
+                    ToolTip = 'Specifies whether automated email reminders should be sent to pending voters.';
                 }
-
                 // Portal Integration
-                // field("E-Board Portal URL"; Rec."E-Board Portal URL")
-                // {
-                //     ToolTip = 'Specifies the base URL of your external E-Board web portal.';
-                //     Visible = false;
-                // }
+                field("E-Board Portal URL"; Rec."E-Board Portal URL")
+                {
+                    ToolTip = 'Specifies the base URL of your external E-Board web portal.';
+                    Visible = true;
+                }
                 // field("Portal Tenant ID"; Rec."Portal Tenant ID")
                 // {
                 //     ToolTip = 'Specifies the tenant identifier associated with your cloud portal environment.';
@@ -100,7 +103,7 @@ page 58119 "E-Board Setup"
             }
         }
     }
-    
+
     trigger OnOpenPage()
     begin
         Rec.Reset();
