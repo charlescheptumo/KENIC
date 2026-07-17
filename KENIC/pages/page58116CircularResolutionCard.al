@@ -343,7 +343,7 @@ page 58116 "Circular Resolution Card"
                         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
                             CustomApprovals.OnSendDocForApproval(VarVariant);
 
-                            
+
                             Rec.Get(Rec."No.");
                             if Rec."Approval Status" = Rec."Approval Status"::"Pending Approval" then begin
                                 Rec.Status := Rec.Status::"Pending Approval";
@@ -368,6 +368,13 @@ page 58116 "Circular Resolution Card"
                         Rec.TestField("Approval Status", Rec."Approval Status"::"Pending Approval");
                         VarVariant := Rec;
                         CustomApprovalsMgt.OnCancelDocApprovalRequest(VarVariant);
+
+                        //  update Status to Open
+                        Rec.Get(Rec."No.");
+                        if Rec."Approval Status" = Rec."Approval Status"::Open then begin
+                            Rec.Status := Rec.Status::Open;
+                            Rec.Modify(true);
+                        end;
                     end;
                 }
                 action(Approvals)
