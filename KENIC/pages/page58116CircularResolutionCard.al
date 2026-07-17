@@ -412,6 +412,13 @@ page 58116 "Circular Resolution Card"
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     begin
                         ApprovalsMgmt.ApproveRecordApprovalRequest(Rec.RecordId);
+
+                        
+                        Rec.Get(Rec."No.");
+                        if Rec."Approval Status" = Rec."Approval Status"::Released then begin
+                            Rec.Status := Rec.Status::Approved;
+                            Rec.Modify(true);
+                        end;
                     end;
                 }
                 action(Reject)
