@@ -10,16 +10,14 @@ page 57130 "Resolution lines Card"
     {
         area(Content)
         {
-            group(General)
+            repeater(General)
             {
-                Caption = 'General';
-
                 field("Resolution No."; Rec."Resolution No.")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the resolution number.';
                     Editable = false;
-                   // TableRelation = "Circular Resolution Header";
+                    // TableRelation = "Circular Resolution Header";
                 }
 
                 field("Line No."; Rec."Line No.")
@@ -62,7 +60,7 @@ page 57130 "Resolution lines Card"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the vote status.';
                     Editable = false;
-                    visible=false;
+                    visible = false;
                 }
 
                 field("Selected Option Line No."; Rec."Selected Option Line No.")
@@ -103,6 +101,7 @@ page 57130 "Resolution lines Card"
                     ApplicationArea = All;
                     ToolTip = 'Specifies if notification was sent.';
                     Editable = false;
+                    Visible = false;
                 }
 
                 field("Notification DateTime"; Rec."Notification DateTime")
@@ -110,6 +109,7 @@ page 57130 "Resolution lines Card"
                     ApplicationArea = All;
                     ToolTip = 'Displays the notification date and time.';
                     Editable = false;
+                    Visible = false;
                 }
             }
         }
@@ -119,7 +119,7 @@ page 57130 "Resolution lines Card"
     {
         area(Processing)
         {
-       
+
         }
     }
 
@@ -142,6 +142,6 @@ page 57130 "Resolution lines Card"
 
     trigger OnOpenPage()
     begin
-       
+
     end;
 }

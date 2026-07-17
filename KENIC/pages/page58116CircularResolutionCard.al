@@ -19,11 +19,11 @@ page 58116 "Circular Resolution Card"
                     ToolTip = 'Specifies the unique resolution number.';
                     Editable = false;
 
-                    trigger OnAssistEdit()
-                    begin
-                        if Rec.AssistEdit(xRec) then
-                            CurrPage.Update();
-                    end;
+                    // trigger OnAssistEdit()
+                    // begin
+                    //     if Rec.AssistEdit(xRec) then
+                    //         CurrPage.Update();
+                    // end;
                 }
                 field("Iniator No."; Rec."Employee No.")
                 {
@@ -202,6 +202,7 @@ page 58116 "Circular Resolution Card"
                         ResLines.SetRange("Resolution No.", Rec."No.");
 
                         Page.RunModal(Page::"Resolution lines Card", ResLines);
+                        
 
                         CurrPage.Update(false);
                     end;
