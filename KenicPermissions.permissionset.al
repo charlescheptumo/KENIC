@@ -8865,8 +8865,10 @@ permissionset 50001 KenicPermissions
         codeunit "Resolution Management"=X,
         page "Resolution Member Generator"=X,
         page "Approved Circular Resolution"=X,
-        page "Cancelled Circular Resolution"=X,
+        page "Closed Circular Resolution"=X,
         page "Posted Circular Resolution"=X,
         page "Rejected Circular Resolution"=X,
-        page "Resolution lines Card"=X;
+        page "Resolution lines Card"=X,
+        codeunit "Circular Resolution Mgt."=X,
+        page "Circular Resolution Archive"=X;
 }
