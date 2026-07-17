@@ -8,7 +8,7 @@ table 57112 "Circular Resolution lines"
         field(1; "Resolution No."; Code[20])
         {
             Caption = 'Resolution No.';
-           
+
             TableRelation = "Circular Resolution Header"."No.";
         }
         field(2; "Line No."; Integer)
@@ -43,7 +43,7 @@ table 57112 "Circular Resolution lines"
         field(5; "Department Code"; Code[20])
         {
             Caption = 'Department Code';
-            
+
             TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1));
             Editable = false;
         }
@@ -56,6 +56,7 @@ table 57112 "Circular Resolution lines"
         field(7; "Vote Status"; Enum "Resolution Vote Status")
         {
             Caption = 'Vote Status';
+            Editable = false;
         }
         field(8; "Selected Option Line No."; Integer)
         {
@@ -66,6 +67,8 @@ table 57112 "Circular Resolution lines"
             var
                 Option: Record "Circular Resolution Option";
             begin
+                if "Vote Status" = "Vote Status"::Voted then
+                    Error('You have already submitted your vote. Voting is allowed only once.');
                 if "Selected Option Line No." <> 0 then begin
                     Option.Get("Resolution No.", "Selected Option Line No.");
                     "Selected Option Code" := Option."Option Code";
