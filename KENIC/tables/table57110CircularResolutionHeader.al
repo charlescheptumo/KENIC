@@ -46,6 +46,12 @@ table 57110 "Circular Resolution Header"
         field(7; "Voting Deadline"; DateTime)
         {
             Caption = 'Voting Deadline';
+
+            trigger OnValidate()
+            begin
+                if "Voting Deadline" < CurrentDateTime then
+                    Error('Voting deadline cannot be in the past. Please select a current or future date and time.');
+            end;
         }
         field(8; "Created By"; Code[50])
         {
@@ -140,11 +146,11 @@ table 57110 "Circular Resolution Header"
         }
         field(22; "Employee Name"; Text[100])
         {
-              Caption = 'Initiator Name';
-                 Editable = false;
+            Caption = 'Initiator Name';
+            Editable = false;
         }
 
-         field(23; "Shortcut Dimension 1 Code"; Code[20])
+        field(23; "Shortcut Dimension 1 Code"; Code[20])
         {
             Caption = 'Shortcut Dimension 1 Code';
             CaptionClass = '1,2,1';
@@ -177,38 +183,38 @@ table 57110 "Circular Resolution Header"
             ResolutionVote.DeleteAll(true);
     end;
 
-   trigger OnInsert()
-var
-    EBoardSetup: Record "E-Board Setup";
-    NoSeries: Codeunit "No. Series";
-    DaysDuration: Duration;
-    UserSetup: Record "User Setup";
-    Emp: Record Employee;
-begin
-    if "No." = '' then begin
-        GetEBoardSetup(EBoardSetup);
-        EBoardSetup.TestField("Circular Resolution Nos.");
-        "No." := NoSeries.GetNextNo(EBoardSetup."Circular Resolution Nos.", WorkDate(), true);
-        "No. Series" := EBoardSetup."Circular Resolution Nos.";
+    trigger OnInsert()
+    var
+        EBoardSetup: Record "E-Board Setup";
+        NoSeries: Codeunit "No. Series";
+        DaysDuration: Duration;
+        UserSetup: Record "User Setup";
+        Emp: Record Employee;
+    begin
+        if "No." = '' then begin
+            GetEBoardSetup(EBoardSetup);
+            EBoardSetup.TestField("Circular Resolution Nos.");
+            "No." := NoSeries.GetNextNo(EBoardSetup."Circular Resolution Nos.", WorkDate(), true);
+            "No. Series" := EBoardSetup."Circular Resolution Nos.";
 
-        if EBoardSetup."Default Voting Duration (Days)" > 0 then begin
-            DaysDuration := EBoardSetup."Default Voting Duration (Days)" * 24 * 60 * 60 * 1000;
-            "Voting Deadline" := CurrentDateTime + DaysDuration;
+            if EBoardSetup."Default Voting Duration (Days)" > 0 then begin
+                DaysDuration := EBoardSetup."Default Voting Duration (Days)" * 24 * 60 * 60 * 1000;
+                "Voting Deadline" := CurrentDateTime + DaysDuration;
+            end;
+        end;
+
+        "Created By" := UserId;
+        "Created DateTime" := CurrentDateTime;
+
+        // Auto-populate Department Code from User Setup's Employee
+        if "Department Code" = '' then begin
+            if UserSetup.Get(UserId) and (UserSetup."Employee No." <> '') then begin
+                Emp.SetRange("No.", UserSetup."Employee No.");
+                if Emp.FindFirst() then
+                    "Department Code" := Emp."Department Code";
+            end;
         end;
     end;
-
-    "Created By" := UserId;
-    "Created DateTime" := CurrentDateTime;
-
-    // Auto-populate Department Code from User Setup's Employee
-    if "Department Code" = '' then begin
-       if UserSetup.Get(UserId) and (UserSetup."Employee No." <> '') then begin
-            Emp.SetRange("No.", UserSetup."Employee No.");
-            if Emp.FindFirst() then
-                "Department Code" := Emp."Department Code";
-        end;
-    end;
-end;
 
     trigger OnModify()
     begin
