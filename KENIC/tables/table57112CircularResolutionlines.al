@@ -60,6 +60,7 @@ table 57112 "Circular Resolution lines"
         }
         field(8; "Selected Option Line No."; Integer)
         {
+
             Caption = 'Selected Option Line No.';
             TableRelation = "Circular Resolution Option"."Line No." where("Resolution No." = field("Resolution No."));
 
@@ -70,7 +71,9 @@ table 57112 "Circular Resolution lines"
                 if "Vote Status" = "Vote Status"::Voted then
                     Error('You have already submitted your vote. Voting is allowed only once.');
                 if "Selected Option Line No." <> 0 then begin
-                    Option.Get("Resolution No.", "Selected Option Line No.");
+                    if not Option.Get("Resolution No.", "Selected Option Line No.") then
+                     Error('Invalid voting option selected.');
+                  //  Option.Get("Resolution No.", "Selected Option Line No.");
                     "Selected Option Code" := Option."Option Code";
                     "Vote Status" := "Vote Status"::Voted;
                     "Vote DateTime" := CurrentDateTime;
@@ -112,6 +115,10 @@ table 57112 "Circular Resolution lines"
         key(PK; "Resolution No.", "Line No.")
         {
             Clustered = true;
+        }
+        key(EmployeeVote; "Resolution No.", "Employee No.")
+        {
+            Unique = true;
         }
     }
 }

@@ -116,7 +116,7 @@ codeunit 50048 "Resolution Management"
         ResolutionOption."Option Code" := 'FOR';
         ResolutionOption."Option Description" := 'For';
         ResolutionOption."Display Order" := 1;
-        ResolutionOption.Insert();
+        ResolutionOption.Insert(true);
 
 
         // Create AGAINST option
@@ -125,7 +125,7 @@ codeunit 50048 "Resolution Management"
         ResolutionOption."Option Code" := 'AGAINST';
         ResolutionOption."Option Description" := 'Against';
         ResolutionOption."Display Order" := 2;
-        ResolutionOption.Insert();
+        ResolutionOption.Insert(true);
 
 
         // Create ABSTAIN option
@@ -134,6 +134,6 @@ codeunit 50048 "Resolution Management"
         ResolutionOption."Option Code" := 'ABSTAIN';
         ResolutionOption."Option Description" := 'Abstain';
         ResolutionOption."Display Order" := 3;
-        ResolutionOption.Insert();
+        ResolutionOption.Insert(true);
     end;
 }
