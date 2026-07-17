@@ -168,7 +168,7 @@ codeunit 50048 "Resolution Management"
     end;
 
     //Portal Guide
-    //    procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
+    // procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
     // var
     //     VoteLine: Record "Circular Resolution lines";
     //     ResolutionHeader: Record "Circular Resolution Header";
@@ -220,7 +220,9 @@ codeunit 50048 "Resolution Management"
 
 
     //     UpdateWinningOption(ResolutionHeader);
+    //     SendVoteConfirmation(VoteLine, ResolutionHeader);
     // end;
+
     procedure SendAutomatedVotingReminders()
     var
         CircularResolution: Record "Circular Resolution Header";
@@ -319,5 +321,42 @@ codeunit 50048 "Resolution Management"
                     end;
                 end;
             until CircularResolution.Next() = 0;
+    end;
+
+    //Confirmation message
+    procedure SendVoteConfirmation(VoteLine: Record "Circular Resolution lines"; ResolutionHeader: Record "Circular Resolution Header")
+    var
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Subject: Text;
+        Body: Text;
+    begin
+        if VoteLine.Email = '' then
+            exit;
+
+        CompanyInfo.Get();
+
+        Subject := StrSubstNo(
+            'Vote Successfully Submitted - Circular Resolution %1',
+            ResolutionHeader."No.");
+
+        Body := StrSubstNo('Dear %1,<br><br>', VoteLine."Employee Name");
+        Body += 'Your vote has been successfully submitted.<br><br>';
+        Body += '<b>Resolution:</b> ' + ResolutionHeader.Title + '<br>';
+        Body += '<b>Resolution No.:</b> ' + ResolutionHeader."No." + '<br>';
+        Body += '<b>Submitted On:</b> ' + Format(VoteLine."Vote DateTime") + '<br><br>';
+        Body += 'Thank you for participating.<br><br>';
+        Body += 'Regards,<br>';
+        Body += CompanyInfo.Name + '<br><br>';
+        Body += '<i>This is a system-generated email. Please do not reply.</i>';
+
+        Clear(EmailMessage);
+        EmailMessage.Create(
+            VoteLine.Email,
+            Subject,
+            Body,
+            true);
+
+        Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
     end;
 }
