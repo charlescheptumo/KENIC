@@ -140,8 +140,8 @@ table 57110 "Circular Resolution Header"
         }
         field(22; "Employee Name"; Text[100])
         {
-              Caption = 'Employee Name';
-            Editable = false;
+              Caption = 'Initiator Name';
+                 Editable = false;
         }
 
          field(23; "Shortcut Dimension 1 Code"; Code[20])

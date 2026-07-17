@@ -340,8 +340,16 @@ page 58116 "Circular Resolution Card"
                             Error('You must add at least one voting option before sending for approval.');
 
                         VarVariant := Rec;
-                        if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                        if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
                             CustomApprovals.OnSendDocForApproval(VarVariant);
+
+                            
+                            Rec.Get(Rec."No.");
+                            if Rec."Approval Status" = Rec."Approval Status"::"Pending Approval" then begin
+                                Rec.Status := Rec.Status::"Pending Approval";
+                                Rec.Modify(true);
+                            end;
+                        end;
                     end;
                 }
                 action(CancelApprovalRequest)
