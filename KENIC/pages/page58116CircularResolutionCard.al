@@ -237,6 +237,9 @@ page 58116 "Circular Resolution Card"
                         ResOption.SetRange("Resolution No.", Rec."No.");
                         if ResOption.IsEmpty() then
                             Error('You must add at least one voting option before posting.');
+                        Rec.UpdateStatusBasedOnDeadline();
+                        if Rec.Status = Rec.Status::Closed then
+                            Error('Cannot post because the voting deadline has already passed.');
 
                         if Confirm('Do you want to post this Circular Resolution?', false) then begin
                             Rec.Posted := true;
@@ -339,6 +342,10 @@ page 58116 "Circular Resolution Card"
                         if ResOption.IsEmpty() then
                             Error('You must add at least one voting option before sending for approval.');
 
+                        Rec.UpdateStatusBasedOnDeadline();
+                        if Rec.Status = Rec.Status::Closed then
+                            Error('Cannot send for approval because the voting deadline has passed.');
+
                         VarVariant := Rec;
                         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
                             CustomApprovals.OnSendDocForApproval(VarVariant);
@@ -437,7 +444,7 @@ page 58116 "Circular Resolution Card"
                     begin
                         ApprovalsMgmt.RejectRecordApprovalRequest(Rec.RecordId);
 
-                        
+
                         Rec.Get(Rec."No.");
                         if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
                             Rec.Status := Rec.Status::Rejected;
@@ -485,11 +492,13 @@ page 58116 "Circular Resolution Card"
 
     trigger OnAfterGetCurrRecord()
     begin
+        Rec.UpdateStatusBasedOnDeadline();
         SetControlAppearance();
     end;
 
     trigger OnAfterGetRecord()
     begin
+        Rec.UpdateStatusBasedOnDeadline();
         SetControlAppearance();
     end;
 
@@ -499,7 +508,10 @@ page 58116 "Circular Resolution Card"
     begin
         OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RecordId);
         OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RecordId);
-        IsDocumentEditable := (Rec."Approval Status" = Rec."Approval Status"::Open) and (not Rec.Posted);
+        IsDocumentEditable :=
+                            (Rec.Status = Rec.Status::Open) and
+                            (Rec."Approval Status" = Rec."Approval Status"::Open) and
+                            (not Rec.Posted);
     end;
 
     var

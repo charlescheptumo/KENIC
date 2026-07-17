@@ -247,4 +247,19 @@ table 57110 "Circular Resolution Header"
         //     EBoardSetup.Insert();
         // end;
     end;
+
+    procedure UpdateStatusBasedOnDeadline()
+    begin
+        
+        if ("Voting Deadline" <> 0DT) and ("Voting Deadline" <= CurrentDateTime) then begin
+
+            
+            if (Status = Status::"Pending Approval") or
+               (Status = Status::Approved) or
+               (Status = Status::Voting) then begin
+                Status := Status::Closed;
+                Modify(true);
+            end;
+        end;
+    end;
 }
