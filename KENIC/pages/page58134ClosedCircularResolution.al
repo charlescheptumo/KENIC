@@ -1,17 +1,13 @@
-page 58134 "Cancelled Circular Resolution"
+page 58134 "Closed Circular Resolution"
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = "Circular Resolution Header";
-    Caption = 'Cancelled Circular Resolutions';
+    Caption = 'Closed Circular Resolutions';
     Editable = false;
     CardPageId = "Circular Resolution Card";
-    SourceTableView =
-                        where(
-                            Status = filter(Cancelled),
-                            "Approval Status" = filter(open | "Pending Approval")
-                        );
+    SourceTableView = where(Status = const(Closed));
 
     layout
     {

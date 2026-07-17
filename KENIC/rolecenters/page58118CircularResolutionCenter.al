@@ -39,11 +39,11 @@ page 58118 "Head of E-Board"
                     RunObject = page "Posted Circular Resolution";
                 }
 
-                action("Cancelled Circular Resolution")
+                action("Closed Circular Resolution")
                 {
                     ApplicationArea = All;
-                    Caption = 'Cancelled Circular Resolutions';
-                    RunObject = page "Cancelled Circular Resolution";
+                    Caption = 'Closed Circular Resolutions';
+                    RunObject = page "Closed Circular Resolution";
                 }
 
                 action("Rejected Circular Resolution")
