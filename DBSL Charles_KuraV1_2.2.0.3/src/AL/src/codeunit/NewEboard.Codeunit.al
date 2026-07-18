@@ -150,12 +150,32 @@ Codeunit 50032 NewEboard
         exit(status);
     end;
 
-    procedure fnGetCircularResolution(docNo: Text[50]; bmName: Text; title: Text; description: Text; resolutionType: Integer; votingDeadline: DateTime) status: Text
+    procedure fnGetCircularResolution(bmName: Text) status: Text
     var
         //iExists: Boolean;
         objCircularResolutionHeader: Record "Circular Resolution Header";
     begin
         objCircularResolutionHeader.Reset();
+        objCircularResolutionHeader.SetRange("Initiator Name", bmName);
+        if objCircularResolutionHeader.findset() then begin
+            repeat
+                status += objCircularResolutionHeader."No." + '*' + objCircularResolutionHeader."Initiator Name" + '*' +
+                objCircularResolutionHeader.Title + '*' + objCircularResolutionHeader.Description + '*' +
+                FORMAT(objCircularResolutionHeader."Voting Deadline") + '*' + FORMAT(objCircularResolutionHeader."Approval Status") + '*' +
+                FORMAT(objCircularResolutionHeader.Status) + '*' + format(objCircularResolutionHeader.Posted) + '*' + Format(objCircularResolutionHeader."Resolution Type") + '::::';
+            until objCircularResolutionHeader.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    procedure fnGetCircularResolutionNo(docNo: Text) status: Text
+    var
+        //iExists: Boolean;
+        objCircularResolutionHeader: Record "Circular Resolution Header";
+    begin
+        objCircularResolutionHeader.Reset();
+        objCircularResolutionHeader.SetRange("No.", docNo);
         if objCircularResolutionHeader.findset() then begin
             repeat
                 status += objCircularResolutionHeader."No." + '*' + objCircularResolutionHeader."Initiator Name" + '*' +
@@ -187,6 +207,46 @@ Codeunit 50032 NewEboard
 
     end;
 
+    procedure fnGetCircularResolutionLinesSpecific(docNo: Text[50]; email: Text[150]) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+        objCircularResolutionLines.Reset();
+        objCircularResolutionLines.SetRange("Resolution No.", docNo);
+        objCircularResolutionLines.SetRange(Email, email);
+        if objCircularResolutionLines.findset() then begin
+            repeat
+                status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
+                objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
+                objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '::::';
+            until objCircularResolutionLines.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    procedure updateBoardMemberLines(docNo: Text; id: Integer; voteId: Integer) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+        objCircularResolutionLines.RESET;
+        objCircularResolutionLines.SETRANGE("Resolution No.", docNo);
+        objCircularResolutionLines.SETRANGE("Line No.", id);
+
+        IF objCircularResolutionLines.FindFirst() THEN BEGIN
+            //objCircularResolutionLines.DELETE(TRUE);
+            objCircularResolutionLines."Selected Option Line No." := voteId;
+            status := 'success*Your vote has bee successfully submitted';
+        END else begin
+            status := 'danger*Your vote has not been recorded, kindly try again';
+        end;
+
+    end;
+
     procedure deleteBoardMemberLines(docNo: Text; id: Integer) status: Text
     var
         //iExists: Boolean;
@@ -197,7 +257,7 @@ Codeunit 50032 NewEboard
         objCircularResolutionLines.SETRANGE("Resolution No.", docNo);
         objCircularResolutionLines.SETRANGE("Line No.", id);
 
-        IF objCircularResolutionLines.FINDSET THEN BEGIN
+        IF objCircularResolutionLines.FindFirst() THEN BEGIN
             objCircularResolutionLines.DELETE(TRUE);
             status := 'success*Record deleted successfully';
         END else begin
@@ -254,7 +314,7 @@ Codeunit 50032 NewEboard
     begin
         objCircularResolutionLines.Reset;
         objCircularResolutionLines.SetRange("Resolution No.", docNo);
-
+        objCircularResolutionLines.SetRange("Personal No.", personalNo);
         if objCircularResolutionLines.FindSet then begin
             status := 'danger* Type with  description provided already exists';
         end else begin
@@ -262,6 +322,11 @@ Codeunit 50032 NewEboard
             objCircularResolutionLines."Resolution No." := docNo;
             objCircularResolutionLines."Personal No." := personalNo;
             objCircularResolutionLines.Validate("Personal No.");
+
+            if objCircularResolutionLines.FindLast() then
+                objCircularResolutionLines."Line No." := objCircularResolutionLines."Line No." + 1
+            else
+                objCircularResolutionLines."Line No." := 10000;
 
             if objCircularResolutionLines.Insert(true) then begin
                 status := 'success*Member successfully added';
