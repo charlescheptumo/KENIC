@@ -19,13 +19,7 @@ page 57130 "Resolution lines Card"
                     Editable = false;
                     // TableRelation = "Circular Resolution Header";
                 }
-                field("Personal No."; Rec."Personal No.")
-                {
-                    Caption = 'Personal No.';
-                    ToolTip = 'Specifies the board member number.';
-                    Editable = true;
-                    Visible = true;
-                }
+
 
                 field("Line No."; Rec."Line No.")
                 {
@@ -34,12 +28,19 @@ page 57130 "Resolution lines Card"
                     Editable = false;
                 }
 
-
+                field("Personal No."; Rec."Personal No.")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Personal No.';
+                    ToolTip = 'Specifies the board member number.';
+                    Editable = true;
+                    Visible = true;
+                }
 
                 field("Employee Name"; Rec."Employee Name")
                 {
                     ApplicationArea = All;
-                    Caption = 'Board Member Name';
+                    Caption = 'Board Memberr Name';
                     ToolTip = 'Displays the board member name.';
                     Editable = false;
                 }
