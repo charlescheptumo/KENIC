@@ -18,9 +18,9 @@ table 57112 "Circular Resolution lines"
         {
             Caption = 'Line No.';
         }
-        field(3; "Personal No."; Code[20]) // Personal number
+        field(3; "Personal No."; Code[20]) 
         {
-            Caption = 'Employee No.';
+            Caption = 'Personal No.';
             
             TableRelation = "Board Members"."Personal No";
             trigger OnValidate()

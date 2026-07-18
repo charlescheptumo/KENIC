@@ -14,7 +14,7 @@ page 57113 "Resolution Votes Subform"
         {
             repeater(Control1)
             {
-                field("Employee No."; Rec."Personal No.")
+                field("Personal No."; Rec."Personal No.")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the unique number of the board member.';
