@@ -158,10 +158,10 @@ Codeunit 50032 NewEboard
         objCircularResolutionHeader.Reset();
         if objCircularResolutionHeader.findset() then begin
             repeat
-                status += objCircularResolutionHeader."No." + '*' + objCircularResolutionHeader."Initiator Name" +
-                objCircularResolutionHeader.Title + objCircularResolutionHeader.Description +
-                FORMAT(objCircularResolutionHeader."Voting Deadline") + FORMAT(objCircularResolutionHeader."Approval Status") +
-                FORMAT(objCircularResolutionHeader.Status) + format(objCircularResolutionHeader.Posted) + Format(objCircularResolutionHeader."Resolution Type") + '::::';
+                status += objCircularResolutionHeader."No." + '*' + objCircularResolutionHeader."Initiator Name" + '*' +
+                objCircularResolutionHeader.Title + '*' + objCircularResolutionHeader.Description + '*' +
+                FORMAT(objCircularResolutionHeader."Voting Deadline") + '*' + FORMAT(objCircularResolutionHeader."Approval Status") + '*' +
+                FORMAT(objCircularResolutionHeader.Status) + '*' + format(objCircularResolutionHeader.Posted) + '*' + Format(objCircularResolutionHeader."Resolution Type") + '::::';
             until objCircularResolutionHeader.Next() = 0;
         end;
         exit(status);
@@ -178,9 +178,9 @@ Codeunit 50032 NewEboard
         objCircularResolutionLines.SetRange("Resolution No.", docNo);
         if objCircularResolutionLines.findset() then begin
             repeat
-                status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") +
-                objCircularResolutionLines."Personal No." + objCircularResolutionLines."Employee Name" +
-                objCircularResolutionLines."Department Code" + objCircularResolutionLines.Email + '::::';
+                status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
+                objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
+                objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '::::';
             until objCircularResolutionLines.Next() = 0;
         end;
         exit(status);
