@@ -124,30 +124,30 @@ table 57110 "Circular Resolution Header"
             Editable = false;
         }
 
-        field(21; "Employee No."; Code[20])
-        {
-            Caption = 'Initiator No.';
-            TableRelation = Employee."No.";
-            ToolTip = 'The employee initiating this resolution.';
+        // field(21; "Employee No."; Code[20])
+        // {
+        //     Caption = 'Initiator No.';
+        //     TableRelation = Employee."No.";
+        //     ToolTip = 'The employee initiating this resolution.';
 
-            trigger OnValidate()
-            var
-                Emp: Record Employee;
-            begin
-                if "Employee No." <> '' then begin
-                    Emp.SetRange("No.", "Employee No.");
-                    if Emp.FindFirst() then begin
-                        "Department Code" := Emp."Department Code";
-                        "Shortcut Dimension 1 Code" := Emp."Global Dimension 1 Code";
-                        "Employee Name" := Emp."First Name" + ' ' + Emp."Middle Name" + ' ' + Emp."Last Name";
-                    end;
-                end;
-            end;
-        }
-        field(22; "Employee Name"; Text[100])
+        //     trigger OnValidate()
+        //     var
+        //         Emp: Record Employee;
+        //     begin
+        //         if "Employee No." <> '' then begin
+        //             Emp.SetRange("No.", "Employee No.");
+        //             if Emp.FindFirst() then begin
+        //                 "Department Code" := Emp."Department Code";
+        //                 "Shortcut Dimension 1 Code" := Emp."Global Dimension 1 Code";
+        //                 "Employee Name" := Emp."First Name" + ' ' + Emp."Middle Name" + ' ' + Emp."Last Name";
+        //             end;
+        //         end;
+        //     end;
+        // }
+        field(22; "Initiator Name"; Text[100])
         {
             Caption = 'Initiator Name';
-            Editable = false;
+            Editable = true;
         }
 
         field(23; "Shortcut Dimension 1 Code"; Code[20])

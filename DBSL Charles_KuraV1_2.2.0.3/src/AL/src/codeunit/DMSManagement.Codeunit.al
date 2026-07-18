@@ -3791,7 +3791,7 @@ Codeunit 50009 "DMS Management"
 
     end;
 
-    procedure UploadCircularResolutionDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID; Region: Code[100]): Boolean
+    procedure UploadCircularResolutionDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
 var
     EBoardSetup: Record "E-Board Setup";
 begin
@@ -3810,7 +3810,7 @@ begin
         //Insert Link
         DocLink.Init;
         DocLink."Link ID" := 0;
-        DocLink.URL1 := EBoardSetup."SharePoint Site Link" + '/' + EBoardSetup."SharePoint Site Main Library" + '/' + EBoardSetup."SharePoint Document Library" + '/' + Region + '/' + EBoardSetup."Circular Resolution DMS Link" + '/'
+        DocLink.URL1 := EBoardSetup."SharePoint Site Link" + '/' + EBoardSetup."SharePoint Site Main Library" + '/' + EBoardSetup."SharePoint Document Library" + '/'  + EBoardSetup."Circular Resolution DMS Link" + '/'
         + Docname + '/' + FileDesc;
         DocLink.Description := FileDesc;
         DocLink.Type := DocLink.Type::Link;

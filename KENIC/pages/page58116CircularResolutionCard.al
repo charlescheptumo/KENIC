@@ -25,22 +25,22 @@ page 58116 "Circular Resolution Card"
                     //         CurrPage.Update();
                     // end;
                 }
-                field("Iniator No."; Rec."Employee No.")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
+                // field("Iniator No."; Rec."Employee No.")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                // }
 
-                field("Iniator Name"; Rec."Employee Name")
+                field("Iniator Name"; Rec."Initiator Name")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
-                field("Department Code"; Rec."Department Code")
-                {
-                    ApplicationArea = All;
-                    Editable = IsDocumentEditable;
-                }
+                // field("Department Code"; Rec."Department Code")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = IsDocumentEditable;
+                // }
                 field(Title; Rec.Title)
                 {
                     ApplicationArea = All;
@@ -316,8 +316,8 @@ page 58116 "Circular Resolution Card"
                         if not IsDocumentEditable then
                             Error('Documents cannot be uploaded after the resolution has been sent for approval or posted.');
                         Rec.TestField("No.");
-                        Rec.TestField("Department Code");
-                        DMSManagement.UploadCircularResolutionDocuments(Rec."No.", 'Circular Resolutions', Rec.RecordId, Rec."Department Code");
+                       // Rec.TestField("Department Code");
+                        DMSManagement.UploadCircularResolutionDocuments(Rec."No.", 'Circular Resolutions', Rec.RecordId);
                     end;
                 }
 
