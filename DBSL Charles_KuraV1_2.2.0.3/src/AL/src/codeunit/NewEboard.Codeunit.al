@@ -110,14 +110,14 @@ Codeunit 50032 NewEboard
         status := 'danger*User not found';
     end;
 
-    procedure fnGetBoardMembers(dirEmail: Text[100]; password: Text) status: Text
+    procedure fnGetBoardMembers() status: Text
     var
     //iExists: Boolean;
     begin
         objBoardMembers.Reset();
         if objBoardMembers.findset() then begin
             repeat
-                status += objBoardMembers."Personal No" + '*' + objBoardMembers."Last Name" + objBoardMembers."Phone No." + objBoardMembers."Company E-Mail" + objBoardMembers."Designation/Role" + '::::';
+                status += objBoardMembers."Personal No" + '*' + objBoardMembers."Last Name" + '*' + objBoardMembers."First Name" + objBoardMembers."Phone No." + objBoardMembers."Company E-Mail" + objBoardMembers."Designation/Role" + '::::';
             until objBoardMembers.Next() = 0;
         end;
         exit(status);
@@ -151,6 +151,48 @@ Codeunit 50032 NewEboard
             until objCircularResolutionHeader.Next() = 0;
         end;
         exit(status);
+
+    end;
+
+
+    procedure fnCreateCircularResolution(docNo: Text[50]; bmName: Text; title: Text; description: Text; resolutionType: Integer; votingDeadline: DateTime) status: Text
+    var
+        //iExists: Boolean;
+        objCircularResolutionHeader: Record "Circular Resolution Header";
+    begin
+        objCircularResolutionHeader.Reset;
+        objCircularResolutionHeader.SetRange("No.", docNo);
+
+        if objCircularResolutionHeader.FindSet then begin
+
+            objCircularResolutionHeader."Initiator Name" := bmName;
+            objCircularResolutionHeader.Title := title;
+            objCircularResolutionHeader.Description := description;
+            objCircularResolutionHeader."Resolution Type" := Enum::"Resolution Type".FromInteger(resolutionType);
+            //objCircularResolutionHeader."Resolution Type":=resolutionType;
+            objCircularResolutionHeader."Voting Deadline" := votingDeadline;
+            if objCircularResolutionHeader.Modify(true) then begin
+
+                status := 'success*' + objCircularResolutionHeader."No." + ' *Your circular resolution was successfully updated';
+            end else begin
+                status := 'danger*Your circular resolution could not be updated';
+            end;
+        end else begin
+            objCircularResolutionHeader.Init;
+            objCircularResolutionHeader."No." := '';
+            objCircularResolutionHeader."Initiator Name" := bmName;
+            objCircularResolutionHeader.Title := title;
+            objCircularResolutionHeader.Description := description;
+            objCircularResolutionHeader."Resolution Type" := Enum::"Resolution Type".FromInteger(resolutionType);
+            //objCircularResolutionHeader."Resolution Type":=resolutionType;
+            objCircularResolutionHeader."Voting Deadline" := votingDeadline;
+            if objCircularResolutionHeader.Insert(true) then begin
+
+                status := 'success*' + objCircularResolutionHeader."No." + ' *Your circular resolution was successfully created';
+            end else begin
+                status := 'danger*Your circular resolution could not be created';
+            end;
+        end;
 
     end;
 
