@@ -18,19 +18,22 @@ table 57112 "Circular Resolution lines"
         {
             Caption = 'Line No.';
         }
-        field(3; "Personal No."; Code[20]) 
+        field(3; "Personal No."; Code[20])
         {
             Caption = 'Personal No.';
-            
+
             TableRelation = "Board Members"."Personal No";
             trigger OnValidate()
             var
                 BoardMember: Record "Board Members";
             begin
-                if BoardMember.Get("Personal No.") then begin
+                // if BoardMember.Get("Personal No.") then begin
+                BoardMember.Reset();
+                BoardMember.SetRange("Personal No", "Personal No.");
+                if BoardMember.FindFirst() then begin
                     "Employee Name" := BoardMember.FullName();
                     Email := BoardMember."Company E-Mail";
-                    
+
                     "Department Code" := '';
                 end else begin
                     "Employee Name" := '';
