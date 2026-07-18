@@ -23,9 +23,21 @@ page 57345 EboardPortalUsers
                 {
                     ToolTip = 'Specifies the value of the customer No field.', Comment = '%';
                 }
+                field(Name; Rec.Name)
+                {
+                    ToolTip = 'Specifies the value of the Name field.', Comment = '%';
+                }
+                field("Job Title"; Rec."Job Title")
+                {
+                    ToolTip = 'Specifies the value of the Job Title field.', Comment = '%';
+                }
                 field(Email; Rec.Email)
                 {
                     ToolTip = 'Specifies the value of the Email field.', Comment = '%';
+                }
+                field(Department; Rec.Department)
+                {
+                    ToolTip = 'Specifies the value of the Name field.', Comment = '%';
                 }
                 field(IDNoorRegNo; Rec.IDNoorRegNo)
                 {

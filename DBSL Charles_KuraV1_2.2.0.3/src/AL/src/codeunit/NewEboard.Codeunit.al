@@ -117,7 +117,21 @@ Codeunit 50032 NewEboard
         objBoardMembers.Reset();
         if objBoardMembers.findset() then begin
             repeat
-                status += objBoardMembers."Personal No" + '*' + objBoardMembers."Last Name" + '*' + objBoardMembers."First Name" + objBoardMembers."Phone No." + objBoardMembers."Company E-Mail" + objBoardMembers."Designation/Role" + '::::';
+                status += objBoardMembers."Personal No" + '*' + objBoardMembers."Last Name" + '*' + objBoardMembers."First Name" + '*' + objBoardMembers."Phone No." + '*' + objBoardMembers."Company E-Mail" + '*' + objBoardMembers."Designation/Role" + '::::';
+            until objBoardMembers.Next() = 0;
+        end;
+        exit(status);
+    end;
+
+    procedure fnGetBoardMembersSpecific(personalNo: Code[100]) status: Text
+    var
+    //iExists: Boolean;
+    begin
+        objBoardMembers.Reset();
+        objBoardMembers.SetRange("Personal No", personalNo);
+        if objBoardMembers.FindSet() then begin
+            repeat
+                status += objBoardMembers."Personal No" + '*' + objBoardMembers."Last Name" + '*' + objBoardMembers."First Name" + '*' + objBoardMembers."Phone No." + '*' + objBoardMembers."Company E-Mail" + '*' + objBoardMembers."Designation/Role" + '::::';
             until objBoardMembers.Next() = 0;
         end;
         exit(status);
@@ -151,6 +165,44 @@ Codeunit 50032 NewEboard
             until objCircularResolutionHeader.Next() = 0;
         end;
         exit(status);
+
+    end;
+
+    procedure fnGetCircularResolutionLines(docNo: Text[50]) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+        objCircularResolutionLines.Reset();
+        objCircularResolutionLines.SetRange("Resolution No.", docNo);
+        if objCircularResolutionLines.findset() then begin
+            repeat
+                status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") +
+                objCircularResolutionLines."Personal No." + objCircularResolutionLines."Employee Name" +
+                objCircularResolutionLines."Department Code" + objCircularResolutionLines.Email + '::::';
+            until objCircularResolutionLines.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    procedure deleteBoardMemberLines(docNo: Text; id: Integer) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+        objCircularResolutionLines.RESET;
+        objCircularResolutionLines.SETRANGE("Resolution No.", docNo);
+        objCircularResolutionLines.SETRANGE("Line No.", id);
+
+        IF objCircularResolutionLines.FINDSET THEN BEGIN
+            objCircularResolutionLines.DELETE(TRUE);
+            status := 'success*Record deleted successfully';
+        END else begin
+            status := 'danger*Record deletion failed';
+        end;
 
     end;
 
