@@ -207,20 +207,20 @@ Codeunit 50032 NewEboard
 
     end;
 
-    procedure fnGetCircularResolutionLinesSpecific(docNo: Text[50]; email: Text[150]) status: Text
+    procedure fnGetCircularResolutionLinesSpecific(email: Text[150]) status: Text
     var
         //iExists: Boolean;
         //objCircularResolutionHeader: Record "Circular Resolution Header";
         objCircularResolutionLines: Record "Circular Resolution lines";
     begin
         objCircularResolutionLines.Reset();
-        objCircularResolutionLines.SetRange("Resolution No.", docNo);
+        //objCircularResolutionLines.SetRange("Resolution No.", docNo);
         objCircularResolutionLines.SetRange(Email, email);
         if objCircularResolutionLines.findset() then begin
             repeat
                 status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
                 objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
-                objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '::::';
+                objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '*' + Format(objCircularResolutionLines."Vote Status") + '::::';
             until objCircularResolutionLines.Next() = 0;
         end;
         exit(status);
@@ -240,7 +240,7 @@ Codeunit 50032 NewEboard
         IF objCircularResolutionLines.FindFirst() THEN BEGIN
             //objCircularResolutionLines.DELETE(TRUE);
             objCircularResolutionLines."Selected Option Line No." := voteId;
-            status := 'success*Your vote has bee successfully submitted';
+            status := 'success*Your vote has been successfully submitted';
         END else begin
             status := 'danger*Your vote has not been recorded, kindly try again';
         end;
@@ -311,30 +311,36 @@ Codeunit 50032 NewEboard
     procedure fnCreateCircularResolutionLines(docNo: Text[50]; personalNo: Code[100]) status: Text
     var
         objCircularResolutionLines: Record "Circular Resolution lines";
+        LastLine: Record "Circular Resolution lines";
     begin
-        objCircularResolutionLines.Reset;
+        //Check duplicate employee
+        objCircularResolutionLines.Reset();
         objCircularResolutionLines.SetRange("Resolution No.", docNo);
         objCircularResolutionLines.SetRange("Personal No.", personalNo);
-        if objCircularResolutionLines.FindSet then begin
-            status := 'danger* Type with  description provided already exists';
+
+        if objCircularResolutionLines.FindFirst() then begin
+            status := 'danger*Member already exists';
+            exit;
+        end;
+
+        objCircularResolutionLines.Init();
+        objCircularResolutionLines."Resolution No." := docNo;
+        objCircularResolutionLines."Personal No." := personalNo;
+        objCircularResolutionLines.Validate("Personal No.");
+
+        LastLine.Reset();
+        LastLine.SetRange("Resolution No.", docNo);
+
+        if LastLine.FindLast() then
+            objCircularResolutionLines."Line No." := LastLine."Line No." + 1
+        else
+            objCircularResolutionLines."Line No." := 1;
+
+        if objCircularResolutionLines.Insert(true) then begin
+            status := 'success*Member successfully added';
         end else begin
-            objCircularResolutionLines.Init;
-            objCircularResolutionLines."Resolution No." := docNo;
-            objCircularResolutionLines."Personal No." := personalNo;
-            objCircularResolutionLines.Validate("Personal No.");
-
-            if objCircularResolutionLines.FindLast() then
-                objCircularResolutionLines."Line No." := objCircularResolutionLines."Line No." + 1
-            else
-                objCircularResolutionLines."Line No." := 10000;
-
-            if objCircularResolutionLines.Insert(true) then begin
-                status := 'success*Member successfully added';
-            end else begin
-                status := 'danger*Your line has not been added';
-            end;
-
-        end
+            status := 'danger*Your line has not been added';
+        end;
     end;
 
     procedure fnSendCircularResolutionForApproval(docNo: Text[50]) status: Text
