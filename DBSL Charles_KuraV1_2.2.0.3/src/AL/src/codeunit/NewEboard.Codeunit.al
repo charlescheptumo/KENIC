@@ -67,6 +67,7 @@ Codeunit 50032 NewEboard
         FILESPATH3: label 'C:\inetpub\wwwroot\EBoard\Documents\Resolutions\CommitteResolutions\';
         Employee: Record Employee;
         FILESPATH4: label 'C:\inetpub\wwwroot\EBoard\Downloads\P9\';
+        objBoardMembers: Record "Board Members";
 
 
     procedure Testconnection()
@@ -106,10 +107,95 @@ Codeunit 50032 NewEboard
             end;
         end;
         // User not found
-        status := 'error*User not found';
+        status := 'danger*User not found';
     end;
 
+    procedure fnGetBoardMembers(dirEmail: Text[100]; password: Text) status: Text
+    var
+    //iExists: Boolean;
+    begin
+        objBoardMembers.Reset();
+        if objBoardMembers.findset() then begin
+            repeat
+                status += objBoardMembers."Personal No" + '*' + objBoardMembers."Last Name" + objBoardMembers."Phone No." + objBoardMembers."Company E-Mail" + objBoardMembers."Designation/Role" + '::::';
+            until objBoardMembers.Next() = 0;
+        end;
+        exit(status);
+    end;
 
+    procedure fnGetCircularResolutions(dirEmail: Text[100]; password: Text) status: Text
+    var
+        objCircularResolutionHeader: Record "Circular Resolution Header";
+    begin
+        objBoardMembers.Reset();
+        if objBoardMembers.findset() then begin
+            repeat
+                status += objBoardMembers."Personal No" + '*' + objBoardMembers."Last Name" + objBoardMembers."Phone No." + objBoardMembers."Company E-Mail" + objBoardMembers."Designation/Role" + '::::';
+            until objBoardMembers.Next() = 0;
+        end;
+        exit(status);
+    end;
+
+    procedure fnGetCircularResolution(docNo: Text[50]; bmName: Text; title: Text; description: Text; resolutionType: Integer; votingDeadline: DateTime) status: Text
+    var
+        //iExists: Boolean;
+        objCircularResolutionHeader: Record "Circular Resolution Header";
+    begin
+        objCircularResolutionHeader.Reset();
+        if objCircularResolutionHeader.findset() then begin
+            repeat
+                status += objCircularResolutionHeader."No." + '*' + objCircularResolutionHeader."Initiator Name" +
+                objCircularResolutionHeader.Title + objCircularResolutionHeader.Description +
+                FORMAT(objCircularResolutionHeader."Voting Deadline") + FORMAT(objCircularResolutionHeader."Approval Status") +
+                FORMAT(objCircularResolutionHeader.Status) + format(objCircularResolutionHeader.Posted) + Format(objCircularResolutionHeader."Resolution Type") + '::::';
+            until objCircularResolutionHeader.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    procedure fnCreateCircularResolutionLines(docNo: Text[50]; personalNo: Code[100]) status: Text
+    var
+        objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+        objCircularResolutionLines.Reset;
+        objCircularResolutionLines.SetRange("Resolution No.", docNo);
+
+        if objCircularResolutionLines.FindSet then begin
+            status := 'danger* Type with  description provided already exists';
+        end else begin
+            objCircularResolutionLines.Init;
+            objCircularResolutionLines."Resolution No." := docNo;
+            objCircularResolutionLines."Personal No." := personalNo;
+            objCircularResolutionLines.Validate("Personal No.");
+
+            if objCircularResolutionLines.Insert(true) then begin
+                status := 'success*Member successfully added';
+            end else begin
+                status := 'danger*Your line has not been added';
+            end;
+
+        end
+    end;
+
+    procedure fnSendCircularResolutionForApproval(docNo: Text[50]) status: Text
+    var
+    //objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+
+        status := 'success*Successfully approved';
+
+
+    end;
+
+    procedure fnCancelCircularResolutionForApproval(docNo: Text[50]) status: Text
+    var
+    //objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+
+        status := 'success*Successfully canceled';
+
+    end;
 
     // [scope('OnPrem')]
     procedure generateDirectorPayslip(director: Code[100]; payperiod: Date; directorNo: Text) status: Text
