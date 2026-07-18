@@ -97,7 +97,7 @@ Codeunit 50032 NewEboard
         if objPortalUser.FindSet() then begin
             if objPortalUser.Password = password then begin
 
-                status := 'success*' + objPortalUser."customer No" + '*' + objPortalUser.Email;
+                status := 'success*' + objPortalUser."customer No" + '*' + objPortalUser.Email + '*' + objPortalUser.Name + '*' + objPortalUser."Job Title" + '*' + objPortalUser.Department;
                 exit(status);
             end else begin
 

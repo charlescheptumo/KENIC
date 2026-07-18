@@ -9,7 +9,7 @@ Codeunit 50012 "HRPortal"
         MealRequisitionApproval('M-REQ000001');
         //CancelGeneralCorrespondenceApproval('L/2/1/10');
         //createStandingImprestSurrender('TEST', 'STIMP004', '', '', 'JOY MATHENGE');
-        //fnRejectRequest('REQ00013', 'PAUL MUTUKU', 'test');
+        //fnRejectRequest('REQ00013', 'PAUL MUTUKU', 'test');   
     end;
 
     var
