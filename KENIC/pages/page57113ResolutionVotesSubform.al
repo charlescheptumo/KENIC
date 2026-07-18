@@ -14,25 +14,27 @@ page 57113 "Resolution Votes Subform"
         {
             repeater(Control1)
             {
-                field("Employee No."; Rec."Employee No.")
+                field("Employee No."; Rec."Personal No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the unique number of the employee matching this board member.';
+                    ToolTip = 'Specifies the unique number of the board member.';
                 }
                 field("Employee Name"; Rec."Employee Name")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Displays the cached name of the board member.';
+                    Caption = 'Board Member Name';
+                    ToolTip = 'Displays the board member name.';
                 }
                 field("Department Code"; Rec."Department Code")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Displays the home department code of the board member.';
+                    Visible = false;
                 }
                 field(Email; Rec.Email)
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Displays the cached email address for notifications.';
+                    ToolTip = 'Displays the board member email address.';
                 }
                 field("Vote Status"; Rec."Vote Status")
                 {

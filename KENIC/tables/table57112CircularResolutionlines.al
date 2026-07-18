@@ -10,27 +10,31 @@ table 57112 "Circular Resolution lines"
             Caption = 'Resolution No.';
 
             TableRelation = "Circular Resolution Header"."No.";
+
         }
+
+
         field(2; "Line No."; Integer)
         {
             Caption = 'Line No.';
         }
-        field(3; "Employee No."; Code[20])
+        field(3; "Personal No."; Code[20]) // Personal number
         {
             Caption = 'Employee No.';
-            TableRelation = Employee."No.";
-
+            
+            TableRelation = "Board Members"."Personal No";
             trigger OnValidate()
             var
-                Employee: Record Employee;
+                BoardMember: Record "Board Members";
             begin
-                if Employee.Get("Employee No.") then begin
-                    "Employee Name" := Employee.FullName();
-                    "Email" := Employee."Company E-Mail";
-                    "Department Code" := Employee."Department Code";
+                if BoardMember.Get("Personal No.") then begin
+                    "Employee Name" := BoardMember.FullName();
+                    Email := BoardMember."Company E-Mail";
+                    
+                    "Department Code" := '';
                 end else begin
                     "Employee Name" := '';
-                    "Email" := '';
+                    Email := '';
                     "Department Code" := '';
                 end;
             end;
@@ -86,12 +90,12 @@ table 57112 "Circular Resolution lines"
                     "Vote Status" := "Vote Status"::Pending;
                     "Vote DateTime" := 0DT;
 
-                    
+
                 end;
 
                 // Update the current winning option
-                    if ResolutionHeader.Get("Resolution No.") then
-                        ResolutionMgt.UpdateWinningOption(ResolutionHeader);
+                if ResolutionHeader.Get("Resolution No.") then
+                    ResolutionMgt.UpdateWinningOption(ResolutionHeader);
             end;
         }
         field(9; "Selected Option Code"; Code[20])
@@ -126,7 +130,7 @@ table 57112 "Circular Resolution lines"
         {
             Clustered = true;
         }
-        key(EmployeeVote; "Resolution No.", "Employee No.")
+        key(EmployeeVote; "Resolution No.", "Personal No.")
         {
             Unique = true;
         }

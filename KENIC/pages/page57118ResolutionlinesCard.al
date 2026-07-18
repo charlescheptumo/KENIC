@@ -2,7 +2,7 @@ page 57130 "Resolution lines Card"
 {
     PageType = List;
     SourceTable = "Circular Resolution lines";
-    Caption = 'Resolution lines';
+    Caption = 'Resolution Board Members';
     DelayedInsert = true;
     Editable = true;
 
@@ -27,17 +27,18 @@ page 57130 "Resolution lines Card"
                     Editable = false;
                 }
 
-                field("Employee No."; Rec."Employee No.")
+                field("Employee No."; Rec."Personal No.")
                 {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the employee number.';
+                    Caption = 'Board Member No.';
+                    ToolTip = 'Specifies the board member number.';
                     Editable = true;
                 }
 
                 field("Employee Name"; Rec."Employee Name")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Displays the employee name.';
+                    Caption = 'Board Member Name';
+                    ToolTip = 'Displays the board member name.';
                     Editable = false;
                 }
 
@@ -46,12 +47,13 @@ page 57130 "Resolution lines Card"
                     ApplicationArea = All;
                     ToolTip = 'Displays the department code.';
                     Editable = false;
+                    Visible = false;
                 }
 
                 field("Email"; Rec.Email)
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Displays the employee email.';
+                    ToolTip = 'Displays the board member email.';
                     Editable = false;
                 }
 
