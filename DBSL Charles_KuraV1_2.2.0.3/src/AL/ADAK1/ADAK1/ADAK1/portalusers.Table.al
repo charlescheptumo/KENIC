@@ -46,11 +46,18 @@ Table 56900 "portalusers"
         {
             DataClassification = ToBeClassified;
         }
-
-        // field(13; "Personal No"; code[50])
-        // {
-        //     TableRelation = "Board Members";
-        // }
+        field(13; Name; Text[200])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(14; "Job Title"; Text[200])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(15; Department; Text[200])
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
