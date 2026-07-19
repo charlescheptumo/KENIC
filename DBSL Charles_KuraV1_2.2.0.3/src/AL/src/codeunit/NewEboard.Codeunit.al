@@ -239,7 +239,9 @@ Codeunit 50032 NewEboard
 
         IF objCircularResolutionLines.FindFirst() THEN BEGIN
             //objCircularResolutionLines.DELETE(TRUE);
-            objCircularResolutionLines."Selected Option Line No." := voteId;
+            //objCircularResolutionLines."Selected Option Line No." := voteId;
+            objCircularResolutionLines.Validate("Selected Option Line No.", voteId);
+            objCircularResolutionLines.Modify(true);
             status := 'success*Your vote has been successfully submitted';
         END else begin
             status := 'danger*Your vote has not been recorded, kindly try again';
