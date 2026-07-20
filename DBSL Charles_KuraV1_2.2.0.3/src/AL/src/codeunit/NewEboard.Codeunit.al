@@ -235,6 +235,15 @@ Codeunit 50032 NewEboard
         //objCircularResolutionHeader: Record "Circular Resolution Header";
         objCircularResolutionLines: Record "Circular Resolution lines";
     begin
+
+        if not ResolutionHeader.Get(docNo) then
+            Error('Circular Resolution %1 was not found.', docNo);
+        ResolutionHeader.UpdateStatusBasedOnDeadline();
+        if (ResolutionHeader."Voting Deadline" <> 0DT) and
+       (CurrentDateTime >= ResolutionHeader."Voting Deadline") then
+            Error('Voting has already closed.');
+        if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
+            Error('Voting is not currently open for this Circular Resolution.');
         objCircularResolutionLines.RESET;
         objCircularResolutionLines.SETRANGE("Resolution No.", docNo);
         objCircularResolutionLines.SETRANGE("Line No.", id);
@@ -244,11 +253,8 @@ Codeunit 50032 NewEboard
             //objCircularResolutionLines."Selected Option Line No." := voteId;
             objCircularResolutionLines.Validate("Selected Option Line No.", voteId);
             objCircularResolutionLines.Modify(true);
-
-            if ResolutionHeader.Get(docNo) then begin
-                ResolutionMgt.UpdateWinningOption(ResolutionHeader);
-                ResolutionMgt.SendVoteConfirmation(objCircularResolutionLines, ResolutionHeader);
-            end;
+            ResolutionMgt.UpdateWinningOption(ResolutionHeader);
+            ResolutionMgt.SendVoteConfirmation(objCircularResolutionLines, ResolutionHeader);
 
             status := 'success*Your vote has been successfully submitted';
         END else begin
