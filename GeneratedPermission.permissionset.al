@@ -4,6 +4,9 @@ using KICD.KICD;
 using Microsoft.Finance.GeneralLedger.Reports;
 using MyCompany.PhysInventoryDateFix;
 using Microsoft.Finance.RoleCenters;
+using ADAK.ADAK;
+using Microsoft.Inventory.Location;
+using KENIC.KENIC;
 
 permissionset 50000 GeneratedPermission
 {
@@ -8834,5 +8837,38 @@ permissionset 50000 GeneratedPermission
         query worksCategory=X,
         query WorksEquipmentTemplate=X,
         query WorkType=X,
-        query WorkTypes=X;
+        query WorkTypes=X,
+        tabledata "Board Member Setup"=RIMD,
+        tabledata "Circular Resolution Header"=RIMD,
+        tabledata "Circular Resolution lines"=RIMD,
+        tabledata "Circular Resolution Option"=RIMD,
+        tabledata "E-Board Setup"=RIMD,
+        tabledata "Resolution Members"=RIMD,
+        table "Board Member Setup"=X,
+        table "Circular Resolution Header"=X,
+        table "Circular Resolution lines"=X,
+        table "Circular Resolution Option"=X,
+        table "E-Board Setup"=X,
+        table "Resolution Members"=X,
+        report "Duty Station Staffing Summary"=X,
+        report "Employer Profile Reports"=X,
+        report "Org. Structure Summary"=X,
+        codeunit "Circular Resolution Mgt."=X,
+        codeunit "Resolution Management"=X,
+        page "Approved Circular Resolution"=X,
+        page "Circular Resolution Archive"=X,
+        page "Circular Resolution Card"=X,
+        page "Circular Resolution List"=X,
+        page "Closed Circular Resolution"=X,
+        page "E-Board Setup"=X,
+        page EboardPortalUsers=X,
+        page EstablishmentStatsFactBox=X,
+        page "Head of E-Board"=X,
+        page HRPortalUsers=X,
+        page "Posted Circular Resolution"=X,
+        page "Rejected Circular Resolution"=X,
+        page "Resolution lines Card"=X,
+        page "Resolution Member Generator"=X,
+        page "Resolution Options Subform"=X,
+        page "Resolution Votes Subform"=X;
 }
