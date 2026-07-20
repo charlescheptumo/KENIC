@@ -47,6 +47,8 @@ Codeunit 50032 NewEboard
         successful: Boolean;
         salesHeader: Record "Sales Header";
         salesLines: Record "Sales Line";
+        ResolutionHeader: Record "Circular Resolution Header";
+        ResolutionMgt: Codeunit "Resolution Management";
         //AL
         // SMTPMailSet: Record "SMTP Mail Setup";
         // Notification1: Codeunit UnknownCodeunit400;
@@ -242,6 +244,10 @@ Codeunit 50032 NewEboard
             //objCircularResolutionLines."Selected Option Line No." := voteId;
             objCircularResolutionLines.Validate("Selected Option Line No.", voteId);
             objCircularResolutionLines.Modify(true);
+
+            IF ResolutionHeader.Get(docNo) THEN
+            ResolutionMgt.SendVoteConfirmation(objCircularResolutionLines, ResolutionHeader);
+
             status := 'success*Your vote has been successfully submitted';
         END else begin
             status := 'danger*Your vote has not been recorded, kindly try again';
