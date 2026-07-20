@@ -245,8 +245,10 @@ Codeunit 50032 NewEboard
             objCircularResolutionLines.Validate("Selected Option Line No.", voteId);
             objCircularResolutionLines.Modify(true);
 
-            IF ResolutionHeader.Get(docNo) THEN
-            ResolutionMgt.SendVoteConfirmation(objCircularResolutionLines, ResolutionHeader);
+            if ResolutionHeader.Get(docNo) then begin
+                ResolutionMgt.UpdateWinningOption(ResolutionHeader);
+                ResolutionMgt.SendVoteConfirmation(objCircularResolutionLines, ResolutionHeader);
+            end;
 
             status := 'success*Your vote has been successfully submitted';
         END else begin

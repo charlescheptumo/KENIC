@@ -97,8 +97,8 @@ table 57112 "Circular Resolution lines"
                 end;
 
                 // Update the current winning option
-                if ResolutionHeader.Get("Resolution No.") then
-                    ResolutionMgt.UpdateWinningOption(ResolutionHeader);
+               // if ResolutionHeader.Get("Resolution No.") then
+                    //ResolutionMgt.UpdateWinningOption(ResolutionHeader);
             end;
         }
         field(9; "Selected Option Code"; Code[20])
