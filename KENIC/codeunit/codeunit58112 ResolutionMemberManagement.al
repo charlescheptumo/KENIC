@@ -3,6 +3,7 @@ namespace KENIC.KENIC;
 using System.Email;
 using Microsoft.Foundation.Company;
 using System.Security.User;
+using System.Automation;
 
 codeunit 50048 "Resolution Management"
 {
@@ -358,5 +359,79 @@ codeunit 50048 "Resolution Management"
             true);
 
         Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+    end;
+
+//Approval notification
+procedure SendNotificationsForCircularResolutionOnApprove(DocNo: Code[20])
+    var
+        CircularResHeader: Record "Circular Resolution Header";
+        ApprovalEntry: Record "Approval Entry";
+        UserSetup: Record "User Setup";
+        SenderUserSetup: Record "User Setup";
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Recipient, RecipientName, Subject, Body, ApprovalURL : Text;
+        ApprovalPageID: Label '654'; 
+    begin
+        CompanyInfo.Get();
+        GetEBoardSetup(EBoardSetup);
+
+        CircularResHeader.Reset();
+        CircularResHeader.SetRange("No.", DocNo);
+        if CircularResHeader.FindFirst() then begin
+            ApprovalEntry.Reset();
+            ApprovalEntry.SetRange("Document No.", CircularResHeader."No.");
+            ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+            
+            if ApprovalEntry.FindFirst() then begin
+                if UserSetup.Get(ApprovalEntry."Approver ID") then begin
+                    Subject := StrSubstNo('APPROVAL NOTIFICATION: Circular Resolution %1', CircularResHeader."No.");
+
+                    RecipientName := UserSetup."Employee Name";
+                    if RecipientName = '' then
+                        RecipientName := UserSetup."User ID";
+
+                    Recipient := UserSetup."E-Mail";
+                    if Recipient = '' then
+                        exit;
+
+                    Body := StrSubstNo('Dear %1,<br><br>', RecipientName);
+                    Body += StrSubstNo('Circular Resolution <b>%1</b> (%2) requires your approval in the ERP.<br><br>', CircularResHeader."No.", CircularResHeader.Title);
+
+                    // Get Initiator Details
+                    if CircularResHeader."Created By" <> '' then begin
+                        if SenderUserSetup.Get(CircularResHeader."Created By") then
+                            Body += '<b>Created By:</b> ' + SenderUserSetup."Employee Name" + '<br>'
+                        else
+                            Body += '<b>Created By:</b> ' + CircularResHeader."Created By" + '<br>';
+                    end else if SenderUserSetup.Get(ApprovalEntry."Sender ID") then
+                        Body += '<b>Created By:</b> ' + SenderUserSetup."Employee Name" + '<br>';
+
+                    
+                    if EBoardSetup."ERP URL" <> '' then begin
+                        
+                        if EBoardSetup."ERP URL".EndsWith('/') or EBoardSetup."ERP URL".EndsWith('?') then
+                            ApprovalURL := EBoardSetup."ERP URL" + 'page=' + ApprovalPageID
+                        else if EBoardSetup."ERP URL".Contains('?') then
+                            ApprovalURL := EBoardSetup."ERP URL" + '&page=' + ApprovalPageID
+                        else
+                            ApprovalURL := EBoardSetup."ERP URL" + '?page=' + ApprovalPageID;
+
+                        Body += '<br>Please log in to the ERP to review and approve:<br><br>';
+                        Body += StrSubstNo(
+                            '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Open ERP Approvals</a><br><br>',
+                            ApprovalURL);
+                    end;
+
+                    Body += 'Regards,<br>';
+                    Body += CompanyInfo.Name + '<br><br>';
+                    Body += '<i>This is a system-generated email. Please do not reply.</i>';
+
+                    Clear(EmailMessage);
+                    EmailMessage.Create(Recipient, Subject, Body, true);
+                    Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+                end;
+            end;
+        end;
     end;
 }

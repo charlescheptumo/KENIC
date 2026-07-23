@@ -92,6 +92,11 @@ table 57115 "E-Board Setup"
             Caption = 'Circular Resolution DMS Link';
             ToolTip = 'The folder name within the document library for circular resolutions';
         }
+        field(74; "ERP URL"; Text[250])
+        {
+            Caption = 'ERP URL';
+            ExtendedDatatype = URL;
+        }
     }
 
     keys

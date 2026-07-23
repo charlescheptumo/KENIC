@@ -77,6 +77,11 @@ page 58119 "E-Board Setup"
                     ToolTip = 'Specifies the base URL of your external E-Board web portal.';
                     Visible = true;
                 }
+                field("ERP URL"; Rec."ERP URL")
+                {
+                    ToolTip = 'Specifies the URL of ERP.';
+                    Visible = true;
+                }
                 // field("Portal Tenant ID"; Rec."Portal Tenant ID")
                 // {
                 //     ToolTip = 'Specifies the tenant identifier associated with your cloud portal environment.';
