@@ -362,7 +362,7 @@ codeunit 50048 "Resolution Management"
     end;
 
 //Approval notification
-procedure SendNotificationsForCircularResolutionOnApprove(DocNo: Code[20])
+procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
     var
         CircularResHeader: Record "Circular Resolution Header";
         ApprovalEntry: Record "Approval Entry";
@@ -421,6 +421,66 @@ procedure SendNotificationsForCircularResolutionOnApprove(DocNo: Code[20])
                         Body += StrSubstNo(
                             '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Open ERP Approvals</a><br><br>',
                             ApprovalURL);
+                    end;
+
+                    Body += 'Regards,<br>';
+                    Body += CompanyInfo.Name + '<br><br>';
+                    Body += '<i>This is a system-generated email. Please do not reply.</i>';
+
+                    Clear(EmailMessage);
+                    EmailMessage.Create(Recipient, Subject, Body, true);
+                    Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+                end;
+            end;
+        end;
+    end;
+
+    //Approved notification to initiator
+    procedure SendApprovedNotificationToInitiator(DocNo: Code[20])
+    var
+        CircularResHeader: Record "Circular Resolution Header";
+        UserSetup: Record "User Setup";
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Recipient, RecipientName, Subject, Body, ResolutionURL : Text;
+        CardPageID: Label '654'; 
+    begin
+        CompanyInfo.Get();
+        GetEBoardSetup(EBoardSetup);
+
+        CircularResHeader.Reset();
+        CircularResHeader.SetRange("No.", DocNo);
+        if CircularResHeader.FindFirst() then begin
+
+            // Identify Initiator
+            if CircularResHeader."Created By" <> '' then begin
+                if UserSetup.Get(CircularResHeader."Created By") then begin
+                    Subject := StrSubstNo('APPROVED: Circular Resolution %1 is Ready for Voting', CircularResHeader."No.");
+
+                    RecipientName := UserSetup."Employee Name";
+                    if RecipientName = '' then
+                        RecipientName := UserSetup."User ID";
+
+                    Recipient := UserSetup."E-Mail";
+                    if Recipient = '' then
+                        exit;
+
+                    Body := StrSubstNo('Dear %1,<br><br>', RecipientName);
+                    Body += StrSubstNo('Your Circular Resolution <b>%1</b> (%2) has been <b>FULLY APPROVED</b>.<br><br>', CircularResHeader."No.", CircularResHeader.Title);
+                    Body += 'Please log in to the ERP and post the Circular Resolution to open voting for board members.<br><br>';
+                    Body += 'Once the resolution is posted, voting notifications will be sent automatically to all eligible board members and the voting period will begin.<br><br>';
+                   
+                    if EBoardSetup."ERP URL" <> '' then begin
+                        if EBoardSetup."ERP URL".EndsWith('/') or EBoardSetup."ERP URL".EndsWith('?') then
+                            ResolutionURL := EBoardSetup."ERP URL" + 'page=' + CardPageID
+                        else if EBoardSetup."ERP URL".Contains('?') then
+                            ResolutionURL := EBoardSetup."ERP URL" + '&page=' + CardPageID
+                        else
+                            ResolutionURL := EBoardSetup."ERP URL" + '?page=' + CardPageID;
+
+                        Body += StrSubstNo(
+                            '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Open ERP & Post for Voting</a><br><br>',
+                            ResolutionURL);
                     end;
 
                     Body += 'Regards,<br>';
