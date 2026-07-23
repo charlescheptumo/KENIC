@@ -1,4 +1,4 @@
-enum 57113 "Resolution Vote Status"
+enum 58113 "Resolution Vote Status"
 {
     Extensible = true;
     value(0; Pending) { Caption = 'Pending'; }

@@ -119,6 +119,11 @@ page 58119 "E-Board Setup"
                         ToolTip = 'Specifies the number series for recurring compliance templates.';
                     }
 
+                    field("Compliance Obligation Nos."; Rec."Compliance Obligation Nos.")
+                    {
+                        ToolTip = 'Specifies the number series for recurring compliance obligations.';
+                    }
+
                     field("Compliance DMS Link"; Rec."Compliance DMS Link")
                     {
                         ToolTip = 'The folder name within SharePoint/DMS designated for storing compliance filing proof.';

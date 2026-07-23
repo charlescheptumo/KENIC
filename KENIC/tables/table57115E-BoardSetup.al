@@ -112,14 +112,19 @@ table 57115 "E-Board Setup"
             TableRelation = "No. Series";
             ToolTip = 'Specifies the number series for recurring compliance templates.';
         }
-        field(102; "Enable Compliance Reminders"; Boolean)
+
+        field(102; "Compliance Obligation Nos."; Code[20])
+        {
+            Caption = 'Compliance Obligation Nos.';
+            TableRelation = "No. Series";
+            ToolTip = 'Specifies the number series for recurring compliance obligation';
+        }
+        field(103; "Enable Compliance Reminders"; Boolean)
         {
             Caption = 'Enable Compliance Reminders';
             InitValue = true;
             ToolTip = 'Enables automated email notifications for upcoming and overdue compliance deadlines.';
         }
-
-
 
         field(107; "Compliance DMS Link"; Text[100])
         {
