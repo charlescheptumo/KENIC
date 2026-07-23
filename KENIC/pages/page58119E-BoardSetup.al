@@ -105,7 +105,34 @@ page 58119 "E-Board Setup"
                 {
                     ToolTip = 'The folder name within the document library for circular resolutions';
                 }
+
+                group("ComplianceCalendar")
+                {
+                    Caption = 'Compliance Calendar';
+                    field("Compliance Category Nos."; Rec."Compliance Category Nos.")
+                    {
+                        ToolTip = 'Specifies the number series for regulatory categories (e.g., Tax, HR, Environmental)';
+                    }
+
+                    field("Compliance Template Nos."; Rec."Compliance Template Nos.")
+                    {
+                        ToolTip = 'Specifies the number series for recurring compliance templates.';
+                    }
+
+                    field("Compliance DMS Link"; Rec."Compliance DMS Link")
+                    {
+                        ToolTip = 'The folder name within SharePoint/DMS designated for storing compliance filing proof.';
+                    }
+                    field("Enable Compliance Reminders"; Rec."Enable Compliance Reminders")
+                    {
+                        ToolTip = 'Enables automated email notifications for upcoming and overdue compliance deadlines';
+                    }
+
+
+                }
+
             }
+
         }
     }
 

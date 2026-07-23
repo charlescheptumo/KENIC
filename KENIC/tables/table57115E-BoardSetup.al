@@ -64,9 +64,9 @@ table 57115 "E-Board Setup"
             MaxValue = 100;
 
         }
-        field(60; "Enable Reminders"; Boolean)
+        field(60; "Enable Reminders"; Boolean) //For circular resolution
         {
-            Caption = 'Enable Reminders';
+            Caption = 'Enable Circular Reminders';
             InitValue = true;
             ToolTip = 'Specifies whether automated email reminders should be sent to pending voters.';
         }
@@ -96,6 +96,35 @@ table 57115 "E-Board Setup"
         {
             Caption = 'ERP URL';
             ExtendedDatatype = URL;
+        }
+
+
+        // --- Compliance Calendar Configuration ---
+        field(100; "Compliance Category Nos."; Code[20])
+        {
+            Caption = 'Compliance Category Nos.';
+            TableRelation = "No. Series";
+            ToolTip = 'Specifies the number series for regulatory categories (e.g., Tax, HR, Environmental).';
+        }
+        field(101; "Compliance Template Nos."; Code[20])
+        {
+            Caption = 'Compliance Template Nos.';
+            TableRelation = "No. Series";
+            ToolTip = 'Specifies the number series for recurring compliance templates.';
+        }
+        field(102; "Enable Compliance Reminders"; Boolean)
+        {
+            Caption = 'Enable Compliance Reminders';
+            InitValue = true;
+            ToolTip = 'Enables automated email notifications for upcoming and overdue compliance deadlines.';
+        }
+
+
+
+        field(107; "Compliance DMS Link"; Text[100])
+        {
+            Caption = 'Compliance DMS Link';
+            ToolTip = 'The folder name within SharePoint/DMS designated for storing compliance filing proof.';
         }
     }
 
