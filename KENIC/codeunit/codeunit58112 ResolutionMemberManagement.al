@@ -361,8 +361,8 @@ codeunit 50048 "Resolution Management"
         Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
     end;
 
-//Approval notification
-procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
+    //Approval notification
+    procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
     var
         CircularResHeader: Record "Circular Resolution Header";
         ApprovalEntry: Record "Approval Entry";
@@ -371,7 +371,7 @@ procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
         Email: Codeunit Email;
         EmailMessage: Codeunit "Email Message";
         Recipient, RecipientName, Subject, Body, ApprovalURL : Text;
-        ApprovalPageID: Label '654'; 
+        ApprovalPageID: Label '654';
     begin
         CompanyInfo.Get();
         GetEBoardSetup(EBoardSetup);
@@ -382,7 +382,7 @@ procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
             ApprovalEntry.Reset();
             ApprovalEntry.SetRange("Document No.", CircularResHeader."No.");
             ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
-            
+
             if ApprovalEntry.FindFirst() then begin
                 if UserSetup.Get(ApprovalEntry."Approver ID") then begin
                     Subject := StrSubstNo('APPROVAL NOTIFICATION: Circular Resolution %1', CircularResHeader."No.");
@@ -405,11 +405,11 @@ procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
                         else
                             Body += '<b>Created By:</b> ' + CircularResHeader."Created By" + '<br>';
                     end else if SenderUserSetup.Get(ApprovalEntry."Sender ID") then
-                        Body += '<b>Created By:</b> ' + SenderUserSetup."Employee Name" + '<br>';
+                            Body += '<b>Created By:</b> ' + SenderUserSetup."Employee Name" + '<br>';
 
-                    
+
                     if EBoardSetup."ERP URL" <> '' then begin
-                        
+
                         if EBoardSetup."ERP URL".EndsWith('/') or EBoardSetup."ERP URL".EndsWith('?') then
                             ApprovalURL := EBoardSetup."ERP URL" + 'page=' + ApprovalPageID
                         else if EBoardSetup."ERP URL".Contains('?') then
@@ -443,7 +443,7 @@ procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
         Email: Codeunit Email;
         EmailMessage: Codeunit "Email Message";
         Recipient, RecipientName, Subject, Body, ResolutionURL : Text;
-        CardPageID: Label '654'; 
+        CardPageID: Label '654';
     begin
         CompanyInfo.Get();
         GetEBoardSetup(EBoardSetup);
@@ -451,6 +451,8 @@ procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
         CircularResHeader.Reset();
         CircularResHeader.SetRange("No.", DocNo);
         if CircularResHeader.FindFirst() then begin
+            if CircularResHeader."Approval Status" <> CircularResHeader."Approval Status"::Released then
+                exit;
 
             // Identify Initiator
             if CircularResHeader."Created By" <> '' then begin
@@ -469,7 +471,7 @@ procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
                     Body += StrSubstNo('Your Circular Resolution <b>%1</b> (%2) has been <b>FULLY APPROVED</b>.<br><br>', CircularResHeader."No.", CircularResHeader.Title);
                     Body += 'Please log in to the ERP and post the Circular Resolution to open voting for board members.<br><br>';
                     Body += 'Once the resolution is posted, voting notifications will be sent automatically to all eligible board members and the voting period will begin.<br><br>';
-                   
+
                     if EBoardSetup."ERP URL" <> '' then begin
                         if EBoardSetup."ERP URL".EndsWith('/') or EBoardSetup."ERP URL".EndsWith('?') then
                             ResolutionURL := EBoardSetup."ERP URL" + 'page=' + CardPageID
@@ -483,6 +485,60 @@ procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
                             ResolutionURL);
                     end;
 
+                    Body += 'Regards,<br>';
+                    Body += CompanyInfo.Name + '<br><br>';
+                    Body += '<i>This is a system-generated email. Please do not reply.</i>';
+
+                    Clear(EmailMessage);
+                    EmailMessage.Create(Recipient, Subject, Body, true);
+                    Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+                end;
+            end;
+        end;
+    end;
+
+    //Rejection notification
+    procedure SendRejectedNotificationToInitiator(DocNo: Code[20])
+    var
+        CircularResHeader: Record "Circular Resolution Header";
+        UserSetup: Record "User Setup";
+        ApprovalCommentLine: Record "Approval Comment Line";
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Recipient, RecipientName, Subject, Body, RejectionReason : Text;
+    begin
+        CompanyInfo.Get();
+
+        if CircularResHeader.Get(DocNo) then begin
+            if CircularResHeader."Approval Status" <> CircularResHeader."Approval Status"::Rejected then
+                exit;
+            if CircularResHeader."Created By" <> '' then begin
+                if UserSetup.Get(CircularResHeader."Created By") then begin
+
+                    Recipient := UserSetup."E-Mail";
+                    if Recipient = '' then
+                        exit;
+
+                    RecipientName := UserSetup."Employee Name";
+                    if RecipientName = '' then
+                        RecipientName := UserSetup."User ID";
+
+
+                    ApprovalCommentLine.Reset();
+                    ApprovalCommentLine.SetRange("Table ID", Database::"Circular Resolution Header");
+                    ApprovalCommentLine.SetRange("Document No.", DocNo);
+                    if ApprovalCommentLine.FindLast() then
+                        RejectionReason := ApprovalCommentLine.Comment
+                    else
+                        RejectionReason := 'No specific reason provided.';
+
+
+                    Subject := StrSubstNo('REJECTED: Circular Resolution %1', CircularResHeader."No.");
+
+                    Body := StrSubstNo('Dear %1,<br><br>', RecipientName);
+                    Body += StrSubstNo('Your Circular Resolution <b>%1</b> (%2) has been <b>REJECTED</b>.<br><br>', CircularResHeader."No.", CircularResHeader.Title);
+                    Body += StrSubstNo('<b>Reason for Rejection:</b> %1<br><br>', RejectionReason);
+                    Body += 'Kindly review the comments, make the necessary updates, and resubmit for approval again if appropriate.<br><br>';
                     Body += 'Regards,<br>';
                     Body += CompanyInfo.Name + '<br><br>';
                     Body += '<i>This is a system-generated email. Please do not reply.</i>';

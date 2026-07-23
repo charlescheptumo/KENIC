@@ -449,6 +449,7 @@ page 58116 "Circular Resolution Card"
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        ResolutionMgt: Codeunit "Resolution Management";
                     begin
                         ApprovalsMgmt.RejectRecordApprovalRequest(Rec.RecordId);
 
@@ -457,6 +458,8 @@ page 58116 "Circular Resolution Card"
                         if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
                             Rec.Status := Rec.Status::Rejected;
                             Rec.Modify(true);
+
+                            ResolutionMgt.SendRejectedNotificationToInitiator(Rec."No.");
                         end;
                     end;
                 }
