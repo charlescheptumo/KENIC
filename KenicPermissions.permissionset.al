@@ -8870,5 +8870,20 @@ permissionset 50001 KenicPermissions
         page "Rejected Circular Resolution"=X,
         page "Resolution lines Card"=X,
         codeunit "Circular Resolution Mgt."=X,
-        page "Circular Resolution Archive"=X;
+        page "Circular Resolution Archive"=X,
+        tabledata "Compliance Calendar Entry"=RIMD,
+        tabledata "Compliance Category"=RIMD,
+        tabledata "Compliance Obligation"=RIMD,
+        tabledata "Mpesa Transaction"=RIMD,
+        table "Compliance Calendar Entry"=X,
+        table "Compliance Category"=X,
+        table "Compliance Obligation"=X,
+        table "Mpesa Transaction"=X,
+        page "Compliance Calendar Entries"=X,
+        page "Compliance Categories"=X,
+        page "Compliance Obligation Card"=X,
+        page "Compliance Obligations"=X,
+        page "Mpesa Transaction Card"=X,
+        page "Mpesa Transaction List"=X,
+        page "Mpesa Transactions API"=X;
 }
