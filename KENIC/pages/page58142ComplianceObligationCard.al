@@ -36,6 +36,7 @@ page 58142 "Compliance Obligation Card"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the short title or requirement summary.';
                 }
+
                 field("Category Code"; Rec."Category Code")
                 {
                     ApplicationArea = All;
@@ -47,11 +48,13 @@ page 58142 "Compliance Obligation Card"
                     ApplicationArea = All;
                     ShowMandatory = true;
                     ToolTip = 'Specifies the primary employee responsible for this compliance obligation.';
+                    Visible = false;
                 }
                 field("Primary Employee Name"; Rec."Primary Employee Name")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the name of the primary assigned employee.';
+                    Visible = false;
                 }
                 field(Priority; Rec.Priority)
                 {
@@ -62,6 +65,12 @@ page 58142 "Compliance Obligation Card"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies whether this obligation is active.';
+                }
+
+                field(Status; Rec.Status)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the status of this obligation.';
                 }
             }
 
@@ -147,6 +156,32 @@ page 58142 "Compliance Obligation Card"
                 {
                     ApplicationArea = All;
                 }
+            }
+        }
+    }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(Post)
+            {
+                ApplicationArea = All;
+                Caption = 'Post';
+                Image = PostOrder;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Enabled = not Rec.Posted;
+                Visible = not Rec.Posted;
+                ToolTip = 'Posts the compliance obligation, generates calendar entries, sets status to In Progress, and notifies assigned employees.';
+
+                trigger OnAction()
+                begin
+                    Rec.PostObligation();
+                    CurrPage.Update(false);
+                end;
             }
         }
     }

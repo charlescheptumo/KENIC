@@ -45,6 +45,11 @@ table 57118 "Compliance Obligation"
             Caption = 'Frequency';
         }
 
+        field(5; Status; Enum "Compliance Entry Status")
+        {
+            Caption = 'Status';
+        }
+
         field(6; "Start Date"; Date)
         {
             Caption = 'Start Date';
@@ -128,6 +133,7 @@ table 57118 "Compliance Obligation"
             TableRelation = Employee."No.";
             ToolTip = 'Specifies the main employee responsible for this compliance obligation.';
 
+
             trigger OnValidate()
             var
                 Employee: Record Employee;
@@ -137,6 +143,8 @@ table 57118 "Compliance Obligation"
                 else
                     "Primary Employee Name" := '';
             end;
+
+
         }
 
         field(19; "Primary Employee Name"; Text[100])
@@ -152,6 +160,14 @@ table 57118 "Compliance Obligation"
             CalcFormula = count("Compliance Obligation Employee" where("Obligation No." = field("No.")));
             Editable = false;
         }
+
+        field(21; Posted; Boolean)
+        {
+            Caption = 'Posted';
+            Editable = false;
+        }
+
+      
     }
 
     keys
@@ -181,6 +197,7 @@ table 57118 "Compliance Obligation"
             Rec."No." := NoSeries.GetNextNo(EBoardSetup."Compliance Obligation Nos.", WorkDate(), true);
         end;
 
+        Rec.Status := Rec.Status::Open;
         Rec."Created By" := UserId();
         Rec."Created DateTime" := CurrentDateTime();
     end;
@@ -196,6 +213,9 @@ table 57118 "Compliance Obligation"
         ComplianceEntry: Record "Compliance Calendar Entry";
         ObligationEmployee: Record "Compliance Obligation Employee";
     begin
+        if Rec.Posted then
+            Error('Compliance Obligation %1 cannot be deleted because it has already been posted.', Rec."No.");
+
         ComplianceEntry.SetRange("Obligation No.", Rec."No.");
         if not ComplianceEntry.IsEmpty() then
             Error('Compliance Obligation %1 cannot be deleted because compliance calendar entries already exist for it.', Rec."No.");
@@ -203,5 +223,42 @@ table 57118 "Compliance Obligation"
         ObligationEmployee.SetRange("Obligation No.", Rec."No.");
         if not ObligationEmployee.IsEmpty() then
             ObligationEmployee.DeleteAll();
+    end;
+
+    /// <summary>
+    /// Validates mandatory fields, asks for user confirmation, generates calendar entries, and marks the record as Posted.
+    /// </summary>
+    procedure PostObligation()
+    var
+        ObligationEmp: Record "Compliance Obligation Employee";
+        ComplianceCalendar: Codeunit "Compliance Calendar";
+        ConfirmQst: Label 'Are you sure you want to post Compliance Obligation %1?\n\nThis will generate compliance calendar entries and notify the assigned employee(s) via email and portal.', Comment = '%1 = Obligation No.';
+        NoEmployeeErr: Label 'You must assign at least one employee (either a Primary Employee or via Assigned Employees) before posting.';
+    begin
+        // 1. Prevent Re-posting
+        if Rec.Posted then
+            Error('Compliance Obligation %1 has already been posted.', Rec."No.");
+
+        // 2. Validate Mandatory Category
+        Rec.TestField("Category Code");
+        Rec.TestField(Title);
+
+        // 3. Validate Employee Assignment (Primary OR Sub-table)
+        ObligationEmp.Reset();
+        ObligationEmp.SetRange("Obligation No.", Rec."No.");
+        if (Rec."Primary Employee No." = '') and ObligationEmp.IsEmpty() then
+            Error(NoEmployeeErr);
+
+        // 4. Confirmation Dialog
+        if not Confirm(StrSubstNo(ConfirmQst, Rec."No."), false) then
+            exit;
+
+        // 5. Generate Calendar Entries
+        ComplianceCalendar.GenerateCalendarEntries(Rec);
+
+        // 6. Update Status & Mark as Posted
+        Rec.Posted := true;
+        Rec.Status := Rec.Status::"In Progress";
+        Rec.Modify(true);
     end;
 }

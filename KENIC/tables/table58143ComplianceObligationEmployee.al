@@ -30,6 +30,23 @@ table 58143 "Compliance Obligation Employee"
             Caption = 'Employee Name';
             Editable = false;
         }
+        field(4; Status; Enum "Employee Obligation Status")
+        {
+            Caption = 'Status';
+        }
+        field(5; Completed; Boolean)
+        {
+            Caption = 'Completed';
+        }
+        field(6; "Completed DateTime"; DateTime)
+        {
+            Caption = 'Completed Date/Time';
+            Editable = false;
+        }
+        field(7; Remarks; Text[250])
+        {
+            Caption = 'Remarks';
+        }
     }
 
     keys

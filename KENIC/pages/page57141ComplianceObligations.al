@@ -44,6 +44,7 @@ page 57141 "Compliance Obligations"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the name of the primary assigned employee.';
+                    Visible = false;
                 }
                 field("Assigned Employees Count"; Rec."Assigned Employees Count")
                 {
