@@ -32,11 +32,13 @@ page 57141 "Compliance Obligations"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the recurring frequency.';
+                    Visible = false;
                 }
                 field("Primary Employee No."; Rec."Primary Employee No.")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the primary assigned employee number.';
+                    Visible = false;
                 }
                 field("Primary Employee Name"; Rec."Primary Employee Name")
                 {

@@ -24,6 +24,7 @@ page 58140 "Compliance Categories"
                 field("Responsible User ID"; Rec."Responsible User ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field(Active; Rec.Active)
                 {
@@ -32,6 +33,7 @@ page 58140 "Compliance Categories"
                 field(Remarks; Rec.Remarks)
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
             }
         }

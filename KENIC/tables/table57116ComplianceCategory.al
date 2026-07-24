@@ -32,6 +32,7 @@ table 57116 "Compliance Category"
             Caption = 'Responsible User';
             TableRelation = "User Setup"."User ID";
             ToolTip = 'Default user ID responsible for oversight of this category.';
+        
         }
         field(4; Active; Boolean)
         {
