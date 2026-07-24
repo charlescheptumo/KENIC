@@ -2,8 +2,8 @@ table 57117 "Compliance Calendar Entry"
 {
     Caption = 'Compliance Calendar Entry';
     DataClassification = CustomerContent;
-   // LookupPageId = "Compliance Calendar Entries";
-   // DrillDownPageId = "Compliance Calendar Entries";
+   LookupPageId = "Compliance Calendar Entries";
+   DrillDownPageId = "Compliance Calendar Entries";
 
     fields
     {
@@ -63,6 +63,7 @@ table 57117 "Compliance Calendar Entry"
         field(6; "Due Date"; Date)
         {
             Caption = 'Due Date';
+            
         }
 
         field(7; "Assigned User ID"; Code[50])
@@ -91,11 +92,11 @@ table 57117 "Compliance Calendar Entry"
         {
             Caption = 'Completion Date';
 
-            trigger OnValidate()
-            begin
-                if ("Completion Date" <> 0D) and ("Completion Date" < "Due Date") then
-                    Error('Completion Date cannot be earlier than the Due Date.');
-            end;
+            // trigger OnValidate()
+            // begin
+            //     if ("Completion Date" <> 0D) and ("Completion Date" < "Due Date") then
+            //         Error('Completion Date cannot be earlier than the Due Date.');
+            // end;
         }
 
         field(10; "Proof Attached"; Boolean)

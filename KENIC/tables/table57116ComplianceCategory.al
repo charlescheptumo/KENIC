@@ -2,8 +2,8 @@ table 57116 "Compliance Category"
 {
     Caption = 'Compliance Category';
     DataClassification = CustomerContent;
-   // LookupPageId = "Compliance Categories";
-    //DrillDownPageId = "Compliance Categories";
+   LookupPageId = "Compliance Categories";
+    DrillDownPageId = "Compliance Categories";
 
     fields
     {

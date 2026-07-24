@@ -2,8 +2,8 @@ table 57118 "Compliance Obligation"
 {
     Caption = 'Compliance Obligation';
     DataClassification = CustomerContent;
-    //LookupPageId = "Compliance Obligations";
-   // DrillDownPageId = "Compliance Obligations";
+    LookupPageId = "Compliance Obligations";
+   DrillDownPageId = "Compliance Obligations";
 
     fields
     {
