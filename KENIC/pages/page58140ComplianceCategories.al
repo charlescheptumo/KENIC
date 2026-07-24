@@ -15,6 +15,7 @@ page 58140 "Compliance Categories"
                 field("Code"; Rec."Code")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field(Description; Rec.Description)
                 {

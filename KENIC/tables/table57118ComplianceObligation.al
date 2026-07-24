@@ -3,7 +3,7 @@ table 57118 "Compliance Obligation"
     Caption = 'Compliance Obligation';
     DataClassification = CustomerContent;
     LookupPageId = "Compliance Obligations";
-   DrillDownPageId = "Compliance Obligations";
+    DrillDownPageId = "Compliance Obligations";
 
     fields
     {
@@ -38,27 +38,11 @@ table 57118 "Compliance Obligation"
         {
             Caption = 'Category Code';
             TableRelation = "Compliance Category".Code where(Active = const(true));
-
-            trigger OnValidate()
-            var
-                ComplianceCategory: Record "Compliance Category";
-            begin
-                if ComplianceCategory.Get("Category Code") then
-                    if "Assigned User ID" = '' then
-                        "Assigned User ID" := ComplianceCategory."Responsible User ID";
-            end;
         }
 
         field(4; Frequency; Enum "Compliance Frequency")
         {
             Caption = 'Frequency';
-        }
-
-        field(5; "Assigned User ID"; Code[50])
-        {
-            Caption = 'Assigned User';
-            TableRelation = "User Setup"."User ID";
-            ToolTip = 'Specifies the user responsible for this compliance obligation.';
         }
 
         field(6; "Start Date"; Date)
@@ -72,8 +56,7 @@ table 57118 "Compliance Obligation"
 
             trigger OnValidate()
             begin
-                if ("Start Date" <> 0D) and
-                   ("Next Due Date" < "Start Date") then
+                if ("Start Date" <> 0D) and ("Next Due Date" < "Start Date") then
                     Error('Next Due Date cannot be earlier than the Start Date.');
             end;
         }
@@ -138,6 +121,37 @@ table 57118 "Compliance Obligation"
             Caption = 'Last Modified DateTime';
             Editable = false;
         }
+
+        field(18; "Primary Employee No."; Code[20])
+        {
+            Caption = 'Primary Assigned Employee';
+            TableRelation = Employee."No.";
+            ToolTip = 'Specifies the main employee responsible for this compliance obligation.';
+
+            trigger OnValidate()
+            var
+                Employee: Record Employee;
+            begin
+                if Employee.Get("Primary Employee No.") then
+                    "Primary Employee Name" := Employee.FullName()
+                else
+                    "Primary Employee Name" := '';
+            end;
+        }
+
+        field(19; "Primary Employee Name"; Text[100])
+        {
+            Caption = 'Primary Employee Name';
+            Editable = false;
+        }
+
+        field(20; "Assigned Employees Count"; Integer)
+        {
+            Caption = 'Assigned Employees';
+            FieldClass = FlowField;
+            CalcFormula = count("Compliance Obligation Employee" where("Obligation No." = field("No.")));
+            Editable = false;
+        }
     }
 
     keys
@@ -151,7 +165,7 @@ table 57118 "Compliance Obligation"
         {
         }
 
-        key(UserDueDate; "Assigned User ID", "Next Due Date")
+        key(EmployeeDueDate; "Primary Employee No.", "Next Due Date")
         {
         }
     }
@@ -167,22 +181,12 @@ table 57118 "Compliance Obligation"
             Rec."No." := NoSeries.GetNextNo(EBoardSetup."Compliance Obligation Nos.", WorkDate(), true);
         end;
 
-        Rec.TestField(Title);
-        Rec.TestField("Category Code");
-        Rec.TestField("Assigned User ID");
-        Rec.TestField("Next Due Date");
-
         Rec."Created By" := UserId();
         Rec."Created DateTime" := CurrentDateTime();
     end;
 
     trigger OnModify()
     begin
-        Rec.TestField(Title);
-        Rec.TestField("Category Code");
-        Rec.TestField("Assigned User ID");
-        Rec.TestField("Next Due Date");
-
         Rec."Last Modified By" := UserId();
         Rec."Last Modified DateTime" := CurrentDateTime();
     end;
@@ -190,12 +194,14 @@ table 57118 "Compliance Obligation"
     trigger OnDelete()
     var
         ComplianceEntry: Record "Compliance Calendar Entry";
+        ObligationEmployee: Record "Compliance Obligation Employee";
     begin
         ComplianceEntry.SetRange("Obligation No.", Rec."No.");
-
         if not ComplianceEntry.IsEmpty() then
-            Error(
-                'Compliance Obligation %1 cannot be deleted because compliance calendar entries already exist for it.',
-                Rec."No.");
+            Error('Compliance Obligation %1 cannot be deleted because compliance calendar entries already exist for it.', Rec."No.");
+
+        ObligationEmployee.SetRange("Obligation No.", Rec."No.");
+        if not ObligationEmployee.IsEmpty() then
+            ObligationEmployee.DeleteAll();
     end;
 }

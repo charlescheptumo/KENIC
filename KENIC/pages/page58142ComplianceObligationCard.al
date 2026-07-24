@@ -42,11 +42,16 @@ page 58142 "Compliance Obligation Card"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the compliance category code.';
                 }
-                field("Assigned User ID"; Rec."Assigned User ID")
+                field("Primary Employee No."; Rec."Primary Employee No.")
                 {
                     ApplicationArea = All;
                     ShowMandatory = true;
-                    ToolTip = 'Specifies the user responsible for this compliance obligation.';
+                    ToolTip = 'Specifies the primary employee responsible for this compliance obligation.';
+                }
+                field("Primary Employee Name"; Rec."Primary Employee Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the name of the primary assigned employee.';
                 }
                 field(Priority; Rec.Priority)
                 {
@@ -57,6 +62,17 @@ page 58142 "Compliance Obligation Card"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies whether this obligation is active.';
+                }
+            }
+
+            group(Assignment)
+            {
+                Caption = 'Additional Assigned Team';
+
+                part(AssignedEmployees; "ComplianceObligationEmployees")
+                {
+                    ApplicationArea = All;
+                    SubPageLink = "Obligation No." = field("No.");
                 }
             }
 

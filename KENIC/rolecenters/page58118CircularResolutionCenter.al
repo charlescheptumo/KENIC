@@ -71,15 +71,33 @@ page 58118 "Head of E-Board"
                 }
 
             }
-            group("Compliance calendar")
+            group("Compliance Management")
             {
-                action("Compliance calendar List ")
+                Caption = 'Compliance Calendar';
+
+                action("Compliance Categories")
                 {
                     ApplicationArea = All;
-                    Caption = 'Compliance calendar';
-                    // RunObject = page "Initial Review Case List";
+                    Caption = 'Compliance Categories';
+                    RunObject = page "Compliance Categories";
+                    ToolTip = 'Manage compliance categories and responsible users.';
                 }
 
+                action("Compliance Obligations")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Compliance Obligations';
+                    RunObject = page "Compliance Obligations";
+                    ToolTip = 'Manage master compliance obligations and schedules.';
+                }
+
+                action("Compliance Calendar Entries")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Compliance Calendar Entries';
+                    RunObject = page "Compliance Calendar Entries";
+                    ToolTip = 'View and track recurring compliance execution tasks.';
+                }
             }
             group(Reports)
             {

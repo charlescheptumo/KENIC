@@ -2,8 +2,8 @@ table 57117 "Compliance Calendar Entry"
 {
     Caption = 'Compliance Calendar Entry';
     DataClassification = CustomerContent;
-   LookupPageId = "Compliance Calendar Entries";
-   DrillDownPageId = "Compliance Calendar Entries";
+    LookupPageId = "Compliance Calendar Entries";
+    DrillDownPageId = "Compliance Calendar Entries";
 
     fields
     {
@@ -38,8 +38,9 @@ table 57117 "Compliance Calendar Entry"
                     Title := ComplianceObligation.Title;
                     Description := ComplianceObligation.Description;
 
-                    if "Assigned User ID" = '' then
-                        "Assigned User ID" := ComplianceObligation."Assigned User ID";
+                   
+                    if "Assigned Employee No." = '' then
+                        "Assigned Employee No." := ComplianceObligation."Primary Employee No.";
                 end;
             end;
         }
@@ -63,13 +64,12 @@ table 57117 "Compliance Calendar Entry"
         field(6; "Due Date"; Date)
         {
             Caption = 'Due Date';
-            
         }
 
-        field(7; "Assigned User ID"; Code[50])
+        field(7; "Assigned Employee No."; Code[20])
         {
-            Caption = 'Assigned User';
-            TableRelation = "User Setup"."User ID";
+            Caption = 'Assigned Employee No.';
+            TableRelation = Employee."No.";
         }
 
         field(8; Status; Enum "Compliance Entry Status")
@@ -91,12 +91,6 @@ table 57117 "Compliance Calendar Entry"
         field(9; "Completion Date"; Date)
         {
             Caption = 'Completion Date';
-
-            // trigger OnValidate()
-            // begin
-            //     if ("Completion Date" <> 0D) and ("Completion Date" < "Due Date") then
-            //         Error('Completion Date cannot be earlier than the Due Date.');
-            // end;
         }
 
         field(10; "Proof Attached"; Boolean)
@@ -143,7 +137,7 @@ table 57117 "Compliance Calendar Entry"
         {
         }
 
-        key(Key3; "Assigned User ID", Status)
+        key(Key3; "Assigned Employee No.", Status)
         {
         }
 
