@@ -2,7 +2,7 @@ page 58143 "ComplianceObligationEmployees"
 {
     PageType = ListPart;
     SourceTable = "Compliance Obligation Employee";
-    Caption = 'Assigned Team Members';
+    Caption = 'Team Members';
 
     layout
     {
@@ -24,6 +24,7 @@ page 58143 "ComplianceObligationEmployees"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the current progress status for this employee.';
+                    Editable = false;
                 }
                 field(Completed; Rec.Completed)
                 {

@@ -33,10 +33,22 @@ table 58143 "Compliance Obligation Employee"
         field(4; Status; Enum "Employee Obligation Status")
         {
             Caption = 'Status';
+
+            trigger OnValidate()
+            begin
+                if Status = Status::Completed then begin
+                    Completed := true;
+                    "Completed DateTime" := CurrentDateTime;
+                end else begin
+                    Completed := false;
+                    "Completed DateTime" := 0DT;
+                end;
+            end;
         }
         field(5; Completed; Boolean)
         {
             Caption = 'Completed';
+            Editable = false;
         }
         field(6; "Completed DateTime"; DateTime)
         {

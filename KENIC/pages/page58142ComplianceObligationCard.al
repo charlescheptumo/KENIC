@@ -4,6 +4,7 @@ page 58142 "Compliance Obligation Card"
     SourceTable = "Compliance Obligation";
     Caption = 'Compliance Obligation Card';
 
+
     layout
     {
         area(content)
@@ -11,6 +12,7 @@ page 58142 "Compliance Obligation Card"
             group(General)
             {
                 Caption = 'General';
+                    Editable = PageIsEditable;
 
                 field("No."; Rec."No.")
                 {
@@ -36,6 +38,12 @@ page 58142 "Compliance Obligation Card"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the short title or requirement summary.';
                 }
+                    field(Description; Rec.Description)
+                    {
+                        ApplicationArea = All;
+                        MultiLine = true;
+                        ToolTip = 'Specifies a detailed description of the obligation.';
+                    }
 
                 field("Category Code"; Rec."Category Code")
                 {
@@ -71,30 +79,10 @@ page 58142 "Compliance Obligation Card"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the status of this obligation.';
+                    Editable = false;
                 }
-            }
 
-            group(Assignment)
-            {
-                Caption = 'Additional Assigned Team';
-
-                part(AssignedEmployees; "ComplianceObligationEmployees")
-                {
-                    ApplicationArea = All;
-                    SubPageLink = "Obligation No." = field("No.");
-                }
-            }
-
-            group(Scheduling)
-            {
-                Caption = 'Scheduling & Tracking';
-
-                field(Frequency; Rec.Frequency)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies how often this obligation recurs.';
-                }
-                field("Start Date"; Rec."Start Date")
+                 field("Start Date"; Rec."Start Date")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies when this obligation cycle starts.';
@@ -105,35 +93,39 @@ page 58142 "Compliance Obligation Card"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the next due date for compliance.';
                 }
-                field("Reminder Days"; Rec."Reminder Days")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies how many days prior to the due date reminders should be triggered.';
-                }
-                field("Evidence Required"; Rec."Evidence Required")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies if supporting proof/documents must be attached upon completion.';
-                }
+
             }
 
-            group(Details)
+            group(Assignment)
             {
-                Caption = 'Details & Remarks';
+                Caption = 'Additional Assigned Team';
 
-                field(Description; Rec.Description)
+                part(AssignedEmployees; "ComplianceObligationEmployees")
                 {
                     ApplicationArea = All;
-                    MultiLine = true;
-                    ToolTip = 'Specifies a detailed description of the obligation.';
-                }
-                field(Remarks; Rec.Remarks)
-                {
-                    ApplicationArea = All;
-                    MultiLine = true;
-                    ToolTip = 'Specifies any additional operational remarks.';
+                    SubPageLink = "Obligation No." = field("No.");
+                    Editable = PageIsEditable;
                 }
             }
+
+
+            // group(Details)
+            // {
+            //     Caption = 'Details & Remarks';
+
+            //     field(Description; Rec.Description)
+            //     {
+            //         ApplicationArea = All;
+            //         MultiLine = true;
+            //         ToolTip = 'Specifies a detailed description of the obligation.';
+            //     }
+            //     field(Remarks; Rec.Remarks)
+            //     {
+            //         ApplicationArea = All;
+            //         MultiLine = true;
+            //         ToolTip = 'Specifies any additional operational remarks.';
+            //     }
+            // }
 
             group(SystemInfo)
             {
@@ -185,4 +177,21 @@ page 58142 "Compliance Obligation Card"
             }
         }
     }
+    var
+        PageIsEditable: Boolean;
+
+    trigger OnAfterGetRecord()
+    begin
+        SetControlAppearance();
+    end;
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        SetControlAppearance();
+    end;
+
+    local procedure SetControlAppearance()
+    begin
+        PageIsEditable := not Rec.Posted;
+    end;
 }
