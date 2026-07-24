@@ -167,7 +167,7 @@ table 57118 "Compliance Obligation"
             Editable = false;
         }
 
-      
+
     }
 
     keys
@@ -225,40 +225,80 @@ table 57118 "Compliance Obligation"
             ObligationEmployee.DeleteAll();
     end;
 
-    /// <summary>
-    /// Validates mandatory fields, asks for user confirmation, generates calendar entries, and marks the record as Posted.
-    /// </summary>
+    procedure UpdateStatus()
+    var
+        ObligationEmp: Record "Compliance Obligation Employee";
+        TotalAssigned: Integer;
+        CompletedCount: Integer;
+    begin
+
+        if not Rec.Posted then begin
+            Rec.Status := Rec.Status::Open;
+            exit;
+        end;
+
+
+        ObligationEmp.SetRange("Obligation No.", Rec."No.");
+        TotalAssigned := ObligationEmp.Count();
+
+        if TotalAssigned > 0 then begin
+            ObligationEmp.SetRange(Status, ObligationEmp.Status::Completed);
+            CompletedCount := ObligationEmp.Count();
+        end;
+
+
+        if (TotalAssigned > 0) and (CompletedCount = TotalAssigned) then
+            Rec.Status := Rec.Status::Completed
+        else if (Rec."Next Due Date" <> 0D) and (WorkDate() > Rec."Next Due Date") then
+            Rec.Status := Rec.Status::Overdue
+        else
+            Rec.Status := Rec.Status::"In Progress";
+    end;
+
+    local procedure UpdateEmployeeStatuses()
+    var
+        ObligationEmp: Record "Compliance Obligation Employee";
+    begin
+        ObligationEmp.SetRange("Obligation No.", "No.");
+
+        if ObligationEmp.FindSet() then
+            repeat
+                if ObligationEmp.Status = ObligationEmp.Status::Open then begin
+                    ObligationEmp.Status := ObligationEmp.Status::"In Progress";
+                    ObligationEmp.Modify(true);
+                end;
+            until ObligationEmp.Next() = 0;
+    end;
+
     procedure PostObligation()
     var
         ObligationEmp: Record "Compliance Obligation Employee";
         ComplianceCalendar: Codeunit "Compliance Calendar";
-        ConfirmQst: Label 'Are you sure you want to post Compliance Obligation %1?\n\nThis will generate compliance calendar entries and notify the assigned employee(s) via email and portal.', Comment = '%1 = Obligation No.';
-        NoEmployeeErr: Label 'You must assign at least one employee (either a Primary Employee or via Assigned Employees) before posting.';
+        ConfirmQst: Label 'Are you sure you want to post Compliance Obligation %1?\n\nThis will generate compliance calendar entries and notify assigned employee(s).', Comment = '%1 = Obligation No.';
+        NoEmployeeErr: Label 'You must assign at least one employee before posting.';
     begin
-        // 1. Prevent Re-posting
         if Rec.Posted then
             Error('Compliance Obligation %1 has already been posted.', Rec."No.");
 
-        // 2. Validate Mandatory Category
         Rec.TestField("Category Code");
         Rec.TestField(Title);
 
-        // 3. Validate Employee Assignment (Primary OR Sub-table)
         ObligationEmp.Reset();
         ObligationEmp.SetRange("Obligation No.", Rec."No.");
-        if (Rec."Primary Employee No." = '') and ObligationEmp.IsEmpty() then
+        if ObligationEmp.IsEmpty() then
             Error(NoEmployeeErr);
 
-        // 4. Confirmation Dialog
         if not Confirm(StrSubstNo(ConfirmQst, Rec."No."), false) then
             exit;
 
-        // 5. Generate Calendar Entries
+        // Generate Calendar Entries
         ComplianceCalendar.GenerateCalendarEntries(Rec);
 
-        // 6. Update Status & Mark as Posted
+
+
         Rec.Posted := true;
-        Rec.Status := Rec.Status::"In Progress";
+        UpdateEmployeeStatuses();
+        Rec.UpdateStatus();
         Rec.Modify(true);
     end;
 }

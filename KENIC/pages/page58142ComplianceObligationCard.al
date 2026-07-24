@@ -98,7 +98,7 @@ page 58142 "Compliance Obligation Card"
 
             group(Assignment)
             {
-                Caption = 'Additional Assigned Team';
+                Caption = 'Assigned Team';
 
                 part(AssignedEmployees; "ComplianceObligationEmployees")
                 {

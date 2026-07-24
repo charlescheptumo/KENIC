@@ -43,6 +43,7 @@ table 58143 "Compliance Obligation Employee"
                     Completed := false;
                     "Completed DateTime" := 0DT;
                 end;
+                UpdateParentStatus();
             end;
         }
         field(5; Completed; Boolean)
@@ -68,4 +69,40 @@ table 58143 "Compliance Obligation Employee"
             Clustered = true;
         }
     }
+
+    trigger OnInsert()
+    begin
+        CheckObligationNotPosted();
+    end;
+
+    trigger OnModify()
+    begin
+        UpdateParentStatus();
+    end;
+
+    trigger OnDelete()
+    begin
+        CheckObligationNotPosted();
+    end;
+
+    local procedure CheckObligationNotPosted()
+    var
+        ComplianceObligation: Record "Compliance Obligation";
+    begin
+        if ComplianceObligation.Get(Rec."Obligation No.") then
+            if ComplianceObligation.Posted then
+                Error('You cannot add or delete assigned employees on a posted Compliance Obligation.');
+    end;
+
+    local procedure UpdateParentStatus()
+    var
+        ComplianceObligation: Record "Compliance Obligation";
+    begin
+        if ComplianceObligation.Get(Rec."Obligation No.") then begin
+            ComplianceObligation.UpdateStatus();
+            ComplianceObligation.Modify(true);
+        end;
+    end;
+
+    
 }
