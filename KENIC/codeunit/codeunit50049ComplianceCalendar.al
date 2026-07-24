@@ -41,7 +41,7 @@ codeunit 50049 "Compliance Calendar"
         CalendarEntry.Title := Obligation.Title;
         CalendarEntry."Due Date" := Obligation."Next Due Date";
         CalendarEntry.Validate("Assigned Employee No.", EmpNo);
-        CalendarEntry.Status := CalendarEntry.Status::Open;
+        CalendarEntry.Status := CalendarEntry.Status::"In Progress";
         CalendarEntry.Insert(true);
     end;
 

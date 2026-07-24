@@ -166,4 +166,7 @@ table 57117 "Compliance Calendar Entry"
         "Last Modified By" := UserId();
         "Last Modified DateTime" := CurrentDateTime();
     end;
+
+
+    
 }
