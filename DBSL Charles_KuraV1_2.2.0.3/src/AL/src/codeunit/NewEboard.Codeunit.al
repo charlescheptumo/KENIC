@@ -185,6 +185,28 @@ Codeunit 50032 NewEboard
 
     end;
 
+    procedure fnGetComplianceObligations(empNo: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        objComplianceObligationHeader: Record "Compliance Obligation";
+    begin
+        objComplianceObligationHeader.Reset();
+        objComplianceObligationHeader.SetRange("Primary Employee No.", empNo);
+        if objComplianceObligationHeader.findset() then begin
+            repeat
+                status += objComplianceObligationHeader."No." + '*' + objComplianceObligationHeader."Title" + '*' +
+                objComplianceObligationHeader."Category Code" + '*' + objComplianceObligationHeader.Description + '*' +
+                FORMAT(objComplianceObligationHeader.Status) + '*' + FORMAT(objComplianceObligationHeader.Frequency) + '*' +
+                FORMAT(objComplianceObligationHeader."Start Date") + '*' + format(objComplianceObligationHeader."Next Due Date") + '*' +
+                FORMAT(objComplianceObligationHeader.Priority) + '*' + FORMAT(objComplianceObligationHeader."Reminder Days") + '*' +
+                FORMAT(objComplianceObligationHeader.Active) + '*' + FORMAT(objComplianceObligationHeader."Evidence Required") + '*' +
+                objComplianceObligationHeader.Remarks + '::::';
+            until objComplianceObligationHeader.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
     procedure fnGetCircularResolutionNo(docNo: Text) status: Text
     var
         //iExists: Boolean;
@@ -244,26 +266,26 @@ Codeunit 50032 NewEboard
 
     end;
 
-    // procedure fnGetComplianceObligationLinesSpecific(empNo: Text[50]) status: Text 
-    // var
-    //     //iExists: Boolean;
-    //     //objCircularResolutionHeader: Record "Circular Resolution Header";
-    //     //objCircularResolutionLines: Record "Circular Resolution lines";
-    //     objComplianceObligationLines: Record "Compliance Obligation Employee";
-    // begin
-    //     objComplianceObligationLines.Reset();
-    //     objComplianceObligationLines.SetRange("Obligation No.", docNo);
-    //     if objComplianceObligationLines.findset() then begin
-    //         repeat
-    //             status += objComplianceObligationLines."Obligation No." + '*' + objComplianceObligationLines."Employee No." + '*' +
-    //             objComplianceObligationLines."Employee Name" + '*' + objComplianceObligationLines."Employee Email" + '*' +
-    //             Format(objComplianceObligationLines."Status") + '*' + Format(objComplianceObligationLines.Completed) + '*' +
-    //              Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '::::';
-    //         until objComplianceObligationLines.Next() = 0;
-    //     end;
-    //     exit(status);
+    procedure fnGetComplianceObligationLinesSpecific(empNo: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        //objCircularResolutionLines: Record "Circular Resolution lines";
+        objComplianceObligationLines: Record "Compliance Obligation Employee";
+    begin
+        objComplianceObligationLines.Reset();
+        objComplianceObligationLines.SetRange("Employee No.", empNo);
+        if objComplianceObligationLines.findset() then begin
+            repeat
+                status += objComplianceObligationLines."Obligation No." + '*' + objComplianceObligationLines."Employee No." + '*' +
+                objComplianceObligationLines."Employee Name" + '*' + objComplianceObligationLines."Employee Email" + '*' +
+                Format(objComplianceObligationLines."Status") + '*' + Format(objComplianceObligationLines.Completed) + '*' +
+                 Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '::::';
+            until objComplianceObligationLines.Next() = 0;
+        end;
+        exit(status);
 
-    // end;
+    end;
 
     procedure fnGetCircularResolutionLinesSpecific(email: Text[150]) status: Text
     var
