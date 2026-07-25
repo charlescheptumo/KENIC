@@ -125,6 +125,20 @@ Codeunit 50032 NewEboard
         exit(status);
     end;
 
+    procedure fnGetEmployees() status: Text
+    var
+        //iExists: Boolean;
+        objEmployees: Record "Employee";
+    begin
+        objEmployees.Reset();
+        if objEmployees.findset() then begin
+            repeat
+                status += objEmployees."No." + '*' + objEmployees."Last Name" + '*' + objEmployees."First Name" + '*' + objEmployees."Phone No." + '*' + objEmployees."Company E-Mail" + '*' + objEmployees."Job Title" + '::::';
+            until objBoardMembers.Next() = 0;
+        end;
+        exit(status);
+    end;
+
     procedure fnGetBoardMembersSpecific(personalNo: Code[100]) status: Text
     var
     //iExists: Boolean;
@@ -209,6 +223,48 @@ Codeunit 50032 NewEboard
 
     end;
 
+    procedure fnGetComplianceObligationLines(docNo: Text[50]) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        //objCircularResolutionLines: Record "Circular Resolution lines";
+        objComplianceObligationLines: Record "Compliance Obligation Employee";
+    begin
+        objComplianceObligationLines.Reset();
+        objComplianceObligationLines.SetRange("Obligation No.", docNo);
+        if objComplianceObligationLines.findset() then begin
+            repeat
+                status += objComplianceObligationLines."Obligation No." + '*' + objComplianceObligationLines."Employee No." + '*' +
+                objComplianceObligationLines."Employee Name" + '*' + objComplianceObligationLines."Employee Email" + '*' +
+                Format(objComplianceObligationLines."Status") + '*' + Format(objComplianceObligationLines.Completed) + '*' +
+                 Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '::::';
+            until objComplianceObligationLines.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    // procedure fnGetComplianceObligationLinesSpecific(empNo: Text[50]) status: Text 
+    // var
+    //     //iExists: Boolean;
+    //     //objCircularResolutionHeader: Record "Circular Resolution Header";
+    //     //objCircularResolutionLines: Record "Circular Resolution lines";
+    //     objComplianceObligationLines: Record "Compliance Obligation Employee";
+    // begin
+    //     objComplianceObligationLines.Reset();
+    //     objComplianceObligationLines.SetRange("Obligation No.", docNo);
+    //     if objComplianceObligationLines.findset() then begin
+    //         repeat
+    //             status += objComplianceObligationLines."Obligation No." + '*' + objComplianceObligationLines."Employee No." + '*' +
+    //             objComplianceObligationLines."Employee Name" + '*' + objComplianceObligationLines."Employee Email" + '*' +
+    //             Format(objComplianceObligationLines."Status") + '*' + Format(objComplianceObligationLines.Completed) + '*' +
+    //              Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '::::';
+    //         until objComplianceObligationLines.Next() = 0;
+    //     end;
+    //     exit(status);
+
+    // end;
+
     procedure fnGetCircularResolutionLinesSpecific(email: Text[150]) status: Text
     var
         //iExists: Boolean;
@@ -236,14 +292,15 @@ Codeunit 50032 NewEboard
         objCircularResolutionLines: Record "Circular Resolution lines";
     begin
 
-        if not ResolutionHeader.Get(docNo) then
-            Error('Circular Resolution %1 was not found.', docNo);
-        ResolutionHeader.UpdateStatusBasedOnDeadline();
-        if (ResolutionHeader."Voting Deadline" <> 0DT) and
-       (CurrentDateTime >= ResolutionHeader."Voting Deadline") then
-            Error('Voting has already closed.');
-        if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
-            Error('Voting is not currently open for this Circular Resolution.');
+        //     if not ResolutionHeader.Get(docNo) then
+        //         Error('Circular Resolution %1 was not found.', docNo);
+
+        //     ResolutionHeader.UpdateStatusBasedOnDeadline();
+        //     if (ResolutionHeader."Voting Deadline" <> 0DT) and
+        //    (CurrentDateTime >= ResolutionHeader."Voting Deadline") then
+        //         Error('Voting has already closed.');
+        //     if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
+        //         Error('Voting is not currently open for this Circular Resolution.');
         objCircularResolutionLines.RESET;
         objCircularResolutionLines.SETRANGE("Resolution No.", docNo);
         objCircularResolutionLines.SETRANGE("Line No.", id);
@@ -275,6 +332,26 @@ Codeunit 50032 NewEboard
 
         IF objCircularResolutionLines.FindFirst() THEN BEGIN
             objCircularResolutionLines.DELETE(TRUE);
+            status := 'success*Record deleted successfully';
+        END else begin
+            status := 'danger*Record deletion failed';
+        end;
+
+    end;
+
+    procedure deleteEmployeeLines(docNo: Text; empNo: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        //objCircularResolutionLines: Record "Circular Resolution lines";
+        objComplianceObligationLines: Record "Compliance Obligation Employee";
+    begin
+        objComplianceObligationLines.RESET;
+        objComplianceObligationLines.SETRANGE("Obligation No.", docNo);
+        objComplianceObligationLines.SETRANGE("Employee No.", empNo);
+
+        IF objComplianceObligationLines.FindFirst() THEN BEGIN
+            objComplianceObligationLines.DELETE(TRUE);
             status := 'success*Record deleted successfully';
         END else begin
             status := 'danger*Record deletion failed';
@@ -324,6 +401,53 @@ Codeunit 50032 NewEboard
 
     end;
 
+    procedure fnCreateComplianceObligation(docNo: Text[50]; bmCode: Code[100]; bmName: Text; title: Text; description: Text; priority: Integer; startdate: Date; nextduedate: Date; categorycode: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        objComplianceObligationHeader: Record "Compliance Obligation";
+    begin
+        objComplianceObligationHeader.Reset;
+        objComplianceObligationHeader.SetRange("No.", docNo);
+
+        if objComplianceObligationHeader.FindSet then begin
+
+            // objCircularResolutionHeader."Initiator Name" := bmName;
+            objComplianceObligationHeader.Title := title;
+            objComplianceObligationHeader.Description := description;
+            objComplianceObligationHeader."Priority" := Enum::"Compliance Priority".FromInteger(priority);
+            objComplianceObligationHeader."Start Date" := startdate;
+            objComplianceObligationHeader."Next Due Date" := nextduedate;
+            objComplianceObligationHeader."Category Code" := categorycode;
+            objComplianceObligationHeader."Primary Employee No." := bmCode;
+            objComplianceObligationHeader.Validate("Primary Employee No.");
+
+            if objComplianceObligationHeader.Modify(true) then begin
+
+                status := 'success*' + objComplianceObligationHeader."No." + ' *Your compliance obligation was successfully updated';
+            end else begin
+                status := 'danger*Your compliance obligation could not be updated';
+            end;
+        end else begin
+            objComplianceObligationHeader.Init;
+            objComplianceObligationHeader."No." := '';
+            objComplianceObligationHeader.Title := title;
+            objComplianceObligationHeader.Description := description;
+            objComplianceObligationHeader."Priority" := Enum::"Compliance Priority".FromInteger(priority);
+            objComplianceObligationHeader."Start Date" := startdate;
+            objComplianceObligationHeader."Next Due Date" := nextduedate;
+            objComplianceObligationHeader."Category Code" := categorycode;
+            objComplianceObligationHeader."Primary Employee No." := bmCode;
+            objComplianceObligationHeader.Validate("Primary Employee No.");
+            if objComplianceObligationHeader.Insert(true) then begin
+
+                status := 'success*' + objComplianceObligationHeader."No." + ' *Your compliance obligation was successfully created';
+            end else begin
+                status := 'danger*Your compliance obligation could not be created';
+            end;
+        end;
+
+    end;
+
     procedure fnCreateCircularResolutionLines(docNo: Text[50]; personalNo: Code[100]) status: Text
     var
         objCircularResolutionLines: Record "Circular Resolution lines";
@@ -359,6 +483,41 @@ Codeunit 50032 NewEboard
         end;
     end;
 
+    procedure fnCreateComplianceObligationLines(docNo: Text[50]; empNo: Code[100]) status: Text
+    var
+        objComplianceObligationLines: Record "Compliance Obligation Employee";
+        LastLine: Record "Compliance Obligation Employee";
+    begin
+        //Check duplicate employee
+        objComplianceObligationLines.Reset();
+        objComplianceObligationLines.SetRange("Obligation No.", docNo);
+        objComplianceObligationLines.SetRange("Employee No.", empNo);
+
+        if objComplianceObligationLines.FindFirst() then begin
+            status := 'danger*Employee already exists';
+            exit;
+        end;
+
+        objComplianceObligationLines.Init();
+        objComplianceObligationLines."Obligation No." := docNo;
+        objComplianceObligationLines."Employee No." := empNo;
+        objComplianceObligationLines.Validate("Employee No.");
+
+        // LastLine.Reset();
+        // LastLine.SetRange("Resolution No.", docNo);
+
+        // if LastLine.FindLast() then
+        //     objCircularResolutionLines."Line No." := LastLine."Line No." + 1
+        // else
+        //     objCircularResolutionLines."Line No." := 1;
+
+        if objComplianceObligationLines.Insert(true) then begin
+            status := 'success*Employee successfully added';
+        end else begin
+            status := 'danger*Your line has not been added';
+        end;
+    end;
+
     procedure fnSendCircularResolutionForApproval(docNo: Text[50]) status: Text
     var
     //objCircularResolutionLines: Record "Circular Resolution lines";
@@ -370,6 +529,25 @@ Codeunit 50032 NewEboard
     end;
 
     procedure fnCancelCircularResolutionForApproval(docNo: Text[50]) status: Text
+    var
+    //objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+
+        status := 'success*Successfully canceled';
+
+    end;
+
+    procedure fnSendComplianceObligationForApproval(docNo: Text[50]) status: Text
+    var
+    //objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+
+        status := 'success*Successfully approved';
+
+
+    end;
+
+    procedure fnCancelComplianceObligationApproval(docNo: Text[50]) status: Text
     var
     //objCircularResolutionLines: Record "Circular Resolution lines";
     begin

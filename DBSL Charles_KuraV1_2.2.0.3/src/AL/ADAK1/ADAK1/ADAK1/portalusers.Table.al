@@ -58,6 +58,10 @@ Table 56900 "portalusers"
         {
             DataClassification = ToBeClassified;
         }
+        field(16; EmployeeNo; Code[100])
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
