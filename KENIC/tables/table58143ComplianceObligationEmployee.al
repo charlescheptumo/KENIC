@@ -51,7 +51,8 @@ table 58143 "Compliance Obligation Employee"
                     Completed := false;
                     "Completed DateTime" := 0DT;
                 end;
-                UpdateParentStatus();
+                UpdateCalendarEntryStatus();
+                //UpdateParentStatus();
             end;
         }
         field(6; Completed; Boolean)
@@ -109,6 +110,44 @@ table 58143 "Compliance Obligation Employee"
         if ComplianceObligation.Get(Rec."Obligation No.") then begin
             ComplianceObligation.UpdateStatus();
             ComplianceObligation.Modify(true);
+        end;
+    end;
+
+    local procedure UpdateCalendarEntryStatus()
+    var
+        CalendarEntry: Record "Compliance Calendar Entry";
+    begin
+        CalendarEntry.SetRange("Obligation No.", "Obligation No.");
+        CalendarEntry.SetRange("Assigned Employee No.", "Employee No.");
+
+        if CalendarEntry.FindFirst() then begin
+            case Status of
+                Status::Open:
+                    begin
+                        CalendarEntry.Status := CalendarEntry.Status::Open;
+                        CalendarEntry."Completion Date" := 0D;
+                    end;
+
+                Status::"In Progress":
+                    begin
+                        CalendarEntry.Status := CalendarEntry.Status::"In Progress";
+                        CalendarEntry."Completion Date" := 0D;
+                    end;
+
+                Status::Completed:
+                    begin
+                        CalendarEntry.Status := CalendarEntry.Status::Completed;
+                        CalendarEntry."Completion Date" := DT2Date("Completed DateTime");
+                    end;
+
+                Status::Overdue:
+                    begin
+                        CalendarEntry.Status := CalendarEntry.Status::Overdue;
+                        CalendarEntry."Completion Date" := 0D;
+                    end;
+            end;
+
+            CalendarEntry.Modify(true);
         end;
     end;
 

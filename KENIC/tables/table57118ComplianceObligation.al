@@ -191,7 +191,11 @@ table 57118 "Compliance Obligation"
             Caption = 'Assigned By E-mail';
             Editable = false;
         }
-
+        field(25; "Manager Notification Sent"; Boolean)
+        {
+            Caption = 'Due Date Notification Sent';
+            Editable = false;
+        }
 
     }
 
@@ -330,9 +334,13 @@ table 57118 "Compliance Obligation"
 
         ComplianceCalendar.GenerateCalendarEntries(Rec);
 
+        Rec."Manager Notification Sent" := false;
         Rec.Posted := true;
         UpdateEmployeeStatuses();
         Rec.UpdateStatus();
         Rec.Modify(true);
+
+        ComplianceCalendar.SendTaskAssignmentNotifications(Rec);
+
     end;
 }
