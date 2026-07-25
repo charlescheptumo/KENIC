@@ -8885,5 +8885,13 @@ permissionset 50000 GeneratedPermission
         page "Compliance Obligations"=X,
         page "Mpesa Transaction Card"=X,
         page "Mpesa Transaction List"=X,
-        page "Mpesa Transactions API"=X;
+        page "Mpesa Transactions API"=X,
+        tabledata "Compliance Obligation Employee"=RIMD,
+        table "Compliance Obligation Employee"=X,
+        codeunit "Compliance Calendar"=X,
+        page "Completed Obligations"=X,
+        page ComplianceObligationEmployees=X,
+        page "Overdue Obligations"=X,
+        page "Pending Compliance Obligations"=X,
+        page "Posted Obligations"=X;
 }
