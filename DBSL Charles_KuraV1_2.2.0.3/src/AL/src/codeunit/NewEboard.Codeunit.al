@@ -229,7 +229,7 @@ Codeunit 50032 NewEboard
                 FORMAT(objComplianceObligationHeader."Start Date") + '*' + format(objComplianceObligationHeader."Next Due Date") + '*' +
                 FORMAT(objComplianceObligationHeader.Priority) + '*' + FORMAT(objComplianceObligationHeader."Reminder Days") + '*' +
                 FORMAT(objComplianceObligationHeader.Active) + '*' + FORMAT(objComplianceObligationHeader."Evidence Required") + '*' +
-                objComplianceObligationHeader.Remarks + '::::';
+                objComplianceObligationHeader.Remarks + '*' + Format(objComplianceObligationHeader.Posted) + '::::';
             until objComplianceObligationHeader.Next() = 0;
         end;
         exit(status);
@@ -320,18 +320,22 @@ Codeunit 50032 NewEboard
     procedure fnGetComplianceObligationLinesSpecific(empNo: Code[50]) status: Text
     var
         //iExists: Boolean;
-        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        objCircularResolutionHeader: Record "Circular Resolution Header";
         //objCircularResolutionLines: Record "Circular Resolution lines";
         objComplianceObligationLines: Record "Compliance Obligation Employee";
     begin
         objComplianceObligationLines.Reset();
         objComplianceObligationLines.SetRange("Employee No.", empNo);
+
         if objComplianceObligationLines.findset() then begin
+            objCircularResolutionHeader.Reset();
+            objCircularResolutionHeader.SetRange("No.", objComplianceObligationLines."Obligation No.");
             repeat
                 status += objComplianceObligationLines."Obligation No." + '*' + objComplianceObligationLines."Employee No." + '*' +
                 objComplianceObligationLines."Employee Name" + '*' + objComplianceObligationLines."Employee Email" + '*' +
                 Format(objComplianceObligationLines."Status") + '*' + Format(objComplianceObligationLines.Completed) + '*' +
-                 Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '::::';
+                 Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '*' +
+                  objCircularResolutionHeader.Title + '*' + objCircularResolutionHeader.Description + '::::';
             until objComplianceObligationLines.Next() = 0;
         end;
         exit(status);
