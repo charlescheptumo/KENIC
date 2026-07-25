@@ -125,6 +125,20 @@ Codeunit 50032 NewEboard
         exit(status);
     end;
 
+    procedure fnGetCategoryCodes() status: Text
+    var
+        //iExists: Boolean;
+        objCategoryCodes: Record "Compliance Category";
+    begin
+        objCategoryCodes.Reset();
+        if objCategoryCodes.findset() then begin
+            repeat
+                status += objCategoryCodes.Code + '*' + objCategoryCodes.Description + '*' + objCategoryCodes."Responsible User ID" + '*' + Format(objCategoryCodes.Active) + '*' + objCategoryCodes.Remarks + '::::';
+            until objBoardMembers.Next() = 0;
+        end;
+        exit(status);
+    end;
+
     procedure fnGetEmployees() status: Text
     var
         //iExists: Boolean;
@@ -192,6 +206,28 @@ Codeunit 50032 NewEboard
     begin
         objComplianceObligationHeader.Reset();
         objComplianceObligationHeader.SetRange("Primary Employee No.", empNo);
+        if objComplianceObligationHeader.findset() then begin
+            repeat
+                status += objComplianceObligationHeader."No." + '*' + objComplianceObligationHeader."Title" + '*' +
+                objComplianceObligationHeader."Category Code" + '*' + objComplianceObligationHeader.Description + '*' +
+                FORMAT(objComplianceObligationHeader.Status) + '*' + FORMAT(objComplianceObligationHeader.Frequency) + '*' +
+                FORMAT(objComplianceObligationHeader."Start Date") + '*' + format(objComplianceObligationHeader."Next Due Date") + '*' +
+                FORMAT(objComplianceObligationHeader.Priority) + '*' + FORMAT(objComplianceObligationHeader."Reminder Days") + '*' +
+                FORMAT(objComplianceObligationHeader.Active) + '*' + FORMAT(objComplianceObligationHeader."Evidence Required") + '*' +
+                objComplianceObligationHeader.Remarks + '::::';
+            until objComplianceObligationHeader.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    procedure fnGetComplianceObligationNo(docNo: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        objComplianceObligationHeader: Record "Compliance Obligation";
+    begin
+        objComplianceObligationHeader.Reset();
+        objComplianceObligationHeader.SetRange("No.", docNo);
         if objComplianceObligationHeader.findset() then begin
             repeat
                 status += objComplianceObligationHeader."No." + '*' + objComplianceObligationHeader."Title" + '*' +
