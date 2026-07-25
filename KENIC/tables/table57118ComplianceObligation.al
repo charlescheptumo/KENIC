@@ -53,6 +53,12 @@ table 57118 "Compliance Obligation"
         field(6; "Start Date"; Date)
         {
             Caption = 'Start Date';
+
+            trigger OnValidate()
+            begin
+                if ("Next Due Date" <> 0D) and ("Start Date" > "Next Due Date") then
+                    Error('Start Date cannot be later than the Next Due Date.');
+            end;
         }
 
         field(7; "Next Due Date"; Date)
@@ -167,6 +173,25 @@ table 57118 "Compliance Obligation"
             Editable = false;
         }
 
+        field(22; "Assigned By Employee No."; Code[20])
+        {
+            Caption = 'Assigned By Employee No.';
+            TableRelation = Employee."No.";
+            Editable = false;
+        }
+
+        field(23; "Assigned By Employee Name"; Text[100])
+        {
+            Caption = 'Assigned By';
+            Editable = false;
+        }
+
+        field(24; "Assigned By Email"; Text[80])
+        {
+            Caption = 'Assigned By E-mail';
+            Editable = false;
+        }
+
 
     }
 
@@ -274,6 +299,8 @@ table 57118 "Compliance Obligation"
     var
         ObligationEmp: Record "Compliance Obligation Employee";
         ComplianceCalendar: Codeunit "Compliance Calendar";
+        UserSetup: Record "User Setup";
+        Employee: Record Employee;
         ConfirmQst: Label 'Are you sure you want to post Compliance Obligation %1?\n\nThis will generate compliance calendar entries and notify assigned employee(s).', Comment = '%1 = Obligation No.';
         NoEmployeeErr: Label 'You must assign at least one employee before posting.';
     begin
@@ -282,8 +309,9 @@ table 57118 "Compliance Obligation"
 
         Rec.TestField("Category Code");
         Rec.TestField(Title);
+        Rec.TestField("Start Date");
+        Rec.TestField("Next Due Date");
 
-        ObligationEmp.Reset();
         ObligationEmp.SetRange("Obligation No.", Rec."No.");
         if ObligationEmp.IsEmpty() then
             Error(NoEmployeeErr);
@@ -291,10 +319,16 @@ table 57118 "Compliance Obligation"
         if not Confirm(StrSubstNo(ConfirmQst, Rec."No."), false) then
             exit;
 
-        // Generate Calendar Entries
+
+        if UserSetup.Get(UserId()) then
+            if Employee.Get(UserSetup."Employee No.") then begin
+                Rec."Assigned By Employee No." := Employee."No.";
+                Rec."Assigned By Employee Name" := Employee.FullName();
+                Rec."Assigned By Email" := Employee."E-Mail";
+            end;
+
+
         ComplianceCalendar.GenerateCalendarEntries(Rec);
-
-
 
         Rec.Posted := true;
         UpdateEmployeeStatuses();

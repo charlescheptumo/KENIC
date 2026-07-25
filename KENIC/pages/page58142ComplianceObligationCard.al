@@ -12,7 +12,7 @@ page 58142 "Compliance Obligation Card"
             group(General)
             {
                 Caption = 'General';
-                    Editable = PageIsEditable;
+                Editable = PageIsEditable;
 
                 field("No."; Rec."No.")
                 {
@@ -38,12 +38,12 @@ page 58142 "Compliance Obligation Card"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the short title or requirement summary.';
                 }
-                    field(Description; Rec.Description)
-                    {
-                        ApplicationArea = All;
-                        MultiLine = true;
-                        ToolTip = 'Specifies a detailed description of the obligation.';
-                    }
+                field(Description; Rec.Description)
+                {
+                    ApplicationArea = All;
+                    MultiLine = true;
+                    ToolTip = 'Specifies a detailed description of the obligation.';
+                }
 
                 field("Category Code"; Rec."Category Code")
                 {
@@ -82,7 +82,7 @@ page 58142 "Compliance Obligation Card"
                     Editable = false;
                 }
 
-                 field("Start Date"; Rec."Start Date")
+                field("Start Date"; Rec."Start Date")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies when this obligation cycle starts.';
@@ -92,6 +92,27 @@ page 58142 "Compliance Obligation Card"
                     ApplicationArea = All;
                     ShowMandatory = true;
                     ToolTip = 'Specifies the next due date for compliance.';
+                }
+
+                field("Posted By Employee No."; Rec."Assigned By Employee No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the employee number of the person who assigned this compliance obligation.';
+                    Editable = false;
+                }
+
+                field("Posted By Employee Name"; Rec."Assigned By Employee Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the name of the person who assigned this compliance obligation.';
+                    Editable = false;
+                }
+
+                field("Posted By Email"; Rec."Assigned By Email")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the e-mail address of the person who assigned this compliance obligation.';
+                    Editable = false;
                 }
 
             }
