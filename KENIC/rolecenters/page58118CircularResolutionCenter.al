@@ -94,7 +94,7 @@ page 58118 "Head of E-Board"
                   action("Posted Obligations")
                 {
                     ApplicationArea = All;
-                    Caption = 'Compliance Obligations';
+                    Caption = 'Posted Obligations';
                     RunObject = page "Posted Obligations";
                     ToolTip = 'Manage posted compliance obligations and schedules.';
                 }
