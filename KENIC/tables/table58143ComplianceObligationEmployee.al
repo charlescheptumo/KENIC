@@ -19,10 +19,13 @@ table 58143 "Compliance Obligation Employee"
             var
                 Employee: Record Employee;
             begin
-                if Employee.Get("Employee No.") then
-                    "Employee Name" := Employee.FullName()
-                else
+                if Employee.Get("Employee No.") then begin
+                    "Employee Name" := Employee.FullName();
+                    "Employee Email" := Employee."E-Mail";
+                end else begin
                     "Employee Name" := '';
+                    "Employee Email" := '';
+                end;
             end;
         }
         field(3; "Employee Name"; Text[100])
@@ -30,7 +33,12 @@ table 58143 "Compliance Obligation Employee"
             Caption = 'Employee Name';
             Editable = false;
         }
-        field(4; Status; Enum "Employee Obligation Status")
+        field(4; "Employee Email"; Text[80])
+        {
+            Caption = 'E-mail';
+            Editable = false;
+        }
+        field(5; Status; Enum "Employee Obligation Status")
         {
             Caption = 'Status';
 
@@ -46,17 +54,17 @@ table 58143 "Compliance Obligation Employee"
                 UpdateParentStatus();
             end;
         }
-        field(5; Completed; Boolean)
+        field(6; Completed; Boolean)
         {
             Caption = 'Completed';
             Editable = false;
         }
-        field(6; "Completed DateTime"; DateTime)
+        field(7; "Completed DateTime"; DateTime)
         {
             Caption = 'Completed Date/Time';
             Editable = false;
         }
-        field(7; Remarks; Text[250])
+        field(8; Remarks; Text[250])
         {
             Caption = 'Remarks';
         }
@@ -104,5 +112,5 @@ table 58143 "Compliance Obligation Employee"
         end;
     end;
 
-    
+
 }
