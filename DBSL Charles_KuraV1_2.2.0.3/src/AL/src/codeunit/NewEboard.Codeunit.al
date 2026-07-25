@@ -100,7 +100,7 @@ Codeunit 50032 NewEboard
         if objPortalUser.FindSet() then begin
             if objPortalUser.Password = password then begin
 
-                status := 'success*' + objPortalUser."customer No" + '*' + objPortalUser.Email + '*' + objPortalUser.Name + '*' + objPortalUser."Job Title" + '*' + objPortalUser.Department;
+                status := 'success*' + objPortalUser."customer No" + '*' + objPortalUser.Email + '*' + objPortalUser.Name + '*' + objPortalUser."Job Title" + '*' + objPortalUser.Department + '*' + objPortalUser.EmployeeNo;
                 exit(status);
             end else begin
 
@@ -145,6 +145,21 @@ Codeunit 50032 NewEboard
         objEmployees: Record "Employee";
     begin
         objEmployees.Reset();
+        if objEmployees.findset() then begin
+            repeat
+                status += objEmployees."No." + '*' + objEmployees."Last Name" + '*' + objEmployees."First Name" + '*' + objEmployees."Phone No." + '*' + objEmployees."Company E-Mail" + '*' + objEmployees."Job Title" + '::::';
+            until objBoardMembers.Next() = 0;
+        end;
+        exit(status);
+    end;
+
+    procedure fnGetEmployeeSpecific(empNo: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        objEmployees: Record "Employee";
+    begin
+        objEmployees.Reset();
+        objEmployees.SetRange("No.", empNo);
         if objEmployees.findset() then begin
             repeat
                 status += objEmployees."No." + '*' + objEmployees."Last Name" + '*' + objEmployees."First Name" + '*' + objEmployees."Phone No." + '*' + objEmployees."Company E-Mail" + '*' + objEmployees."Job Title" + '::::';
