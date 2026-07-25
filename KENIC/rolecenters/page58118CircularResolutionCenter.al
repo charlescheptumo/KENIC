@@ -83,10 +83,39 @@ page 58118 "Head of E-Board"
                     ToolTip = 'Manage compliance categories and responsible users.';
                 }
 
-                action("Compliance Obligations")
+                action("Pending Obligations")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Pending Obligations';
+                    RunObject = page "Pending Compliance Obligations";
+                    ToolTip = 'Manage pending compliance obligations and schedules.';
+                }
+
+                  action("Posted Obligations")
                 {
                     ApplicationArea = All;
                     Caption = 'Compliance Obligations';
+                    RunObject = page "Posted Obligations";
+                    ToolTip = 'Manage posted compliance obligations and schedules.';
+                }
+                  action("Completed Obligations")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Completed Obligations';
+                    RunObject = page "Completed Obligations";
+                    ToolTip = 'Manage completed compliance obligations and schedules.';
+                }
+                  action("Overdue Obligations")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Overdue Obligations';
+                    RunObject = page "Overdue Obligations";
+                    ToolTip = 'Manage overdue compliance obligations and schedules.';
+                }
+                action("Compliance Obligations")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Archive Obligations';
                     RunObject = page "Compliance Obligations";
                     ToolTip = 'Manage master compliance obligations and schedules.';
                 }
