@@ -119,7 +119,7 @@ page 58142 "Compliance Obligation Card"
 
             group(Assignment)
             {
-                Caption = 'Assigned Team';
+                Caption = 'Responsible Officer(S)';
 
                 part(AssignedEmployees; "ComplianceObligationEmployees")
                 {

@@ -2,7 +2,7 @@ page 58143 "ComplianceObligationEmployees"
 {
     PageType = ListPart;
     SourceTable = "Compliance Obligation Employee";
-    Caption = 'Team Members';
+    Caption = 'Responsible Officer(s)';
 
     layout
     {

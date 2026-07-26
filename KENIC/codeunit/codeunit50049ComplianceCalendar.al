@@ -44,55 +44,77 @@ codeunit 50049 "Compliance Calendar"
     end;
 
 
-    // Sends automated email notifications to assigned employees for open tasks due within the upcoming threshold (e.g., 7 days).
+    // Sends automated email notifications to assigned employees for open tasks due within the upcoming threshold 
     procedure SendUpcomingTaskReminders()
     var
         CalendarEntry: Record "Compliance Calendar Entry";
         Employee: Record Employee;
+        CompanyInfo: Record "Company Information";
         Email: Codeunit Email;
         EmailMessage: Codeunit "Email Message";
         Subject: Text;
         Body: Text;
-        ReminderDate: Date;
+        DaysUntilDue: Integer;
         CurrentTime: Time;
+        ShouldSendReminder: Boolean;
     begin
         CompanyInfo.Get();
         CurrentTime := Time();
+
+
         if (CurrentTime < 090000T) or (CurrentTime >= 160000T) then
             exit;
-        ReminderDate := CalcDate('<+1D>', Today());
 
         CalendarEntry.Reset();
         CalendarEntry.SetRange(Status, CalendarEntry.Status::"In Progress");
-        CalendarEntry.SetRange("Due Date", ReminderDate);
-        CalendarEntry.SetRange("Reminder Sent", false);
 
+        CalendarEntry.SetRange("Due Date", Today(), CalcDate('<+60D>', Today()));
 
-        if CalendarEntry.FindSet() then
+        if CalendarEntry.FindSet(true) then
             repeat
-                if Employee.Get(CalendarEntry."Assigned Employee No.") then begin
-                    if Employee."Company E-Mail" <> '' then begin
-                        Subject := StrSubstNo('REMINDER: Compliance Task Due Soon - %1', CalendarEntry.Title);
+                DaysUntilDue := CalendarEntry."Due Date" - Today();
+                ShouldSendReminder := false;
 
-                        Body := StrSubstNo('Dear %1,<br><br>', Employee.FullName());
-                        Body += StrSubstNo('This is a reminder for your upcoming compliance task: <b>%1</b>.<br><br>', CalendarEntry.Title);
-                        Body += StrSubstNo('<b>Task No.:</b> %1<br>', CalendarEntry."No.");
-                        Body += StrSubstNo('<b>Obligation No.:</b> %1<br>', CalendarEntry."Obligation No.");
-                        Body += StrSubstNo('<b>Due Date:</b> <span style="color: #d83b01; font-weight: bold;">%1</span><br><br>', Format(CalendarEntry."Due Date"));
-                        Body += 'Please log into the ERP and mark the entry as complete.<br><br>';
-                        Body += 'Regards,<br>';
-                        Body += CompanyInfo.Name + '<br><br>';
-                        Body += '<i>This is an automated system notification. Please do not reply.</i>';
 
-                        Clear(EmailMessage);
-                        EmailMessage.Create(Employee."Company E-Mail", Subject, Body, true);
-                        if Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then begin
-                            
-                            CalendarEntry.Validate("Reminder Sent", true);
-                            CalendarEntry.Modify(true);
+                case DaysUntilDue of
+                    60:
+                        if not CalendarEntry."60-Day Reminder Sent" then begin
+                            ShouldSendReminder := true;
+                            CalendarEntry."60-Day Reminder Sent" := true;
                         end;
-                    end;
+                    30:
+                        if not CalendarEntry."30-Day Reminder Sent" then begin
+                            ShouldSendReminder := true;
+                            CalendarEntry."30-Day Reminder Sent" := true;
+                        end;
+                    14:
+                        if not CalendarEntry."14-Day Reminder Sent" then begin
+                            ShouldSendReminder := true;
+                            CalendarEntry."14-Day Reminder Sent" := true;
+                        end;
                 end;
+
+                if ShouldSendReminder then
+                    if Employee.Get(CalendarEntry."Assigned Employee No.") then
+                        if Employee."Company E-Mail" <> '' then begin
+                            Subject := StrSubstNo('REMINDER: Compliance Obligation Due in %1 Days - %2', DaysUntilDue, CalendarEntry.Title);
+
+                            Body := StrSubstNo('Dear %1,<br><br>', Employee.FullName());
+                            Body += StrSubstNo('This is a reminder for your upcoming compliance obligation: <b>%1</b>.<br><br>', CalendarEntry.Title);
+                            Body += StrSubstNo('<b>Entry No.:</b> %1<br>', CalendarEntry."No.");
+                            Body += StrSubstNo('<b>Obligation No.:</b> %1<br>', CalendarEntry."Obligation No.");
+                            Body += StrSubstNo('<b>Due Date:</b> <span style="color: #d83b01; font-weight: bold;">%1 (%2 days remaining)</span><br><br>', Format(CalendarEntry."Due Date"), DaysUntilDue);
+                            Body += 'Please log into the system to review and update the compliance obligation status.<br><br>';
+                            Body += 'Regards,<br>';
+                            Body += CompanyInfo.Name + '<br><br>';
+                            Body += '<i>This is an automated system notification. Please do not reply.</i>';
+
+                            Clear(EmailMessage);
+                            EmailMessage.Create(Employee."Company E-Mail", Subject, Body, true);
+
+                            if Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then
+                                CalendarEntry.Modify(true);
+                        end;
             until CalendarEntry.Next() = 0;
     end;
 
@@ -145,7 +167,7 @@ codeunit 50049 "Compliance Calendar"
                 if ObligationEmployee."Employee Email" <> '' then begin
 
                     Subject := StrSubstNo(
-                        'New Compliance Task Assigned - %1',
+                        'New Compliance Obligation Assigned - %1',
                         Obligation.Title);
 
                     Body := StrSubstNo(
@@ -186,7 +208,7 @@ codeunit 50049 "Compliance Calendar"
 
                     Body += '</table><br>';
 
-                    Body += 'Please complete the assigned task before the due date and update status through the Portal.<br><br>';
+                    Body += 'Please complete the assigned obligation before the due date and update status through the Portal.<br><br>';
 
                     Body += 'Regards,<br>';
                     Body += CompanyInfo.Name + '<br><br>';

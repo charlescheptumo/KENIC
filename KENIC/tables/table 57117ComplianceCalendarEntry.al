@@ -125,9 +125,28 @@ table 57117 "Compliance Calendar Entry"
             Editable = false;
         }
 
-        field(15; "Reminder Sent"; Boolean)
+        // field(15; "Reminder Sent"; Boolean)
+        // {
+        //     Caption = 'Reminder Sent';
+        //     Editable = false;
+        // }
+
+        field(15; "60-Day Reminder Sent"; Boolean)
         {
-            Caption = 'Reminder Sent';
+            Caption = '60-Day Reminder Sent';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(16; "30-Day Reminder Sent"; Boolean)
+        {
+            Caption = '30-Day Reminder Sent';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(17; "14-Day Reminder Sent"; Boolean)
+        {
+            Caption = '14-Day Reminder Sent';
+            DataClassification = CustomerContent;
             Editable = false;
         }
     }
