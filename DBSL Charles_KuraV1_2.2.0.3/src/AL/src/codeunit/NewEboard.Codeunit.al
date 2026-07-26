@@ -134,7 +134,7 @@ Codeunit 50032 NewEboard
         if objCategoryCodes.findset() then begin
             repeat
                 status += objCategoryCodes.Code + '*' + objCategoryCodes.Description + '*' + objCategoryCodes."Responsible User ID" + '*' + Format(objCategoryCodes.Active) + '*' + objCategoryCodes.Remarks + '::::';
-            until objBoardMembers.Next() = 0;
+            until objCategoryCodes.Next() = 0;
         end;
         exit(status);
     end;
@@ -148,7 +148,7 @@ Codeunit 50032 NewEboard
         if objEmployees.findset() then begin
             repeat
                 status += objEmployees."No." + '*' + objEmployees."Last Name" + '*' + objEmployees."First Name" + '*' + objEmployees."Phone No." + '*' + objEmployees."Company E-Mail" + '*' + objEmployees."Job Title" + '::::';
-            until objBoardMembers.Next() = 0;
+            until objEmployees.Next() = 0;
         end;
         exit(status);
     end;
@@ -163,7 +163,7 @@ Codeunit 50032 NewEboard
         if objEmployees.findset() then begin
             repeat
                 status += objEmployees."No." + '*' + objEmployees."Last Name" + '*' + objEmployees."First Name" + '*' + objEmployees."Phone No." + '*' + objEmployees."Company E-Mail" + '*' + objEmployees."Job Title" + '::::';
-            until objBoardMembers.Next() = 0;
+            until objEmployees.Next() = 0;
         end;
         exit(status);
     end;
@@ -328,14 +328,45 @@ Codeunit 50032 NewEboard
         objComplianceObligationLines.SetRange("Employee No.", empNo);
 
         if objComplianceObligationLines.findset() then begin
-            objCircularResolutionHeader.Reset();
-            objCircularResolutionHeader.SetRange("No.", objComplianceObligationLines."Obligation No.");
+            //objCircularResolutionHeader.Reset();
+            //objCircularResolutionHeader.SetRange("No.", objComplianceObligationLines."Obligation No.");
             repeat
-                status += objComplianceObligationLines."Obligation No." + '*' + objComplianceObligationLines."Employee No." + '*' +
-                objComplianceObligationLines."Employee Name" + '*' + objComplianceObligationLines."Employee Email" + '*' +
-                Format(objComplianceObligationLines."Status") + '*' + Format(objComplianceObligationLines.Completed) + '*' +
-                 Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '*' +
-                  objCircularResolutionHeader.Title + '*' + objCircularResolutionHeader.Description + '::::';
+                // status += objComplianceObligationLines."Obligation No." + '*' + objComplianceObligationLines."Employee No." + '*' +
+                // objComplianceObligationLines."Employee Name" + '*' + objComplianceObligationLines."Employee Email" + '*' +
+                // Format(objComplianceObligationLines."Status") + '*' + Format(objComplianceObligationLines.Completed) + '*' +
+                //  Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '*' +
+                //   objCircularResolutionHeader.Title + '*' + objCircularResolutionHeader.Description + '::::';
+
+                objCircularResolutionHeader.Reset();
+                objCircularResolutionHeader.SetRange("No.", objComplianceObligationLines."Obligation No.");
+
+
+                if objCircularResolutionHeader.FindFirst() then begin
+                    status += objComplianceObligationLines."Obligation No." + '*' +
+                             objComplianceObligationLines."Employee No." + '*' +
+                             objComplianceObligationLines."Employee Name" + '*' +
+                             objComplianceObligationLines."Employee Email" + '*' +
+                             Format(objComplianceObligationLines."Status") + '*' +
+                             Format(objComplianceObligationLines.Completed) + '*' +
+                             Format(objComplianceObligationLines."Completed DateTime") + '*' +
+                             Format(objComplianceObligationLines.Remarks) + '*' +
+                             objCircularResolutionHeader.Title + '*' +
+                             objCircularResolutionHeader.Description + '::::';
+                end else begin
+
+                    status += objComplianceObligationLines."Obligation No." + '*' +
+                             objComplianceObligationLines."Employee No." + '*' +
+                             objComplianceObligationLines."Employee Name" + '*' +
+                             objComplianceObligationLines."Employee Email" + '*' +
+                             Format(objComplianceObligationLines."Status") + '*' +
+                             Format(objComplianceObligationLines.Completed) + '*' +
+                             Format(objComplianceObligationLines."Completed DateTime") + '*' +
+                             Format(objComplianceObligationLines.Remarks) + '*' +
+                             '' + '*' + '' + '::::';
+                end;
+
+
+
             until objComplianceObligationLines.Next() = 0;
         end;
         exit(status);
