@@ -133,6 +133,16 @@ page 58119 "E-Board Setup"
                         ToolTip = 'Enables automated email notifications for upcoming and overdue compliance deadlines';
                     }
 
+                    field("CEO Personal No."; Rec."CEO Personal No.")
+                    {
+                        ToolTip = 'Specifies the CEO who receives overdue compliance escalation notifications.';
+                    }
+
+                    field("Board Secretary Personal No."; Rec."Board Secretary Personal No.")
+                    {
+                        ToolTip = 'Specifies the Board Secretary who receives overdue compliance escalation notifications.';
+                    }
+
 
                 }
 

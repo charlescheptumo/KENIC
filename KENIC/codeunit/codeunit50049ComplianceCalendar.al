@@ -150,7 +150,7 @@ codeunit 50049 "Compliance Calendar"
 
             until CalendarEntry.Next() = 0;
     end;
-    //sending email to assigned employees
+    //sending email to assigned members
     procedure SendTaskAssignmentNotifications(Obligation: Record "Compliance Obligation")
     var
         ObligationEmployee: Record "Compliance Obligation Employee";
@@ -228,119 +228,99 @@ codeunit 50049 "Compliance Calendar"
             until ObligationEmployee.Next() = 0;
     end;
 
-    //Manager email
-    procedure SendManagerTaskStatusNotifications()
-    var
-        ComplianceObligation: Record "Compliance Obligation";
-        ObligationEmployee: Record "Compliance Obligation Employee";
-        Email: Codeunit Email;
-        EmailMessage: Codeunit "Email Message";
-        CompanyInfo: Record "Company Information";
-        Subject: Text;
-        Body: Text;
-    begin
-        CompanyInfo.Get();
+    //CEO And Board Secretary
+   procedure SendManagerTaskStatusNotifications()
+var
+    ComplianceObligation: Record "Compliance Obligation";
+    ObligationEmployee: Record "Compliance Obligation Employee";
+    CompanyInfo: Record "Company Information";
+    EBoardSetup: Record "E-Board Setup";
+    BoardMember: Record "Board Members";
+    Email: Codeunit Email;
+    EmailMessage: Codeunit "Email Message";
+    Subject: Text;
+    Body: Text;
+    Recipients: List of [Text];
+    HasOverdueEmployees: Boolean;
+begin
+    CompanyInfo.Get();
 
-        ComplianceObligation.Reset();
-        ComplianceObligation.SetRange(Posted, true);
-        ComplianceObligation.SetRange("Next Due Date", Today());
-        ComplianceObligation.SetRange("Manager Notification Sent", false);
+    if EBoardSetup.Get() then begin
+        if EBoardSetup."CEO Personal No." <> '' then
+            if BoardMember.Get(EBoardSetup."CEO Personal No.") then
+                if BoardMember."E-Mail" <> '' then
+                    Recipients.Add(BoardMember."E-Mail");
 
-        if ComplianceObligation.FindSet(true) then
-            repeat
-                if ComplianceObligation."Assigned By Email" = '' then
-                    continue;
+        if EBoardSetup."Board Secretary Personal No." <> '' then
+            if BoardMember.Get(EBoardSetup."Board Secretary Personal No.") then
+                if BoardMember."E-Mail" <> '' then
+                    Recipients.Add(BoardMember."E-Mail");
+    end;
 
-                Subject := StrSubstNo(
-                    'Compliance Obligation Due Today - %1',
-                    ComplianceObligation.Title);
 
-                Body := StrSubstNo(
-                    'Dear %1,<br><br>',
-                    ComplianceObligation."Assigned By Employee Name");
+    if Recipients.Count() = 0 then
+        exit;
 
-                Body += 'This is to notify you that the following compliance obligation assigned by you is due today.<br><br>';
+  
+    ComplianceObligation.Reset();
+    ComplianceObligation.SetRange(Posted, true);
+    ComplianceObligation.SetFilter("Next Due Date", '<%1', Today());
+    ComplianceObligation.SetRange("Manager Notification Sent", false);
 
-                Body += '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;">';
+    if ComplianceObligation.FindSet(true) then
+        repeat
+          
+            ObligationEmployee.Reset();
+            ObligationEmployee.SetRange("Obligation No.", ComplianceObligation."No.");
+            ObligationEmployee.SetRange(Status, ObligationEmployee.Status::Overdue);
 
-                Body += StrSubstNo(
-                    '<tr><td><b>Obligation No.</b></td><td>%1</td></tr>',
-                    ComplianceObligation."No.");
+            HasOverdueEmployees := not ObligationEmployee.IsEmpty();
 
-                Body += StrSubstNo(
-                    '<tr><td><b>Title</b></td><td>%1</td></tr>',
-                    ComplianceObligation.Title);
+            if HasOverdueEmployees then begin
 
-                Body += StrSubstNo(
-                    '<tr><td><b>Description</b></td><td>%1</td></tr>',
-                    ComplianceObligation.Description);
+                Subject := StrSubstNo('Compliance Escalation: Overdue Obligation - %1', ComplianceObligation.Title);
 
-                Body += StrSubstNo(
-                    '<tr><td><b>Priority</b></td><td>%1</td></tr>',
-                    Format(ComplianceObligation.Priority));
+         
+                Body := 'Dear Executive Management,<br><br>';
+                Body += 'The following compliance obligation has one or more <b>overdue board member assignments</b> requiring immediate attention.<br><br>';
 
-                Body += StrSubstNo(
-                    '<tr><td><b>Start Date</b></td><td>%1</td></tr>',
-                    Format(ComplianceObligation."Start Date"));
-
-                Body += StrSubstNo(
-                    '<tr><td><b>Due Date</b></td><td>%1</td></tr>',
-                    Format(ComplianceObligation."Next Due Date"));
-
+                Body += '<table style="border-collapse: collapse; width: 100%; max-width: 650px; font-family: Arial, sans-serif; font-size: 14px;">';
+                Body += StrSubstNo('<tr style="border-bottom: 1px solid #dddddd;"><td style="padding: 8px; font-weight: bold; background-color: #f2f2f2; width: 30%;">Obligation No.</td><td style="padding: 8px;">%1</td></tr>', ComplianceObligation."No.");
+                Body += StrSubstNo('<tr style="border-bottom: 1px solid #dddddd;"><td style="padding: 8px; font-weight: bold; background-color: #f2f2f2;">Title</td><td style="padding: 8px;">%1</td></tr>', ComplianceObligation.Title);
+                Body += StrSubstNo('<tr style="border-bottom: 1px solid #dddddd;"><td style="padding: 8px; font-weight: bold; background-color: #f2f2f2;">Description</td><td style="padding: 8px;">%1</td></tr>', ComplianceObligation.Description);
+                Body += StrSubstNo('<tr style="border-bottom: 1px solid #dddddd;"><td style="padding: 8px; font-weight: bold; background-color: #f2f2f2;">Priority</td><td style="padding: 8px;">%1</td></tr>', Format(ComplianceObligation.Priority));
+                Body += StrSubstNo('<tr style="border-bottom: 1px solid #dddddd;"><td style="padding: 8px; font-weight: bold; background-color: #f2f2f2;">Due Date</td><td style="padding: 8px; color: #d9534f; font-weight: bold;">%1</td></tr>', Format(ComplianceObligation."Next Due Date"));
                 Body += '</table><br><br>';
 
-                Body += '<b>Employee Progress</b><br><br>';
-
-                Body += '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;">';
-                Body += '<tr>';
-                Body += '<th>Employee</th>';
-                Body += '<th>Email</th>';
-                Body += '<th>Status</th>';
-                Body += '<th>Completed On</th>';
+               
+                Body += '<b style="font-family: Arial, sans-serif; font-size: 15px; color: #333333;">Overdue Board Members</b><br><br>';
+                Body += '<table style="border-collapse: collapse; width: 100%; max-width: 650px; font-family: Arial, sans-serif; font-size: 13px; border: 1px solid #cccccc;">';
+                Body += '<tr style="background-color: #333333; color: #ffffff; text-align: left;">';
+                Body += '<th style="border: 1px solid #cccccc; padding: 10px;">Employee</th>';
+                Body += '<th style="border: 1px solid #cccccc; padding: 10px;">Email</th>';
+                Body += '<th style="border: 1px solid #cccccc; padding: 10px;">Status</th>';
                 Body += '</tr>';
-
-                ObligationEmployee.Reset();
-                ObligationEmployee.SetRange("Obligation No.", ComplianceObligation."No.");
 
                 if ObligationEmployee.FindSet() then
                     repeat
-                        Body += '<tr>';
-
-                        Body += StrSubstNo(
-                            '<td>%1</td>',
-                            ObligationEmployee."Employee Name");
-
-                        Body += StrSubstNo(
-                            '<td>%1</td>',
-                            ObligationEmployee."Employee Email");
-
-                        Body += StrSubstNo(
-                            '<td>%1</td>',
-                            Format(ObligationEmployee.Status));
-
-                        if ObligationEmployee."Completed DateTime" <> 0DT then
-                            Body += StrSubstNo(
-                                '<td>%1</td>',
-                                Format(ObligationEmployee."Completed DateTime"))
-                        else
-                            Body += '<td>-</td>';
-
+                        Body += '<tr style="border-bottom: 1px solid #cccccc;">';
+                        Body += StrSubstNo('<td style="border: 1px solid #cccccc; padding: 8px;">%1</td>', ObligationEmployee."Employee Name");
+                        Body += StrSubstNo('<td style="border: 1px solid #cccccc; padding: 8px;">%1</td>', ObligationEmployee."Employee Email");
+                        Body += StrSubstNo('<td style="border: 1px solid #cccccc; padding: 8px; color: #d9534f; font-weight: bold;">%1</td>', Format(ObligationEmployee.Status));
                         Body += '</tr>';
                     until ObligationEmployee.Next() = 0;
 
                 Body += '</table><br><br>';
-
-                Body += 'Please follow up with employees who have not completed their assigned compliance obligations.<br><br>';
-
+                Body += 'Please review and action accordingly.<br><br>';
                 Body += 'Regards,<br>';
-                Body += CompanyInfo.Name + '<br><br>';
-                Body += '<i>This is an automated system notification. Please do not reply.</i>';
+                Body += '<b>' + CompanyInfo.Name + '</b><br><br>';
+                Body += '<i style="color: #777777; font-size: 12px;">This is an automated system notification. Please do not reply.</i>';
 
-
+                
                 if (Time() >= 080000T) and (Time() < 170000T) then begin
                     Clear(EmailMessage);
                     EmailMessage.Create(
-                        ComplianceObligation."Assigned By Email",
+                        Recipients,
                         Subject,
                         Body,
                         true);
@@ -351,6 +331,7 @@ codeunit 50049 "Compliance Calendar"
                     end;
                 end;
 
-            until ComplianceObligation.Next() = 0;
-    end;
+            end;
+        until ComplianceObligation.Next() = 0;
+end;
 }

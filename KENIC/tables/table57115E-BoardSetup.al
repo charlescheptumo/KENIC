@@ -131,7 +131,23 @@ table 57115 "E-Board Setup"
             Caption = 'Compliance DMS Link';
             ToolTip = 'The folder name within SharePoint/DMS designated for storing compliance filing proof.';
         }
+
+        field(104; "CEO Personal No."; Code[50])
+        {
+            Caption = 'CEO';
+            TableRelation = "Board Members"."Personal No";
+            ToolTip = 'Specifies the CEO who will receive overdue compliance escalation notifications.';
+        }
+
+        field(105; "Board Secretary Personal No."; Code[50])
+        {
+            Caption = 'Board Secretary';
+            TableRelation = "Board Members"."Personal No";
+            ToolTip = 'Specifies the Board Secretary who will receive overdue compliance escalation notifications.';
+        }
+
     }
+
 
     keys
     {
