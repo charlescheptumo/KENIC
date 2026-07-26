@@ -27,7 +27,7 @@ page 58118 "Head of E-Board"
     {
         area(Sections)
         {
-            group("E-Board")
+            group("Board Administratin")
             {
                 action("Board Members")
                 {
