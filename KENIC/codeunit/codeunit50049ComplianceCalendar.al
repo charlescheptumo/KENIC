@@ -53,14 +53,20 @@ codeunit 50049 "Compliance Calendar"
         EmailMessage: Codeunit "Email Message";
         Subject: Text;
         Body: Text;
-        ReminderThresholdDate: Date;
+        ReminderDate: Date;
+        CurrentTime: Time;
     begin
         CompanyInfo.Get();
-        ReminderThresholdDate := CalcDate('<+7D>', Today());
+        CurrentTime := Time();
+        if (CurrentTime < 090000T) or (CurrentTime >= 160000T) then
+            exit;
+        ReminderDate := CalcDate('<+1D>', Today());
 
         CalendarEntry.Reset();
-        CalendarEntry.SetRange(Status, CalendarEntry.Status::Open);
-        CalendarEntry.SetRange("Due Date", Today(), ReminderThresholdDate);
+        CalendarEntry.SetRange(Status, CalendarEntry.Status::"In Progress");
+        CalendarEntry.SetRange("Due Date", ReminderDate);
+        CalendarEntry.SetRange("Reminder Sent", false);
+
 
         if CalendarEntry.FindSet() then
             repeat
@@ -73,14 +79,18 @@ codeunit 50049 "Compliance Calendar"
                         Body += StrSubstNo('<b>Task No.:</b> %1<br>', CalendarEntry."No.");
                         Body += StrSubstNo('<b>Obligation No.:</b> %1<br>', CalendarEntry."Obligation No.");
                         Body += StrSubstNo('<b>Due Date:</b> <span style="color: #d83b01; font-weight: bold;">%1</span><br><br>', Format(CalendarEntry."Due Date"));
-                        Body += 'Please log into the ERP to attach required proof and mark the entry as complete.<br><br>';
+                        Body += 'Please log into the ERP and mark the entry as complete.<br><br>';
                         Body += 'Regards,<br>';
                         Body += CompanyInfo.Name + '<br><br>';
                         Body += '<i>This is an automated system notification. Please do not reply.</i>';
 
                         Clear(EmailMessage);
                         EmailMessage.Create(Employee."Company E-Mail", Subject, Body, true);
-                        Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+                        if Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then begin
+                            
+                            CalendarEntry.Validate("Reminder Sent", true);
+                            CalendarEntry.Modify(true);
+                        end;
                     end;
                 end;
             until CalendarEntry.Next() = 0;
@@ -302,7 +312,7 @@ codeunit 50049 "Compliance Calendar"
                 Body += CompanyInfo.Name + '<br><br>';
                 Body += '<i>This is an automated system notification. Please do not reply.</i>';
 
-              
+
                 if (Time() >= 080000T) and (Time() < 170000T) then begin
                     Clear(EmailMessage);
                     EmailMessage.Create(

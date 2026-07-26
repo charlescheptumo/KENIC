@@ -38,7 +38,7 @@ table 57117 "Compliance Calendar Entry"
                     Title := ComplianceObligation.Title;
                     Description := ComplianceObligation.Description;
 
-                   
+
                     if "Assigned Employee No." = '' then
                         "Assigned Employee No." := ComplianceObligation."Primary Employee No.";
                 end;
@@ -124,6 +124,12 @@ table 57117 "Compliance Calendar Entry"
             Caption = 'Last Modified DateTime';
             Editable = false;
         }
+
+        field(15; "Reminder Sent"; Boolean)
+        {
+            Caption = 'Reminder Sent';
+            Editable = false;
+        }
     }
 
     keys
@@ -168,5 +174,5 @@ table 57117 "Compliance Calendar Entry"
     end;
 
 
-    
+
 }
