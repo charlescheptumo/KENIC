@@ -320,7 +320,7 @@ Codeunit 50032 NewEboard
     procedure fnGetComplianceObligationLinesSpecific(empNo: Code[50]) status: Text
     var
         //iExists: Boolean;
-        objCircularResolutionHeader: Record "Circular Resolution Header";
+        objComplianceObligationHeader: Record "Compliance Obligation";
         //objCircularResolutionLines: Record "Circular Resolution lines";
         objComplianceObligationLines: Record "Compliance Obligation Employee";
     begin
@@ -337,11 +337,11 @@ Codeunit 50032 NewEboard
                 //  Format(objComplianceObligationLines."Completed DateTime") + '*' + Format(objComplianceObligationLines.Remarks) + '*' +
                 //   objCircularResolutionHeader.Title + '*' + objCircularResolutionHeader.Description + '::::';
 
-                objCircularResolutionHeader.Reset();
-                objCircularResolutionHeader.SetRange("No.", objComplianceObligationLines."Obligation No.");
+                objComplianceObligationHeader.Reset();
+                objComplianceObligationHeader.SetRange("No.", objComplianceObligationLines."Obligation No.");
 
 
-                if objCircularResolutionHeader.FindFirst() then begin
+                if objComplianceObligationHeader.FindFirst() then begin
                     status += objComplianceObligationLines."Obligation No." + '*' +
                              objComplianceObligationLines."Employee No." + '*' +
                              objComplianceObligationLines."Employee Name" + '*' +
@@ -350,8 +350,8 @@ Codeunit 50032 NewEboard
                              Format(objComplianceObligationLines.Completed) + '*' +
                              Format(objComplianceObligationLines."Completed DateTime") + '*' +
                              Format(objComplianceObligationLines.Remarks) + '*' +
-                             objCircularResolutionHeader.Title + '*' +
-                             objCircularResolutionHeader.Description + '::::';
+                             objComplianceObligationHeader.Title + '*' +
+                             objComplianceObligationHeader.Description + '::::';
                 end else begin
 
                     status += objComplianceObligationLines."Obligation No." + '*' +
