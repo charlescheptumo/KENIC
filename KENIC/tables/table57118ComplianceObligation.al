@@ -175,20 +175,20 @@ table 57118 "Compliance Obligation"
 
         field(22; "Assigned By Employee No."; Code[20])
         {
-            Caption = 'Assigned By Employee No.';
+            Caption = 'Posted By Employee No.';
             TableRelation = Employee."No.";
             Editable = false;
         }
 
         field(23; "Assigned By Employee Name"; Text[100])
         {
-            Caption = 'Assigned By';
+            Caption = 'Posted By';
             Editable = false;
         }
 
         field(24; "Assigned By Email"; Text[80])
         {
-            Caption = 'Assigned By E-mail';
+            Caption = 'Posted By E-mail';
             Editable = false;
         }
         field(25; "Manager Notification Sent"; Boolean)
