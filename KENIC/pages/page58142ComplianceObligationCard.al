@@ -17,6 +17,7 @@ page 58142 "Compliance Obligation Card"
                 field("No."; Rec."No.")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                     ToolTip = 'Specifies the unique identifier for the compliance obligation.';
 
                     trigger OnAssistEdit()

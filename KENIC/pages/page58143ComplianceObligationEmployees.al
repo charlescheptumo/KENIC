@@ -10,6 +10,11 @@ page 58143 "ComplianceObligationEmployees"
         {
             repeater(Group)
             {
+                field("No."; Rec."Obligation No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies primary key.';
+                }
                 field("Employee No."; Rec."Employee No.")
                 {
                     ApplicationArea = All;

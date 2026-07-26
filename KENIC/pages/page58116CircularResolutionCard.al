@@ -60,6 +60,13 @@ page 58116 "Circular Resolution Card"
                     ToolTip = 'Specifies the resolution category.';
                     Editable = IsDocumentEditable;
                 }
+
+                field("Majority Type"; Rec."Majority Type")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the majority type.';
+                    Editable = IsDocumentEditable;
+                }
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
@@ -147,6 +154,11 @@ page 58116 "Circular Resolution Card"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Resolution Outcome"; Rec."Resolution Outcome")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
         area(factboxes)
@@ -202,7 +214,7 @@ page 58116 "Circular Resolution Card"
                         ResLines.SetRange("Resolution No.", Rec."No.");
 
                         Page.RunModal(Page::"Resolution lines Card", ResLines);
-                        
+
 
                         CurrPage.Update(false);
                     end;
@@ -316,7 +328,7 @@ page 58116 "Circular Resolution Card"
                         if not IsDocumentEditable then
                             Error('Documents cannot be uploaded after the resolution has been sent for approval or posted.');
                         Rec.TestField("No.");
-                       // Rec.TestField("Department Code");
+                        // Rec.TestField("Department Code");
                         DMSManagement.UploadCircularResolutionDocuments(Rec."No.", 'Circular Resolutions', Rec.RecordId);
                     end;
                 }
@@ -333,7 +345,7 @@ page 58116 "Circular Resolution Card"
                     trigger OnAction()
                     var
                         CustomApprovals: Codeunit "Custom Approvals Codeunit";
-                         ResolutionMgt: Codeunit "Resolution Management";
+                        ResolutionMgt: Codeunit "Resolution Management";
                         VarVariant: Variant;
                         ResOption: Record "Circular Resolution Option";
                     begin
@@ -351,7 +363,7 @@ page 58116 "Circular Resolution Card"
                         VarVariant := Rec;
                         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
                             CustomApprovals.OnSendDocForApproval(VarVariant);
-                           
+
 
 
                             Rec.Get(Rec."No.");
@@ -359,7 +371,7 @@ page 58116 "Circular Resolution Card"
                                 Rec.Status := Rec.Status::"Pending Approval";
                                 Rec.Modify(true);
 
-                                 ResolutionMgt.SendApprovalRequestNotificationsForCircularResolution(Rec."No.");
+                                ResolutionMgt.SendApprovalRequestNotificationsForCircularResolution(Rec."No.");
                             end;
                         end;
                     end;
@@ -422,7 +434,7 @@ page 58116 "Circular Resolution Card"
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
-                         ResolutionMgt: Codeunit "Resolution Management";
+                        ResolutionMgt: Codeunit "Resolution Management";
                     begin
                         ApprovalsMgmt.ApproveRecordApprovalRequest(Rec.RecordId);
 

@@ -161,7 +161,7 @@ table 57118 "Compliance Obligation"
 
         field(20; "Assigned Employees Count"; Integer)
         {
-            Caption = 'Assigned Employees';
+            Caption = 'Board Member(s)';
             FieldClass = FlowField;
             CalcFormula = count("Compliance Obligation Employee" where("Obligation No." = field("No.")));
             Editable = false;

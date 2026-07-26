@@ -10,18 +10,20 @@ table 58143 "Compliance Obligation Employee"
             Caption = 'Obligation No.';
             TableRelation = "Compliance Obligation"."No.";
         }
-        field(2; "Employee No."; Code[20])
+        field(2; "Employee No."; Code[50])
         {
-            Caption = 'Employee No.';
-            TableRelation = Employee."No.";
+            Caption = 'Member No.';
+            TableRelation = "Board Members"."Personal No";
 
             trigger OnValidate()
             var
-                Employee: Record Employee;
+                BoardMember: Record "Board Members";
             begin
-                if Employee.Get("Employee No.") then begin
-                    "Employee Name" := Employee.FullName();
-                    "Employee Email" := Employee."E-Mail";
+                BoardMember.Reset();
+                BoardMember.SetRange("Personal No", "Employee No.");
+                if BoardMember.FindFirst() then begin
+                    "Employee Name" := BoardMember.FullName();
+                    "Employee Email" := BoardMember."E-Mail";
                 end else begin
                     "Employee Name" := '';
                     "Employee Email" := '';
@@ -30,7 +32,7 @@ table 58143 "Compliance Obligation Employee"
         }
         field(3; "Employee Name"; Text[100])
         {
-            Caption = 'Employee Name';
+            Caption = 'Member Name';
             Editable = false;
         }
         field(4; "Employee Email"; Text[80])

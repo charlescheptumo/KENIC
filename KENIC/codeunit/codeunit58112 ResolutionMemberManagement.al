@@ -50,8 +50,10 @@ codeunit 50048 "Resolution Management"
                     CircularResolution."No.");
 
                 Body += '<b>Subject:</b> ' + CircularResolution.Title + '<br>';
+                 Body += '<b>Majority Type:</b> ' + Format(CircularResolution."Majority Type") + '<br>';
                 Body += '<b>Date Opened:</b> ' + Format(Today()) + '<br>';
                 Body += '<b>Voting Deadline:</b> <b>' + DisplayDeadline + '</b><br>';
+                
 
                 if EBoardSetup."E-Board Portal URL" <> '' then begin
                     Body += '<br>Please log in to the E-Board Portal to cast your vote.<br><br>';
@@ -133,16 +135,59 @@ codeunit 50048 "Resolution Management"
     end;
 
     //Highest Winning option
+    // procedure UpdateWinningOption(var ResolutionHeader: Record "Circular Resolution Header")
+    // var
+    //     ResolutionOption: Record "Circular Resolution Option";
+    //     HighestVotes: Integer;
+    //     WinningOption: Code[20];
+    //     Tie: Boolean;
+    //     TotalVotes: Integer;
+    //     ForVotes: Integer;
+    //     AgainstVotes: Integer;
+    // begin
+    //     HighestVotes := -1;
+    //     WinningOption := '';
+    //     Tie := false;
+
+    //     ResolutionOption.SetRange("Resolution No.", ResolutionHeader."No.");
+
+    //     if ResolutionOption.FindSet() then
+    //         repeat
+    //             ResolutionOption.CalcFields("Vote Count");
+
+    //             if ResolutionOption."Vote Count" > HighestVotes then begin
+    //                 HighestVotes := ResolutionOption."Vote Count";
+    //                 WinningOption := ResolutionOption."Option Code";
+    //                 Tie := false;
+    //             end else
+    //                 if ResolutionOption."Vote Count" = HighestVotes then
+    //                     Tie := true;
+    //         until ResolutionOption.Next() = 0;
+
+    //     if Tie then
+    //         WinningOption := '';
+
+    //     if ResolutionHeader."Winning Option" <> WinningOption then begin
+    //         ResolutionHeader."Winning Option" := WinningOption;
+    //         ResolutionHeader.Modify(true);
+    //     end;
+    // end;
     procedure UpdateWinningOption(var ResolutionHeader: Record "Circular Resolution Header")
     var
         ResolutionOption: Record "Circular Resolution Option";
         HighestVotes: Integer;
         WinningOption: Code[20];
         Tie: Boolean;
+        TotalVotes: Integer;
+        ForVotes: Integer;
+        AgainstVotes: Integer;
     begin
-        HighestVotes := -1;
+        HighestVotes := 0;
         WinningOption := '';
         Tie := false;
+        TotalVotes := 0;
+        ForVotes := 0;
+        AgainstVotes := 0;
 
         ResolutionOption.SetRange("Resolution No.", ResolutionHeader."No.");
 
@@ -150,24 +195,71 @@ codeunit 50048 "Resolution Management"
             repeat
                 ResolutionOption.CalcFields("Vote Count");
 
-                if ResolutionOption."Vote Count" > HighestVotes then begin
-                    HighestVotes := ResolutionOption."Vote Count";
-                    WinningOption := ResolutionOption."Option Code";
-                    Tie := false;
-                end else
-                    if ResolutionOption."Vote Count" = HighestVotes then
-                        Tie := true;
+
+                case ResolutionOption."Option Code" of
+                    'FOR':
+                        ForVotes := ResolutionOption."Vote Count";
+                    'AGAINST':
+                        AgainstVotes := ResolutionOption."Vote Count";
+                end;
+
+                TotalVotes += ResolutionOption."Vote Count";
+
+
+                if ResolutionOption."Vote Count" > 0 then begin
+                    if ResolutionOption."Vote Count" > HighestVotes then begin
+                        HighestVotes := ResolutionOption."Vote Count";
+                        WinningOption := ResolutionOption."Option Code";
+                        Tie := false;
+                    end else
+                        if ResolutionOption."Vote Count" = HighestVotes then
+                            Tie := true;
+                end;
             until ResolutionOption.Next() = 0;
+
 
         if Tie then
             WinningOption := '';
 
-        if ResolutionHeader."Winning Option" <> WinningOption then begin
-            ResolutionHeader."Winning Option" := WinningOption;
-            ResolutionHeader.Modify(true);
-        end;
-    end;
+        ResolutionHeader."Winning Option" := WinningOption;
 
+
+        if TotalVotes = 0 then
+            ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Open
+        else begin
+            if Tie then
+                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Tie
+            else
+                case ResolutionHeader."Majority Type" of
+
+                    ResolutionHeader."Majority Type"::Simple:
+                        begin
+                            if ForVotes > AgainstVotes then
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Approved
+                            else
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Rejected;
+                        end;
+
+                    ResolutionHeader."Majority Type"::Special:
+                        begin
+                            if ((ForVotes * 100) / TotalVotes) >= 75 then
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Approved
+                            else
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Rejected;
+                        end;
+
+                    ResolutionHeader."Majority Type"::Unanimous:
+                        begin
+                            if ForVotes = TotalVotes then
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Approved
+                            else
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Rejected;
+                        end;
+                end;
+        end;
+
+        ResolutionHeader.Modify(true);
+    end;
     //Portal Guide
     // procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
     // var

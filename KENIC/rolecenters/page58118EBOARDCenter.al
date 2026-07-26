@@ -169,9 +169,9 @@ page 58118 "Head of E-Board"
                     action("Pending Obligations")
                     {
                         ApplicationArea = All;
-                        Caption = 'Pending Obligations';
+                        Caption = 'Open Obligations';
                         RunObject = Page "Pending Compliance Obligations";
-                        ToolTip = 'Manage pending compliance obligations and schedules.';
+                        ToolTip = 'Manage open compliance obligations and schedules.';
                     }
 
                     action("Posted Obligations")

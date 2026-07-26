@@ -296,7 +296,7 @@ begin
                 Body += '<b style="font-family: Arial, sans-serif; font-size: 15px; color: #333333;">Overdue Board Members</b><br><br>';
                 Body += '<table style="border-collapse: collapse; width: 100%; max-width: 650px; font-family: Arial, sans-serif; font-size: 13px; border: 1px solid #cccccc;">';
                 Body += '<tr style="background-color: #333333; color: #ffffff; text-align: left;">';
-                Body += '<th style="border: 1px solid #cccccc; padding: 10px;">Employee</th>';
+                Body += '<th style="border: 1px solid #cccccc; padding: 10px;">Board Member</th>';
                 Body += '<th style="border: 1px solid #cccccc; padding: 10px;">Email</th>';
                 Body += '<th style="border: 1px solid #cccccc; padding: 10px;">Status</th>';
                 Body += '</tr>';

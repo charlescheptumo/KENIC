@@ -4,7 +4,7 @@ page 58144 "Pending Compliance Obligations"
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = "Compliance Obligation";
-    Caption = 'Pending Obligations';
+    Caption = 'Open Obligations';
     CardPageId = "Compliance Obligation Card";
     SourceTableView =
                         where(
@@ -54,7 +54,7 @@ page 58144 "Pending Compliance Obligations"
                 field("Assigned Employees Count"; Rec."Assigned Employees Count")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the number of additional assigned employees. Click the number to view the assigned employees list.';
+                    ToolTip = 'Specifies the number of additional board members. Click the number to view the board member list.';
 
                     trigger OnDrillDown()
                     var

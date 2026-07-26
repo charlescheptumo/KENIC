@@ -29,11 +29,11 @@ page 58137 "Approved Circular Resolution"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the resolution title.';
                 }
-                field("Department Code"; Rec."Department Code")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the department responsible for or targeted by this resolution.';
-                }
+                // field("Department Code"; Rec."Department Code")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the department responsible for or targeted by this resolution.';
+                // }
                 field("Resolution Type"; Rec."Resolution Type")
                 {
                     ApplicationArea = All;
@@ -68,6 +68,11 @@ page 58137 "Approved Circular Resolution"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the winning choice after the voting process closes.';
+                }
+                field("Resolution Outcome"; Rec."Resolution Outcome")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the outcome after the voting process closes.';
                 }
             }
         }

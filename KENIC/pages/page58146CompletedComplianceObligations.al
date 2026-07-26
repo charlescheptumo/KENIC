@@ -54,7 +54,7 @@ page 58146 "Completed Obligations"
                 field("Assigned Employees Count"; Rec."Assigned Employees Count")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the number of additional assigned employees. Click the number to view the assigned employees list.';
+                    ToolTip = 'Specifies the number of additional board members. Click the number to view the board members list.';
 
                     trigger OnDrillDown()
                     var
