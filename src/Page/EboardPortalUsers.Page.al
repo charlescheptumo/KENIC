@@ -35,6 +35,10 @@ page 57345 EboardPortalUsers
                 {
                     ToolTip = 'Specifies the value of the Email field.', Comment = '%';
                 }
+                field("Employee No"; Rec.EmployeeNo)
+                {
+                    ToolTip = 'Specifies the value of the Employee No.', Comment = '%';
+                }
                 field(Department; Rec.Department)
                 {
                     ToolTip = 'Specifies the value of the Name field.', Comment = '%';
