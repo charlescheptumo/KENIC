@@ -169,7 +169,7 @@ codeunit 50049 "Compliance Calendar"
                 if ObligationEmployee."Employee Email" <> '' then begin
 
                     Subject := StrSubstNo(
-                        'New Compliance Obligation Assigned - %1',
+                        'Compliance Obligation - %1',
                         Obligation.Title);
 
                     Body := StrSubstNo(

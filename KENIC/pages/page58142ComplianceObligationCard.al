@@ -91,6 +91,13 @@ page 58142 "Compliance Obligation Card"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies whether this obligation is active.';
+                    Visible = false;
+                }
+
+                field(Frequency; Rec.Frequency)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the recurrence of the compliance obligation.';
                 }
 
                 field(Status; Rec.Status)

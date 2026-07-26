@@ -8893,5 +8893,9 @@ permissionset 50000 GeneratedPermission
         page ComplianceObligationEmployees=X,
         page "Overdue Obligations"=X,
         page "Pending Compliance Obligations"=X,
-        page "Posted Obligations"=X;
+        page "Posted Obligations"=X,
+        tabledata "Compliance Legislation"=RIMD,
+        table "Compliance Legislation"=X,
+        page "Compliance Legislation Card"=X,
+        page "Compliance Legislation List"=X;
 }
