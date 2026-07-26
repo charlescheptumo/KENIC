@@ -31,7 +31,6 @@ page 58118 "Head of E-Board"
                     RunObject = page "Approved Circular Resolution";
                 }
 
-
                 action("Posted Circular Resolution")
                 {
                     ApplicationArea = All;
@@ -59,8 +58,8 @@ page 58118 "Head of E-Board"
                     Caption = 'Circular Resolution Archive';
                     RunObject = page "Circular Resolution Archive";
                 }
-
             }
+
             group("E-signing")
             {
                 action("E-signing List")
@@ -69,55 +68,76 @@ page 58118 "Head of E-Board"
                     Caption = 'E-signing';
                     // RunObject = page "Intelligence Entry List";
                 }
-
             }
+
             group("Compliance Management")
             {
-                Caption = 'Compliance Calendar';
+                Caption = 'Compliance';
 
-                action("Compliance Categories")
+                group("Categories & Legislation")
                 {
-                    ApplicationArea = All;
-                    Caption = 'Compliance Categories';
-                    RunObject = page "Compliance Categories";
-                    ToolTip = 'Manage compliance categories and responsible users.';
+                    Caption = 'Categories & Legislation';
+
+                    action("Compliance Categories")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Compliance Categories';
+                        RunObject = page "Compliance Categories";
+                        ToolTip = 'Manage compliance categories and responsible users.';
+                    }
+
+                    action("Compliance Legislation List")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Compliance Legislation';
+                        RunObject = page "Compliance Legislation List";
+                        ToolTip = 'Manage compliance legislation list.';
+                    }
                 }
 
-                action("Pending Obligations")
+                group("Obligations Breakdown")
                 {
-                    ApplicationArea = All;
-                    Caption = 'Pending Obligations';
-                    RunObject = page "Pending Compliance Obligations";
-                    ToolTip = 'Manage pending compliance obligations and schedules.';
-                }
+                    Caption = 'Obligations';
 
-                  action("Posted Obligations")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Posted Obligations';
-                    RunObject = page "Posted Obligations";
-                    ToolTip = 'Manage posted compliance obligations and schedules.';
-                }
-                  action("Completed Obligations")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Completed Obligations';
-                    RunObject = page "Completed Obligations";
-                    ToolTip = 'Manage completed compliance obligations and schedules.';
-                }
-                  action("Overdue Obligations")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Overdue Obligations';
-                    RunObject = page "Overdue Obligations";
-                    ToolTip = 'Manage overdue compliance obligations and schedules.';
-                }
-                action("Compliance Obligations")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Archive Obligations';
-                    RunObject = page "Compliance Obligations";
-                    ToolTip = 'Manage master compliance obligations and schedules.';
+                    action("Pending Obligations")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Pending Obligations';
+                        RunObject = page "Pending Compliance Obligations";
+                        ToolTip = 'Manage pending compliance obligations and schedules.';
+                    }
+
+                    action("Posted Obligations")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Posted Obligations';
+                        RunObject = page "Posted Obligations";
+                        ToolTip = 'Manage posted compliance obligations and schedules.';
+                    }
+
+                    action("Completed Obligations")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Completed Obligations';
+                        RunObject = page "Completed Obligations";
+                        ToolTip = 'Manage completed compliance obligations and schedules.';
+                    }
+
+                    action("Overdue Obligations")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Overdue Obligations';
+                        RunObject = page "Overdue Obligations";
+                        ToolTip = 'Manage overdue compliance obligations and schedules.';
+                    }
+
+                    action("Compliance Obligations")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Archive Obligations';
+                        RunObject = page "Compliance Obligations";
+                        ToolTip = 'Manage master compliance obligations and schedules.';
+                    }
                 }
 
                 action("Compliance Calendar Entries")
@@ -128,6 +148,7 @@ page 58118 "Head of E-Board"
                     ToolTip = 'View and track recurring compliance execution tasks.';
                 }
             }
+
             group(Reports)
             {
                 action("E-Board Report")
@@ -136,9 +157,8 @@ page 58118 "Head of E-Board"
                     Caption = 'E-Board Reports';
                     // RunObject = report "Intelligence Report";
                 }
-
-
             }
+
             group(Setup)
             {
                 action("E-Board Setup")
@@ -151,6 +171,7 @@ page 58118 "Head of E-Board"
         }
     }
 }
+
 profile "Head of E-Board"
 {
     ProfileDescription = 'Head of E-Board';

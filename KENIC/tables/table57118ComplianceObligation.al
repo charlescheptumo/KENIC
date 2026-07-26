@@ -196,7 +196,22 @@ table 57118 "Compliance Obligation"
             Caption = 'Due Date Notification Sent';
             Editable = false;
         }
+       
+        field(50; "Legislation Code"; Code[20])
+        {
+            Caption = 'Governing Legislation Code';
+            TableRelation = "Compliance Legislation";
+            DataClassification = CustomerContent;
+        }
 
+      
+        field(51; "Legislation Name"; Text[100])
+        {
+            Caption = 'Governing Legislation';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Compliance Legislation".Description where(Code = field("Legislation Code")));
+            Editable = false;
+        }
     }
 
     keys

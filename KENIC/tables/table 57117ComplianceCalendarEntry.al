@@ -35,6 +35,8 @@ table 57117 "Compliance Calendar Entry"
             begin
                 if ComplianceObligation.Get("Obligation No.") then begin
                     "Category Code" := ComplianceObligation."Category Code";
+                    "Legislation Code" := ComplianceObligation."Legislation Code"; 
+                    "Legislation Name" := ComplianceObligation."Legislation Name"; 
                     Title := ComplianceObligation.Title;
                     Description := ComplianceObligation.Description;
 
@@ -147,6 +149,18 @@ table 57117 "Compliance Calendar Entry"
         {
             Caption = '14-Day Reminder Sent';
             DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(18; "Legislation Code"; Code[20])
+        {
+            Caption = 'Legislation Code';
+            TableRelation = "Compliance Legislation".Code; 
+        }
+
+        field(19; "Legislation Name"; Text[100])
+        {
+            Caption = 'Legislation Name';
             Editable = false;
         }
     }

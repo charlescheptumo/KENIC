@@ -36,6 +36,8 @@ codeunit 50049 "Compliance Calendar"
         CalendarEntry."No." := '';
         CalendarEntry.Validate("Obligation No.", Obligation."No.");
         CalendarEntry."Category Code" := Obligation."Category Code";
+        CalendarEntry."Legislation Code" := Obligation."Legislation Code"; 
+        CalendarEntry."Legislation Name" := Obligation."Legislation Name"; 
         CalendarEntry.Title := Obligation.Title;
         CalendarEntry."Due Date" := Obligation."Next Due Date";
         CalendarEntry.Validate("Assigned Employee No.", EmpNo);

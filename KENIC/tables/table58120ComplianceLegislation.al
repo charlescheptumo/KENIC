@@ -15,7 +15,7 @@ table 58120 "Compliance Legislation"
         }
         field(2; "Description"; Text[100])
         {
-            Caption = 'Description';
+            Caption = 'Name';
             DataClassification = CustomerContent;
         }
         field(3; "Authority"; Text[100])

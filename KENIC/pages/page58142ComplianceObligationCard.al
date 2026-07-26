@@ -51,6 +51,24 @@ page 58142 "Compliance Obligation Card"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the compliance category code.';
                 }
+                field("Legislation Code"; Rec."Legislation Code")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the governing legislation code (e.g., ACT-01).';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.CalcFields("Legislation Name");
+                        CurrPage.Update(true);
+                    end;
+                }
+
+                field("Legislation Name"; Rec."Legislation Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Displays the full title/description of the selected governing legislation.';
+                    Editable = false;
+                }
                 field("Primary Employee No."; Rec."Primary Employee No.")
                 {
                     ApplicationArea = All;

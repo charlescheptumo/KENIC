@@ -22,6 +22,7 @@ page 58148 "Compliance Legislation List"
                 field("Description"; Rec."Description")
                 {
                     ApplicationArea = All;
+                    Caption = 'Name';
                     ToolTip = 'Specifies the full title or description of the legislation (e.g., Companies Act).';
                 }
                 field("Authority"; Rec."Authority")
