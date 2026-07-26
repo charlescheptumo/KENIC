@@ -8,55 +8,122 @@ page 58118 "Head of E-Board"
     {
         area(RoleCenter)
         {
-
+            part(Control76; "Headline RC Business Manager")
+            {
+                ApplicationArea = Basic, Suite;
+            }
+            part("Emails"; "Email Activities")
+            {
+                ApplicationArea = Basic, Suite;
+            }
+            part(ApprovalsActivities; "Approvals Activities")
+            {
+                ApplicationArea = Suite;
+            }
         }
     }
+
     actions
     {
         area(Sections)
         {
+            group("E-Board")
+            {
+                action("Board Members")
+                {
+                    ApplicationArea = Basic;
+                    RunObject = Page "Board Members";
+                    ToolTip = 'Executes the Board Members action.';
+                }
+                action("Board and Committee")
+                {
+                    ApplicationArea = Basic;
+                    RunObject = Page "Board Committee";
+                    ToolTip = 'Executes the Board and Committee action.';
+                }
+            }
+
+            group(Meetings)
+            {
+                action("Board meetings")
+                {
+                    ApplicationArea = Basic;
+                    RunObject = Page "Board Meetings List";
+                    ToolTip = 'Executes the Board meetings action.';
+                }
+                action("Published Meetings")
+                {
+                    ApplicationArea = Basic;
+                    RunObject = Page "Published Board Meeting List";
+                    ToolTip = 'Executes the Published Meetings action.';
+                }
+                action("Closed Meetings")
+                {
+                    ApplicationArea = Basic;
+                    RunObject = Page "Closed Board Meetings List";
+                    ToolTip = 'Executes the Closed Meetings action.';
+                }
+            }
+
+            group("Director Payments")
+            {
+                action("Earnings")
+                {
+                    ApplicationArea = Basic;
+                    RunObject = Page "Directors Earnings";
+                    ToolTip = 'Executes the Earnings action.';
+                }
+
+                action("Deductions")
+                {
+                    ApplicationArea = Basic;
+                    RunObject = Page "Director Deduction";
+                    ToolTip = 'Executes the Deductions action.';
+                }
+            }
+
             group("Circular Resolutions")
             {
                 action("Circular Resolution List")
                 {
                     ApplicationArea = All;
                     Caption = 'Pending Circular Resolutions';
-                    RunObject = page "Circular Resolution List";
+                    RunObject = Page "Circular Resolution List";
                 }
 
                 action("Approved Circular Resolution List")
                 {
                     ApplicationArea = All;
                     Caption = 'Approved Circular Resolutions';
-                    RunObject = page "Approved Circular Resolution";
+                    RunObject = Page "Approved Circular Resolution";
                 }
 
                 action("Posted Circular Resolution")
                 {
                     ApplicationArea = All;
                     Caption = 'Posted Circular Resolutions';
-                    RunObject = page "Posted Circular Resolution";
+                    RunObject = Page "Posted Circular Resolution";
                 }
 
                 action("Closed Circular Resolution")
                 {
                     ApplicationArea = All;
                     Caption = 'Closed Circular Resolutions';
-                    RunObject = page "Closed Circular Resolution";
+                    RunObject = Page "Closed Circular Resolution";
                 }
 
                 action("Rejected Circular Resolution")
                 {
                     ApplicationArea = All;
                     Caption = 'Rejected Circular Resolutions';
-                    RunObject = page "Rejected Circular Resolution";
+                    RunObject = Page "Rejected Circular Resolution";
                 }
 
                 action("Circular Resolution Archive")
                 {
                     ApplicationArea = All;
                     Caption = 'Circular Resolution Archive';
-                    RunObject = page "Circular Resolution Archive";
+                    RunObject = Page "Circular Resolution Archive";
                 }
             }
 
@@ -82,7 +149,7 @@ page 58118 "Head of E-Board"
                     {
                         ApplicationArea = All;
                         Caption = 'Compliance Categories';
-                        RunObject = page "Compliance Categories";
+                        RunObject = Page "Compliance Categories";
                         ToolTip = 'Manage compliance categories and responsible users.';
                     }
 
@@ -90,7 +157,7 @@ page 58118 "Head of E-Board"
                     {
                         ApplicationArea = All;
                         Caption = 'Compliance Legislation';
-                        RunObject = page "Compliance Legislation List";
+                        RunObject = Page "Compliance Legislation List";
                         ToolTip = 'Manage compliance legislation list.';
                     }
                 }
@@ -103,7 +170,7 @@ page 58118 "Head of E-Board"
                     {
                         ApplicationArea = All;
                         Caption = 'Pending Obligations';
-                        RunObject = page "Pending Compliance Obligations";
+                        RunObject = Page "Pending Compliance Obligations";
                         ToolTip = 'Manage pending compliance obligations and schedules.';
                     }
 
@@ -111,7 +178,7 @@ page 58118 "Head of E-Board"
                     {
                         ApplicationArea = All;
                         Caption = 'Posted Obligations';
-                        RunObject = page "Posted Obligations";
+                        RunObject = Page "Posted Obligations";
                         ToolTip = 'Manage posted compliance obligations and schedules.';
                     }
 
@@ -119,7 +186,7 @@ page 58118 "Head of E-Board"
                     {
                         ApplicationArea = All;
                         Caption = 'Completed Obligations';
-                        RunObject = page "Completed Obligations";
+                        RunObject = Page "Completed Obligations";
                         ToolTip = 'Manage completed compliance obligations and schedules.';
                     }
 
@@ -127,7 +194,7 @@ page 58118 "Head of E-Board"
                     {
                         ApplicationArea = All;
                         Caption = 'Overdue Obligations';
-                        RunObject = page "Overdue Obligations";
+                        RunObject = Page "Overdue Obligations";
                         ToolTip = 'Manage overdue compliance obligations and schedules.';
                     }
 
@@ -135,7 +202,7 @@ page 58118 "Head of E-Board"
                     {
                         ApplicationArea = All;
                         Caption = 'Archive Obligations';
-                        RunObject = page "Compliance Obligations";
+                        RunObject = Page "Compliance Obligations";
                         ToolTip = 'Manage master compliance obligations and schedules.';
                     }
                 }
@@ -144,7 +211,7 @@ page 58118 "Head of E-Board"
                 {
                     ApplicationArea = All;
                     Caption = 'Compliance Calendar Entries';
-                    RunObject = page "Compliance Calendar Entries";
+                    RunObject = Page "Compliance Calendar Entries";
                     ToolTip = 'View and track recurring compliance execution tasks.';
                 }
             }
@@ -165,7 +232,7 @@ page 58118 "Head of E-Board"
                 {
                     ApplicationArea = All;
                     Caption = 'E-Board Setup';
-                    RunObject = page "E-Board Setup";
+                    RunObject = Page "E-Board Setup";
                 }
             }
         }
@@ -177,4 +244,6 @@ profile "Head of E-Board"
     ProfileDescription = 'Head of E-Board';
     RoleCenter = "Head of E-Board";
     Caption = 'E-Board Role';
+    // Enabled = true;
+    // Promoted = true;
 }
