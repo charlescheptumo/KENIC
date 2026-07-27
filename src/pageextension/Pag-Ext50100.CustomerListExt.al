@@ -4,12 +4,12 @@
 
 pageextension 50100 "CustomerListExt" extends "Customer List"
 {
-   
+
     actions
     {
-      addlast(Navigation)
-      {
-        action(DeleteAllCustomers)
+        addlast(Navigation)
+        {
+            action(DeleteAllCustomers)
             {
                 Caption = 'Customers';
                 Image = Delete;
@@ -17,7 +17,7 @@ pageextension 50100 "CustomerListExt" extends "Customer List"
                 Promoted = true;
                 PromotedCategory = Process;
                 Visible = false;
-               
+
                 trigger OnAction()
                 var
                     CustomerRec: Record Customer;
@@ -31,16 +31,16 @@ pageextension 50100 "CustomerListExt" extends "Customer List"
                     Message('All Customers have been deleted.');
                 end;
             }
-      }
+        }
     }
     trigger OnOpenPage()
     begin
-        if not UserSetup.Get(UserId) then
-            Error('User setup not found for user %1.', UserId);
-        if not UserSetup."Accounts User" then
-            Error('Access denied: You are not authorized to open the Customer List page. Please contact the system administrator.');
+        // if not UserSetup.Get(UserId) then
+        //     Error('User setup not found for user %1.', UserId);
+        // if not UserSetup."Accounts User" then
+        //     Error('Access denied: You are not authorized to open the Customer List page. Please contact the system administrator.');
     end;
 
     var
-    UserSetup: Record "User Setup";
+        UserSetup: Record "User Setup";
 }
