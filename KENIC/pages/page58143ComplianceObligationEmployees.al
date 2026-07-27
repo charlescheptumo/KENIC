@@ -14,6 +14,7 @@ page 58143 "ComplianceObligationEmployees"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies primary key.';
+                    Editable = false;
                 }
                 field("Employee No."; Rec."Employee No.")
                 {

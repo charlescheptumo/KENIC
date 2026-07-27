@@ -70,8 +70,8 @@ table 57117 "Compliance Calendar Entry"
 
         field(7; "Assigned Employee No."; Code[20])
         {
-            Caption = 'Assigned Employee No.';
-            TableRelation = Employee."No.";
+            Caption = 'Responsible Officer No.';
+            TableRelation = "Board Members"."Personal No";
         }
 
         field(8; Status; Enum "Compliance Entry Status")
