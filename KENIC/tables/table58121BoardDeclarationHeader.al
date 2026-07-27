@@ -94,12 +94,13 @@ table 58121 "Board Declaration Header"
         {
             Caption = 'Declaration Status';
             DataClassification = CustomerContent;
+            InitValue = Open;
 
             trigger OnValidate()
             begin
                 // Automatically stamp submitted/reviewed metadata when status changes
                 if "Declaration Status" = "Declaration Status"::Submitted then begin
-                    "Submitted By" := UserSecurityId();
+                    "Declaration Date" := WorkDate();
                     "Submitted DateTime" := CurrentDateTime();
                 end;
 
@@ -110,9 +111,9 @@ table 58121 "Board Declaration Header"
             end;
         }
 
-        field(13; "Submitted By"; Code[50])
+        field(13; "Created By"; Code[50])
         {
-            Caption = 'Submitted By';
+            Caption = 'Created By';
             DataClassification = EndUserIdentifiableInformation;
             TableRelation = User."User Name";
             ValidateTableRelation = false;
@@ -142,16 +143,28 @@ table 58121 "Board Declaration Header"
             Editable = false;
         }
 
+        field(17; "Declaration Year"; Integer)
+        {
+            Caption = 'Declaration Year';
+             Editable = false;
+            DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                if ("Declaration Year" <> 0) and (("Declaration Year" < 2000) or ("Declaration Year" > 2100)) then
+                    Error('The Declaration Year must be a 4-digit year between 2000 and 2100.');
+            end;
+        }
+
         // field(17; "Agenda No."; Code[20])
         // {
         //     Caption = 'Agenda No.';
         //     DataClassification = CustomerContent;
-            
+
         //     TableRelation = if ("Declaration Type" = const(Meeting)) "Board Meeting Agenda"."Agenda No." where("Meeting No." = field("Meeting No."));
 
         //     trigger OnValidate()
         //     begin
-               
+
         //         if ("Agenda No." <> '') and ("Meeting No." = '') then
         //             Error('You must select a Meeting No. before choosing an Agenda Item.');
         //     end;
@@ -167,10 +180,22 @@ table 58121 "Board Declaration Header"
     }
 
     trigger OnInsert()
+    var
+        EBoardSetup: Record "E-Board Setup";
+        NoSeries: Codeunit "No. Series";
     begin
+        if "No." = '' then begin
+            EBoardSetup.GetRecordOnce();
+            EBoardSetup.TestField("Declaration Nos.");
+            "No." := NoSeries.GetNextNo(EBoardSetup."Declaration Nos.", WorkDate(), true);
+        end;
 
-        "Submitted By" := UserId();
-        if "Declaration Date" = 0D then
-            "Declaration Date" := WorkDate();
+        if "Declaration Year" = 0 then
+            "Declaration Year" := Date2DMY(WorkDate(), 3);
+        "Created By" := UserId();
+
+        // if "Declaration Date" = 0D then
+        //     "Declaration Date" := WorkDate();
+
     end;
 }

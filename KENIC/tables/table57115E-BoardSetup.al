@@ -146,6 +146,12 @@ table 57115 "E-Board Setup"
             ToolTip = 'Specifies the Board Secretary who will receive overdue compliance escalation notifications.';
         }
 
+        field(110; "Declaration Nos."; Code[20])
+        {
+            Caption = 'Declaration Nos.';
+            TableRelation = "No. Series";
+        }
+
     }
 
 

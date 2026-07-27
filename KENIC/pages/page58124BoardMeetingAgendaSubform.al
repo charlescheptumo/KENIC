@@ -26,6 +26,13 @@ page 58124 "Board Meeting Agenda Subform"
                     ApplicationArea = All;
                     ToolTip = 'Specifies detailed information about the agenda item.';
                 }
+
+                field("Conflict Exists"; Rec."Conflict Exists")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Indicates whether any board member has declared a conflict of interest for this agenda item.';
+                    Editable = false;
+                }
             }
         }
     }

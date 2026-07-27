@@ -11,7 +11,8 @@ page 58122 "Board Declaration Card"
             group(General)
             {
                 Caption = 'General';
-                
+                Editable = IsEditable;
+
                 field("No."; Rec."No.")
                 {
                     ApplicationArea = All;
@@ -50,6 +51,12 @@ page 58122 "Board Declaration Card"
                     Editable = false;
                     ToolTip = 'Specifies the current status of the declaration.';
                 }
+                field("Declaration Year"; Rec."Declaration Year")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    ToolTip = 'Specifies the year of the declaration.';
+                }
             }
 
             part(Lines; "Board Declaration Subform")
@@ -57,13 +64,15 @@ page 58122 "Board Declaration Card"
                 ApplicationArea = All;
                 SubPageLink = "Declaration No." = field("No.");
                 UpdatePropagation = Both;
+                Editable = IsEditable;
             }
 
             group(Audit)
             {
                 Caption = 'Audit Trail';
-                
-                field("Submitted By"; Rec."Submitted By")
+                Editable = false;
+
+                field("Createdd By"; Rec."Created By")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the user who submitted the declaration.';
@@ -91,21 +100,32 @@ page 58122 "Board Declaration Card"
     {
         area(Processing)
         {
-            action(Submit)
+            action(PublishToPortal)
             {
-                Caption = 'Submit';
+                Caption = 'Publish to Portal';
                 ApplicationArea = All;
-                Image = Submit;
+                Image = SendTo;
                 Promoted = true;
                 PromotedCategory = Process;
-                // Enabled = (Rec."Declaration Status" = Rec."Declaration Status"::Draft);
 
-                // trigger OnAction()
-                // begin
-                //     Rec.Validate("Declaration Status", Rec."Declaration Status"::Submitted);
-                //     Rec.Modify(true);
-                //     Message('Declaration successfully submitted.');
-                // end;
+                Enabled = Rec."Declaration Status" = Rec."Declaration Status"::Open;
+
+                trigger OnAction()
+                begin
+                    if not Confirm(
+                        'This declaration will be published to the Board Portal and will become available to the board member for completion. Continue?',
+                        false)
+                    then
+                        exit;
+
+                    Rec.Validate("Declaration Status", Rec."Declaration Status"::Draft);
+                    Rec.Modify(true);
+
+                    SetEditable();
+                    CurrPage.Update(false);
+
+                    Message('The declaration has been published to the Board Portal.');
+                end;
             }
 
             action(Approve)
@@ -126,4 +146,21 @@ page 58122 "Board Declaration Card"
             }
         }
     }
+    var
+        IsEditable: Boolean;
+
+    trigger OnOpenPage()
+    begin
+        SetEditable();
+    end;
+
+    trigger OnAfterGetRecord()
+    begin
+        SetEditable();
+    end;
+
+    local procedure SetEditable()
+    begin
+        IsEditable := Rec."Declaration Status" = Rec."Declaration Status"::Open;
+    end;
 }

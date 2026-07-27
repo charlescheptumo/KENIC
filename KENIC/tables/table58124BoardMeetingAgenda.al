@@ -29,6 +29,21 @@ table 58124 "Board Meeting Agenda"
             Caption = 'Description';
             DataClassification = CustomerContent;
         }
+
+        field(5; "Conflict Exists"; Boolean)
+        {
+            Caption = 'Conflict Exists';
+            //StyleExpr = ConflictStyle;
+            FieldClass = FlowField;
+            CalcFormula = exist(
+        "Board Meeting Conflict"
+        where(
+            "Meeting No." = field("Meeting No."),
+            "Agenda No." = field("Agenda No.")
+        ));
+            Editable = false;
+
+        }
     }
 
     keys

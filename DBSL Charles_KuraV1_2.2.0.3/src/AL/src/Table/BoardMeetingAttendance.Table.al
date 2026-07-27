@@ -28,9 +28,15 @@ Table 55009 "Board Meeting Attendance"
             TableRelation = "Board Members"."Personal No";
 
             trigger OnValidate()
+            var
+                Memb: Record "Board Members";
             begin
-                if Memb.Get("Member No") then
-                    "Member Name" := Memb."First Name" + ' ' + Memb."Last Name";
+                Memb.SetRange("Personal No", Rec."Member No");
+                if Memb.FindFirst() then begin
+                    Rec."Member Name" := Memb."First Name" + ' ' + Memb."Last Name";
+                    Rec."E-mail" := Memb."Company E-Mail"; 
+                end else
+                    Rec."Member Name" := '';
             end;
         }
         field(4; "Commitee No"; Code[200])
@@ -65,6 +71,11 @@ Table 55009 "Board Meeting Attendance"
             OptionMembers = "Not confirmed",Confirmed,"Apologetic Decline";
         }
         field(12; "Has Attended"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(13; "E-mail"; Text[100])
         {
             DataClassification = ToBeClassified;
         }
