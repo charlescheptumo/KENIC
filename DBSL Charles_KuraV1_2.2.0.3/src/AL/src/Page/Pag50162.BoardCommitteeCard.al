@@ -60,6 +60,7 @@ page 50162 "Board Committee Card"
                 ApplicationArea = Basic;
                 SubPageLink = Committee = field(Code);
             }
+
         }
     }
 }

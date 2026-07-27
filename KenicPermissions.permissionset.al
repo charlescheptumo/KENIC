@@ -8897,5 +8897,18 @@ permissionset 50001 KenicPermissions
         tabledata "Compliance Legislation"=RIMD,
         table "Compliance Legislation"=X,
         page "Compliance Legislation Card"=X,
-        page "Compliance Legislation List"=X;
+        page "Compliance Legislation List"=X,
+        tabledata "Board Declaration Header"=RIMD,
+        tabledata "Board Declaration Line"=RIMD,
+        tabledata "Board Meeting Agenda"=RIMD,
+        tabledata "Board Meeting Conflict"=RIMD,
+        table "Board Declaration Header"=X,
+        table "Board Declaration Line"=X,
+        table "Board Meeting Agenda"=X,
+        table "Board Meeting Conflict"=X,
+        page "Board Declaration Card"=X,
+        page "Board Declaration Subform"=X,
+        page "Board Declarations"=X,
+        page "Board Meeting Agenda Subform"=X,
+        page "Board Meeting Conflicts"=X;
 }

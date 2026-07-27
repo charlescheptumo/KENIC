@@ -41,6 +41,14 @@ page 58118 "Head of E-Board"
                     RunObject = Page "Board Committee";
                     ToolTip = 'Executes the Board and Committee action.';
                 }
+
+                action("Board Declarations")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Board Declarations';
+                    RunObject = Page "Board Declarations";
+                    ToolTip = 'View and manage board member conflict of interest declarations.';
+                }
             }
 
             group(Meetings)

@@ -127,13 +127,38 @@ Page 55003 "Board Meeting Card"
                     ToolTip = 'Specifies the value of the Access requirement field.';
                 }
             }
-
-            part(AttendanceLines; "Board Meeting Attendance")
+                group(AttendeesGroup)
             {
-                ApplicationArea = Basic;
                 Caption = 'Attendees';
-                SubPageLink = "Meeting Code" = field(No);
-                UpdatePropagation = Both;
+
+                part(AttendanceLines; "Board Meeting Attendance")
+                {
+                    ApplicationArea = Basic;
+                    SubPageLink = "Meeting Code" = field(No);
+                    UpdatePropagation = Both;
+                }
+            }
+    
+            group(AgendaGroup)
+            {
+                Caption = 'Meeting Agenda Items';
+
+                part(AgendaLines; "Board Meeting Agenda Subform")
+                {
+                    ApplicationArea = All;
+                    SubPageLink = "Meeting No." = field(No);
+                }
+            }
+            group(ConflictsGroup)
+            {
+                Caption = 'Conflicts of Interest';
+
+                part(MeetingConflicts; "Board Meeting Conflicts")
+                {
+                    ApplicationArea = All;
+                    SubPageLink = "Meeting No." = field(No);
+                    UpdatePropagation = Both;
+                }
             }
         }
 
