@@ -143,6 +143,14 @@ page 58119 "E-Board Setup"
                         ToolTip = 'Specifies the Board Secretary who receives overdue compliance escalation notifications.';
                     }
 
+                    group("BoardDeclaration")
+                    {
+                        Caption = 'Board Declaratiom';
+                        field("Declaration Nos."; Rec."Declaration Nos.")
+                        {
+                            ToolTip = 'Specifies the declaration numbers.';
+                        }
+                    }
 
                 }
 
