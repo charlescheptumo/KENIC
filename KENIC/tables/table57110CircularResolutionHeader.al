@@ -167,6 +167,16 @@ table 57110 "Circular Resolution Header"
             Editable = false;
         }
 
+        field(26; "Majority Type"; Enum "Majority Type")
+        {
+            Caption = 'Majority Type';
+        }
+
+        field(27; "Resolution Outcome"; Enum "Resolution Outcome")
+        {
+            Caption = 'Resolution Outcome';
+        }
+
     }
 
     keys

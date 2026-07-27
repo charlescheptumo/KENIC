@@ -3,6 +3,7 @@ namespace KENIC.KENIC;
 using System.Email;
 using Microsoft.Foundation.Company;
 using System.Security.User;
+using System.Automation;
 
 codeunit 50048 "Resolution Management"
 {
@@ -49,8 +50,10 @@ codeunit 50048 "Resolution Management"
                     CircularResolution."No.");
 
                 Body += '<b>Subject:</b> ' + CircularResolution.Title + '<br>';
+                 Body += '<b>Majority Type:</b> ' + Format(CircularResolution."Majority Type") + '<br>';
                 Body += '<b>Date Opened:</b> ' + Format(Today()) + '<br>';
                 Body += '<b>Voting Deadline:</b> <b>' + DisplayDeadline + '</b><br>';
+                
 
                 if EBoardSetup."E-Board Portal URL" <> '' then begin
                     Body += '<br>Please log in to the E-Board Portal to cast your vote.<br><br>';
@@ -132,16 +135,59 @@ codeunit 50048 "Resolution Management"
     end;
 
     //Highest Winning option
+    // procedure UpdateWinningOption(var ResolutionHeader: Record "Circular Resolution Header")
+    // var
+    //     ResolutionOption: Record "Circular Resolution Option";
+    //     HighestVotes: Integer;
+    //     WinningOption: Code[20];
+    //     Tie: Boolean;
+    //     TotalVotes: Integer;
+    //     ForVotes: Integer;
+    //     AgainstVotes: Integer;
+    // begin
+    //     HighestVotes := -1;
+    //     WinningOption := '';
+    //     Tie := false;
+
+    //     ResolutionOption.SetRange("Resolution No.", ResolutionHeader."No.");
+
+    //     if ResolutionOption.FindSet() then
+    //         repeat
+    //             ResolutionOption.CalcFields("Vote Count");
+
+    //             if ResolutionOption."Vote Count" > HighestVotes then begin
+    //                 HighestVotes := ResolutionOption."Vote Count";
+    //                 WinningOption := ResolutionOption."Option Code";
+    //                 Tie := false;
+    //             end else
+    //                 if ResolutionOption."Vote Count" = HighestVotes then
+    //                     Tie := true;
+    //         until ResolutionOption.Next() = 0;
+
+    //     if Tie then
+    //         WinningOption := '';
+
+    //     if ResolutionHeader."Winning Option" <> WinningOption then begin
+    //         ResolutionHeader."Winning Option" := WinningOption;
+    //         ResolutionHeader.Modify(true);
+    //     end;
+    // end;
     procedure UpdateWinningOption(var ResolutionHeader: Record "Circular Resolution Header")
     var
         ResolutionOption: Record "Circular Resolution Option";
         HighestVotes: Integer;
         WinningOption: Code[20];
         Tie: Boolean;
+        TotalVotes: Integer;
+        ForVotes: Integer;
+        AgainstVotes: Integer;
     begin
-        HighestVotes := -1;
+        HighestVotes := 0;
         WinningOption := '';
         Tie := false;
+        TotalVotes := 0;
+        ForVotes := 0;
+        AgainstVotes := 0;
 
         ResolutionOption.SetRange("Resolution No.", ResolutionHeader."No.");
 
@@ -149,24 +195,71 @@ codeunit 50048 "Resolution Management"
             repeat
                 ResolutionOption.CalcFields("Vote Count");
 
-                if ResolutionOption."Vote Count" > HighestVotes then begin
-                    HighestVotes := ResolutionOption."Vote Count";
-                    WinningOption := ResolutionOption."Option Code";
-                    Tie := false;
-                end else
-                    if ResolutionOption."Vote Count" = HighestVotes then
-                        Tie := true;
+
+                case ResolutionOption."Option Code" of
+                    'FOR':
+                        ForVotes := ResolutionOption."Vote Count";
+                    'AGAINST':
+                        AgainstVotes := ResolutionOption."Vote Count";
+                end;
+
+                TotalVotes += ResolutionOption."Vote Count";
+
+
+                if ResolutionOption."Vote Count" > 0 then begin
+                    if ResolutionOption."Vote Count" > HighestVotes then begin
+                        HighestVotes := ResolutionOption."Vote Count";
+                        WinningOption := ResolutionOption."Option Code";
+                        Tie := false;
+                    end else
+                        if ResolutionOption."Vote Count" = HighestVotes then
+                            Tie := true;
+                end;
             until ResolutionOption.Next() = 0;
+
 
         if Tie then
             WinningOption := '';
 
-        if ResolutionHeader."Winning Option" <> WinningOption then begin
-            ResolutionHeader."Winning Option" := WinningOption;
-            ResolutionHeader.Modify(true);
-        end;
-    end;
+        ResolutionHeader."Winning Option" := WinningOption;
 
+
+        if TotalVotes = 0 then
+            ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Open
+        else begin
+            if Tie then
+                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Tie
+            else
+                case ResolutionHeader."Majority Type" of
+
+                    ResolutionHeader."Majority Type"::Simple:
+                        begin
+                            if ForVotes > AgainstVotes then
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Approved
+                            else
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Rejected;
+                        end;
+
+                    ResolutionHeader."Majority Type"::Special:
+                        begin
+                            if ((ForVotes * 100) / TotalVotes) >= 75 then
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Approved
+                            else
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Rejected;
+                        end;
+
+                    ResolutionHeader."Majority Type"::Unanimous:
+                        begin
+                            if ForVotes = TotalVotes then
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Approved
+                            else
+                                ResolutionHeader."Resolution Outcome" := ResolutionHeader."Resolution Outcome"::Rejected;
+                        end;
+                end;
+        end;
+
+        ResolutionHeader.Modify(true);
+    end;
     //Portal Guide
     // procedure SubmitVote(ResolutionNo: Code[20]; EmployeeNo: Code[20]; SelectedOption: Integer; Remarks: Text[250])
     // var
@@ -358,5 +451,195 @@ codeunit 50048 "Resolution Management"
             true);
 
         Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+    end;
+
+    //Approval notification
+    procedure SendApprovalRequestNotificationsForCircularResolution(DocNo: Code[20])
+    var
+        CircularResHeader: Record "Circular Resolution Header";
+        ApprovalEntry: Record "Approval Entry";
+        UserSetup: Record "User Setup";
+        SenderUserSetup: Record "User Setup";
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Recipient, RecipientName, Subject, Body, ApprovalURL : Text;
+        ApprovalPageID: Label '654';
+    begin
+        CompanyInfo.Get();
+        GetEBoardSetup(EBoardSetup);
+
+        CircularResHeader.Reset();
+        CircularResHeader.SetRange("No.", DocNo);
+        if CircularResHeader.FindFirst() then begin
+            ApprovalEntry.Reset();
+            ApprovalEntry.SetRange("Document No.", CircularResHeader."No.");
+            ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+
+            if ApprovalEntry.FindFirst() then begin
+                if UserSetup.Get(ApprovalEntry."Approver ID") then begin
+                    Subject := StrSubstNo('APPROVAL NOTIFICATION: Circular Resolution %1', CircularResHeader."No.");
+
+                    RecipientName := UserSetup."Employee Name";
+                    if RecipientName = '' then
+                        RecipientName := UserSetup."User ID";
+
+                    Recipient := UserSetup."E-Mail";
+                    if Recipient = '' then
+                        exit;
+
+                    Body := StrSubstNo('Dear %1,<br><br>', RecipientName);
+                    Body += StrSubstNo('Circular Resolution <b>%1</b> (%2) requires your approval in the ERP.<br><br>', CircularResHeader."No.", CircularResHeader.Title);
+
+                    // Get Initiator Details
+                    if CircularResHeader."Created By" <> '' then begin
+                        if SenderUserSetup.Get(CircularResHeader."Created By") then
+                            Body += '<b>Created By:</b> ' + SenderUserSetup."Employee Name" + '<br>'
+                        else
+                            Body += '<b>Created By:</b> ' + CircularResHeader."Created By" + '<br>';
+                    end else if SenderUserSetup.Get(ApprovalEntry."Sender ID") then
+                            Body += '<b>Created By:</b> ' + SenderUserSetup."Employee Name" + '<br>';
+
+
+                    if EBoardSetup."ERP URL" <> '' then begin
+
+                        if EBoardSetup."ERP URL".EndsWith('/') or EBoardSetup."ERP URL".EndsWith('?') then
+                            ApprovalURL := EBoardSetup."ERP URL" + 'page=' + ApprovalPageID
+                        else if EBoardSetup."ERP URL".Contains('?') then
+                            ApprovalURL := EBoardSetup."ERP URL" + '&page=' + ApprovalPageID
+                        else
+                            ApprovalURL := EBoardSetup."ERP URL" + '?page=' + ApprovalPageID;
+
+                        Body += '<br>Please log in to the ERP to review and approve:<br><br>';
+                        Body += StrSubstNo(
+                            '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Open ERP Approvals</a><br><br>',
+                            ApprovalURL);
+                    end;
+
+                    Body += 'Regards,<br>';
+                    Body += CompanyInfo.Name + '<br><br>';
+                    Body += '<i>This is a system-generated email. Please do not reply.</i>';
+
+                    Clear(EmailMessage);
+                    EmailMessage.Create(Recipient, Subject, Body, true);
+                    Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+                end;
+            end;
+        end;
+    end;
+
+    //Approved notification to initiator
+    procedure SendApprovedNotificationToInitiator(DocNo: Code[20])
+    var
+        CircularResHeader: Record "Circular Resolution Header";
+        UserSetup: Record "User Setup";
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Recipient, RecipientName, Subject, Body, ResolutionURL : Text;
+        CardPageID: Label '654';
+    begin
+        CompanyInfo.Get();
+        GetEBoardSetup(EBoardSetup);
+
+        CircularResHeader.Reset();
+        CircularResHeader.SetRange("No.", DocNo);
+        if CircularResHeader.FindFirst() then begin
+            if CircularResHeader."Approval Status" <> CircularResHeader."Approval Status"::Released then
+                exit;
+
+            // Identify Initiator
+            if CircularResHeader."Created By" <> '' then begin
+                if UserSetup.Get(CircularResHeader."Created By") then begin
+                    Subject := StrSubstNo('APPROVED: Circular Resolution %1 is Ready for Voting', CircularResHeader."No.");
+
+                    RecipientName := UserSetup."Employee Name";
+                    if RecipientName = '' then
+                        RecipientName := UserSetup."User ID";
+
+                    Recipient := UserSetup."E-Mail";
+                    if Recipient = '' then
+                        exit;
+
+                    Body := StrSubstNo('Dear %1,<br><br>', RecipientName);
+                    Body += StrSubstNo('Your Circular Resolution <b>%1</b> (%2) has been <b>FULLY APPROVED</b>.<br><br>', CircularResHeader."No.", CircularResHeader.Title);
+                    Body += 'Please log in to the ERP and post the Circular Resolution to open voting for board members.<br><br>';
+                    Body += 'Once the resolution is posted, voting notifications will be sent automatically to all eligible board members and the voting period will begin.<br><br>';
+
+                    if EBoardSetup."ERP URL" <> '' then begin
+                        if EBoardSetup."ERP URL".EndsWith('/') or EBoardSetup."ERP URL".EndsWith('?') then
+                            ResolutionURL := EBoardSetup."ERP URL" + 'page=' + CardPageID
+                        else if EBoardSetup."ERP URL".Contains('?') then
+                            ResolutionURL := EBoardSetup."ERP URL" + '&page=' + CardPageID
+                        else
+                            ResolutionURL := EBoardSetup."ERP URL" + '?page=' + CardPageID;
+
+                        Body += StrSubstNo(
+                            '<a href="%1" style="display:inline-block;padding:10px 20px;background:#0078d4;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">Open ERP & Post for Voting</a><br><br>',
+                            ResolutionURL);
+                    end;
+
+                    Body += 'Regards,<br>';
+                    Body += CompanyInfo.Name + '<br><br>';
+                    Body += '<i>This is a system-generated email. Please do not reply.</i>';
+
+                    Clear(EmailMessage);
+                    EmailMessage.Create(Recipient, Subject, Body, true);
+                    Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+                end;
+            end;
+        end;
+    end;
+
+    //Rejection notification
+    procedure SendRejectedNotificationToInitiator(DocNo: Code[20])
+    var
+        CircularResHeader: Record "Circular Resolution Header";
+        UserSetup: Record "User Setup";
+        ApprovalCommentLine: Record "Approval Comment Line";
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        Recipient, RecipientName, Subject, Body, RejectionReason : Text;
+    begin
+        CompanyInfo.Get();
+
+        if CircularResHeader.Get(DocNo) then begin
+            if CircularResHeader."Approval Status" <> CircularResHeader."Approval Status"::Rejected then
+                exit;
+            if CircularResHeader."Created By" <> '' then begin
+                if UserSetup.Get(CircularResHeader."Created By") then begin
+
+                    Recipient := UserSetup."E-Mail";
+                    if Recipient = '' then
+                        exit;
+
+                    RecipientName := UserSetup."Employee Name";
+                    if RecipientName = '' then
+                        RecipientName := UserSetup."User ID";
+
+
+                    ApprovalCommentLine.Reset();
+                    ApprovalCommentLine.SetRange("Table ID", Database::"Circular Resolution Header");
+                    ApprovalCommentLine.SetRange("Document No.", DocNo);
+                    if ApprovalCommentLine.FindLast() then
+                        RejectionReason := ApprovalCommentLine.Comment
+                    else
+                        RejectionReason := 'No specific reason provided.';
+
+
+                    Subject := StrSubstNo('REJECTED: Circular Resolution %1', CircularResHeader."No.");
+
+                    Body := StrSubstNo('Dear %1,<br><br>', RecipientName);
+                    Body += StrSubstNo('Your Circular Resolution <b>%1</b> (%2) has been <b>REJECTED</b>.<br><br>', CircularResHeader."No.", CircularResHeader.Title);
+                    Body += StrSubstNo('<b>Reason for Rejection:</b> %1<br><br>', RejectionReason);
+                    Body += 'Kindly review the comments, make the necessary updates, and resubmit for approval again if appropriate.<br><br>';
+                    Body += 'Regards,<br>';
+                    Body += CompanyInfo.Name + '<br><br>';
+                    Body += '<i>This is a system-generated email. Please do not reply.</i>';
+
+                    Clear(EmailMessage);
+                    EmailMessage.Create(Recipient, Subject, Body, true);
+                    Email.Send(EmailMessage, Enum::"Email Scenario"::Default);
+                end;
+            end;
+        end;
     end;
 }

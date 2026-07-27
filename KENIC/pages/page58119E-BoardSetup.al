@@ -77,6 +77,11 @@ page 58119 "E-Board Setup"
                     ToolTip = 'Specifies the base URL of your external E-Board web portal.';
                     Visible = true;
                 }
+                field("ERP URL"; Rec."ERP URL")
+                {
+                    ToolTip = 'Specifies the URL of ERP.';
+                    Visible = true;
+                }
                 // field("Portal Tenant ID"; Rec."Portal Tenant ID")
                 // {
                 //     ToolTip = 'Specifies the tenant identifier associated with your cloud portal environment.';
@@ -100,7 +105,49 @@ page 58119 "E-Board Setup"
                 {
                     ToolTip = 'The folder name within the document library for circular resolutions';
                 }
+
+                group("ComplianceCalendar")
+                {
+                    Caption = 'Compliance Calendar';
+                    field("Compliance Category Nos."; Rec."Compliance Category Nos.")
+                    {
+                        ToolTip = 'Specifies the number series for regulatory categories (e.g., Tax, HR, Environmental)';
+                    }
+
+                    field("Compliance Template Nos."; Rec."Compliance Template Nos.")
+                    {
+                        ToolTip = 'Specifies the number series for recurring compliance templates.';
+                    }
+
+                    field("Compliance Obligation Nos."; Rec."Compliance Obligation Nos.")
+                    {
+                        ToolTip = 'Specifies the number series for recurring compliance obligations.';
+                    }
+
+                    field("Compliance DMS Link"; Rec."Compliance DMS Link")
+                    {
+                        ToolTip = 'The folder name within SharePoint/DMS designated for storing compliance filing proof.';
+                    }
+                    field("Enable Compliance Reminders"; Rec."Enable Compliance Reminders")
+                    {
+                        ToolTip = 'Enables automated email notifications for upcoming and overdue compliance deadlines';
+                    }
+
+                    field("CEO Personal No."; Rec."CEO Personal No.")
+                    {
+                        ToolTip = 'Specifies the CEO who receives overdue compliance escalation notifications.';
+                    }
+
+                    field("Board Secretary Personal No."; Rec."Board Secretary Personal No.")
+                    {
+                        ToolTip = 'Specifies the Board Secretary who receives overdue compliance escalation notifications.';
+                    }
+
+
+                }
+
             }
+
         }
     }
 

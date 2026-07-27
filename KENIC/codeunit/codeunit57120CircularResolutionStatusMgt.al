@@ -12,6 +12,7 @@ codeunit 57120 "Circular Resolution Mgt."
 
         ResolutionHeader: Record "Circular Resolution Header";
         ResolutionMgt: Codeunit "Resolution Management";
+        ComplianceCalendar: Codeunit "Compliance Calendar";
 
     begin
 
@@ -30,7 +31,6 @@ codeunit 57120 "Circular Resolution Mgt."
 
 
         if ResolutionHeader.FindSet() then
-
             repeat
 
                 ResolutionHeader.UpdateStatusBasedOnDeadline();
@@ -38,8 +38,14 @@ codeunit 57120 "Circular Resolution Mgt."
             until ResolutionHeader.Next() = 0;
         // Send reminder emails
         ResolutionMgt.SendAutomatedVotingReminders();
+        // Update overdue compliance tasks
+        ComplianceCalendar.CheckAndUpdateOverdueEntries();
+        // Send compliance reminder emails
+        ComplianceCalendar.SendUpcomingTaskReminders();
+        //compliance to manager
+        ComplianceCalendar.SendManagerTaskStatusNotifications();
     end;
 
-      
+
 
 }

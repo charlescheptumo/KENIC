@@ -69,6 +69,12 @@ page 58136 "Posted Circular Resolution"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the winning choice after the voting process closes.';
                 }
+
+                field("Resolution Outcome"; Rec."Resolution Outcome")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the outcome after the voting process closes.';
+                }
             }
         }
     }
