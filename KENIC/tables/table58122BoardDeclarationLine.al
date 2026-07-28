@@ -42,7 +42,7 @@ table 58122 "Board Declaration Line"
         {
             Caption = 'Interest Type Description';
             DataClassification = CustomerContent;
-            Editable = true;
+            Editable = false;
         }
         field(4; "Organization"; Text[100])
         {

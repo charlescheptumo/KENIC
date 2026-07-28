@@ -235,6 +235,31 @@ page 58118 "Head of E-Board"
                 }
             }
 
+              group("ESign Documents")
+            {
+                Caption = 'E-Sign Documents';
+
+                group("E-Sign Documents")
+                {
+                    Caption = 'ESign Documents';
+
+                    action("Esign Members")
+                    {
+                        ApplicationArea = Basic, Suite;
+                        Caption = 'Open E-sign Docs';
+                        RunObject = Page "ESign Documents";
+                        ToolTip = 'Manage board documents.';
+                    }
+                    // action("Board and Committee")
+                    // {
+                    //     ApplicationArea = Basic, Suite;
+                    //     Caption = 'Board Committees';
+                    //     RunObject = Page "Board Committee";
+                    //     ToolTip = 'Manage board committees and memberships.';
+                    // }
+                }
+            }
+
             group(Reports)
             {
                 Caption = 'Reports';

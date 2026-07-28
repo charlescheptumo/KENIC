@@ -3791,63 +3791,62 @@ Codeunit 50009 "DMS Management"
 
     end;
 
-procedure UploadCircularResolutionDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
+//Upload circular resolutions
+ procedure UploadCircularResolutionDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
 var
     EBoardSetup: Record "E-Board Setup";
-    DocLink: Record "Record Link"; 
+    DocLink: Record "Record Link";
+    SharePointMgt: Codeunit "Sharepoint Management";
     Docname: Text[250];
     FileName: Text[250];
-    FileName2: Text[250];
-    FileDesc: Text[250];
-    XmlFileName: Text[250];
-    Filer: Codeunit "File Management"; 
+    ServerRelativeFolder: Text;
+    FileInStream: InStream;
+    UploadPromptMsg: Label 'Select the Circular Resolution document to upload';
 begin
-    if EBoardSetup.Get() then begin
-        // Upload File to folder
-        Docname := DocNo;
-        Docname := ConvertStr(Docname, ':', '_');
-        Docname := ConvertStr(Docname, '\', '_');
-        Docname := ConvertStr(Docname, '/', '_');
+    
+    EBoardSetup.GetRecordOnce();
+
+    
+    if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+        exit(false); 
+
+    
+    Docname := DocNo;
+    Docname := ConvertStr(Docname, ':', '_');
+    Docname := ConvertStr(Docname, '\', '_');
+    Docname := ConvertStr(Docname, '/', '_');
+
+    
+    ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
+        EBoardSetup."SharePoint Site Link",
+        EBoardSetup."SharePoint Site Main Library",
+        EBoardSetup."SharePoint Document Library",
+        EBoardSetup."Circular Resolution DMS Link");
+
+  
+    ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
+    SharePointMgt.CreateFolder(ServerRelativeFolder);
+
+    
+    if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
 
         
-        FileName2 := '\\192.168.1.121\DocumentsPath\' + Docname + '_' + Filer.GetFileName(FileName);
-        FileDesc := Docname + '_' + Filer.GetFileName(FileName);
-        
-        // Filer.CopyClientFile(FileName, FileName2, true);
-        // Filer.MoveFile(FileName2, '\\192.168.1.121\DocumentsPath\' + FileDesc);
-
-        // Insert Link
         DocLink.Init();
         DocLink."Link ID" := 0;
-        DocLink.URL1 := EBoardSetup."SharePoint Site Link" + '/' + 
-                        EBoardSetup."SharePoint Site Main Library" + '/' + 
-                        EBoardSetup."SharePoint Document Library" + '/' + 
-                        EBoardSetup."Circular Resolution DMS Link" + '/' + 
-                        Docname + '/' + FileDesc;
-        DocLink.Description := FileDesc;
+        DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+        DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
         DocLink.Type := DocLink.Type::Link;
-        DocLink.Company := CompanyName;
-        DocLink."User ID" := UserId;
-        DocLink.Created := CreateDateTime(Today, Time);
+        DocLink.Company := CompanyName();
+        DocLink."User ID" := UserId();
+        DocLink.Created := CreateDateTime(Today(), Time());
         DocLink."Record ID" := TabID;
         DocLink.Insert();
 
-        
-        XmlFileName := '\\192.168.1.121\DocumentsPath\' + FileDesc + '.xml';
-        FileName := '\\192.168.1.121\DocumentsPath\' + FileDesc + '.xml';
-        
-        // 
-        /*
-        xmlWriter.WriteStartDocument();
-        xmlWriter.WriteStartElement('Columns');
-        xmlWriter.WriteStartElement('Params');
-        xmlWriter.WriteElementString('Library', EBoardSetup."SharePoint Site Main Library");
-        ...
-        */
-    end;
-    
-    Message('Documents Uploaded Successfully');
-    exit(true);
+        Message('Document "%1" uploaded to SharePoint successfully.', FileName);
+        exit(true);
+    end else
+        Error('Failed to upload document "%1" to SharePoint.', FileName);
 end;
+
 }
 

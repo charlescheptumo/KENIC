@@ -8908,8 +8908,6 @@ permissionset 50000 GeneratedPermission
         page "Board Declaration Card"=X,
         page "Board Declaration Subform"=X,
         page "Board Declarations"=X,
-  
-   
         tabledata "Declaration Interest Type"=RIMD,
         tabledata "Domain Ledger Entry"=RIMD,
         table "Declaration Interest Type"=X,
@@ -8919,5 +8917,12 @@ permissionset 50000 GeneratedPermission
         codeunit HelperFunctions=X,
         page "Declaration Interest Types"=X,
         page "Domain Ledger List"=X,
-        page "Get Domain Ledger"=X;
+        page "Get Domain Ledger"=X,
+        tabledata "ESign Header"=RIMD,
+        tabledata "ESign Line"=RIMD,
+        table "ESign Header"=X,
+        table "ESign Line"=X,
+        page "ESign Document Card"=X,
+        page "ESign Documents"=X,
+        page "ESign Lines"=X;
 }
