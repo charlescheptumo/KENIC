@@ -29,119 +29,135 @@ page 58118 "Head of E-Board"
         {
             group("Board Administration")
             {
-                action("Board Members")
+                Caption = 'Board Administration';
+
+                group("Board Setup & Members")
                 {
-                    ApplicationArea = Basic;
-                    RunObject = Page "Board Members";
-                    ToolTip = 'Executes the Board Members action.';
-                }
-                action("Board and Committee")
-                {
-                    ApplicationArea = Basic;
-                    RunObject = Page "Board Committee";
-                    ToolTip = 'Executes the Board and Committee action.';
+                    Caption = 'Members & Committees';
+
+                    action("Board Members")
+                    {
+                        ApplicationArea = Basic, Suite;
+                        Caption = 'Board Members';
+                        RunObject = Page "Board Members";
+                        ToolTip = 'Manage registered board members.';
+                    }
+                    action("Board and Committee")
+                    {
+                        ApplicationArea = Basic, Suite;
+                        Caption = 'Board Committees';
+                        RunObject = Page "Board Committee";
+                        ToolTip = 'Manage board committees and memberships.';
+                    }
                 }
 
-                action("Board Declarations")
+                group("Declarations Group")
                 {
-                    ApplicationArea = All;
-                    Caption = 'Board Declarations';
-                    RunObject = Page "Board Declarations";
-                    ToolTip = 'View and manage board member conflict of interest declarations.';
+                    Caption = 'Conflict Declarations';
+
+                    action("Board Declarations")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Board Declarations';
+                        RunObject = Page "Board Declarations";
+                        ToolTip = 'View and manage board member conflict of interest declarations.';
+                    }
+                    action("Declaration Interest Types")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Declaration Interest Types';
+                        RunObject = Page "Declaration Interest Types";
+                        ToolTip = 'Manage declaration interest type categories.';
+                    }
                 }
             }
 
             group(Meetings)
             {
+                Caption = 'Meetings';
+
                 action("Board meetings")
                 {
-                    ApplicationArea = Basic;
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Board Meetings';
                     RunObject = Page "Board Meetings List";
-                    ToolTip = 'Executes the Board meetings action.';
+                    ToolTip = 'Manage active board meetings.';
                 }
                 action("Published Meetings")
                 {
-                    ApplicationArea = Basic;
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Published Meetings';
                     RunObject = Page "Published Board Meeting List";
-                    ToolTip = 'Executes the Published Meetings action.';
+                    ToolTip = 'View published board meetings.';
                 }
                 action("Closed Meetings")
                 {
-                    ApplicationArea = Basic;
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Closed Meetings';
                     RunObject = Page "Closed Board Meetings List";
-                    ToolTip = 'Executes the Closed Meetings action.';
+                    ToolTip = 'View archived/closed board meetings.';
                 }
             }
 
             group("Director Payments")
             {
+                Caption = 'Director Payments';
+
                 action("Earnings")
                 {
-                    ApplicationArea = Basic;
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Earnings';
                     RunObject = Page "Directors Earnings";
-                    ToolTip = 'Executes the Earnings action.';
+                    ToolTip = 'Manage director earnings setup and transactions.';
                 }
-
                 action("Deductions")
                 {
-                    ApplicationArea = Basic;
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Deductions';
                     RunObject = Page "Director Deduction";
-                    ToolTip = 'Executes the Deductions action.';
+                    ToolTip = 'Manage director deductions.';
                 }
             }
 
             group("Circular Resolutions")
             {
+                Caption = 'Circular Resolutions';
+
                 action("Circular Resolution List")
                 {
                     ApplicationArea = All;
                     Caption = 'Pending Circular Resolutions';
                     RunObject = Page "Circular Resolution List";
                 }
-
                 action("Approved Circular Resolution List")
                 {
                     ApplicationArea = All;
                     Caption = 'Approved Circular Resolutions';
                     RunObject = Page "Approved Circular Resolution";
                 }
-
                 action("Posted Circular Resolution")
                 {
                     ApplicationArea = All;
                     Caption = 'Posted Circular Resolutions';
                     RunObject = Page "Posted Circular Resolution";
                 }
-
                 action("Closed Circular Resolution")
                 {
                     ApplicationArea = All;
                     Caption = 'Closed Circular Resolutions';
                     RunObject = Page "Closed Circular Resolution";
                 }
-
                 action("Rejected Circular Resolution")
                 {
                     ApplicationArea = All;
                     Caption = 'Rejected Circular Resolutions';
                     RunObject = Page "Rejected Circular Resolution";
                 }
-
                 action("Circular Resolution Archive")
                 {
                     ApplicationArea = All;
                     Caption = 'Circular Resolution Archive';
                     RunObject = Page "Circular Resolution Archive";
-                }
-            }
-
-            group("E-signing")
-            {
-                action("E-signing List")
-                {
-                    ApplicationArea = All;
-                    Caption = 'E-signing';
-                    // RunObject = page "Intelligence Entry List";
                 }
             }
 
@@ -160,7 +176,6 @@ page 58118 "Head of E-Board"
                         RunObject = Page "Compliance Categories";
                         ToolTip = 'Manage compliance categories and responsible users.';
                     }
-
                     action("Compliance Legislation List")
                     {
                         ApplicationArea = All;
@@ -181,7 +196,6 @@ page 58118 "Head of E-Board"
                         RunObject = Page "Pending Compliance Obligations";
                         ToolTip = 'Manage open compliance obligations and schedules.';
                     }
-
                     action("Posted Obligations")
                     {
                         ApplicationArea = All;
@@ -189,7 +203,6 @@ page 58118 "Head of E-Board"
                         RunObject = Page "Posted Obligations";
                         ToolTip = 'Manage posted compliance obligations and schedules.';
                     }
-
                     action("Completed Obligations")
                     {
                         ApplicationArea = All;
@@ -197,7 +210,6 @@ page 58118 "Head of E-Board"
                         RunObject = Page "Completed Obligations";
                         ToolTip = 'Manage completed compliance obligations and schedules.';
                     }
-
                     action("Overdue Obligations")
                     {
                         ApplicationArea = All;
@@ -205,7 +217,6 @@ page 58118 "Head of E-Board"
                         RunObject = Page "Overdue Obligations";
                         ToolTip = 'Manage overdue compliance obligations and schedules.';
                     }
-
                     action("Compliance Obligations")
                     {
                         ApplicationArea = All;
@@ -226,16 +237,21 @@ page 58118 "Head of E-Board"
 
             group(Reports)
             {
-                action("E-Board Report")
+                Caption = 'Reports';
+
+                action("Board Declaration Report")
                 {
                     ApplicationArea = All;
-                    Caption = 'E-Board Reports';
-                    // RunObject = report "Intelligence Report";
+                    Caption = 'Board Declaration Report';
+                    Image = Report;
+                    RunObject = report "Board Declaration Report";
+                    ToolTip = 'Print or export board member conflict of interest declarations.';
                 }
             }
-
             group(Setup)
             {
+                Caption = 'Setup';
+
                 action("E-Board Setup")
                 {
                     ApplicationArea = All;
@@ -252,6 +268,5 @@ profile "Head of E-Board"
     ProfileDescription = 'Head of E-Board';
     RoleCenter = "Head of E-Board";
     Caption = 'E-Board Role';
-    // Enabled = true;
-    // Promoted = true;
+    Enabled = true;
 }

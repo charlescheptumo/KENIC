@@ -12,10 +12,21 @@ page 58123 "Board Declaration Subform"
         {
             repeater(Control1)
             {
+                field("Declaration No."; Rec."Declaration No.")
+                {
+                    ApplicationArea = All;
+                }
                 field("Interest Type"; Rec."Interest Type")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the type of interest declared.';
+                    Visible = true;
+                }
+                field("Interest Type Description";Rec."Interest Type Description")
+                {
+                    ApplicationArea = All;
+                    ToolTip =  'Specifies the type of interest declared.';
+                
                 }
                 field(Organization; Rec.Organization)
                 {
@@ -36,6 +47,30 @@ page 58123 "Board Declaration Subform"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies whether this declaration interest is active.';
+                }
+
+                field("Start Date"; Rec."Start Date")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies when interest began.';
+                }
+
+                field("End Date"; Rec."End Date")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies when interest ended, if it is no longer active.';
+                }
+
+                field("Potential Conflict"; Rec."Potential Conflict")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies if this interest poses a potential conflict of interest.';
+                }
+
+                field(Comments; Rec.Comments)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies any additional remarks or details regarding this interest.';
                 }
             }
         }

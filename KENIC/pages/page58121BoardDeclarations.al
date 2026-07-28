@@ -74,8 +74,11 @@ page 58121 "Board Declarations"
                     BoardMember: Record "Board Members";
                     DeclarationHeader: Record "Board Declaration Header";
                     ExistingDeclaration: Record "Board Declaration Header";
+                    DeclarationLine: Record "Board Declaration Line";
+                    InterestType: Record "Declaration Interest Type";
                     CreatedCount: Integer;
                     CurrentYear: Integer;
+                    NextLineNo: Integer;
                 begin
                     CurrentYear := Date2DMY(WorkDate(), 3);
 
@@ -92,23 +95,39 @@ page 58121 "Board Declarations"
 
                     if BoardMember.FindSet() then
                         repeat
-                            
                             ExistingDeclaration.Reset();
                             ExistingDeclaration.SetRange("Board Member No.", BoardMember."Personal No");
                             ExistingDeclaration.SetRange("Declaration Type", ExistingDeclaration."Declaration Type"::Annual);
                             ExistingDeclaration.SetRange("Declaration Year", CurrentYear);
 
-                            if not ExistingDeclaration.FindFirst() then begin
+                            if ExistingDeclaration.IsEmpty() then begin
                                 DeclarationHeader.Init();
-
+                                DeclarationHeader.Validate("Declaration Type", DeclarationHeader."Declaration Type"::Annual);
                                 DeclarationHeader.Validate("Board Member No.", BoardMember."Personal No");
-                                DeclarationHeader."Declaration Type" := DeclarationHeader."Declaration Type"::Annual;
                                 DeclarationHeader."Declaration Year" := CurrentYear;
                                 DeclarationHeader."Declaration Status" := DeclarationHeader."Declaration Status"::Draft;
 
-                               
-                                if DeclarationHeader.Insert(true) then
+                                if DeclarationHeader.Insert(true) then begin
                                     CreatedCount += 1;
+
+
+                                    InterestType.Reset();
+                                    InterestType.SetRange(Blocked, false);
+
+                                    if InterestType.FindSet() then begin
+                                        NextLineNo := 10000;
+                                        repeat
+                                            DeclarationLine.Init();
+                                            DeclarationLine."Declaration No." := DeclarationHeader."No.";
+                                            DeclarationLine."Line No." := NextLineNo;
+                                            DeclarationLine.Validate("Interest Type", InterestType.Code);
+                                           // DeclarationLine.Validate("Interest Type", InterestType.Code);
+                                            DeclarationLine.Insert(true);
+
+                                            NextLineNo += 10000;
+                                        until InterestType.Next() = 0;
+                                    end;
+                                end;
                             end;
                         until BoardMember.Next() = 0;
 

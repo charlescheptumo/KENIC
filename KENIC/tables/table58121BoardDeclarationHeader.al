@@ -9,6 +9,7 @@ table 58121 "Board Declaration Header"
         {
             Caption = 'No.';
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
         field(2; "Board Member No."; Code[20])
@@ -58,37 +59,38 @@ table 58121 "Board Declaration Header"
         {
             Caption = 'Declaration Date';
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
-        field(7; "Financial Interests"; Blob)
-        {
-            Caption = 'Financial Interests';
-            DataClassification = CustomerContent;
-        }
+        // field(7; "Financial Interests"; Blob)
+        // {
+        //     Caption = 'Financial Interests';
+        //     DataClassification = CustomerContent;
+        // }
 
-        field(8; "Directorships"; Blob)
-        {
-            Caption = 'Directorships';
-            DataClassification = CustomerContent;
-        }
+        // field(8; "Directorships"; Blob)
+        // {
+        //     Caption = 'Directorships';
+        //     DataClassification = CustomerContent;
+        // }
 
-        field(9; "Employment"; Blob)
-        {
-            Caption = 'Employment';
-            DataClassification = CustomerContent;
-        }
+        // field(9; "Employment"; Blob)
+        // {
+        //     Caption = 'Employment';
+        //     DataClassification = CustomerContent;
+        // }
 
-        field(10; "Relationships"; Blob)
-        {
-            Caption = 'Relationships';
-            DataClassification = CustomerContent;
-        }
+        // field(10; "Relationships"; Blob)
+        // {
+        //     Caption = 'Relationships';
+        //     DataClassification = CustomerContent;
+        // }
 
-        field(11; "Other Interests"; Blob)
-        {
-            Caption = 'Other Interests';
-            DataClassification = CustomerContent;
-        }
+        // field(11; "Other Interests"; Blob)
+        // {
+        //     Caption = 'Other Interests';
+        //     DataClassification = CustomerContent;
+        // }
 
         field(12; "Declaration Status"; Enum "Declaration Status")
         {
@@ -98,7 +100,7 @@ table 58121 "Board Declaration Header"
 
             trigger OnValidate()
             begin
-                // Automatically stamp submitted/reviewed metadata when status changes
+
                 if "Declaration Status" = "Declaration Status"::Submitted then begin
                     "Declaration Date" := WorkDate();
                     "Submitted DateTime" := CurrentDateTime();
@@ -146,7 +148,7 @@ table 58121 "Board Declaration Header"
         field(17; "Declaration Year"; Integer)
         {
             Caption = 'Declaration Year';
-             Editable = false;
+            Editable = false;
             DataClassification = CustomerContent;
             trigger OnValidate()
             begin
@@ -169,6 +171,142 @@ table 58121 "Board Declaration Header"
         //             Error('You must select a Meeting No. before choosing an Agenda Item.');
         //     end;
         // }
+
+        field(18; "Convicted of Crime"; Boolean)
+        {
+            Caption = 'Have you ever been convicted of a criminal offence?';
+            DataClassification = CustomerContent;
+            Editable = false;
+
+            trigger OnValidate()
+            begin
+                if not "Convicted of Crime" then
+                    "Conviction Details" := '';
+            end;
+        }
+
+        field(19; "Conviction Details"; Text[250])
+        {
+            Caption = 'Conviction Details';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(20; "Bankrupt or Insolvent"; Boolean)
+        {
+            Caption = 'Have you ever been declared bankrupt or insolvent?';
+            DataClassification = CustomerContent;
+            Editable = false;
+
+            trigger OnValidate()
+            begin
+                if not "Bankrupt or Insolvent" then
+                    "Bankruptcy Details" := '';
+            end;
+        }
+
+        field(21; "Bankruptcy Details"; Text[250])
+        {
+            Caption = 'Bankruptcy Details';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(22; "Involved in Litigation"; Boolean)
+        {
+            Caption = 'Are you currently involved in litigation affecting your duties?';
+            DataClassification = CustomerContent;
+            Editable = false;
+
+            trigger OnValidate()
+            begin
+                if not "Involved in Litigation" then
+                    "Litigation Details" := '';
+            end;
+        }
+
+        field(23; "Litigation Details"; Text[250])
+        {
+            Caption = 'Litigation Details';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(24; "Received Gifts/Hospitality"; Boolean)
+        {
+            Caption = 'Have you received gifts or hospitality influencing independence?';
+            DataClassification = CustomerContent;
+            Editable = false;
+
+            trigger OnValidate()
+            begin
+                if not "Received Gifts/Hospitality" then
+                    "Gifts Details" := '';
+            end;
+        }
+
+        field(25; "Gifts Details"; Text[250])
+        {
+            Caption = 'Gifts/Hospitality Details';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(26; "Family Employed in Org"; Boolean)
+        {
+            Caption = 'Do you have close family employed by or doing business with the organization?';
+            DataClassification = CustomerContent;
+            Editable = false;
+
+            trigger OnValidate()
+            begin
+                if not "Family Employed in Org" then
+                    "Family Details" := '';
+            end;
+        }
+
+        field(27; "Family Details"; Text[250])
+        {
+            Caption = 'Family Member Details';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(28; "Other Conflict Matter"; Boolean)
+        {
+            Caption = 'Aware of any other matter that could cause a conflict?';
+            DataClassification = CustomerContent;
+            Editable = false;
+
+            trigger OnValidate()
+            begin
+                if not "Other Conflict Matter" then
+                    "Other Conflict Details" := '';
+            end;
+        }
+
+        field(29; "Other Conflict Details"; Text[250])
+        {
+            Caption = 'Other Conflict Details';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(30; "Declaration Statement Accepted"; Boolean)
+        {
+            Caption = 'I declare that the provided information is true, complete and accurate.';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+
+        field(31; "Electronic Signature"; Text[100])
+        {
+            Caption = 'Electronic Signature (Full Name)';
+            DataClassification = EndUserIdentifiableInformation;
+            Editable = false;
+        }
+
+
     }
 
     keys
@@ -178,6 +316,11 @@ table 58121 "Board Declaration Header"
             Clustered = true;
         }
     }
+
+    trigger OnDelete()
+    begin
+        TestField("Declaration Status", "Declaration Status"::Open);
+    end;
 
     trigger OnInsert()
     var
