@@ -146,7 +146,7 @@ codeunit 50042 COCCAIntegration
             Ledger.Created := _HelperFunctions.GetAsDateTimeISO(Obj, 'created');
             Ledger.DomainRoid := _HelperFunctions.SafeAssignText(_HelperFunctions.GetAsText(Obj, 'domainRoid'), MaxStrLen(Ledger.DomainRoid));
             Ledger.TransType := _HelperFunctions.SafeAssignText(_HelperFunctions.GetAsText(Obj, 'transType'), MaxStrLen(Ledger.TransType));
-            //Ledger.RefundExpiry := _HelperFunctions.GetAsDateTimeISO(Obj, 'refundExpiry');
+            Ledger.RefundExpiry := _HelperFunctions.GetAsDateTimeISO(Obj, 'refundExpiry');
             Ledger.RefundAmount := _HelperFunctions.GetAsDecimal(Obj, 'refundAmount');
             Ledger.Balance := _HelperFunctions.GetAsDecimal(Obj, 'balance');
             Ledger.DomainName := _HelperFunctions.SafeAssignText(_HelperFunctions.GetAsText(Obj, 'domainName'), MaxStrLen(Ledger.DomainName));
@@ -157,11 +157,11 @@ codeunit 50042 COCCAIntegration
             Ledger.ProcessorAccountHistoryId := _HelperFunctions.GetAsInteger(Obj, 'processorAccountHistoryId');
             Ledger.RefundGrace := _HelperFunctions.GetAsDateTimeISO(Obj, 'refundGrace');
             Ledger.IsPicked := _HelperFunctions.GetAsBoolean(Obj, 'isPicked');
-            //Ledger.PreviousExpiryDate := _HelperFunctions.GetAsDateTimeISO(Obj, 'previousExpiryDate');
+            Ledger.PreviousExpiryDate := _HelperFunctions.GetAsDateTimeISO(Obj, 'previousExpiryDate');
             Ledger.RenewalRefund := _HelperFunctions.GetAsBoolean(Obj, 'renewalRefund');
             Ledger.DocumentNumber := _HelperFunctions.GetAsInteger(Obj, 'documentNumber');
             Ledger.TransfRoid := _HelperFunctions.SafeAssignText(_HelperFunctions.GetAsText(Obj, 'transfRoid'), MaxStrLen(Ledger.TransfRoid));
-            //Ledger.ExDate := _HelperFunctions.GetAsDateTimeISO(Obj, 'exDate');
+            Ledger.ExDate := _HelperFunctions.GetAsDateTimeISO(Obj, 'exDate');
 
             Ledger.RefundForId := _HelperFunctions.GetAsBigInteger(Obj, 'refundForId');
 
@@ -184,5 +184,121 @@ codeunit 50042 COCCAIntegration
         end;
 
         exit(CountUpdated);
+    end;
+
+    procedure GetLedger2(Endpoint: Text; JsonBody: Text): Text
+    var
+        ResponseTxt: Text;
+        ErrTxt: Text;
+        HttpStatus: Integer;
+        UpdatedCount: Integer;
+    begin
+        Clear(ResponseTxt);
+        Clear(ErrTxt);
+        HttpStatus := 0;
+        UpdatedCount := 0;
+
+        SendPostRequest2(
+            Endpoint,
+            JsonBody,
+            HttpStatus,
+            ResponseTxt,
+            ErrTxt);
+
+        if ErrTxt <> '' then begin
+            Message(StrSubstNo('Ledger retrieval failed. %1', ErrTxt));
+            exit(StrSubstNo('Ledger retrieval failed. %1', ErrTxt));
+        end;
+
+        UpdatedCount := ImportDomainLedger(ResponseTxt);
+
+        Message(StrSubstNo('Update successful. Updated=%1', UpdatedCount));
+        exit(StrSubstNo('Update successful. Updated=%1', UpdatedCount));
+    end;
+
+    local procedure SendPostRequest2(Endpoint: Text; JsonBody: Text; var HttpStatus: Integer; var ResponseTxt: Text; var ErrTxt: Text)
+    var
+        Client: HttpClient;
+        Request: HttpRequestMessage;
+        Response: HttpResponseMessage;
+        Content: HttpContent;
+        Headers: HttpHeaders;
+    begin
+        Clear(ResponseTxt);
+        Clear(ErrTxt);
+        HttpStatus := 0;
+
+        Content.WriteFrom(JsonBody);
+
+        Content.GetHeaders(Headers);
+        Headers.Clear();
+        Headers.Add('Content-Type', 'application/json');
+
+        Request.Method('POST');
+        Request.SetRequestUri(GetURL() + Endpoint);
+        Request.Content := Content;
+
+        Request.GetHeaders(Headers);
+        Headers.Add('Accept', 'application/json');
+
+        if not Client.Send(Request, Response) then begin
+            ErrTxt := 'HTTP POST send failed.';
+            exit;
+        end;
+
+        HttpStatus := Response.HttpStatusCode();
+        Response.Content.ReadAs(ResponseTxt);
+
+        if not Response.IsSuccessStatusCode() then
+            ErrTxt := StrSubstNo('HTTP %1: %2', HttpStatus, ResponseTxt);
+    end;
+
+    procedure GetLedgerByDomain(DomainName: Text): Text
+    var
+        JsonBody: Text;
+    begin
+        JsonBody :=
+            '{' +
+            '"domainName":"' + DomainName + '"' +
+            '}';
+
+        exit(GetLedger2(
+            'Transactions/ledger/by-domainname',
+            JsonBody));
+    end;
+
+    procedure GetLedgerByDocument(DocumentNumber: Integer): Text
+    var
+        JsonBody: Text;
+    begin
+        JsonBody :=
+            '{' +
+            '"documentNumber":' + Format(DocumentNumber) +
+            '}';
+
+        exit(GetLedger2(
+            'Transactions/ledger/by-documentnumber',
+            JsonBody));
+    end;
+
+    procedure GetLedgerByDateRange(StartDate: DateTime; EndDate: DateTime): Text
+    var
+        JsonBody: Text;
+    begin
+        JsonBody :=
+            '{' +
+            '"startDate":"' + FormatDateTimeISO(StartDate) + '",' +
+            '"endDate":"' + FormatDateTimeISO(EndDate) + '"' +
+            '}';
+
+        exit(GetLedger2(
+            'Transactions/ledger/by-created-range',
+            JsonBody));
+    end;
+
+    local procedure FormatDateTimeISO(Value: DateTime): Text
+    begin
+        exit(
+            Format(Value, 0, '<Year4>-<Month,2>-<Day,2>T<Hours24,2>:<Minutes,2>:<Seconds,2>.000Z'));
     end;
 }
