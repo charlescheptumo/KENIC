@@ -66,6 +66,100 @@ page 58122 "Board Declaration Card"
                 UpdatePropagation = Both;
                 Editable = IsEditable;
             }
+            group("General Declarations")
+            {
+                Caption = 'General Declarations';
+                Editable = IsEditable;
+
+                field("Convicted of Crime"; Rec."Convicted of Crime")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies if you have ever been convicted of a criminal offence.';
+                }
+                field("Conviction Details"; Rec."Conviction Details")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies details of the conviction.';
+                    Editable = Rec."Convicted of Crime" and IsEditable;
+                }
+
+                field("Bankrupt or Insolvent"; Rec."Bankrupt or Insolvent")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies if you have ever been declared bankrupt or insolvent.';
+                }
+                field("Bankruptcy Details"; Rec."Bankruptcy Details")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies details of the insolvency/bankruptcy.';
+                    Editable = Rec."Bankrupt or Insolvent" and IsEditable;
+                }
+
+                field("Involved in Litigation"; Rec."Involved in Litigation")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies if you are involved in litigation.';
+                }
+                field("Litigation Details"; Rec."Litigation Details")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies details of the litigation.';
+                    Editable = Rec."Involved in Litigation" and IsEditable;
+                }
+
+                field("Received Gifts/Hospitality"; Rec."Received Gifts/Hospitality")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies if you received gifts/hospitality influencing independence.';
+                }
+                field("Gifts Details"; Rec."Gifts Details")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies details of gifts or hospitality.';
+                    Editable = Rec."Received Gifts/Hospitality" and IsEditable;
+                }
+
+                field("Family Employed in Org"; Rec."Family Employed in Org")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies if close family members work for or do business with the organization.';
+                }
+                field("Family Details"; Rec."Family Details")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies details of family relationship/employment.';
+                    Editable = Rec."Family Employed in Org" and IsEditable;
+                }
+
+                field("Other Conflict Matter"; Rec."Other Conflict Matter")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies any other potential conflict of interest matter.';
+                }
+                field("Other Conflict Details"; Rec."Other Conflict Details")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies details of other potential conflicts.';
+                    Editable = Rec."Other Conflict Matter" and IsEditable;
+                }
+            }
+
+            group("Sign-Off")
+            {
+                Caption = 'Declaration Sign-Off';
+                Editable = IsEditable;
+
+                field("Declaration Statement Accepted"; Rec."Declaration Statement Accepted")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Confirms accuracy of provided information.';
+                }
+                field("Electronic Signature"; Rec."Electronic Signature")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Typed full name acting as electronic signature from the portal.';
+                }
+            }
 
             group(Audit)
             {
@@ -143,6 +237,26 @@ page 58122 "Board Declaration Card"
                 //     Rec.Modify(true);
                 //     Message('Declaration successfully approved.');
                 // end;
+            }
+
+            action(PrintDeclaration)
+            {
+                Caption = 'Print Declaration';
+                ApplicationArea = All;
+                Image = Print;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Print or export the annual declaration form for the selected board member.';
+
+                trigger OnAction()
+                var
+                    HeaderRec: Record "Board Declaration Header";
+                begin
+                    HeaderRec.Reset();
+                    HeaderRec.SetRange("No.", Rec."No.");
+                    Report.Run(Report::"Board Declaration Report", true, true, HeaderRec);
+                end;
             }
         }
     }

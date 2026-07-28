@@ -23,7 +23,7 @@ Table 55009 "Board Meeting Attendance"
                 end;
             end;
         }
-        field(3; "Member No"; Code[200])
+        field(3; "Member No"; Code[50])
         {
             TableRelation = "Board Members"."Personal No";
 
@@ -31,12 +31,13 @@ Table 55009 "Board Meeting Attendance"
             var
                 Memb: Record "Board Members";
             begin
-                Memb.SetRange("Personal No", Rec."Member No");
-                if Memb.FindFirst() then begin
+                if Memb.Get(Rec."Member No") then begin
                     Rec."Member Name" := Memb."First Name" + ' ' + Memb."Last Name";
-                    Rec."E-mail" := Memb."Company E-Mail"; 
-                end else
+                    Rec."E-mail" := Memb."Company E-Mail";
+                end else begin
                     Rec."Member Name" := '';
+                    Rec."E-mail" := '';
+                end;
             end;
         }
         field(4; "Commitee No"; Code[200])
