@@ -8,8 +8,8 @@ page 50352 "Domain Ledger List"
     SourceTable = "Domain Ledger Entry";
     UsageCategory = Administration;
     InsertAllowed = false;
-    DeleteAllowed = false;
-    Editable = false;
+    DeleteAllowed = true;
+    Editable = true;
 
     layout
     {
@@ -152,6 +152,40 @@ page 50352 "Domain Ledger List"
                 begin
                     DomainDialog.RunModal();
                     CurrPage.Update(false);
+                end;
+            }
+            action(ProcessSingle)
+            {
+                ApplicationArea = All;
+                Caption = 'Process SIngle Transaction';
+                Image = Refresh;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                var
+                    DomainDialog: Page "Get Domain Ledger";
+                begin
+                    DomainDialog.RunModal();
+                    CurrPage.Update(false);
+                end;
+            }
+            action(ProcessBatch)
+            {
+                ApplicationArea = All;
+                Caption = 'Process batch Transactions';
+                Image = Refresh;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                var
+                    DomainDialog: Page "Get Domain Ledger";
+                begin
+                    // DomainDialog.RunModal();
+                    // CurrPage.Update(false);
                 end;
             }
         }
