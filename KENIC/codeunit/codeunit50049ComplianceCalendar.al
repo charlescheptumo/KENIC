@@ -34,6 +34,7 @@ codeunit 50049 "Compliance Calendar"
     begin
         CalendarEntry.Init();
         CalendarEntry."No." := '';
+       // CalendarEntry.Insert(true);
         CalendarEntry.Validate("Obligation No.", Obligation."No.");
         CalendarEntry."Category Code" := Obligation."Category Code";
         CalendarEntry."Legislation Code" := Obligation."Legislation Code"; 
@@ -43,6 +44,7 @@ codeunit 50049 "Compliance Calendar"
         CalendarEntry.Validate("Assigned Employee No.", EmpNo);
         CalendarEntry.Status := CalendarEntry.Status::"In Progress";
         CalendarEntry.Insert(true);
+        //CalendarEntry.Modify(true);
     end;
 
 

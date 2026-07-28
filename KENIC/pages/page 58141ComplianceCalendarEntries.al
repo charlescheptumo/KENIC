@@ -67,4 +67,27 @@ page 58141 "Compliance Calendar Entries"
             }
         }
     }
+
+//     actions
+// {
+//     area(Processing)
+//     {
+//         action(DeleteEntry)
+//         {
+//             ApplicationArea = All;
+//             Caption = 'Delete';
+//             Image = Delete;
+//             Promoted = true;
+//             PromotedCategory = Process;
+
+//             trigger OnAction()
+//             begin
+//                 if Confirm('Delete Compliance Calendar Entry %1?', false, Rec."No.") then begin
+//                     Rec.Delete(true);
+//                     CurrPage.Update(false);
+//                 end;
+//             end;
+//         }
+//     }
+// }
 }

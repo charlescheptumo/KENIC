@@ -193,7 +193,8 @@ table 57117 "Compliance Calendar Entry"
         if "No." = '' then begin
             EBoardSetup.GetRecordOnce();
             EBoardSetup.TestField("Compliance Entry Nos.");
-            "No." := NoSeries.GetNextNo(EBoardSetup."Compliance Entry Nos.", WorkDate(), true);
+          //  "No." := NoSeries.GetNextNo(EBoardSetup."Compliance Entry Nos.", WorkDate(), true);
+          "No." := NoSeries.GetNextNo(EBoardSetup."Compliance Entry Nos.", WorkDate());
         end;
 
         "Created By" := UserId();

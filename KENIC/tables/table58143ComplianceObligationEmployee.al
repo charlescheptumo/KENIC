@@ -105,14 +105,16 @@ table 58143 "Compliance Obligation Employee"
                 Error('You cannot add or delete assigned employees on a posted Compliance Obligation.');
     end;
 
-    local procedure UpdateParentStatus()
+   local procedure UpdateParentStatus()
     var
         ComplianceObligation: Record "Compliance Obligation";
     begin
-        if ComplianceObligation.Get(Rec."Obligation No.") then begin
-            ComplianceObligation.UpdateStatus();
-            ComplianceObligation.Modify(true);
-        end;
+        if ComplianceObligation.Get(Rec."Obligation No.") then
+            
+            if ComplianceObligation.Posted then begin
+                ComplianceObligation.UpdateStatus();
+                ComplianceObligation.Modify(false);
+            end;
     end;
 
     local procedure UpdateCalendarEntryStatus()
