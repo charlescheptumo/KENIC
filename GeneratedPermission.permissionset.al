@@ -8909,5 +8909,15 @@ permissionset 50000 GeneratedPermission
         page "Board Declaration Subform"=X,
         page "Board Declarations"=X,
         page "Board Meeting Agenda Subform"=X,
-        page "Board Meeting Conflicts"=X;
+        page "Board Meeting Conflicts"=X,
+        tabledata "Declaration Interest Type"=RIMD,
+        tabledata "Domain Ledger Entry"=RIMD,
+        table "Declaration Interest Type"=X,
+        table "Domain Ledger Entry"=X,
+        report "Board Declaration Report"=X,
+        codeunit COCCAIntegration=X,
+        codeunit HelperFunctions=X,
+        page "Declaration Interest Types"=X,
+        page "Domain Ledger List"=X,
+        page "Get Domain Ledger"=X;
 }
