@@ -44,6 +44,11 @@ page 58121 "Board Declarations"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the current approval status.';
                 }
+                field(Published; Rec.Published)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies whether the declaration has been published to the Board Portal.';
+                }
                 field("Created By"; Rec."Created By")
                 {
                     ApplicationArea = All;
@@ -106,6 +111,7 @@ page 58121 "Board Declarations"
                                 DeclarationHeader.Validate("Board Member No.", BoardMember."Personal No");
                                 DeclarationHeader."Declaration Year" := CurrentYear;
                                 DeclarationHeader."Declaration Status" := DeclarationHeader."Declaration Status"::Draft;
+                                DeclarationHeader.Validate(Published, true);
 
                                 if DeclarationHeader.Insert(true) then begin
                                     CreatedCount += 1;
@@ -121,7 +127,7 @@ page 58121 "Board Declarations"
                                             DeclarationLine."Declaration No." := DeclarationHeader."No.";
                                             DeclarationLine."Line No." := NextLineNo;
                                             DeclarationLine.Validate("Interest Type", InterestType.Code);
-                                           // DeclarationLine.Validate("Interest Type", InterestType.Code);
+                                            // DeclarationLine.Validate("Interest Type", InterestType.Code);
                                             DeclarationLine.Insert(true);
 
                                             NextLineNo += 10000;

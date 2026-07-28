@@ -306,6 +306,20 @@ table 58121 "Board Declaration Header"
             Editable = false;
         }
 
+        field(32; "Published"; Boolean)
+        {
+            Caption = 'Published';
+            DataClassification = CustomerContent;
+            Editable = false;
+
+            // trigger OnValidate()
+            // begin
+              
+            //     if Published then
+            //         TestField("Declaration Status", "Declaration Status"::Draft);
+            // end;
+        }
+
 
     }
 

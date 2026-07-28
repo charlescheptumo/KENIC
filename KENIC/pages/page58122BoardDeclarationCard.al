@@ -57,6 +57,12 @@ page 58122 "Board Declaration Card"
                     Editable = false;
                     ToolTip = 'Specifies the year of the declaration.';
                 }
+
+                field(Published; Rec.Published)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies whether the declaration has been published to the Board Portal.';
+                }
             }
 
             part(Lines; "Board Declaration Subform")
@@ -213,6 +219,7 @@ page 58122 "Board Declaration Card"
                         exit;
 
                     Rec.Validate("Declaration Status", Rec."Declaration Status"::Draft);
+                    Rec.Validate(Published, true);
                     Rec.Modify(true);
 
                     SetEditable();

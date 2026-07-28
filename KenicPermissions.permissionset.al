@@ -8909,8 +8909,8 @@ permissionset 50001 KenicPermissions
         page "Board Declaration Card"=X,
         page "Board Declaration Subform"=X,
         page "Board Declarations"=X,
-        page "Board Meeting Agenda Subform"=X,
-        page "Board Meeting Conflicts"=X,
+       
+
         tabledata "Declaration Interest Type"=RIMD,
         tabledata "Domain Ledger Entry"=RIMD,
         table "Declaration Interest Type"=X,

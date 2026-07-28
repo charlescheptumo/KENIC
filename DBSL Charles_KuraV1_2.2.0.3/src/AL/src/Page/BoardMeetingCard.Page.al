@@ -139,27 +139,27 @@ Page 55003 "Board Meeting Card"
                 }
             }
     
-            group(AgendaGroup)
-            {
-                Caption = 'Meeting Agenda Items';
+            // group(AgendaGroup)
+            // {
+            //     Caption = 'Meeting Agenda Items';
 
-                part(AgendaLines; "Board Meeting Agenda Subform")
-                {
-                    ApplicationArea = All;
-                    SubPageLink = "Meeting No." = field(No);
-                }
-            }
-            group(ConflictsGroup)
-            {
-                Caption = 'Conflicts of Interest';
+            //     part(AgendaLines; "Board Meeting Agenda Subform")
+            //     {
+            //         ApplicationArea = All;
+            //         SubPageLink = "Meeting No." = field(No);
+            //     }
+            // }
+            // group(ConflictsGroup)
+            // {
+            //     Caption = 'Conflicts of Interest';
 
-                part(MeetingConflicts; "Board Meeting Conflicts")
-                {
-                    ApplicationArea = All;
-                    SubPageLink = "Meeting No." = field(No);
-                    UpdatePropagation = Both;
-                }
-            }
+            //     part(MeetingConflicts; "Board Meeting Conflicts")
+            //     {
+            //         ApplicationArea = All;
+            //         SubPageLink = "Meeting No." = field(No);
+            //         UpdatePropagation = Both;
+            //     }
+            // }
         }
 
         area(factboxes)
