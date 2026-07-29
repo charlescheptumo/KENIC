@@ -27,6 +27,12 @@ page 58154 "ESign Lines"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the email address of the board member.';
                 }
+
+                field("Signing Order"; Rec."Signing Order")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Species the sequence of signing';
+                }
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;

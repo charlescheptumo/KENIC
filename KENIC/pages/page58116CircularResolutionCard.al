@@ -276,34 +276,34 @@ page 58116 "Circular Resolution Card"
                     end;
                 }
 
-                action(RemoveAllVoters)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Remove All Members';
-                    ToolTip = 'Remove all members currently listed under this circular resolution.';
-                    Image = Delete;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    Visible = false;
+                // action(RemoveAllVoters)
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Remove All Members';
+                //     ToolTip = 'Remove all members currently listed under this circular resolution.';
+                //     Image = Delete;
+                //     Promoted = true;
+                //     PromotedCategory = Process;
+                //     Visible = false;
 
-                    trigger OnAction()
-                    var
-                        ResVote: Record "Circular Resolution lines";
-                    begin
-                        Rec.TestField("No.");
-                        if not IsDocumentEditable then
-                            exit;
-                        if Confirm('Are you sure you want to remove all board members from this circular resolution?', false) then begin
-                            ResVote.Reset();
-                            ResVote.SetRange("Resolution No.", Rec."No.");
-                            if not ResVote.IsEmpty() then begin
-                                ResVote.DeleteAll(true);
-                                Message('All board members have been removed.');
-                            end;
-                            CurrPage.Update(false);
-                        end;
-                    end;
-                }
+                //     trigger OnAction()
+                //     var
+                //         ResVote: Record "Circular Resolution lines";
+                //     begin
+                //         Rec.TestField("No.");
+                //         if not IsDocumentEditable then
+                //             exit;
+                //         if Confirm('Are you sure you want to remove all board members from this circular resolution?', false) then begin
+                //             ResVote.Reset();
+                //             ResVote.SetRange("Resolution No.", Rec."No.");
+                //             if not ResVote.IsEmpty() then begin
+                //                 ResVote.DeleteAll(true);
+                //                 Message('All board members have been removed.');
+                //             end;
+                //             CurrPage.Update(false);
+                //         end;
+                //     end;
+                // }
             }
 
             group("Functions")

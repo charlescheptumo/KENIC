@@ -152,6 +152,13 @@ table 57115 "E-Board Setup"
             TableRelation = "No. Series";
         }
 
+        field(111; "E-Signature DMS Link"; Text[100])
+        {
+            Caption = 'E-Signature DMS Link';
+            ToolTip = 'The folder name within SharePoint/DMS designated for storing E-signature documents.';
+        }
+
+
     }
 
 

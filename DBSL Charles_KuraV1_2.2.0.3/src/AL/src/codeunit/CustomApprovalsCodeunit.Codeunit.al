@@ -467,8 +467,14 @@ Codeunit 59500 "Custom Approvals Codeunit"
         //Circular Resolution
         OnSendCircularResolutionApprovalRequestTxt: label 'Approval of a Circular Resolution is requested';
         RunWorkflowOnSendCircularResolutionForApprovalCode: label 'RUNWORKFLOWONSENDCIRCULARRESOLUTIONFORAPPROVAL';
-        OnCancelCircularResolutionApprovalRequestTxt: label 'An Approval of a Circular Resolution is canceled';
+        OnCancelCircularResolutionApprovalRequestTxt: label 'An Approval of a Circular Resolution is cancelled';
         RunWorkflowOnCancelCircularResolutionForApprovalCode: label 'RUNWORKFLOWONCANCELCIRCULARRESOLUTIONFORAPPROVAL';
+
+        //ESign Header
+        OnSendESignHeaderApprovalRequestTxt: label 'Approval of E-Signature document is requested';
+        RunWorkflowOnSendESignHeaderForApprovalCode: label 'RUNWORKFLOWONSENDESIGNHEADERFORAPPROVAL';
+        OnCancelESignHeaderApprovalRequestTxt: label 'An Approval of E-Signature document is cancelled';
+        RunWorkflowOnCancelESignHeaderForApprovalCode: label 'RUNWORKFLOWONCANCELESIGNHEADERFORAPPROVAL';
 
 
     procedure CheckApprovalsWorkflowEnabled(var Variant: Variant): Boolean
@@ -733,6 +739,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Circular Resolution
             Database::"Circular Resolution Header":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendCircularResolutionForApprovalCode));
+
+            //ESign Header
+            Database::"ESign Header":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendESignHeaderForApprovalCode));
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1198,6 +1208,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelCircularResolutionForApprovalCode, Database::"Circular Resolution Header", OnCancelCircularResolutionApprovalRequestTxt, 0, false);
 
+        //ESign Header
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendESignHeaderForApprovalCode, Database::"ESign Header", OnSendESignHeaderApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelESignHeaderForApprovalCode, Database::"ESign Header", OnCancelESignHeaderApprovalRequestTxt, 0, false);
+
     end;
 
     local procedure RunWorkflowOnSendApprovalRequestCode(): Code[128]
@@ -1468,6 +1484,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Circular Resolution
             Database::"Circular Resolution Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendCircularResolutionForApprovalCode, Variant);
+
+            //ESign Header
+            Database::"ESign Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendESignHeaderForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1736,6 +1756,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Circular Resolution
             Database::"Circular Resolution Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelCircularResolutionForApprovalCode, Variant);
+
+            //ESign Header
+            Database::"ESign Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelESignHeaderForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1862,6 +1886,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         ContractRenewal: Record ContractRenewal;
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
+        ESignHeader: Record "ESign Header";
     begin
         case RecRef.Number of
 
@@ -2585,6 +2610,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Handled := true;
                 end;
 
+            //ESign Header
+            Database::"ESign Header":
+                begin
+                    RecRef.SetTable(ESignHeader);
+                    ESignHeader.Validate("Approval Status", ESignHeader."Approval Status"::Open);
+                    ESignHeader.Modify;
+                    Variant := ESignHeader;
+                    Handled := true;
+                end;
+
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end
@@ -2710,6 +2745,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         ContractRenewal: Record ContractRenewal;
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
+        ESignHeader: Record "ESign Header";
     begin
         Handled := true;
         case RecRef.Number of
@@ -3407,6 +3443,15 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     CircularResolutionHeader.Modify();
                     Variant := CircularResolutionHeader;
                 end;
+
+            //ESign Header
+            Database::"ESign Header":
+                begin
+                    RecRef.SetTable(ESignHeader);
+                    ESignHeader.Validate("Approval Status", ESignHeader."Approval Status"::Released);
+                    ESignHeader.Modify();
+                    Variant := ESignHeader;
+                end;
             else
                 Handled := false;
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
@@ -3658,6 +3703,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         ContractRenewal: Record ContractRenewal;
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
+        ESignHeader: Record "ESign Header";
     begin
         RecRef.GetTable(Variant);
 
@@ -4426,6 +4472,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     CircularResolutionHeader.Validate("Approval Status", CircularResolutionHeader."Approval Status"::"Pending Approval");
                     CircularResolutionHeader.Modify();
                     Variant := CircularResolutionHeader;
+                    IsHandled := true;
+                end;
+
+            //ESign Header
+            Database::"ESign Header":
+                begin
+                    RecRef.SetTable(ESignHeader);
+                    ESignHeader.Validate("Approval Status", ESignHeader."Approval Status"::"Pending Approval");
+                    ESignHeader.Modify;
+                    Variant := ESignHeader;
                     IsHandled := true;
                 end;
             else

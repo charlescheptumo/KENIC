@@ -3848,5 +3848,66 @@ begin
         Error('Failed to upload document "%1" to SharePoint.', FileName);
 end;
 
+
+// Upload E-Signature Documents
+procedure UploadESignatureDocument(DocNo: Code[20]; DocDesc: Text; TabID: RecordID): Boolean
+var
+    EBoardSetup: Record "E-Board Setup";
+    DocLink: Record "Record Link";
+    ESignHeader: Record "ESign Header";
+    SharePointMgt: Codeunit "Sharepoint Management";
+    Docname: Text[250];
+    FileName: Text[250];
+    ServerRelativeFolder: Text;
+    FileInStream: InStream;
+    UploadPromptMsg: Label 'Select the E-Signature document to upload';
+begin
+    EBoardSetup.GetRecordOnce();
+    EBoardSetup.TestField("E-Signature DMS Link");
+
+    if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+        exit(false);
+
+    // Document Number for URL safety
+    Docname := DocNo;
+    Docname := ConvertStr(Docname, ':', '_');
+    Docname := ConvertStr(Docname, '\', '_');
+    Docname := ConvertStr(Docname, '/', '_');
+
+    // Build Folder Path
+    ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
+        EBoardSetup."SharePoint Site Link",
+        EBoardSetup."SharePoint Site Main Library",
+        EBoardSetup."SharePoint Document Library",
+        EBoardSetup."E-Signature DMS Link");
+
+    ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
+    SharePointMgt.CreateFolder(ServerRelativeFolder);
+
+    // Save File & Record Link
+    if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
+
+        DocLink.Init();
+        DocLink."Link ID" := 0;
+        DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+        DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
+        DocLink.Type := DocLink.Type::Link;
+        DocLink.Company := CompanyName();
+        DocLink."User ID" := UserId();
+        DocLink.Created := CreateDateTime(Today(), Time());
+        DocLink."Record ID" := TabID;
+        DocLink.Insert();
+
+        // Update Document URL on ESign Header table if record exists
+        if ESignHeader.Get(DocNo) then begin
+            ESignHeader."Document URL" := DocLink.URL1;
+            ESignHeader.Modify(true);
+        end;
+
+        Message('E-Signature Document "%1" uploaded to SharePoint successfully.', FileName);
+        exit(true);
+    end else
+        Error('Failed to upload E-Signature document "%1" to SharePoint.', FileName);
+end;
 }
 

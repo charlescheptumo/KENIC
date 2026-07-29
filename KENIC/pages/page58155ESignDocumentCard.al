@@ -1,39 +1,30 @@
 page 58155 "ESign Document Card"
 {
     PageType = Card;
+    ApplicationArea = All;
     SourceTable = "ESign Header";
-    Caption = 'ESign Document';
+    Caption = 'E-Signature Document Card';
+    DeleteAllowed = true;
+    PromotedActionCategories = 'New,Process,Navigate,Report,Approve,Approval,Approvals';
 
     layout
     {
-        area(Content)
+        area(content)
         {
             group(General)
             {
                 Caption = 'General';
+                Editable = IsDocumentEditable;
 
                 field("No."; Rec."No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the unique document number.';
-
-                    trigger OnAssistEdit()
-                    var
-                        EBoardSetup: Record "E-Board Setup";
-                        NoSeries: Codeunit "No. Series";
-                    begin
-                        if Rec."No." = '' then begin
-                            EBoardSetup.GetRecordOnce();
-                            EBoardSetup.TestField("E-Signing Nos.");
-                            if NoSeries.LookupRelatedNoSeries(EBoardSetup."E-Signing Nos.", Rec."No. Series", Rec."No. Series") then
-                                Rec."No." := NoSeries.GetNextNo(Rec."No. Series", WorkDate());
-                        end;
-                    end;
+                    ToolTip = 'Specifies the document number.';
                 }
-                field(Title; Rec.Title)
+                field(Title;Rec.Title)
                 {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the title of the document to be signed.';
+                        ApplicationArea = All;
+                        ToolTip = 'Specifies a title for the document.';
                 }
                 field(Description; Rec.Description)
                 {
@@ -41,62 +32,293 @@ page 58155 "ESign Document Card"
                     MultiLine = true;
                     ToolTip = 'Specifies a brief description of the document.';
                 }
-                field("Document URL"; Rec."Document URL")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the link or SharePoint URL of the document.';
-                }
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
+                    Editable = false;
                     ToolTip = 'Specifies the overall document status.';
                 }
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                     ToolTip = 'Specifies the workflow approval status.';
                 }
-                field(Posted; Rec.Posted)
+                field("Document URL"; Rec."Document URL")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies whether the document has been posted.';
+                    Editable = false;
+                    ToolTip = 'Specifies the uploaded SharePoint document link.';
+
+                    trigger OnDrillDown()
+                    begin
+                        if Rec."Document URL" <> '' then
+                            Hyperlink(Rec."Document URL");
+                    end;
                 }
             }
 
-            part(Lines; "ESign Lines")
-            {
-                ApplicationArea = All;
-                Caption = 'Signers';
-                SubPageLink = "Document No." = field("No.");
-                UpdatePropagation = Both;
-            }
 
-            group(Audit)
-            {
-                Caption = 'Audit Trail';
-
-                field("Created By"; Rec."Created By")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the user who created this document.';
-                }
-                field("Created Date"; Rec."Created Date")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies when this document was created.';
-                }
-            }
-        }
-        area(FactBoxes)
-        {
-            systempart(Links; Links)
+            part(ESignLines; "ESign Lines")
             {
                 ApplicationArea = All;
-            }
-            systempart(Notes; Notes)
-            {
-                ApplicationArea = All;
+                SubPageLink = "Document No." = FIELD("No.");
+                Editable = IsDocumentEditable;
             }
         }
     }
+
+    actions
+    {
+        area(Processing)
+        {
+            group("Functions")
+            {
+                Caption = 'F&unctions';
+                Image = Action;
+
+                action(UploadDocument)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Upload Document';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload the E-Signature document to SharePoint.';
+                    Enabled = IsDocumentEditable;
+
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        if not IsDocumentEditable then
+                            Error('Documents cannot be uploaded after the request has been sent for approval or posted.');
+
+                        Rec.TestField("No.");
+                        DMSManagement.UploadESignatureDocument(Rec."No.", Rec.Description, Rec.RecordId);
+
+
+                        CurrPage.Update(false);
+                    end;
+                }
+
+                action(SendApprovalRequest)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Send A&pproval Request';
+                    Enabled = not OpenApprovalEntriesExist and IsDocumentEditable;
+                    Image = SendApprovalRequest;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+
+                    trigger OnAction()
+                    var
+                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                        ESignLines: Record "ESign Line";
+                        DocLink: Record "Record Link";
+                        VarVariant: Variant;
+                    begin
+
+                        Rec.TestField("Approval Status", Rec."Approval Status"::Open);
+                        Rec.TestField(Status, Rec.Status::Open);
+
+
+                        ESignLines.Reset();
+                        ESignLines.SetRange("Document No.", Rec."No.");
+                        if ESignLines.IsEmpty() then
+                            Error('You must add at least one person/signee to sign before sending for approval.');
+
+
+                        DocLink.Reset();
+                        DocLink.SetRange("Record ID", Rec.RecordId);
+                        if (Rec."Document URL" = '') and DocLink.IsEmpty() then
+                            Error('You must upload a document before sending this request for approval.');
+
+
+                        VarVariant := Rec;
+                        if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
+                            CustomApprovals.OnSendDocForApproval(VarVariant);
+
+
+                            Rec.Get(Rec."No.");
+                            if Rec."Approval Status" = Rec."Approval Status"::"Pending Approval" then begin
+                                Rec.Status := Rec.Status::"Pending";
+                                Rec.Modify(true);
+                            end;
+                        end;
+
+                        CurrPage.Update(true);
+                    end;
+                }
+
+                action(CancelApprovalRequest)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Cancel Approval Re&quest';
+                    Image = Cancel;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    Enabled = OpenApprovalEntriesExist;
+
+                    trigger OnAction()
+                    var
+                        CustomApprovalsMgt: Codeunit "Custom Approvals Codeunit";
+                        VarVariant: Variant;
+                    begin
+                        Rec.TestField("Approval Status", Rec."Approval Status"::"Pending Approval");
+                        VarVariant := Rec;
+                        CustomApprovalsMgt.OnCancelDocApprovalRequest(VarVariant);
+
+
+                        Rec.Get(Rec."No.");
+                        if Rec."Approval Status" = Rec."Approval Status"::Open then begin
+                            Rec.Status := Rec.Status::Open;
+                            Rec.Modify(true);
+                        end;
+
+                        CurrPage.Update(true);
+                    end;
+                }
+
+                action(Approvals)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Approvals';
+                    Image = Approvals;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgt.OpenApprovalEntriesPage(Rec.RecordId);
+                    end;
+                }
+            }
+
+            group(Approval)
+            {
+                Caption = 'Approval';
+
+                action(Approve)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Approve';
+                    Image = Approve;
+                    ToolTip = 'Approve the requested changes.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.ApproveRecordApprovalRequest(Rec.RecordId);
+
+                        Rec.Get(Rec."No.");
+                        if Rec."Approval Status" = Rec."Approval Status"::Released then begin
+                            Rec.Status := Rec.Status::Approved;
+                            Rec.Modify(true);
+                        end;
+
+                        CurrPage.Update(true);
+                    end;
+                }
+
+                action(Reject)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Reject';
+                    Image = Reject;
+                    ToolTip = 'Reject the approval request.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.RejectRecordApprovalRequest(Rec.RecordId);
+
+                        Rec.Get(Rec."No.");
+                        if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
+                            Rec.Status := Rec.Status::Rejected;
+                            Rec.Modify(true);
+                        end;
+
+                        CurrPage.Update(true);
+                    end;
+                }
+
+                action(Delegate)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Delegate';
+                    Image = Delegate;
+                    ToolTip = 'Delegate the approval to a substitute approver.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.DelegateRecordApprovalRequest(Rec.RecordId);
+                    end;
+                }
+
+                action(Comment)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Comments';
+                    Image = ViewComments;
+                    ToolTip = 'View or add comments for the record.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.GetApprovalComment(Rec);
+                    end;
+                }
+            }
+        }
+    }
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        SetControlAppearance();
+    end;
+
+    trigger OnAfterGetRecord()
+    begin
+        SetControlAppearance();
+    end;
+
+    local procedure SetControlAppearance()
+    var
+        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+    begin
+        OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RecordId);
+        OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RecordId);
+
+
+        IsDocumentEditable :=
+            (Rec.Status = Rec.Status::Open) and
+            (Rec."Approval Status" = Rec."Approval Status"::Open);
+    end;
+
+    var
+        OpenApprovalEntriesExist: Boolean;
+        OpenApprovalEntriesExistForCurrUser: Boolean;
+        IsDocumentEditable: Boolean;
 }

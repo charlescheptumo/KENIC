@@ -26,12 +26,13 @@ table 58145 "ESign Line"
             var
                 BoardMember: Record "Board Members";
             begin
-                if BoardMember.Get("Board Member No.") then begin
+                BoardMember.SetRange("Personal No", "Board Member No.");
+                if BoardMember.FindFirst() then begin
                     "Board Member Name" :=
-                        StrSubstNo('%1 %2 %3',
+                        DelChr(StrSubstNo('%1 %2 %3',
                             BoardMember."First Name",
                             BoardMember."Middle Name",
-                            BoardMember."Last Name");
+                            BoardMember."Last Name"), '>', ' ');
                     Email := BoardMember."Company E-Mail";
                 end else begin
                     "Board Member Name" := '';
@@ -58,6 +59,7 @@ table 58145 "ESign Line"
             OptionMembers = Pending,Signed,Declined;
             OptionCaption = 'Pending,Signed,Declined';
             DataClassification = CustomerContent;
+            InitValue = Pending;
             Editable = false;
         }
         field(7; "Signed/Declined Date"; DateTime)
@@ -65,6 +67,13 @@ table 58145 "ESign Line"
             Caption = 'Signed/Declined Date';
             DataClassification = CustomerContent;
             Editable = false;
+        }
+        field(8; "Signing Order"; Integer)
+        {
+            Caption = 'Signing Order';
+            DataClassification = CustomerContent;
+            MinValue = 1;
+            InitValue = 1;
         }
     }
 
@@ -74,5 +83,9 @@ table 58145 "ESign Line"
         {
             Clustered = true;
         }
+        // key(SequenceKey; "Document No.", "Signing Order")
+        // {
+           
+        // }
     }
 }

@@ -27,10 +27,7 @@ page 58119 "E-Board Setup"
                 {
                     ToolTip = 'Specifies the number series code used to generate numbers for new Circular Resolutions.';
                 }
-                field("E-Signing Nos."; Rec."E-Signing Nos.")
-                {
-                    ToolTip = 'Specifies the number series code used for tracking E-Signing requests.';
-                }
+
                 field("Compliance Entry Nos."; Rec."Compliance Entry Nos.")
                 {
                     ToolTip = 'Specifies the number series code used for tracking Compliance Calendar Entries.';
@@ -149,6 +146,20 @@ page 58119 "E-Board Setup"
                         field("Declaration Nos."; Rec."Declaration Nos.")
                         {
                             ToolTip = 'Specifies the declaration numbers.';
+                        }
+                    }
+
+                    group("ESignature")
+                    {
+                        Caption = 'E-Signature';
+
+                        field("E-Signing Nos."; Rec."E-Signing Nos.")
+                        {
+                            ToolTip = 'Specifies the number series code used for tracking E-Signing requests.';
+                        }
+                        field("E-Signature DMS Link"; Rec."E-Signature DMS Link")
+                        {
+                            ToolTip = 'The folder name within SharePoint/DMS designated for storing E-signature documents';
                         }
                     }
 
