@@ -31,19 +31,19 @@ table 58144 "ESign Header"
         field(3; Description; Text[250])
         {
             Caption = 'Description';
-                        DataClassification = CustomerContent;
+            DataClassification = CustomerContent;
         }
         field(4; Status; Option)
         {
             Caption = 'Status';
-            OptionMembers = Open,Pending,Approved,Completed,Rejected,Cancelled;
-            OptionCaption = 'Open,Pending,Approved,Completed,Rejected,Cancelled';
+            OptionMembers = Open,Pending,Approved,Posted,Completed,Rejected,Cancelled;
+            OptionCaption = 'Open,Pending,Approved,Posted,Completed,Rejected,Cancelled';
             InitValue = Open;
             DataClassification = CustomerContent;
         }
         field(5; "Document URL"; Text[2048])
         {
-            Caption = 'Document URL';
+            Caption = 'Original Document URL';
             DataClassification = CustomerContent;
             ExtendedDatatype = URL;
         }
@@ -82,6 +82,14 @@ table 58144 "ESign Header"
             DataClassification = CustomerContent;
             Editable = false;
         }
+
+        field(11; "Signed Document URL"; Text[2048])
+        {
+            Caption = 'Signed Document URL';
+            DataClassification = CustomerContent;
+            ExtendedDatatype = URL;
+        }
+        
     }
 
     keys
@@ -103,26 +111,29 @@ table 58144 "ESign Header"
             "No. Series" := EBoardSetup."E-Signing Nos.";
             if NoSeries.AreRelated("No. Series", xRec."No. Series") then
                 "No. Series" := xRec."No. Series";
-               "No." := NoSeries.GetNextNo("No. Series", WorkDate(), true);
+            "No." := NoSeries.GetNextNo("No. Series", WorkDate(), true);
         end;
 
         "Created By" := UserId();
         "Created Date" := CurrentDateTime();
     end;
 
-    trigger OnModify()
+    
+   trigger OnModify()
     begin
-        CheckIfEditable();
+      
     end;
 
     trigger OnDelete()
     begin
-        CheckIfEditable();
+        
+        TestField(Status, Status::Open);
+        TestField("Approval Status", "Approval Status"::Open);
     end;
 
-    local procedure CheckIfEditable()
+    procedure CheckIfEditable()
     begin
         if (Rec.Status <> Rec.Status::Open) or (Rec."Approval Status" <> Rec."Approval Status"::Open) then
-            Error('Modification or deletion is only allowed when the document status is Open.');
+            Error('Modification is only allowed when the document status is Open.');
     end;
 }

@@ -61,6 +61,19 @@ table 58145 "ESign Line"
             DataClassification = CustomerContent;
             InitValue = Pending;
             Editable = false;
+
+            trigger OnValidate()
+            begin
+                case Status of
+                    Status::Signed,
+                    Status::Declined:
+                        if "Signed/Declined Date" = 0DT then
+                            "Signed/Declined Date" := CurrentDateTime();
+
+                    Status::Pending:
+                        "Signed/Declined Date" := 0DT;
+                end;
+            end;
         }
         field(7; "Signed/Declined Date"; DateTime)
         {
@@ -85,7 +98,7 @@ table 58145 "ESign Line"
         }
         // key(SequenceKey; "Document No.", "Signing Order")
         // {
-           
+
         // }
     }
 }

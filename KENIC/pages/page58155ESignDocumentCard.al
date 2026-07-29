@@ -21,10 +21,10 @@ page 58155 "ESign Document Card"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the document number.';
                 }
-                field(Title;Rec.Title)
+                field(Title; Rec.Title)
                 {
-                        ApplicationArea = All;
-                        ToolTip = 'Specifies a title for the document.';
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies a title for the document.';
                 }
                 field(Description; Rec.Description)
                 {
@@ -48,12 +48,25 @@ page 58155 "ESign Document Card"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    ToolTip = 'Specifies the uploaded SharePoint document link.';
+                    ToolTip = 'Specifies the original uploaded SharePoint document link.';
 
                     trigger OnDrillDown()
                     begin
                         if Rec."Document URL" <> '' then
                             Hyperlink(Rec."Document URL");
+                    end;
+                }
+
+                field("Signed Document URL"; Rec."Signed Document URL")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    ToolTip = 'Specifies the final signed SharePoint document link.';
+
+                    trigger OnDrillDown()
+                    begin
+                        if Rec."Signed Document URL" <> '' then
+                            Hyperlink(Rec."Signed Document URL");
                     end;
                 }
             }
@@ -77,10 +90,40 @@ page 58155 "ESign Document Card"
                 Caption = 'F&unctions';
                 Image = Action;
 
+                action(Post)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Post';
+                    Image = PostOrder;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    Enabled = (Rec."Approval Status" = Rec."Approval Status"::Released) and (not Rec.Posted);
+                    ToolTip = 'Post the E-Signature document after approval.';
+
+                    trigger OnAction()
+                    begin
+                        Rec.TestField("Approval Status", Rec."Approval Status"::Released);
+
+                        if Rec.Posted then
+                            Error('This document has already been posted.');
+
+                        if not Confirm('Do you want to post this E-Signature document?', false) then
+                            exit;
+
+                        Rec.Posted := true;
+                        Rec.Status := Rec.Status::Posted;
+                        Rec.Modify(true);
+
+                        Message('Document %1 has been posted successfully.', Rec."No.");
+                        CurrPage.Update(false);
+                    end;
+                }
+
                 action(UploadDocument)
                 {
                     ApplicationArea = All;
-                    Caption = 'Upload Document';
+                    Caption = 'Attach Document';
                     Image = Attach;
                     Promoted = true;
                     PromotedCategory = Process;

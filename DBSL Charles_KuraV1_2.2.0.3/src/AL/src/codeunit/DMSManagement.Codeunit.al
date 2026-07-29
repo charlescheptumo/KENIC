@@ -3849,10 +3849,11 @@ begin
 end;
 
 
-// Upload E-Signature Documents
+// Upload E-Signature Documents-ALLOYS upload test
 procedure UploadESignatureDocument(DocNo: Code[20]; DocDesc: Text; TabID: RecordID): Boolean
 var
     EBoardSetup: Record "E-Board Setup";
+    SharepointSetup: Record "Sharepoint Connector Setup";
     DocLink: Record "Record Link";
     ESignHeader: Record "ESign Header";
     SharePointMgt: Codeunit "Sharepoint Management";
@@ -3861,9 +3862,12 @@ var
     ServerRelativeFolder: Text;
     FileInStream: InStream;
     UploadPromptMsg: Label 'Select the E-Signature document to upload';
+    WebUrl: Text;
+    SitePrefix: Text;
 begin
     EBoardSetup.GetRecordOnce();
     EBoardSetup.TestField("E-Signature DMS Link");
+    SharepointSetup.Get();
 
     if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
         exit(false);
@@ -3887,9 +3891,15 @@ begin
     // Save File & Record Link
     if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
 
+        // Construct clean browser web URL using Sharepoint Connector Setup
+        SitePrefix := '/sites/' + EBoardSetup."SharePoint Site Link";
+        WebUrl := SharepointSetup."Sharepoint URL" + 
+                  CopyStr(ServerRelativeFolder, StrLen(SitePrefix) + 1) + 
+                  '/' + FileName;
+
         DocLink.Init();
         DocLink."Link ID" := 0;
-        DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+        DocLink.URL1 := CopyStr(WebUrl, 1, MaxStrLen(DocLink.URL1));
         DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
         DocLink.Type := DocLink.Type::Link;
         DocLink.Company := CompanyName();
@@ -3898,7 +3908,7 @@ begin
         DocLink."Record ID" := TabID;
         DocLink.Insert();
 
-        // Update Document URL on ESign Header table if record exists
+        // Update Document URL on ESign Header table 
         if ESignHeader.Get(DocNo) then begin
             ESignHeader."Document URL" := DocLink.URL1;
             ESignHeader.Modify(true);
