@@ -37,18 +37,35 @@ page 50353 "Get Domain Client"
                     Caption = 'Email';
                     Enabled = SearchType = SearchType::Email;
                 }
+
+                field(StartDateTime; StartDateTime)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Start Date';
+                    Enabled = SearchType = SearchType::"Created Date";
+                }
+
+                field(EndDateTime; EndDateTime)
+                {
+                    ApplicationArea = All;
+                    Caption = 'End Date';
+                    Enabled = SearchType = SearchType::"Created Date";
+                }
             }
         }
     }
 
     var
-        SearchType: Option "Client ID",Email;
+        SearchType: Option "Client ID",Email,"Created Date";
 
         ClientId: Code[50];
         Email: Text[100];
+        StartDateTime: DateTime;
+        EndDateTime: DateTime;
 
         ShowClientId: Boolean;
         ShowEmail: Boolean;
+        ShowDateRange: Boolean;
 
     trigger OnOpenPage()
     begin
@@ -75,6 +92,7 @@ page 50353 "Get Domain Client"
     begin
         ShowClientId := SearchType = SearchType::"Client ID";
         ShowEmail := SearchType = SearchType::Email;
+        ShowDateRange := SearchType = SearchType::"Created Date";
     end;
 
     trigger OnQueryClosePage(CloseAction: Action): Boolean
@@ -101,6 +119,20 @@ page 50353 "Get Domain Client"
                         Error('Email is required.');
 
                     Response := KenicMgt.GetClientByEmail(Email);
+                end;
+
+            SearchType::"Created Date":
+                begin
+                    if StartDateTime = 0DT then
+                        Error('Start Date is required.');
+
+                    if EndDateTime = 0DT then
+                        Error('End Date is required.');
+
+                    if StartDateTime > EndDateTime then
+                        Error('Start Date cannot be greater than End Date.');
+
+                    Response := KenicMgt.GetClientByDateRange(StartDateTime, EndDateTime);
                 end;
         end;
 

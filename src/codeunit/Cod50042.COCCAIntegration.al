@@ -359,6 +359,21 @@ codeunit 50042 COCCAIntegration
             JsonBody));
     end;
 
+    procedure GetClientByDateRange(StartDate: DateTime; EndDate: DateTime): Text
+    var
+        JsonBody: Text;
+    begin
+        JsonBody :=
+            '{' +
+            '"startDate":"' + FormatDateTimeISO(StartDate) + '",' +
+            '"endDate":"' + FormatDateTimeISO(EndDate) + '"' +
+            '}';
+
+        exit(GetClient(
+            'Transactions/client/by-createdatebyrange',
+            JsonBody));
+    end;
+
     procedure ImportClients(JsonText: Text): Integer
     var
         RootObj: JsonObject;
