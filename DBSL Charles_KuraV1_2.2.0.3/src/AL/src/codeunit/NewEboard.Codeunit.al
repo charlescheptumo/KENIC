@@ -405,12 +405,12 @@ Codeunit 50032 NewEboard
         if not ResolutionHeader.Get(docNo) then                      // Don't comment out ResolutionHeader.Get(docNo); 
             Error('Circular Resolution %1 was not found.', docNo);   //if you comment out the portal receives an empty ResolutionHeader and you'll be debugging "No.=''" again.
                                                                      //thank you for understanding
-        //     ResolutionHeader.UpdateStatusBasedOnDeadline();
-        //     if (ResolutionHeader."Voting Deadline" <> 0DT) and
-        //    (CurrentDateTime >= ResolutionHeader."Voting Deadline") then
-        //         Error('Voting has already closed.');
-        //     if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
-        //         Error('Voting is not currently open for this Circular Resolution.');
+            ResolutionHeader.UpdateStatusBasedOnDeadline(); //commenting this allows voting for closed resolutions
+            if (ResolutionHeader."Voting Deadline" <> 0DT) and
+           (CurrentDateTime >= ResolutionHeader."Voting Deadline") then
+                Error('Voting has already closed.');
+            if ResolutionHeader.Status <> ResolutionHeader.Status::Voting then
+                Error('Voting is not currently open for this Circular Resolution.');
         objCircularResolutionLines.RESET;
         objCircularResolutionLines.SETRANGE("Resolution No.", docNo);
         objCircularResolutionLines.SETRANGE("Line No.", id);
