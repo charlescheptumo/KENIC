@@ -83,7 +83,7 @@ table 57117 "Compliance Calendar Entry"
                 case Status of
                     Status::Completed:
                         if "Completion Date" = 0D then
-                            "Completion Date" := WorkDate();
+                            "Completion Date" := Today();
                     else
                         "Completion Date" := 0D;
                 end;
@@ -194,7 +194,7 @@ table 57117 "Compliance Calendar Entry"
             EBoardSetup.GetRecordOnce();
             EBoardSetup.TestField("Compliance Entry Nos.");
           //  "No." := NoSeries.GetNextNo(EBoardSetup."Compliance Entry Nos.", WorkDate(), true);
-          "No." := NoSeries.GetNextNo(EBoardSetup."Compliance Entry Nos.", WorkDate());
+          "No." := NoSeries.GetNextNo(EBoardSetup."Compliance Entry Nos.", Today());
         end;
 
         "Created By" := UserId();

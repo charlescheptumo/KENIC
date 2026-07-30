@@ -83,7 +83,7 @@ table 57116 "Compliance Category"
         if Code = '' then begin
             EBoardSetup.GetRecordOnce();
             EBoardSetup.TestField("Compliance Category Nos.");
-            Code := NoSeries.GetNextNo(EBoardSetup."Compliance Category Nos.", WorkDate(), true);
+            Code := NoSeries.GetNextNo(EBoardSetup."Compliance Category Nos.", Today(), true);
         end;
 
         "Created By" := UserId();

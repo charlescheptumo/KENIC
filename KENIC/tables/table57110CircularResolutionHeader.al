@@ -215,7 +215,7 @@ table 57110 "Circular Resolution Header"
         if "No." = '' then begin
             GetEBoardSetup(EBoardSetup);
             EBoardSetup.TestField("Circular Resolution Nos.");
-            "No." := NoSeries.GetNextNo(EBoardSetup."Circular Resolution Nos.", WorkDate(), true);
+            "No." := NoSeries.GetNextNo(EBoardSetup."Circular Resolution Nos.", Today(), true);
             "No. Series" := EBoardSetup."Circular Resolution Nos.";
 
             if EBoardSetup."Default Voting Duration (Days)" > 0 then begin
@@ -253,7 +253,7 @@ table 57110 "Circular Resolution Header"
         EBoardSetup.TestField("Circular Resolution Nos.");
 
         if NoSeries.LookupRelatedNoSeries(EBoardSetup."Circular Resolution Nos.", OldRec."No. Series", "No. Series") then begin
-            "No." := NoSeries.GetNextNo("No. Series", WorkDate(), true);
+            "No." := NoSeries.GetNextNo("No. Series", Today(), true);
             exit(true);
         end;
     end;

@@ -238,7 +238,7 @@ table 57118 "Compliance Obligation"
         if Rec."No." = '' then begin
             EBoardSetup.GetRecordOnce();
             EBoardSetup.TestField("Compliance Obligation Nos.");
-            Rec."No." := NoSeries.GetNextNo(EBoardSetup."Compliance Obligation Nos.", WorkDate(), true);
+            Rec."No." := NoSeries.GetNextNo(EBoardSetup."Compliance Obligation Nos.", Today(), true);
         end;
 
         Rec.Status := Rec.Status::Open;

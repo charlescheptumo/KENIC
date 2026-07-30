@@ -111,7 +111,7 @@ table 58144 "ESign Header"
             "No. Series" := EBoardSetup."E-Signing Nos.";
             if NoSeries.AreRelated("No. Series", xRec."No. Series") then
                 "No. Series" := xRec."No. Series";
-            "No." := NoSeries.GetNextNo("No. Series", WorkDate(), true);
+            "No." := NoSeries.GetNextNo("No. Series", Today(), true);
         end;
 
         "Created By" := UserId();

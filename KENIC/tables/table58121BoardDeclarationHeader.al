@@ -102,7 +102,7 @@ table 58121 "Board Declaration Header"
             begin
 
                 if "Declaration Status" = "Declaration Status"::Submitted then begin
-                    "Declaration Date" := WorkDate();
+                    "Declaration Date" := Today();
                     "Submitted DateTime" := CurrentDateTime();
                 end;
 
@@ -344,11 +344,11 @@ table 58121 "Board Declaration Header"
         if "No." = '' then begin
             EBoardSetup.GetRecordOnce();
             EBoardSetup.TestField("Declaration Nos.");
-            "No." := NoSeries.GetNextNo(EBoardSetup."Declaration Nos.", WorkDate(), true);
+            "No." := NoSeries.GetNextNo(EBoardSetup."Declaration Nos.", Today(), true);
         end;
 
         if "Declaration Year" = 0 then
-            "Declaration Year" := Date2DMY(WorkDate(), 3);
+            "Declaration Year" := Date2DMY(Today(), 3);
         "Created By" := UserId();
 
         // if "Declaration Date" = 0D then
