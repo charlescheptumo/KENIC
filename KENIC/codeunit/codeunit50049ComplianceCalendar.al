@@ -123,22 +123,21 @@ codeunit 50049 "Compliance Calendar"
     end;
 
 
-    // Sweeps past-due open entries and updates their status to Overdue.
+   // Sweeps past-due open entries and updates their status to Overdue.
     procedure CheckAndUpdateOverdueEntries()
     var
         CalendarEntry: Record "Compliance Calendar Entry";
         ObligationEmployee: Record "Compliance Obligation Employee";
+        ObligationHeader: Record "Compliance Obligation"; 
     begin
         CalendarEntry.Reset();
-        CalendarEntry.SetRange(Status, CalendarEntry.Status::"In Progress");
+        CalendarEntry.SetFilter(Status, '%1|%2', CalendarEntry.Status::Open, CalendarEntry.Status::"In Progress"); // Optional: catch Open too if needed
         CalendarEntry.SetFilter("Due Date", '<%1', Today());
 
         if CalendarEntry.FindSet(true) then
             repeat
-
                 CalendarEntry.Status := CalendarEntry.Status::Overdue;
                 CalendarEntry.Modify(true);
-
 
                 if ObligationEmployee.Get(
                     CalendarEntry."Obligation No.",
@@ -147,6 +146,14 @@ codeunit 50049 "Compliance Calendar"
                     if ObligationEmployee.Status <> ObligationEmployee.Status::Completed then begin
                         ObligationEmployee.Status := ObligationEmployee.Status::Overdue;
                         ObligationEmployee.Modify(true);
+                    end;
+                end;
+
+               
+                if ObligationHeader.Get(CalendarEntry."Obligation No.") then begin
+                    if ObligationHeader.Status <> ObligationHeader.Status::Completed then begin
+                        ObligationHeader.UpdateStatus();
+                        ObligationHeader.Modify(false);
                     end;
                 end;
 

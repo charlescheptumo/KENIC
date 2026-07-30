@@ -293,7 +293,7 @@ table 57118 "Compliance Obligation"
 
         if (TotalAssigned > 0) and (CompletedCount = TotalAssigned) then
             Rec.Status := Rec.Status::Completed
-        else if (Rec."Next Due Date" <> 0D) and (WorkDate() > Rec."Next Due Date") then
+        else if (Rec."Next Due Date" <> 0D) and (Today() > Rec."Next Due Date") then
             Rec.Status := Rec.Status::Overdue
         else
             Rec.Status := Rec.Status::"In Progress";
