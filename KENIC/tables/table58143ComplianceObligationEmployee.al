@@ -23,7 +23,8 @@ table 58143 "Compliance Obligation Employee"
                 BoardMember.SetRange("Personal No", "Employee No.");
                 if BoardMember.FindFirst() then begin
                     "Employee Name" := BoardMember.FullName();
-                    "Employee Email" := BoardMember."E-Mail";
+                   // "Employee Email" := BoardMember."E-Mail";
+                   "Employee Email" := BoardMember."Company E-Mail";
                 end else begin
                     "Employee Name" := '';
                     "Employee Email" := '';
