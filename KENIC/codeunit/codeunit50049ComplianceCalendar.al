@@ -250,13 +250,13 @@ begin
     if EBoardSetup.Get() then begin
         if EBoardSetup."CEO Personal No." <> '' then
             if BoardMember.Get(EBoardSetup."CEO Personal No.") then
-                if BoardMember."E-Mail" <> '' then
-                    Recipients.Add(BoardMember."E-Mail");
+                if BoardMember."Company E-Mail" <> '' then
+                    Recipients.Add(BoardMember."Company E-Mail");
 
         if EBoardSetup."Board Secretary Personal No." <> '' then
             if BoardMember.Get(EBoardSetup."Board Secretary Personal No.") then
-                if BoardMember."E-Mail" <> '' then
-                    Recipients.Add(BoardMember."E-Mail");
+                if BoardMember."Company E-Mail" <> '' then
+                    Recipients.Add(BoardMember."Company E-Mail");
     end;
 
 
