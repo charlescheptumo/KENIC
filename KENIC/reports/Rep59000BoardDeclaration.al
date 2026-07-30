@@ -57,7 +57,7 @@ report 59000 "Board Declaration Report"
                 DataItemTableView = sorting("Declaration No.", "Line No.");
 
                 column(Line_No_; "Line No.") { }
-                column(Interest_Type; "Interest Type") { }
+                column(Interest_Type; "Interest Type Description") { }
                 column(Organization; Organization) { }
                 column(Description; Description) { }
                 column(Percentage; Percentage) { }

@@ -8924,5 +8924,18 @@ permissionset 50000 GeneratedPermission
         table "ESign Line"=X,
         page "ESign Document Card"=X,
         page "ESign Documents"=X,
-        page "ESign Lines"=X;
+        page "ESign Lines"=X,
+        tabledata "Domain Client"=RIMD,
+        tabledata "Domain Receipt"=RIMD,
+        tabledata "I&M Transaction"=RIMD,
+        table "Domain Client"=X,
+        table "Domain Receipt"=X,
+        table "I&M Transaction"=X,
+        codeunit ESIGNATURE=X,
+        page "Domain Client List"=X,
+        page "Domain Receipt List"=X,
+        page "Get Domain Client"=X,
+        page "Get Domain Receipt"=X,
+        page "Get I&M Transaction"=X,
+        page "I&M Transaction List"=X;
 }
