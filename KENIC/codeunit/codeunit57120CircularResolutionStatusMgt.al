@@ -42,7 +42,7 @@ codeunit 57120 "Circular Resolution Mgt."
         ComplianceCalendar.CheckAndUpdateOverdueEntries();
         // Send compliance reminder emails
         ComplianceCalendar.SendUpcomingTaskReminders();
-        //compliance to manager
+        //Escalating to ceo and board sec
         ComplianceCalendar.SendManagerTaskStatusNotifications();
     end;
 
