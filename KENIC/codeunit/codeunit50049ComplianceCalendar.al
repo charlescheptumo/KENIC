@@ -231,7 +231,7 @@ codeunit 50049 "Compliance Calendar"
     end;
 
     //CEO And Board Secretary
-   procedure SendManagerTaskStatusNotifications()
+     procedure SendManagerTaskStatusNotifications()
 var
     ComplianceObligation: Record "Compliance Obligation";
     ObligationEmployee: Record "Compliance Obligation Employee";
@@ -247,23 +247,34 @@ var
 begin
     CompanyInfo.Get();
 
+    
     if EBoardSetup.Get() then begin
-        if EBoardSetup."CEO Personal No." <> '' then
-            if BoardMember.Get(EBoardSetup."CEO Personal No.") then
+       
+        if EBoardSetup."CEO Personal No." <> '' then begin
+            BoardMember.Reset();
+            BoardMember.SetRange("Personal No", EBoardSetup."CEO Personal No.");
+            if BoardMember.FindFirst() then begin
                 if BoardMember."Company E-Mail" <> '' then
                     Recipients.Add(BoardMember."Company E-Mail");
+            end;
+        end;
 
-        if EBoardSetup."Board Secretary Personal No." <> '' then
-            if BoardMember.Get(EBoardSetup."Board Secretary Personal No.") then
+       
+        if EBoardSetup."Board Secretary Personal No." <> '' then begin
+            BoardMember.Reset();
+            BoardMember.SetRange("Personal No", EBoardSetup."Board Secretary Personal No.");
+            if BoardMember.FindFirst() then begin
                 if BoardMember."Company E-Mail" <> '' then
                     Recipients.Add(BoardMember."Company E-Mail");
+            end;
+        end;
     end;
 
-
+    
     if Recipients.Count() = 0 then
         exit;
 
-  
+    
     ComplianceObligation.Reset();
     ComplianceObligation.SetRange(Posted, true);
     ComplianceObligation.SetFilter("Next Due Date", '<%1', Today());
@@ -271,7 +282,6 @@ begin
 
     if ComplianceObligation.FindSet(true) then
         repeat
-          
             ObligationEmployee.Reset();
             ObligationEmployee.SetRange("Obligation No.", ComplianceObligation."No.");
             ObligationEmployee.SetRange(Status, ObligationEmployee.Status::Overdue);
@@ -282,7 +292,6 @@ begin
 
                 Subject := StrSubstNo('Compliance Escalation: Overdue Obligation - %1', ComplianceObligation.Title);
 
-         
                 Body := 'Dear Executive Management,<br><br>';
                 Body += 'The following compliance obligation has one or more <b>overdue board member assignments</b> requiring immediate attention.<br><br>';
 
@@ -294,7 +303,6 @@ begin
                 Body += StrSubstNo('<tr style="border-bottom: 1px solid #dddddd;"><td style="padding: 8px; font-weight: bold; background-color: #f2f2f2;">Due Date</td><td style="padding: 8px; color: #d9534f; font-weight: bold;">%1</td></tr>', Format(ComplianceObligation."Next Due Date"));
                 Body += '</table><br><br>';
 
-               
                 Body += '<b style="font-family: Arial, sans-serif; font-size: 15px; color: #333333;">Overdue Board Members</b><br><br>';
                 Body += '<table style="border-collapse: collapse; width: 100%; max-width: 650px; font-family: Arial, sans-serif; font-size: 13px; border: 1px solid #cccccc;">';
                 Body += '<tr style="background-color: #333333; color: #ffffff; text-align: left;">';
@@ -321,11 +329,7 @@ begin
                 
                 if (Time() >= 080000T) and (Time() < 170000T) then begin
                     Clear(EmailMessage);
-                    EmailMessage.Create(
-                        Recipients,
-                        Subject,
-                        Body,
-                        true);
+                    EmailMessage.Create(Recipients, Subject, Body, true);
 
                     if Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then begin
                         ComplianceObligation."Manager Notification Sent" := true;
