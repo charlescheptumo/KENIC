@@ -167,8 +167,8 @@ page 50352 "Domain Ledger List"
                 var
                     DomainDialog: Page "Get Domain Ledger";
                 begin
-                    DomainDialog.RunModal();
-                    CurrPage.Update(false);
+                    // DomainDialog.RunModal();
+                    // CurrPage.Update(false);
                 end;
             }
             action(ProcessBatch)
