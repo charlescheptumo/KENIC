@@ -402,7 +402,7 @@ Codeunit 50032 NewEboard
         
 
         if not ResolutionHeader.Get(docNo) then                      
-            Error('Circular Resolution %1 was not found.', docNo);   
+          exit;   
                                                                      
         //     ResolutionHeader.UpdateStatusBasedOnDeadline(); 
         //     if (ResolutionHeader."Voting Deadline" <> 0DT) and
