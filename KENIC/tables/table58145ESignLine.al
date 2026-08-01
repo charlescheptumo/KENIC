@@ -85,11 +85,11 @@ table 58145 "ESign Line"
         {
             Caption = 'Signing Order';
             DataClassification = CustomerContent;
-            MinValue = 1;
-            InitValue = 1;
+            //MinValue = 1;
+            //InitValue = 1;
         }
 
-         field(9; "Notification Sent"; Boolean)
+        field(9; "Notification Sent"; Boolean)
         {
             Caption = 'Notification Sent';
             Editable = false;

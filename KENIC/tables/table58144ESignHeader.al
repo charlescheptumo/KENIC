@@ -89,7 +89,18 @@ table 58144 "ESign Header"
             DataClassification = CustomerContent;
             ExtendedDatatype = URL;
         }
-        
+        field(12; "Initiator Name"; Text[100])
+        {
+            Caption = 'Initiator Name';
+            Editable = true;
+        }
+
+        field(13; "Board Member Code"; Code[100])
+        {
+            Caption = 'Initiator Name';
+            Editable = true;
+        }
+
     }
 
     keys
@@ -118,15 +129,15 @@ table 58144 "ESign Header"
         "Created Date" := CurrentDateTime();
     end;
 
-    
-   trigger OnModify()
+
+    trigger OnModify()
     begin
-      
+
     end;
 
     trigger OnDelete()
     begin
-        
+
         TestField(Status, Status::Open);
         TestField("Approval Status", "Approval Status"::Open);
     end;

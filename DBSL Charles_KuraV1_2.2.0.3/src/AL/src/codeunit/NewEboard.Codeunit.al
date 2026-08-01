@@ -214,6 +214,44 @@ Codeunit 50032 NewEboard
 
     end;
 
+    procedure fnEsignerDocuments(bmName: Text) status: Text
+    var
+        //iExists: Boolean;
+        objEsignerHeader: Record "ESign Header";
+    begin
+        objEsignerHeader.Reset();
+        objEsignerHeader.SetRange("Initiator Name", bmName);
+        if objEsignerHeader.findset() then begin
+            repeat
+                status += objEsignerHeader."No." + '*' + objEsignerHeader."Initiator Name" + '*' +
+                objEsignerHeader.Title + '*' + objEsignerHeader.Description + '*' +
+                FORMAT(objEsignerHeader."Document URL") + '*' + FORMAT(objEsignerHeader."Approval Status") + '*' +
+                FORMAT(objEsignerHeader.Status) + '*' + format(objEsignerHeader.Posted) + '*' + Format(objEsignerHeader."Board Member Code") + '::::';
+            until objEsignerHeader.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    procedure fnEsignerbyDocNo(docNo: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        objEsignerHeader: Record "ESign Header";
+    begin
+        objEsignerHeader.Reset();
+        objEsignerHeader.SetRange("No.", docNo);
+        if objEsignerHeader.findset() then begin
+            repeat
+                status += objEsignerHeader."No." + '*' + objEsignerHeader."Initiator Name" + '*' +
+                objEsignerHeader.Title + '*' + objEsignerHeader.Description + '*' +
+                FORMAT(objEsignerHeader."Document URL") + '*' + FORMAT(objEsignerHeader."Approval Status") + '*' +
+                FORMAT(objEsignerHeader.Status) + '*' + format(objEsignerHeader.Posted) + '*' + Format(objEsignerHeader."Board Member Code") + '::::';
+            until objEsignerHeader.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
     procedure fnGetComplianceObligations(empNo: Code[50]) status: Text
     var
         //iExists: Boolean;
@@ -315,6 +353,56 @@ Codeunit 50032 NewEboard
         end;
         exit(status);
 
+    end;
+
+    procedure fnGetEsignerLines(docNo: Text[50]) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        //objCircularResolutionLines: Record "Circular Resolution lines";
+        objEsignerLines: Record "ESign Line";
+    begin
+        objEsignerLines.Reset();
+        objEsignerLines.SetRange("Document No.", docNo);
+        if objEsignerLines.findset() then begin
+            repeat
+                status += objEsignerLines."Document No." + '*' + objEsignerLines."Board Member No." + '*' + Format(objEsignerLines."Line No.") + '*' +
+                objEsignerLines."Board Member Name" + '*' + objEsignerLines."Email" + '*' +
+                Format(objEsignerLines."Status") + '*' + Format(objEsignerLines."Signed/Declined Date") + '*' +
+                 Format(objEsignerLines."Signing Order") + '*' + Format(objEsignerLines."Notification Sent") + '::::';
+            until objEsignerLines.Next() = 0;
+        end;
+        exit(status);
+
+    end;
+
+    procedure addEsignerSharepointLinks(leaveno: Code[50]; filename: Text; sharepointlink: Text) status: Text
+    var
+        esignapplication: Record "ESign Header";
+        RecordLink: Record "Record Link";
+        RecordIDNumber: RecordID;
+    begin
+        // Create Document Link to Sharepoint **********Obadiah Korir****************
+        RecordLink.Reset;
+        if RecordLink."Link ID" = 0 then begin
+            RecordLink.URL1 := sharepointlink;
+            RecordLink.Description := filename;
+            RecordLink.Type := RecordLink.Type::Link;
+            RecordLink.Company := COMPANYNAME;
+            // RecordLink."User ID" := UserId;
+            RecordLink."User ID" := leaveno;
+            RecordLink.Created := CreateDatetime(Today, Time);
+            esignapplication.Reset;
+            esignapplication."No." := leaveno;
+            if esignapplication.Find('=') then
+                RecordIDNumber := esignapplication.RecordId;
+            RecordLink."Record ID" := RecordIDNumber;
+            if RecordLink.Insert(true) then begin
+                status := 'success*Link successfully created*' + Format(RecordLink."Link ID");
+            end else begin
+                status := 'error*An error occured during the process of creating link';
+            end
+        end;
     end;
 
     procedure fnGetComplianceObligationLinesSpecific(empNo: Code[50]) status: Text
@@ -484,6 +572,26 @@ Codeunit 50032 NewEboard
 
     end;
 
+    procedure deleteEsignerLines(docNo: Text; empNo: Code[50]) status: Text
+    var
+        //iExists: Boolean;
+        //objCircularResolutionHeader: Record "Circular Resolution Header";
+        //objCircularResolutionLines: Record "Circular Resolution lines";
+        objEsignerLines: Record "ESign Line";
+    begin
+        objEsignerLines.RESET;
+        objEsignerLines.SETRANGE("Document No.", docNo);
+        objEsignerLines.SETRANGE("Board Member No.", empNo);
+
+        IF objEsignerLines.FindFirst() THEN BEGIN
+            objEsignerLines.DELETE(TRUE);
+            status := 'success*Record deleted successfully';
+        END else begin
+            status := 'danger*Record deletion failed';
+        end;
+
+    end;
+
 
     procedure fnCreateCircularResolution(docNo: Text[50]; bmName: Text; title: Text; description: Text; resolutionType: Integer; votingDeadline: DateTime) status: Text
     var
@@ -573,6 +681,47 @@ Codeunit 50032 NewEboard
 
     end;
 
+    procedure fnCreateEsignDocument(docNo: Text[50]; bmCode: Code[100]; bmName: Text; title: Text; description: Text) status: Text
+    var
+        //iExists: Boolean;
+        objEsignHeader: Record "ESign Header";
+    begin
+        objEsignHeader.Reset;
+        objEsignHeader.SetRange("No.", docNo);
+
+        if objEsignHeader.FindSet then begin
+
+            // objCircularResolutionHeader."Initiator Name" := bmName;
+            objEsignHeader.Title := title;
+            objEsignHeader.Description := description;
+            objEsignHeader."Initiator Name" := bmName;
+            objEsignHeader."Board Member Code" := bmCode;
+
+
+            if objEsignHeader.Modify(true) then begin
+
+                status := 'success*' + objEsignHeader."No." + ' *Your e-sign document was successfully updated';
+            end else begin
+                status := 'danger*Your e-sign document could not be updated';
+            end;
+        end else begin
+            objEsignHeader.Init;
+            objEsignHeader."No." := '';
+            objEsignHeader.Title := title;
+            objEsignHeader.Description := description;
+            objEsignHeader."Initiator Name" := bmName;
+            objEsignHeader."Board Member Code" := bmCode;
+
+            if objEsignHeader.Insert(true) then begin
+
+                status := 'success*' + objEsignHeader."No." + ' *Your e-sign document was successfully created';
+            end else begin
+                status := 'danger*Your e-sign document could not be created';
+            end;
+        end;
+
+    end;
+
     procedure fnCreateCircularResolutionLines(docNo: Text[50]; personalNo: Code[100]) status: Text
     var
         objCircularResolutionLines: Record "Circular Resolution lines";
@@ -602,6 +751,41 @@ Codeunit 50032 NewEboard
             objCircularResolutionLines."Line No." := 1;
 
         if objCircularResolutionLines.Insert(true) then begin
+            status := 'success*Member successfully added';
+        end else begin
+            status := 'danger*Your line has not been added';
+        end;
+    end;
+
+    procedure fnCreateEsignerLines(docNo: Text[50]; personalNo: Code[100]) status: Text
+    var
+        objEsignerLines: Record "ESign Line";
+        LastLine: Record "ESign Line";
+    begin
+        //Check duplicate employee
+        objEsignerLines.Reset();
+        objEsignerLines.SetRange("Document No.", docNo);
+        objEsignerLines.SetRange("Board Member No.", personalNo);
+
+        if objEsignerLines.FindFirst() then begin
+            status := 'danger*Member already exists';
+            exit;
+        end;
+
+        objEsignerLines.Init();
+        objEsignerLines."Document No." := docNo;
+        objEsignerLines."Board Member No." := personalNo;
+        objEsignerLines.Validate("Board Member No.");
+
+        LastLine.Reset();
+        LastLine.SetRange("Document No.", docNo);
+
+        if LastLine.FindLast() then
+            objEsignerLines."Signing Order" := LastLine."Line No." + 1
+        else
+            objEsignerLines."Signing Order" := 1;
+
+        if objEsignerLines.Insert(true) then begin
             status := 'success*Member successfully added';
         end else begin
             status := 'danger*Your line has not been added';
@@ -673,6 +857,25 @@ Codeunit 50032 NewEboard
     end;
 
     procedure fnCancelComplianceObligationApproval(docNo: Text[50]) status: Text
+    var
+    //objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+
+        status := 'success*Successfully canceled';
+
+    end;
+
+    procedure fnSendEsignerForApproval(docNo: Text[50]) status: Text
+    var
+    //objCircularResolutionLines: Record "Circular Resolution lines";
+    begin
+
+        status := 'success*Successfully approved';
+
+
+    end;
+
+    procedure fnCancelEsignerApproval(docNo: Text[50]) status: Text
     var
     //objCircularResolutionLines: Record "Circular Resolution lines";
     begin
