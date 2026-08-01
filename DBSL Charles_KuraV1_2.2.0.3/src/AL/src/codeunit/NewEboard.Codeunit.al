@@ -377,6 +377,7 @@ Codeunit 50032 NewEboard
     var
         //iExists: Boolean;
         //objCircularResolutionHeader: Record "Circular Resolution Header";
+        objComplianceObligationHeader: Record "Compliance Obligation";
         objCircularResolutionLines: Record "Circular Resolution lines";
     begin
         objCircularResolutionLines.Reset();
@@ -384,9 +385,24 @@ Codeunit 50032 NewEboard
         objCircularResolutionLines.SetRange(Email, email);
         if objCircularResolutionLines.findset() then begin
             repeat
-                status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
-                objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
-                objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '*' + Format(objCircularResolutionLines."Vote Status") + '::::';
+
+                objComplianceObligationHeader.Reset();
+                objComplianceObligationHeader.SetRange("No.", objCircularResolutionLines."Resolution No.");
+                if objComplianceObligationHeader.FindFirst() then begin
+                    status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
+                            objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
+                            objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '*' +
+                             Format(objCircularResolutionLines."Vote Status") + '*' +
+                             objComplianceObligationHeader.Title + '*' +
+                             objComplianceObligationHeader."Primary Employee Name" + '::::';
+                end else begin
+                    status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
+                            objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
+                            objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '*' +
+                            Format(objCircularResolutionLines."Vote Status") + '*' +
+                             '' + '*' + '' + '::::';
+                end;
+
             until objCircularResolutionLines.Next() = 0;
         end;
         exit(status);
@@ -399,11 +415,11 @@ Codeunit 50032 NewEboard
         objCircularResolutionHeader: Record "Circular Resolution Header";
         objCircularResolutionLines: Record "Circular Resolution lines";
     begin
-        
 
-        if not ResolutionHeader.Get(docNo) then                      
-          exit;   
-                                                                     
+
+        if not ResolutionHeader.Get(docNo) then
+            exit;
+
         //     ResolutionHeader.UpdateStatusBasedOnDeadline(); 
         //     if (ResolutionHeader."Voting Deadline" <> 0DT) and
         //    (CurrentDateTime >= ResolutionHeader."Voting Deadline") then

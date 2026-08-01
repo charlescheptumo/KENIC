@@ -27,6 +27,7 @@ Query 50023 "committeeboardmembers"
             column(Director_No; "Director No")
             {
             }
+            
         }
     }
 }
