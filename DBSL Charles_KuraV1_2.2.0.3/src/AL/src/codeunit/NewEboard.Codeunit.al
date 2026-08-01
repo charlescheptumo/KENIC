@@ -376,8 +376,8 @@ Codeunit 50032 NewEboard
     procedure fnGetCircularResolutionLinesSpecific(email: Text[150]) status: Text
     var
         //iExists: Boolean;
-        //objCircularResolutionHeader: Record "Circular Resolution Header";
-        objComplianceObligationHeader: Record "Compliance Obligation";
+        objCircularResolutionHeader: Record "Circular Resolution Header";
+        //objComplianceObligationHeader: Record "Compliance Obligation";
         objCircularResolutionLines: Record "Circular Resolution lines";
     begin
         objCircularResolutionLines.Reset();
@@ -386,15 +386,15 @@ Codeunit 50032 NewEboard
         if objCircularResolutionLines.findset() then begin
             repeat
 
-                objComplianceObligationHeader.Reset();
-                objComplianceObligationHeader.SetRange("No.", objCircularResolutionLines."Resolution No.");
-                if objComplianceObligationHeader.FindFirst() then begin
+                objCircularResolutionHeader.Reset();
+                objCircularResolutionHeader.SetRange("No.", objCircularResolutionLines."Resolution No.");
+                if objCircularResolutionHeader.FindFirst() then begin
                     status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
                             objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
                             objCircularResolutionLines."Department Code" + '*' + objCircularResolutionLines.Email + '*' +
                              Format(objCircularResolutionLines."Vote Status") + '*' +
-                             objComplianceObligationHeader.Title + '*' +
-                             objComplianceObligationHeader."Primary Employee Name" + '::::';
+                             objCircularResolutionHeader.Title + '*' +
+                             objCircularResolutionHeader."Initiator Name" + '::::';
                 end else begin
                     status += objCircularResolutionLines."Resolution No." + '*' + Format(objCircularResolutionLines."Line No.") + '*' +
                             objCircularResolutionLines."Personal No." + '*' + objCircularResolutionLines."Employee Name" + '*' +
