@@ -70,7 +70,11 @@ Codeunit 50032 NewEboard
         Employee: Record Employee;
         FILESPATH4: label 'C:\inetpub\wwwroot\EBoard\Downloads\P9\';
         objBoardMembers: Record "Board Members";
-
+        TempBlob_lRec: Codeunit "Temp Blob";
+        OutStr: OutStream;
+        InStr: InStream;
+        FileManagement_lCdu: Codeunit "File Management";
+        Base64Convert: Codeunit "Base64 Convert";
 
     procedure Testconnection()
     begin
@@ -1660,4 +1664,24 @@ Codeunit 50032 NewEboard
             status := 'danger*Board Member could not found';
         end;
     end;
+
+    procedure generateP9new(employeeNumber: Code[20]; startDate: DateTime; endDate: DateTime) BaseImage: Text
+    var
+        RecRef: RecordRef;
+    begin
+        TempBlob_lRec.CreateOutStream(OutStr, TEXTENCODING::UTF8);
+        Employee.Reset;
+        Employee.SetRange(Employee."No.", employeeNumber);
+        Employee.SetFilter(Employee."Date Filter", Format(Format(DT2DATE(startDate)) + '..' + Format(DT2DATE(endDate))));
+        Employee.SetFilter("Pay Period Filter", Format(Format(DT2DATE(startDate)) + '..' + Format(DT2DATE(endDate))));
+        if Employee.FindSet then begin
+            RecRef.GetTable(Employee);
+            Report.SaveAs(Report::"P9A Report", '', ReportFormat::Pdf, OutStr, RecRef);
+            FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('P9_%1.Pdf', Employee."No."), TRUE);
+            TempBlob_lRec.CreateInstream(InStr, TEXTENCODING::UTF8);
+            BaseImage := Base64Convert.ToBase64(InStr);
+        end;
+    end;
+
+
 }

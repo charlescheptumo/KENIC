@@ -15994,32 +15994,181 @@ Codeunit 50012 "HRPortal"
     //     exit(status);
 
     // end;
-    procedure InsertGeneralCorrespondenceHeader(docNo: Code[50]; employeeNo: Code[50]; docType: Integer; ttype: Integer; subject: Text; content: Text; content2: Text; content3: Text; content4: Text; content5: Text; content6: Text; content7: Text; content8: Text; content9: Text; content10: Text; toAllStaff: boolean; departmentCode: Code[50]; deptSubType: Code[100]; memoType: Integer; LetterType: Integer; empType: Integer; username: code[20]; departmentsubtype1: Code[100]; subCategory: Code[100]) status: Text
+    // procedure InsertGeneralCorrespondenceHeader(docNo: Code[50]; employeeNo: Code[50]; docType: Integer; ttype: Integer; subject: Text; content: Text; content2: Text; content3: Text; content4: Text; content5: Text; content6: Text; content7: Text; content8: Text; content9: Text; content10: Text; toAllStaff: boolean; departmentCode: Code[50]; deptSubType: Code[100]; memoType: Integer; LetterType: Integer; empType: Integer; username: code[20]; departmentsubtype1: Code[100]; subCategory: Code[100]) status: Text
+    // var
+    //     GenCorrespondence: Record "General Correspondence Header";
+    // begin
+
+    //     MemoNosSetup.Get();
+    //     if docNo = '' then begin
+    //         tbl_generalCorrespondenceHeader.Init();
+    //         tbl_generalCorrespondenceHeader."Document Type" := docType;
+    //         tbl_generalCorrespondenceHeader."Employee Document Type" := empType;
+    //         if (docType = 1) then begin
+    //             tbl_generalCorrespondenceHeader."Document No" := NoSer(deptSubType, docType, departmentCode, empType, employeeNo);
+    //         end;
+    //         if (docType = 2) then begin
+    //             if empType = 2 then begin
+    //                 tbl_generalCorrespondenceHeader."Document No" := NoSeriesManagement.GetNextNo(MemoNosSetup."Employee Confidential", WorkDate(), true) + '/' + EmployeeNo;
+    //             end else
+    //                 if empType = 1 then begin
+    //                     tbl_generalCorrespondenceHeader."Document No" := NoSeriesManagement.GetNextNo(MemoNosSetup."Employee Open", WorkDate(), true) + '/' + EmployeeNo;
+    //                 end;
+    //         end;
+    //         tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
+    //         tbl_generalCorrespondenceHeader."Department Code" := deptSubType;
+    //         tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
+    //         tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
+    //         //tbl_generalCorrespondenceHeader.Validate("Document Type");
+    //         if deptSubType <> '' then begin
+    //             tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
+    //             tbl_generalCorrespondenceHeader."Department SubType" := deptSubType;
+    //             tbl_generalCorrespondenceHeader."Department Code" := deptSubType;
+    //             tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
+    //             tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
+    //         end;
+    //         tbl_generalCorrespondenceHeader."To all Staff" := toAllStaff;
+    //         tbl_generalCorrespondenceHeader.Validate("To all Staff");
+    //         tbl_generalCorrespondenceHeader."Letter Type" := LetterType;
+    //         tbl_generalCorrespondenceHeader.Validate("Letter Type");
+    //         // tbl_generalCorrespondenceHeader."Document No" := NoSeriesforCorrespondence(docType, departmentCode, docNo, LetterType, deptSubType);
+    //         tbl_generalCorrespondenceHeader."Sender No" := employeeNo;
+    //         tbl_generalCorrespondenceHeader.Validate("Sender No");
+    //         tbl_generalCorrespondenceHeader.Type := ttype;
+    //         tbl_generalCorrespondenceHeader."Communication Subject" := subject;
+    //         tbl_generalCorrespondenceHeader."Communication Content" := content;
+    //         tbl_generalCorrespondenceHeader."Communication Content2" := content2;
+    //         tbl_generalCorrespondenceHeader."Communication Content3" := content3;
+    //         tbl_generalCorrespondenceHeader."Communication Content4" := content4;
+    //         tbl_generalCorrespondenceHeader."Communication Content5" := content5;
+    //         tbl_generalCorrespondenceHeader."Communication Content6" := content6;
+    //         tbl_generalCorrespondenceHeader."Communication Content7" := content7;
+    //         tbl_generalCorrespondenceHeader."Communication Content8" := content8;
+    //         tbl_generalCorrespondenceHeader."Communication Content9" := content9;
+    //         tbl_generalCorrespondenceHeader."Communication Content10" := content10;
+    //         tbl_generalCorrespondenceHeader."Type of Memo" := memoType;
+    //         if tbl_generalCorrespondenceHeader.Insert(true) then begin
+    //             status := 'success*Memo has been created successfully.*' +
+    //              tbl_generalCorrespondenceHeader."Document No" + '*' +
+    //              Format(tbl_generalCorrespondenceHeader."Document Type") + '*' +
+    //              Format((tbl_generalCorrespondenceHeader."Department Code")) + '*' +
+    //               Format(tbl_generalCorrespondenceHeader."Department Code") + '*' +
+    //               Format(tbl_generalCorrespondenceHeader."Type of Memo") + '*' +
+    //               Format(tbl_generalCorrespondenceHeader."Letter Type") + '*' +
+    //               Format(tbl_generalCorrespondenceHeader."Type");
+    //             //tbl_generalCorrespondenceHeader."Created By" := username;
+    //             //tbl_generalCorrespondenceHeader."Sender No" := employeeNo;
+    //             tbl_generalCorrespondenceHeader."Created By" := username;
+    //             tbl_generalCorrespondenceHeader.Modify();
+    //             // EmplNoSer(employeeNo, tbl_generalCorrespondenceHeader."Document No",username);            
+    //         end else begin
+    //             status := 'danger*An error occured while creating memo.';
+    //         end;
+    //     end else begin
+    //         tbl_generalCorrespondenceHeader.reset();
+    //         tbl_generalCorrespondenceHeader.SetRange("Document No", docNo);
+    //         if tbl_generalCorrespondenceHeader.findfirst() then begin
+    //             tbl_generalCorrespondenceHeader.Type := ttype;
+    //             tbl_generalCorrespondenceHeader."Document Type" := docType;
+    //             tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
+    //             tbl_generalCorrespondenceHeader."Department Code" := deptSubType;
+    //             tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
+    //             tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
+    //             if deptSubType <> '' then begin
+    //                 tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
+    //                 tbl_generalCorrespondenceHeader."Department SubType" := deptSubType;
+    //                 tbl_generalCorrespondenceHeader."Department Code" := deptSubType;
+    //                 tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
+    //                 tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
+    //             end;
+
+    //             tbl_generalCorrespondenceHeader."To all Staff" := toAllStaff;
+    //             tbl_generalCorrespondenceHeader.Validate("To all Staff");
+    //             tbl_generalCorrespondenceHeader."Communication Subject" := subject;
+    //             tbl_generalCorrespondenceHeader."Communication Content" := content;
+    //             tbl_generalCorrespondenceHeader."Communication Content2" := content2;
+    //             tbl_generalCorrespondenceHeader."Communication Content3" := content3;
+    //             tbl_generalCorrespondenceHeader."Communication Content4" := content4;
+    //             tbl_generalCorrespondenceHeader."Communication Content5" := content5;
+    //             tbl_generalCorrespondenceHeader."Communication Content6" := content6;
+    //             tbl_generalCorrespondenceHeader."Communication Content7" := content7;
+    //             tbl_generalCorrespondenceHeader."Communication Content8" := content8;
+    //             tbl_generalCorrespondenceHeader."Communication Content9" := content9;
+    //             tbl_generalCorrespondenceHeader."Communication Content10" := content10;
+    //             tbl_generalCorrespondenceHeader."Letter Type" := LetterType;
+    //             tbl_generalCorrespondenceHeader.Validate("Letter Type");
+    //             tbl_generalCorrespondenceHeader."Type of Memo" := memoType;
+    //             tbl_generalCorrespondenceHeader."Employee Document Type" := empType;
+    //             if tbl_generalCorrespondenceHeader.Modify(true) then begin
+    //                 tbl_generalCorrespondenceHeader."Created By" := username;
+    //                 tbl_generalCorrespondenceHeader."Sender No" := employeeNo;
+    //                 tbl_generalCorrespondenceHeader.Modify();
+    //                 status := 'success*Memo has been modified successfully.*' + tbl_generalCorrespondenceHeader."Document No" + '*' + Format(tbl_generalCorrespondenceHeader."Document Type") + '*' + Format((tbl_generalCorrespondenceHeader."Department Code")) + '*' + Format(tbl_generalCorrespondenceHeader."Department Code") + '*' + Format(tbl_generalCorrespondenceHeader."Type of Memo") + '*' + Format(tbl_generalCorrespondenceHeader."Letter Type") + '*' + Format(tbl_generalCorrespondenceHeader."Type");
+    //             end else begin
+    //                 status := 'danger*An error occured while modifying memo.';
+    //             end;
+    //         end else begin
+    //             status := 'danger*Document could not be found.';
+    //         end;
+    //     end;
+
+    //     exit(status);
+
+    // end;
+
+    procedure InsertGeneralCorrespondenceHeader(
+    docNo: Code[50];
+    employeeNo: Code[50];
+    docType: Integer;
+    ttype: Integer;
+    subject: Text;
+    content: Text;
+    content2: Text;
+    content3: Text;
+    content4: Text;
+    content5: Text;
+    content6: Text;
+    content7: Text;
+    content8: Text;
+    content9: Text;
+    content10: Text;
+    toAllStaff: Boolean;
+    departmentCode: Code[50];
+    deptSubType: Code[100];
+    memoType: Integer;
+    LetterType: Integer;
+    empType: Integer;
+    username: Code[20];
+    departmentsubtype1: Code[100];
+    subCategory: Code[100];
+    senderDeptCode: Code[50];      // NEW
+    senderDeptName: Text[200]      // NEW
+) status: Text
     var
         GenCorrespondence: Record "General Correspondence Header";
     begin
-
         MemoNosSetup.Get();
         if docNo = '' then begin
             tbl_generalCorrespondenceHeader.Init();
             tbl_generalCorrespondenceHeader."Document Type" := docType;
             tbl_generalCorrespondenceHeader."Employee Document Type" := empType;
+
             if (docType = 1) then begin
                 tbl_generalCorrespondenceHeader."Document No" := NoSer(deptSubType, docType, departmentCode, empType, employeeNo);
             end;
             if (docType = 2) then begin
                 if empType = 2 then begin
                     tbl_generalCorrespondenceHeader."Document No" := NoSeriesManagement.GetNextNo(MemoNosSetup."Employee Confidential", WorkDate(), true) + '/' + EmployeeNo;
-                end else
-                    if empType = 1 then begin
-                        tbl_generalCorrespondenceHeader."Document No" := NoSeriesManagement.GetNextNo(MemoNosSetup."Employee Open", WorkDate(), true) + '/' + EmployeeNo;
-                    end;
+                end else if empType = 1 then begin
+                    tbl_generalCorrespondenceHeader."Document No" := NoSeriesManagement.GetNextNo(MemoNosSetup."Employee Open", WorkDate(), true) + '/' + EmployeeNo;
+                end;
             end;
+
             tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
             tbl_generalCorrespondenceHeader."Department Code" := deptSubType;
             tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
             tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
-            //tbl_generalCorrespondenceHeader.Validate("Document Type");
+
             if deptSubType <> '' then begin
                 tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
                 tbl_generalCorrespondenceHeader."Department SubType" := deptSubType;
@@ -16027,11 +16176,17 @@ Codeunit 50012 "HRPortal"
                 tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
                 tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
             end;
+
+            // AUTO-FILL Sender & Creator Department from Employee Card
+            tbl_generalCorrespondenceHeader."Sender Department Code" := senderDeptCode;
+            tbl_generalCorrespondenceHeader."Sender Department Name" := senderDeptName;
+            tbl_generalCorrespondenceHeader."Creator Department Code" := senderDeptCode;
+            tbl_generalCorrespondenceHeader."Creator Department Name" := senderDeptName;
+
             tbl_generalCorrespondenceHeader."To all Staff" := toAllStaff;
             tbl_generalCorrespondenceHeader.Validate("To all Staff");
             tbl_generalCorrespondenceHeader."Letter Type" := LetterType;
             tbl_generalCorrespondenceHeader.Validate("Letter Type");
-            // tbl_generalCorrespondenceHeader."Document No" := NoSeriesforCorrespondence(docType, departmentCode, docNo, LetterType, deptSubType);
             tbl_generalCorrespondenceHeader."Sender No" := employeeNo;
             tbl_generalCorrespondenceHeader.Validate("Sender No");
             tbl_generalCorrespondenceHeader.Type := ttype;
@@ -16047,33 +16202,32 @@ Codeunit 50012 "HRPortal"
             tbl_generalCorrespondenceHeader."Communication Content9" := content9;
             tbl_generalCorrespondenceHeader."Communication Content10" := content10;
             tbl_generalCorrespondenceHeader."Type of Memo" := memoType;
+
             if tbl_generalCorrespondenceHeader.Insert(true) then begin
-                status := 'success*Memo has been created successfully.*' +
-                 tbl_generalCorrespondenceHeader."Document No" + '*' +
-                 Format(tbl_generalCorrespondenceHeader."Document Type") + '*' +
-                 Format((tbl_generalCorrespondenceHeader."Department Code")) + '*' +
-                  Format(tbl_generalCorrespondenceHeader."Department Code") + '*' +
-                  Format(tbl_generalCorrespondenceHeader."Type of Memo") + '*' +
-                  Format(tbl_generalCorrespondenceHeader."Letter Type") + '*' +
-                  Format(tbl_generalCorrespondenceHeader."Type");
-                //tbl_generalCorrespondenceHeader."Created By" := username;
-                //tbl_generalCorrespondenceHeader."Sender No" := employeeNo;
                 tbl_generalCorrespondenceHeader."Created By" := username;
                 tbl_generalCorrespondenceHeader.Modify();
-                // EmplNoSer(employeeNo, tbl_generalCorrespondenceHeader."Document No",username);            
+                status := 'success*Memo has been created successfully.*' +
+                    tbl_generalCorrespondenceHeader."Document No" + '*' +
+                    Format(tbl_generalCorrespondenceHeader."Document Type") + '*' +
+                    Format(tbl_generalCorrespondenceHeader."Department Code") + '*' +
+                    Format(tbl_generalCorrespondenceHeader."Department Code") + '*' +
+                    Format(tbl_generalCorrespondenceHeader."Type of Memo") + '*' +
+                    Format(tbl_generalCorrespondenceHeader."Letter Type") + '*' +
+                    Format(tbl_generalCorrespondenceHeader.Type);
             end else begin
                 status := 'danger*An error occured while creating memo.';
             end;
         end else begin
-            tbl_generalCorrespondenceHeader.reset();
+            tbl_generalCorrespondenceHeader.Reset();
             tbl_generalCorrespondenceHeader.SetRange("Document No", docNo);
-            if tbl_generalCorrespondenceHeader.findfirst() then begin
+            if tbl_generalCorrespondenceHeader.FindFirst() then begin
                 tbl_generalCorrespondenceHeader.Type := ttype;
                 tbl_generalCorrespondenceHeader."Document Type" := docType;
                 tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
                 tbl_generalCorrespondenceHeader."Department Code" := deptSubType;
                 tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
                 tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
+
                 if deptSubType <> '' then begin
                     tbl_generalCorrespondenceHeader."Directorate Code" := departmentCode;
                     tbl_generalCorrespondenceHeader."Department SubType" := deptSubType;
@@ -16081,6 +16235,12 @@ Codeunit 50012 "HRPortal"
                     tbl_generalCorrespondenceHeader."Department SubType" := departmentsubtype1;
                     tbl_generalCorrespondenceHeader."Sub Category" := subCategory;
                 end;
+
+                // AUTO-FILL Sender & Creator Department on modify too
+                tbl_generalCorrespondenceHeader."Sender Department Code" := senderDeptCode;
+                tbl_generalCorrespondenceHeader."Sender Department Name" := senderDeptName;
+                tbl_generalCorrespondenceHeader."Creator Department Code" := senderDeptCode;
+                tbl_generalCorrespondenceHeader."Creator Department Name" := senderDeptName;
 
                 tbl_generalCorrespondenceHeader."To all Staff" := toAllStaff;
                 tbl_generalCorrespondenceHeader.Validate("To all Staff");
@@ -16099,11 +16259,19 @@ Codeunit 50012 "HRPortal"
                 tbl_generalCorrespondenceHeader.Validate("Letter Type");
                 tbl_generalCorrespondenceHeader."Type of Memo" := memoType;
                 tbl_generalCorrespondenceHeader."Employee Document Type" := empType;
+
                 if tbl_generalCorrespondenceHeader.Modify(true) then begin
                     tbl_generalCorrespondenceHeader."Created By" := username;
                     tbl_generalCorrespondenceHeader."Sender No" := employeeNo;
                     tbl_generalCorrespondenceHeader.Modify();
-                    status := 'success*Memo has been modified successfully.*' + tbl_generalCorrespondenceHeader."Document No" + '*' + Format(tbl_generalCorrespondenceHeader."Document Type") + '*' + Format((tbl_generalCorrespondenceHeader."Department Code")) + '*' + Format(tbl_generalCorrespondenceHeader."Department Code") + '*' + Format(tbl_generalCorrespondenceHeader."Type of Memo") + '*' + Format(tbl_generalCorrespondenceHeader."Letter Type") + '*' + Format(tbl_generalCorrespondenceHeader."Type");
+                    status := 'success*Memo has been modified successfully.*' +
+                        tbl_generalCorrespondenceHeader."Document No" + '*' +
+                        Format(tbl_generalCorrespondenceHeader."Document Type") + '*' +
+                        Format(tbl_generalCorrespondenceHeader."Department Code") + '*' +
+                        Format(tbl_generalCorrespondenceHeader."Department Code") + '*' +
+                        Format(tbl_generalCorrespondenceHeader."Type of Memo") + '*' +
+                        Format(tbl_generalCorrespondenceHeader."Letter Type") + '*' +
+                        Format(tbl_generalCorrespondenceHeader.Type);
                 end else begin
                     status := 'danger*An error occured while modifying memo.';
                 end;
@@ -16113,7 +16281,6 @@ Codeunit 50012 "HRPortal"
         end;
 
         exit(status);
-
     end;
 
 
