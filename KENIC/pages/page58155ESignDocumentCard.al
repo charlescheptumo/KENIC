@@ -79,6 +79,23 @@ page 58155 "ESign Document Card"
                 Editable = IsDocumentEditable;
             }
         }
+
+        area(factboxes)
+        {
+            part(ESignDocFactBox; "ESign Document FactBox")
+            {
+                ApplicationArea = All;
+                SubPageLink = "No." = field("No.");
+            }
+            systempart(Control1900383207; Links)
+            {
+                ApplicationArea = RecordLinks;
+            }
+            systempart(Control1900576707; Notes)
+            {
+                ApplicationArea = Notes;
+            }
+        }
     }
 
     actions
