@@ -13,18 +13,18 @@ table 58143 "Compliance Obligation Employee"
         field(2; "Employee No."; Code[50])
         {
             Caption = 'Member No.';
-            TableRelation = "Board Members"."Personal No";
+            TableRelation = "Employee"."No.";
 
             trigger OnValidate()
             var
-                BoardMember: Record "Board Members";
+                Employee: Record "Employee";
             begin
-                BoardMember.Reset();
-                BoardMember.SetRange("Personal No", "Employee No.");
-                if BoardMember.FindFirst() then begin
-                    "Employee Name" := BoardMember.FullName();
-                   // "Employee Email" := BoardMember."E-Mail";
-                   "Employee Email" := BoardMember."Company E-Mail";
+                Employee.Reset();
+                Employee.SetRange("No.", "Employee No.");
+                if Employee.FindFirst() then begin
+                    "Employee Name" := Employee.FullName();
+                    // "Employee Email" := BoardMember."E-Mail";
+                    "Employee Email" := Employee."Company E-Mail";
                 end else begin
                     "Employee Name" := '';
                     "Employee Email" := '';
@@ -106,12 +106,11 @@ table 58143 "Compliance Obligation Employee"
                 Error('You cannot add or delete assigned employees on a posted Compliance Obligation.');
     end;
 
-   local procedure UpdateParentStatus()
+    local procedure UpdateParentStatus()
     var
         ComplianceObligation: Record "Compliance Obligation";
     begin
         if ComplianceObligation.Get(Rec."Obligation No.") then
-            
             if ComplianceObligation.Posted then begin
                 ComplianceObligation.UpdateStatus();
                 ComplianceObligation.Modify(false);

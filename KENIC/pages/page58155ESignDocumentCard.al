@@ -49,6 +49,7 @@ page 58155 "ESign Document Card"
                     ApplicationArea = All;
                     Editable = false;
                     ToolTip = 'Specifies the original uploaded SharePoint document link.';
+                    Visible = false;
 
                     trigger OnDrillDown()
                     begin
@@ -62,6 +63,7 @@ page 58155 "ESign Document Card"
                     ApplicationArea = All;
                     Editable = false;
                     ToolTip = 'Specifies the final signed SharePoint document link.';
+                    Visible = false;
 
                     trigger OnDrillDown()
                     begin
@@ -121,6 +123,19 @@ page 58155 "ESign Document Card"
                     trigger OnAction()
                     var
                         ESignature: Codeunit "ESIGNATURE";
+                        ESignLine: Record "ESign Line";
+                        DocumentNo: Code[20];
+                        DocumentTitle: Text[250];
+                        SignatoryList: Record "ESign Line";
+                        Message: Text[2048];
+                        RecordLink: Record "Record Link";
+                        AdobeIntegration: Codeunit "Adobe Sign Integration";
+                        SignersJson: Text;
+                        FirstSigner: Boolean;
+                        OrderNo: Integer;
+                        UrlJson: Text;
+                        FirstUrl: Boolean;
+
                     begin
                         Rec.TestField("Approval Status", Rec."Approval Status"::Released);
 
@@ -129,6 +144,22 @@ page 58155 "ESign Document Card"
 
                         if not Confirm('Do you want to post this E-Signature document?', false) then
                             exit;
+
+                        // Get document number and title
+                        DocumentNo := Rec."No.";
+                        DocumentTitle := Rec.Title;
+
+
+                        Message := DocumentTitle + ' Please proceed to sign this';
+
+
+                        ESignLine.Reset();
+                        ESignLine.SetRange("Document No.", Rec."No.");
+
+                        RecordLink.Reset();
+                        RecordLink.SetRange("Record ID", Rec.RecordId);
+
+                        AdobeIntegration.SendAgreement(DocumentTitle, Message, DocumentNo, ESignLine, RecordLink);
 
                         Rec.Posted := true;
                         Rec.Status := Rec.Status::Posted;
@@ -289,11 +320,11 @@ page 58155 "ESign Document Card"
                         if Rec."Approval Status" = Rec."Approval Status"::Released then begin
                             Rec.Status := Rec.Status::Approved;
                             Rec.Modify(true);
-                          ESignature.SendApprovedNotificationToInitiatorForESignature(Rec."No.");
+                            ESignature.SendApprovedNotificationToInitiatorForESignature(Rec."No.");
                         end;
 
                         CurrPage.Update(true);
-                      
+
                     end;
                 }
 
@@ -318,11 +349,11 @@ page 58155 "ESign Document Card"
                         if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
                             Rec.Status := Rec.Status::Rejected;
                             Rec.Modify(true);
-                             ESignature.SendRejectedNotificationToInitiatorForESignature(Rec."No.");
+                            ESignature.SendRejectedNotificationToInitiatorForESignature(Rec."No.");
                         end;
 
                         CurrPage.Update(true);
-                       
+
                     end;
                 }
 

@@ -130,12 +130,6 @@ End Function
         <Field Name="PrintedBy">
           <DataField>PrintedBy</DataField>
         </Field>
-        <Field Name="TotalEMPL1">
-          <DataField>TotalEMPL1</DataField>
-        </Field>
-        <Field Name="TotalEMPL1Format">
-          <DataField>TotalEMPL1Format</DataField>
-        </Field>
         <Field Name="ReportForNavId_5">
           <DataField>ReportForNavId_5</DataField>
         </Field>
@@ -163,23 +157,11 @@ End Function
         <Field Name="EMPLFormat">
           <DataField>EMPLFormat</DataField>
         </Field>
-        <Field Name="TotalEMPL">
-          <DataField>TotalEMPL</DataField>
-        </Field>
-        <Field Name="TotalEMPLFormat">
-          <DataField>TotalEMPLFormat</DataField>
-        </Field>
         <Field Name="total">
           <DataField>total</DataField>
         </Field>
         <Field Name="totalFormat">
           <DataField>totalFormat</DataField>
-        </Field>
-        <Field Name="Total_Icea_Employer_Amount">
-          <DataField>Total_Icea_Employer_Amount</DataField>
-        </Field>
-        <Field Name="Total_Icea_Employer_AmountFormat">
-          <DataField>Total_Icea_Employer_AmountFormat</DataField>
         </Field>
         <Field Name="CountX">
           <DataField>CountX</DataField>
