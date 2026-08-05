@@ -95,6 +95,102 @@ Codeunit 50032 NewEboard
         exit(CustomerNumber);
     end;
 
+    procedure InsertAgreementDocument(documentNumber: Code[20]; agreementID: Text[2048]) status: Text
+    var
+        AgreementDocument: Record "Document Agreement";
+    begin
+        AgreementDocument.Init();
+
+        AgreementDocument."Document Number" := documentNumber;
+        AgreementDocument."Agreement ID" := agreementID;
+        AgreementDocument.Status := 'Not Signed';
+
+        if AgreementDocument.Insert(true) then begin
+            status := 'success*Record successfully created*' + Format(documentNumber);
+        end else begin
+            status := 'error*An error occured during the process of creating record';
+        end
+    end;
+
+    procedure addSignedSharepointLinks(agreementID: Text[2048]; sharepointlink: Text) status: Text
+    var
+        AgreementDocument: Record "Document Agreement";
+        esignapplication: Record "ESign Header";
+        RecordLink: Record "Record Link";
+        RecordIDNumber: RecordID;
+        DocumentNumber: Code[50];
+    begin
+
+        AgreementDocument.Reset();
+        AgreementDocument.SetRange("Agreement ID", agreementID);
+
+        if AgreementDocument.FindFirst() then begin
+            DocumentNumber := AgreementDocument."Document Number";
+
+            AgreementDocument.Status := 'Signed';
+            AgreementDocument.Modify(true);
+
+            RecordLink.Reset();
+            RecordLink.Init();
+
+            RecordLink.URL1 := sharepointlink;
+            RecordLink.Description := 'Signed Copy';
+            RecordLink.Type := RecordLink.Type::Link;
+            RecordLink.Company := COMPANYNAME;
+            RecordLink."User ID" := DocumentNumber;
+            RecordLink.Created := CreateDateTime(Today, Time);
+
+
+            esignapplication.Reset();
+            esignapplication.SetRange("No.", DocumentNumber);
+
+            if esignapplication.FindFirst() then begin
+                RecordIDNumber := esignapplication.RecordId;
+                RecordLink."Record ID" := RecordIDNumber;
+
+
+                if RecordLink.Insert(true) then begin
+                    status := 'success*Link successfully created*' + Format(RecordLink."Link ID");
+                end else begin
+                    status := 'error*An error occurred during the process of creating link';
+                end;
+            end else begin
+                status := 'error*ESign Header not found for document number: ' + DocumentNumber;
+            end;
+        end else begin
+            status := 'error*Agreement ID not found: ' + agreementID;
+        end;
+    end;
+
+    procedure checkSharePointLinksStatus() status: Text
+    var
+        AgreementDocument: Record "Document Agreement";
+        NotSignedCount: Integer;
+        DocumentList: Text;
+        DocEntry: Text;
+        StatusMessage: Text;
+    begin
+
+        NotSignedCount := 0;
+        DocumentList := '';
+
+        AgreementDocument.Reset();
+        AgreementDocument.SetRange("Status", 'Not Signed');
+
+        if AgreementDocument.FindSet() then begin
+            repeat
+
+                status += Format(AgreementDocument."No.") + '*' +
+                          AgreementDocument."Document Number" + '*' +
+                          AgreementDocument."Agreement ID" + '*' +
+                          AgreementDocument."Status" + '::::';
+            until AgreementDocument.Next() = 0;
+        end;
+
+        if status = '' then
+            status := 'danger*No records with status "Not Signed" found';
+    end;
+
     procedure fnLogin2(dirEmail: Text[100]; password: Text) status: Text
     var
         iExists: Boolean;
