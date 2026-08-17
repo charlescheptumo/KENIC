@@ -55,6 +55,8 @@ codeunit 50042 COCCAIntegration
         exit(StrSubstNo('Update successful. Updated=%1', UpdatedCount));
     end;
 
+
+
     local procedure SendPostRequest(Endpoint: Text; DomainName: Text; var HttpStatus: Integer; var ResponseTxt: Text; var ErrTxt: Text)
     var
         Client: HttpClient;
