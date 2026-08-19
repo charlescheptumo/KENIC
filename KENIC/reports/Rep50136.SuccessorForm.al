@@ -60,12 +60,10 @@ report 50170 "Successor Form"
 
             }
 
-
-
             dataitem(TopDevArea; "Successor Form Top Dev Area")
             {
                 DataItemLink = "Document No." = field("No.");
-                DataItemTableView = sorting("Document No.", "Line No.");
+                DataItemTableView = sorting("Document No.", "Line No.") where("Development Area" = filter(<> ''));
 
                 column(LineNo_TopDevArea; "Line No.")
                 {
@@ -78,7 +76,7 @@ report 50170 "Successor Form"
             dataitem(Line; "Successor Form Line")
             {
                 DataItemLink = "Document No." = field("No.");
-                DataItemTableView = sorting("Document No.", "Line No.");
+                DataItemTableView = sorting("Document No.", "Line No.") where("Development Area/Activity" = filter(<> ''));
 
                 column(LineNo_Line; "Line No.")
                 {

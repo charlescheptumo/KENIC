@@ -2154,6 +2154,7 @@ page 60002 "HR Role Center"
                 action("Individual Development Plan")
                 {
                     ApplicationArea = BasicHR;
+                    Visible=false;
                     Caption = 'Individual Development Plan';
                     RunObject = Page "Training Need Requests";
                     ToolTip = 'Executes the Individual Development Plan action.';

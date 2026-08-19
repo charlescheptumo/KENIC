@@ -11,7 +11,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.1.30001.02</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-08-19T08:10:01.5252113Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-08-19T11:23:40.1652962Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -544,7 +544,17 @@
                   <KeepWithGroup>After</KeepWithGroup>
                 </TablixMember>
                 <TablixMember>
-                  <Group Name="Details" />
+                  <Group Name="Details">
+                    <Filters>
+                      <Filter>
+                        <FilterExpression>=Fields!DevelopmentArea_TopDevArea.Value</FilterExpression>
+                        <Operator>NotEqual</Operator>
+                        <FilterValues>
+                          <FilterValue DataType="String"></FilterValue>
+                        </FilterValues>
+                      </Filter>
+                    </Filters>
+                  </Group>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
@@ -564,16 +574,16 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.6285in</Width>
+                  <Width>1.91962in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.6285in</Width>
+                  <Width>1.66843in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.01738in</Width>
+                  <Width>2.05731in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.32757in</Width>
+                  <Width>1.3675in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -847,11 +857,19 @@
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
+                <TablixMember />
                 <TablixMember>
-                  <KeepWithGroup>After</KeepWithGroup>
-                </TablixMember>
-                <TablixMember>
-                  <Group Name="Details1" />
+                  <Group Name="LineDetails">
+                    <Filters>
+                      <Filter>
+                        <FilterExpression>=Fields!DevelopmentAreaActivity_Line.Value</FilterExpression>
+                        <Operator>NotEqual</Operator>
+                        <FilterValues>
+                          <FilterValue DataType="String"></FilterValue>
+                        </FilterValues>
+                      </Filter>
+                    </Filters>
+                  </Group>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
@@ -859,7 +877,7 @@
             <Top>2.80778in</Top>
             <Left>0.38417in</Left>
             <Height>0.44444in</Height>
-            <Width>6.60195in</Width>
+            <Width>7.01286in</Width>
             <ZIndex>13</ZIndex>
             <Style>
               <Border>
