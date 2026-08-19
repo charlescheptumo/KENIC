@@ -34,36 +34,89 @@ pageextension 50147 "Accountant Role Ext" extends "Accountant Role Center"
             }
 
         }
-        addafter("Cash Management")
-        { group(BatchCheck)
+        addafter(Action172)
+        {
+            group("Registry Setup")
             {
-                Caption = 'Batch Check';
-                ToolTip = 'Check the batch status and details.';
+                Caption = 'Registry Setup';
+                ToolTip = 'Set up the registry settings.';
+                action(RegistrySetup)
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Registry Setups';
+                    Image = Setup;
+                    RunObject = Page "Cash Management Setup";
+                    ToolTip = 'Executes the Registry Setup action.';
+                }
+            }
+            group("Registry Data Integration")
+            {
+                Caption = 'Registry Data Integration';
+                ToolTip = 'Integrate the registry data.';
+                action("Domain Ledger entries")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Domain Ledger entries';
+                    Image = Setup;
+                    RunObject = Page "Domain Ledger List";
+                    ToolTip = 'Executes the Domain Ledger entries action.';
+                }
+                action("Domain Customers")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Domain Customers';
+                    Image = Setup;
+                    RunObject = Page "Domain Client List";
+                    ToolTip = 'Executes the Domain Customers action.';
+                }
+                action("Domain Receipts")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Domain Receipts';
+                    Image = Setup;
+                    RunObject = Page "Domain Receipt List";
+                    ToolTip = 'Executes the Domain Receipts action.';
+                }
+                action("IM Transactions")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'IM Transactions';
+                    Image = Setup;
+                    RunObject = Page "I&M Transaction List";
+                    ToolTip = 'Executes the IM Transactions action.';
+                }
+            }
+        }
+        // addafter("Cash Management")
+        // { group(BatchCheck)
+        //     {
+        //         Caption = 'Batch Check';
+        //         ToolTip = 'Check the batch status and details.';
 
-                action(Batchchecks)
-                {
-                    ApplicationArea = Basic, Suite;
-                    Caption = 'Batch checks';
-                    Image = BatchCheck;
-                    RunObject = Page "Batch Check Vouchers";
-                    ToolTip = 'View the list of batches that are waiting to be processed, currently being processed, or have been processed recently. You can check the details and status of each batch to monitor the progress of transactions that are being posted in your system.';
-                }
-                action(BatchCheckList)
-                {
-                    ApplicationArea = Basic, Suite;
-                    Caption = 'Posted Batch checks';
-                    Image = BatchCheck;
-                    RunObject = Page "Posted Batch Check Vouchers";
-                    ToolTip = 'View the list of batches that are waiting to be processed, currently being processed, or have been processed recently. You can check the details and status of each batch to monitor the progress of transactions that are being posted in your system.';
-                }
-                action(BatchCheckAnalysisReport)
-                {
-                    ApplicationArea = Basic, Suite;
-                    Caption = 'Batch Check Analysis Report';
-                    Image = BatchCheck;
-                    RunObject = Report "Check Analysis Report";
-                    ToolTip = 'View the report of batches that are waiting to be processed, currently being processed, or have been processed recently. You can analyze the details and status of each batch to monitor the progress of transactions that are being posted in your system.';
-                }
-            }}
+        //         action(Batchchecks)
+        //         {
+        //             ApplicationArea = Basic, Suite;
+        //             Caption = 'Batch checks';
+        //             Image = BatchCheck;
+        //             RunObject = Page "Batch Check Vouchers";
+        //             ToolTip = 'View the list of batches that are waiting to be processed, currently being processed, or have been processed recently. You can check the details and status of each batch to monitor the progress of transactions that are being posted in your system.';
+        //         }
+        //         action(BatchCheckList)
+        //         {
+        //             ApplicationArea = Basic, Suite;
+        //             Caption = 'Posted Batch checks';
+        //             Image = BatchCheck;
+        //             RunObject = Page "Posted Batch Check Vouchers";
+        //             ToolTip = 'View the list of batches that are waiting to be processed, currently being processed, or have been processed recently. You can check the details and status of each batch to monitor the progress of transactions that are being posted in your system.';
+        //         }
+        //         action(BatchCheckAnalysisReport)
+        //         {
+        //             ApplicationArea = Basic, Suite;
+        //             Caption = 'Batch Check Analysis Report';
+        //             Image = BatchCheck;
+        //             RunObject = Report "Check Analysis Report";
+        //             ToolTip = 'View the report of batches that are waiting to be processed, currently being processed, or have been processed recently. You can analyze the details and status of each batch to monitor the progress of transactions that are being posted in your system.';
+        //         }
+        //     }}
     }
 }

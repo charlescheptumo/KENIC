@@ -35,6 +35,24 @@ Page 99294 "Training Need Requests"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Employee Name field.';
                 }
+                field("Supervisor Name"; Rec."Supervisor Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Supervisor Name field.';
+                    Visible = false;
+                }
+                field("Supervisor Job Title"; Rec."Supervisor Job Title")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Supervisor Job Title field.';
+                    Visible = false;
+                }
+                field("Plan Date"; Rec."Plan Date")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Plan Date field.';
+                    Visible = false;
+                }
                 field("Created By"; Rec."Created By")
                 {
                     ApplicationArea = Basic;

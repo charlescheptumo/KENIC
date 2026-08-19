@@ -500,14 +500,14 @@ Table 57004 "Cash Management Setup"
 
             TableRelation = "No. Series";
         }
-        field(57058;"Current Financial Year"; code[20])
+        field(57058; "Current Financial Year"; code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = "Financial Year Code".Code;
         }
-         field(57059; "Standing Imprest Limit Nos"; Code[20])
+        field(57059; "Standing Imprest Limit Nos"; Code[20])
         {
-         TableRelation = "No. Series";
+            TableRelation = "No. Series";
         }
         field(57060; "Allow Multiple Posting Groups"; Boolean)
         {
@@ -517,30 +517,42 @@ Table 57004 "Cash Management Setup"
             Caption = 'Standing Imprest Posting Group';
             TableRelation = "Employee Posting Group";
         }
-        field(57062;"Standing Imprest Account No";code[100])
+        field(57062; "Standing Imprest Account No"; code[100])
         {
-            TableRelation = "G/L Account" where("Account Type" = const(Posting));  
+            TableRelation = "G/L Account" where("Account Type" = const(Posting));
         }
-         field(57063;"Standing Vendor Check No";code[20])
+        field(57063; "Standing Vendor Check No"; code[20])
         {
-            TableRelation = Vendor;  
+            TableRelation = Vendor;
         }
-         field(57064; "Batch Check Voucher Nos"; Code[20])
+        field(57064; "Batch Check Voucher Nos"; Code[20])
         {
 
             TableRelation = "No. Series";
         }
         field(57065; "Account Name"; Text[100])
-{
-    Caption = 'Payee';
-    FieldClass = FlowField;
-    CalcFormula = lookup(Vendor.Name WHERE("No." = FIELD("Standing Vendor Check No")));
-}
+        {
+            Caption = 'Payee';
+            FieldClass = FlowField;
+            CalcFormula = lookup(Vendor.Name WHERE("No." = FIELD("Standing Vendor Check No")));
+        }
+        field(57066; "Succ. Sel. Justification Nos."; Code[20])
+        {
+            Caption = 'Succ. Sel. Justification Nos.';
+            TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        }
+         field(57067; "Successor Form Nos."; Code[20])
+        {
+            Caption = 'Successor Form Nos.';
+            TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        }
 
-        
 
 
-        
+
+
     }
 
     keys

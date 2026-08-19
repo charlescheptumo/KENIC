@@ -65,7 +65,7 @@ page 60002 "HR Role Center"
                     group("Work Structure")
                     {
                         Caption = 'Work Structure';
-                        
+
                         action("Job Grades")
                         {
                             ApplicationArea = BasicHR;
@@ -111,7 +111,7 @@ page 60002 "HR Role Center"
                     group("Manpower")
                     {
                         Caption = 'Manpower';
-                        
+
                         action("Global Staff Establishment")
                         {
                             ApplicationArea = BasicHR;
@@ -1010,7 +1010,7 @@ page 60002 "HR Role Center"
             }
 
             //  PILLAR 3: RETENTION (M3, M4, M5) 
- //  PILLAR 3: RETENTION
+            //  PILLAR 3: RETENTION
             group("Retention")
             {
                 Caption = 'Retention';
@@ -2132,6 +2132,31 @@ page 60002 "HR Role Center"
                         RunObject = Page "Staff Clearance Setup";
                         ToolTip = 'Executes the Staff Clearance Setup action.';
                     }
+                }
+            }
+            group("Successor Selection Justification")
+            {
+                Caption = 'Successor Selection Justification';
+                action("Succ. Sel. Justification")
+                {
+                    ApplicationArea = BasicHR;
+                    Caption = 'Successor Selection Justification';
+                    RunObject = Page "Succ. Sel. Justification List";
+                    ToolTip = 'Executes the Successor Selection Justification action.';
+                }
+                action("Successor Form")
+                {
+                    ApplicationArea = BasicHR;
+                    Caption = 'Successor Form';
+                    RunObject = Page "Successor Form List";
+                    ToolTip = 'Executes the Successor Form action.';
+                }
+                action("Individual Development Plan")
+                {
+                    ApplicationArea = BasicHR;
+                    Caption = 'Individual Development Plan';
+                    RunObject = Page "Training Need Requests";
+                    ToolTip = 'Executes the Individual Development Plan action.';
                 }
             }
 

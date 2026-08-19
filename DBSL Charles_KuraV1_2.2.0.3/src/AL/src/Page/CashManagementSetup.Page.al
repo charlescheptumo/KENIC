@@ -385,6 +385,16 @@ Page 57008 "Cash Management Setup"
                 {
                     ToolTip = 'Specifies the value of the Batch Check Voucher Nos field.', Comment = '%';
                 }
+                field("Succ. Sel. Justification Nos."; Rec."Succ. Sel. Justification Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Succ. Sel. Justification Nos. field.';
+                }
+                field("Successor Form Nos."; Rec."Successor Form Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Successor Form Nos. field.';
+                }
                 field("Agency Notice Nos"; Rec."Agency Notice Nos")
                 {
                     ApplicationArea = Basic;
