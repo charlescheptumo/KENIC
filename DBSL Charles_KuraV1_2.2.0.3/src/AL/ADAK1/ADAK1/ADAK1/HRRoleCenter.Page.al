@@ -2153,6 +2153,7 @@ page 60002 "HR Role Center"
                 }
                 action("Individual Development Plan")
                 {
+                    Visible = False;
                     ApplicationArea = BasicHR;
                     Caption = 'Individual Development Plan';
                     RunObject = Page "Training Need Requests";
