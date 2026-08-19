@@ -24,7 +24,20 @@ table 50173 "Succ. Sel. Justification Hdr"
         field(4; "Successor Name"; Text[100])
         {
             Caption = 'Successor''s Name';
+            TableRelation = Employee;
             DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            var
+                EmployeeRec: Record Employee;
+
+            begin
+                if EmployeeRec.Get(Rec."Successor Name") then begin
+                    "Current Role" := EmployeeRec."Job Title";
+                    "Current Position" := EmployeeRec."Current Position ID";
+                    Department:= EmployeeRec."Department Code";
+                end;
+            end;
         }
         field(5; "Current Position"; Text[100])
         {
@@ -77,13 +90,13 @@ table 50173 "Succ. Sel. Justification Hdr"
 
     trigger OnInsert()
     var
-        CashMgtSetup: Record "Cash Management Setup";
+        HumanResourcesSetup: Record "Human Resources Setup";
         NoSeriesMgt: Codeunit "No. Series";
     begin
         if "No." = '' then begin
-            CashMgtSetup.Get();
-            CashMgtSetup.TestField("Succ. Sel. Justification Nos.");
-            "No. Series" := CashMgtSetup."Succ. Sel. Justification Nos.";
+            HumanResourcesSetup.Get();
+            HumanResourcesSetup.TestField("Succ. Sel. Justification Nos.");
+            "No. Series" := HumanResourcesSetup."Succ. Sel. Justification Nos.";
             "No." := NoSeriesMgt.GetNextNo("No. Series", WorkDate(), true);
         end;
     end;

@@ -132,7 +132,7 @@ Page 57075 "Posted Receipt"
 
                 trigger OnAction()
                 begin
-                    PaymentPost.PostReceipt(Rec);
+                   // PaymentPost.PostReceipt(Rec);
                 end;
             }
             action("Print report")

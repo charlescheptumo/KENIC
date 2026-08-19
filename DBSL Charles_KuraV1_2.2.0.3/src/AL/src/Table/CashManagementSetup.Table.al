@@ -542,11 +542,36 @@ Table 57004 "Cash Management Setup"
             TableRelation = "No. Series";
             DataClassification = CustomerContent;
         }
-         field(57067; "Successor Form Nos."; Code[20])
+        field(57067; "Successor Form Nos."; Code[20])
         {
             Caption = 'Successor Form Nos.';
             TableRelation = "No. Series";
             DataClassification = CustomerContent;
+        }
+        field(57068; Mpesa; Code[50])
+        {
+            Caption = 'Mpesa';
+            TableRelation = "Bank Account";
+        }
+        field(57069; IPay; Code[50])
+        {
+            Caption = 'IPay';
+            TableRelation = "Bank Account";
+        }
+        field(57070; NCBA; Code[50])
+        {
+            Caption = 'NCBA';
+            TableRelation = "Bank Account";
+        }
+        field(57071; "IM KES"; Code[50])
+        {
+            Caption = 'IM KES';
+            TableRelation = "Bank Account";
+        }
+        field(57072; "IM USD"; Code[50])
+        {
+            Caption = 'IM USD';
+            TableRelation = "Bank Account";
         }
 
 

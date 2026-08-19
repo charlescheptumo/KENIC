@@ -385,15 +385,30 @@ Page 57008 "Cash Management Setup"
                 {
                     ToolTip = 'Specifies the value of the Batch Check Voucher Nos field.', Comment = '%';
                 }
-                field("Succ. Sel. Justification Nos."; Rec."Succ. Sel. Justification Nos.")
+                field(Mpesa;Rec.Mpesa)
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Succ. Sel. Justification Nos. field.';
+                    ToolTip = 'Specifies the value of the Mpesa field.';
                 }
-                field("Successor Form Nos."; Rec."Successor Form Nos.")
+                field(IPay;Rec.IPay)
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Successor Form Nos. field.';
+                    ToolTip = 'Specifies the value of the IPay field.';
+                }
+                field(NCBA;Rec.NCBA)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the NCBA field.';
+                }
+                field("IM KES";Rec."IM KES")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the IM KES field.';
+                }
+                field("IM USD";Rec."IM USD")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the IM USD field.';
                 }
                 field("Agency Notice Nos"; Rec."Agency Notice Nos")
                 {

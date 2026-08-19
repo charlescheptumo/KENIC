@@ -1008,6 +1008,18 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
         {
             TableRelation = "No. Series".Code;
         }
+         field(69675; "Succ. Sel. Justification Nos."; Code[20])
+        {
+            Caption = 'Succ. Sel. Justification Nos.';
+            TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        }
+         field(69676; "Successor Form Nos."; Code[20])
+        {
+            Caption = 'Successor Form Nos.';
+            TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        }
 
     }
 

@@ -42,6 +42,9 @@ page 50356 "Domain Receipt List"
                 field(NcbaKes; Rec.NcbaKes) { ApplicationArea = All; }
                 field(ImKes; Rec.ImKes) { ApplicationArea = All; }
                 field(ImUsd; Rec.ImUsd) { ApplicationArea = All; }
+                field(Posted;Rec.Posted) { ApplicationArea = All; }
+                field("Posted By";Rec."Posted By") { ApplicationArea = All; }
+                field("Posted Date";Rec."Posted Date") { ApplicationArea = All; }
             }
         }
     }
@@ -82,6 +85,23 @@ page 50356 "Domain Receipt List"
                 begin
                     // DomainDialog.RunModal();
                     // CurrPage.Update(false);
+                end;
+            }
+            action(PostReceipt)
+            {
+                ApplicationArea = All;
+                Caption = 'Post';
+                Image = Post;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                var
+                    DomainReceiptMgt: Codeunit "Payments-post";
+                begin
+                    DomainReceiptMgt.PostReceipt(Rec);
+                    CurrPage.Update(false);
                 end;
             }
         }

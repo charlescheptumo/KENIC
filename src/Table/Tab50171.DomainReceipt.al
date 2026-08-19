@@ -37,6 +37,10 @@ table 50171 "Domain Receipt"
         field(23; NcbaKes; Boolean) { }
         field(24; ImKes; Boolean) { }
         field(25; ImUsd; Boolean) { }
+        field(26; Posted; Boolean) { }
+        field(27; "Posted By"; Code[50]) { }
+        field(28; "Posted Date"; Date) { }
+        field(29; "Posted Time"; Time) { }
     }
 
     keys

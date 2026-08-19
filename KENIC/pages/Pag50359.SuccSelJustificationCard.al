@@ -19,19 +19,21 @@ page 50359 "Succ. Sel. Justification Card"
                 {
                     ApplicationArea = All;
                 }
+                 field("Successor Name"; Rec."Successor Name")
+                {
+                    ApplicationArea = All;
+                }
+
                 field("Department"; Rec."Department")
                 {
                     ApplicationArea = All;
                 }
+
                 field("Current Role"; Rec."Current Role")
                 {
                     ApplicationArea = All;
                 }
-                field("Successor Name"; Rec."Successor Name")
-                {
-                    ApplicationArea = All;
-                }
-                field("Current Position"; Rec."Current Position")
+                               field("Current Position"; Rec."Current Position")
                 {
                     ApplicationArea = All;
                 }

@@ -263,9 +263,9 @@ Page 57067 "Receipt"
                     Rec.TestField("On Behalf Of");
 
                     if Rec."Receipt Status" = Rec."Receipt Status"::Released then
-                        PaymentPost.PostReceipt(Rec)
+                        //PaymentPost.PostReceipt(Rec);
 
-                    else
+                        //else
                         error('Receipt Must Be Fully Released.');
                     CurrPage.Close;
 

@@ -528,6 +528,16 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Vacancy Nos. field.';
                 }
+                field("Successor SelectionJustification Nos."; Rec."Succ. Sel. Justification Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Successor Selection Nos. field.';
+                }
+                field("Successor Form Nos."; Rec."Successor Form Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Successor Form Nos. field.';
+                }
                 field("HQ Responsibility Center"; Rec."HQ Responsibility Center")
                 {
                     ApplicationArea = Basic;

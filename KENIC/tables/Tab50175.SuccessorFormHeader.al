@@ -13,7 +13,18 @@ table 50175 "Successor Form Header"
         field(2; "Name"; Text[100])
         {
             Caption = 'Name';
+            TableRelation = Employee;
             DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            var
+                EmployeeRec: Record Employee;   
+                begin
+                    if EmployeeRec.Get(Rec."Name") then begin
+                        "Job Title" := EmployeeRec."Job Title";
+
+                    end;
+                end;
         }
         field(3; "Job Title"; Text[100])
         {
@@ -23,7 +34,17 @@ table 50175 "Successor Form Header"
         field(4; "Successor"; Text[100])
         {
             Caption = 'Successor';
+            TableRelation = Employee;
             DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            var
+                EmployeeRec: Record Employee;
+            begin
+                if EmployeeRec.Get(Rec."Successor") then begin
+                    "Successor Job Title" := EmployeeRec."Job Title";
+                end;
+            end;
         }
         field(5; "Successor Job Title"; Text[100])
         {
@@ -79,13 +100,13 @@ table 50175 "Successor Form Header"
 
     trigger OnInsert()
     var
-        CashMgtSetup: Record "Cash Management Setup";
+        HumanResourcesSetup: Record "Human Resources Setup";
         NoSeriesMgt: Codeunit "No. Series";
     begin
         if "No." = '' then begin
-            CashMgtSetup.Get();
-            CashMgtSetup.TestField("Successor Form Nos.");
-            "No. Series" := CashMgtSetup."Successor Form Nos.";
+            HumanResourcesSetup.Get();
+            HumanResourcesSetup.TestField("Successor Form Nos.");
+            "No. Series" := HumanResourcesSetup."Successor Form Nos.";
             "No." := NoSeriesMgt.GetNextNo("No. Series", WorkDate(), true);
         end;
     end;

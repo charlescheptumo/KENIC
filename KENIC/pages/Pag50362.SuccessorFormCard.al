@@ -1,4 +1,3 @@
-
 page 50362 "Successor Form Card"
 {
     PageType = Card;
@@ -74,6 +73,31 @@ page 50362 "Successor Form Card"
                 {
                     ApplicationArea = All;
                 }
+            }
+        }
+    }
+
+    actions
+    {
+        area(processing)
+        {
+            action("Print Successor Form")
+            {
+                ApplicationArea = All;
+                Caption = 'Print';
+                Image = Print;
+                Promoted = true;
+                PromotedCategory = Report;
+                PromotedIsBig = true;
+                ToolTip = 'Print the Successor Form.';
+
+                trigger OnAction()
+                var
+                    SuccessorFormHeader: Record "Successor Form Header";
+                begin
+                    SuccessorFormHeader.SetRange("No.", Rec."No.");
+                    Report.RunModal(Report::"Successor Form", true, false, SuccessorFormHeader);
+                end;
             }
         }
     }
