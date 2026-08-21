@@ -181,6 +181,15 @@ table 50169 "Domain Ledger Entry"
         {
             Caption = 'Ledger Login Username';
         }
+        field(35; InvoiceCreated; Boolean)
+        {
+            Caption = 'Invoice Created';
+        }
+        field(36; "Sales Invoice No."; Code[20])
+        {
+            Caption = 'Sales Invoice No.';
+            TableRelation = "Sales Invoice Header"."No.";
+        }
     }
 
     keys

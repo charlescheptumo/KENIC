@@ -573,6 +573,23 @@ Table 57004 "Cash Management Setup"
             Caption = 'IM USD';
             TableRelation = "Bank Account";
         }
+        field(57073;"Domain registration"; Code[50])
+        {
+            Caption = 'Domain registration';
+            TableRelation = Item;
+        }
+         field(57074;"Domain Renewal"; Code[50])
+        {
+            Caption = 'Domain Renewal';
+            TableRelation = Item;
+        }
+         field(57075;"Domain AutoRenewal"; Code[50])
+        {
+            Caption = 'Domain AutoRenewal';
+            TableRelation = Item;
+        }
+
+
 
 
 

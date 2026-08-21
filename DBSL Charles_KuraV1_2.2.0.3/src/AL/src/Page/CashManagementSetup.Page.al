@@ -385,30 +385,45 @@ Page 57008 "Cash Management Setup"
                 {
                     ToolTip = 'Specifies the value of the Batch Check Voucher Nos field.', Comment = '%';
                 }
-                field(Mpesa;Rec.Mpesa)
+                field(Mpesa; Rec.Mpesa)
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Mpesa field.';
                 }
-                field(IPay;Rec.IPay)
+                field(IPay; Rec.IPay)
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the IPay field.';
                 }
-                field(NCBA;Rec.NCBA)
+                field(NCBA; Rec.NCBA)
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the NCBA field.';
                 }
-                field("IM KES";Rec."IM KES")
+                field("IM KES"; Rec."IM KES")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the IM KES field.';
                 }
-                field("IM USD";Rec."IM USD")
+                field("IM USD"; Rec."IM USD")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the IM USD field.';
+                }
+                field("Domain registration"; Rec."Domain registration")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain registration field.';
+                }
+                field("Domain Renewal"; Rec."Domain Renewal")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain Renewal field.';
+                }
+                field("Domain AutoRenewal"; Rec."Domain AutoRenewal")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain AutoRenewal field.';
                 }
                 field("Agency Notice Nos"; Rec."Agency Notice Nos")
                 {

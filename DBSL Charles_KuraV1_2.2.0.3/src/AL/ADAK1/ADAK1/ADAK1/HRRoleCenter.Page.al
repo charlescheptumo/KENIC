@@ -2151,15 +2151,15 @@ page 60002 "HR Role Center"
                     RunObject = Page "Successor Form List";
                     ToolTip = 'Executes the Successor Form action.';
                 }
-                action("Individual Development Plan")
-                {
-                    Visible = False;
-                    ApplicationArea = BasicHR;
-                    Visible=false;
-                    Caption = 'Individual Development Plan';
-                    RunObject = Page "Training Need Requests";
-                    ToolTip = 'Executes the Individual Development Plan action.';
-                }
+                // action("Individual Development Plan")
+                // {
+                //     Visible = False;
+                //     ApplicationArea = BasicHR;
+                //     Visible=false;
+                //     Caption = 'Individual Development Plan';
+                //     RunObject = Page "Training Need Requests";
+                //     ToolTip = 'Executes the Individual Development Plan action.';
+                // }
             }
 
             // ===== TOP-LEVEL GROUPS (RETAINED AS PER YOUR ORIGINAL STRUCTURE) =====

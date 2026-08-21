@@ -1,5 +1,8 @@
 namespace KENIC.KENIC;
 
+using Microsoft.Sales.Customer;
+using Microsoft.Sales.Document;
+
 page 50352 "Domain Ledger List"
 {
     ApplicationArea = All;
@@ -109,6 +112,10 @@ page 50352 "Domain Ledger List"
                 {
                     ApplicationArea = All;
                 }
+                field(InvoiceCreated; Rec.InvoiceCreated)
+                {
+                    ApplicationArea = All;
+                }
                 field(IsPrinted; Rec.IsPrinted)
                 {
                     ApplicationArea = All;
@@ -188,6 +195,80 @@ page 50352 "Domain Ledger List"
                     // CurrPage.Update(false);
                 end;
             }
+           action(CreateInvoice)
+{
+    ApplicationArea = All;
+    Caption = 'Create Invoice';
+    Image = CreateInvoice;
+    Promoted = true;
+    PromotedCategory = Process;
+    PromotedIsBig = true;
+
+    trigger OnAction()
+    var
+        CMSetup: Record "Cash Management Setup";
+        Customer: Record Customer;
+        SalesHeader: Record "Sales Header";
+        SalesLine: Record "Sales Line";
+        ItemNo: Code[20];
+    begin
+        if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal']) then
+            Error('Create Invoice is only available for Registration, Renewal, or AutoRenewal transactions.');
+
+        if Rec.InvoiceCreated then
+            Error('An invoice has already been created for this entry (%1).', Rec."Sales Invoice No.");
+
+        if not Customer.Get(Rec.ClientRoid) then
+            Error('Customer %1 does not exist.', Rec.ClientRoid);
+
+        CMSetup.Get();
+
+        case Rec.TransType of
+            'Registration':
+                begin
+                    CMSetup.TestField("Domain Registration");
+                    ItemNo := CMSetup."Domain Registration";
+                end;
+            'Renewal':
+                begin
+                    CMSetup.TestField("Domain Renewal");
+                    ItemNo := CMSetup."Domain Renewal";
+                end;
+            'AutoRenewal':
+                begin
+                    CMSetup.TestField("Domain AutoRenewal");
+                    ItemNo := CMSetup."Domain AutoRenewal";
+                end;
+        end;
+
+        SalesHeader.Init();
+        SalesHeader."Document Type" := SalesHeader."Document Type"::Invoice;
+        SalesHeader.Insert(true);
+        SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
+        SalesHeader.Validate("Posting Date", Today);
+        SalesHeader.Validate("Document Date", Today);
+        SalesHeader.Modify(true);
+
+        SalesLine.Init();
+        SalesLine."Document Type" := SalesHeader."Document Type";
+        SalesLine."Document No." := SalesHeader."No.";
+        SalesLine."Line No." := 10000;
+        SalesLine.Insert(true);
+        SalesLine.Validate(Type, SalesLine.Type::Item);
+        SalesLine.Validate("No.", ItemNo);
+        SalesLine.Validate(Quantity, 1);
+        SalesLine.Validate("Unit Price", Rec.Amount);
+        SalesLine.Description := Rec.Description;
+        SalesLine.Modify(true);
+
+        Rec.InvoiceCreated := true;
+        Rec."Sales Invoice No." := SalesHeader."No.";
+        Rec.Modify();
+
+        Message('Sales Invoice %1 created successfully for %2.', SalesHeader."No.", Rec.DomainName);
+    end;
+}
         }
+
     }
 }
