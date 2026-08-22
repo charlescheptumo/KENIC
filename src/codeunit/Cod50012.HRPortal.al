@@ -986,7 +986,7 @@ Codeunit 50012 "HRPortal"
     //     */
 
     // end;
-    procedure createTrainingNeedsHeader(docNo: Code[20]; empNo: Code[20]; fyCode: Code[10]; typeOfTraining: Integer; description: Text; username: Text) status: Text
+    procedure createTrainingNeedsHeader(docNo: Code[20]; empNo: Code[20]; fyCode: Code[10]; typeOfTraining: Integer; description: Text; username: Text; department: Text; jobtitle: Text; supervisorname: Text; supervisorjobtitle: Text; plandate: Date) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
         Employee: Record Employee;
@@ -1002,6 +1002,11 @@ Codeunit 50012 "HRPortal"
             TrainingHeader."Created By" := username;
             TrainingHeader."Created On" := CurrentDateTime;
             TrainingHeader.Status := TrainingHeader.Status::Open;
+            TrainingHeader.Department := department;
+            TrainingHeader."Job Title" := jobtitle;
+            TrainingHeader."Supervisor Name" := supervisorname;
+            TrainingHeader."Supervisor Job Title" := supervisorjobtitle;
+            TrainingHeader."Plan Date" := plandate;
 
             if TrainingHeader.Insert(true) then begin
                 TrainingHeader."Employee No" := empNo;
@@ -1045,6 +1050,95 @@ Codeunit 50012 "HRPortal"
         end;
     end;
 
+    procedure createSuccessorSelectionJustificationHeader(docNo: Code[20]; empNo: Code[20]; successorname: Text; department: Text; jobtitle: Text; currentposition: Text; plandate: Date) status: Text
+    var
+        SuccessorJustificationHeader: Record "Succ. Sel. Justification Hdr";
+        Employee: Record Employee;
+    begin
+        //status := 'danger*Your training needs request could not be captured';
+
+        if docNo = '' then begin
+            SuccessorJustificationHeader.Init;
+            SuccessorJustificationHeader."Successor Name" := successorname;
+            SuccessorJustificationHeader.Validate("Successor Name");
+            SuccessorJustificationHeader."Date of Evaluation" := plandate;
+
+
+            if SuccessorJustificationHeader.Insert(true) then begin
+
+                status := 'success*Your successor justification request was successfully created*' + SuccessorJustificationHeader."No.";
+            end else begin
+                status := 'danger*Your successor justification request could not be created';
+            end;
+        end else begin
+            SuccessorJustificationHeader.Reset;
+            SuccessorJustificationHeader.SetRange("No.", docNo);
+
+            if SuccessorJustificationHeader.FindFirst() then begin
+                SuccessorJustificationHeader."Successor Name" := successorname;
+                SuccessorJustificationHeader.Validate("Successor Name");
+                SuccessorJustificationHeader."Date of Evaluation" := plandate;
+
+                if SuccessorJustificationHeader.Modify(true) then begin
+                    status := 'success*Your successor justification request was successfully updated*' + SuccessorJustificationHeader."No.";
+                end else begin
+                    status := 'danger*Your successor justification request could not be updated';
+                end;
+            end else begin
+                status := 'danger*successor justifications request not found or not in Open status';
+            end;
+        end;
+    end;
+
+    procedure createSuccessorFormHeader(docNo: Code[20]; empNo: Code[20]; successorname: Text; s_department: Text; s_jobtitle: Text; m_name: Text; m_jobtitle: Text; startdate: Date; enddate: Date) status: Text
+    var
+        SuccessorFormHeader: Record "Successor Form Header";
+        Employee: Record Employee;
+    begin
+        //status := 'danger*Your training needs request could not be captured';
+
+        if docNo = '' then begin
+            SuccessorFormHeader.Init;
+            SuccessorFormHeader."Name" := m_name;
+            SuccessorFormHeader.Validate("Name");
+            //SuccessorFormHeader."Job Title" := plandate;
+            SuccessorFormHeader."Successor" := successorname;
+            SuccessorFormHeader.Validate("Successor");
+            //SuccessorFormHeader."Successor Job Title" := plandate;
+            SuccessorFormHeader."Start Date" := enddate;
+            SuccessorFormHeader."Completion Date" := enddate;
+
+            if SuccessorFormHeader.Insert(true) then begin
+
+                status := 'success*Your successor form request was successfully created*' + SuccessorFormHeader."No.";
+            end else begin
+                status := 'danger*Your successor form request could not be created';
+            end;
+        end else begin
+            SuccessorFormHeader.Reset;
+            SuccessorFormHeader.SetRange("No.", docNo);
+
+            if SuccessorFormHeader.FindFirst() then begin
+                SuccessorFormHeader."Name" := m_name;
+                SuccessorFormHeader.Validate("Name");
+                //SuccessorFormHeader."Job Title" := plandate;
+                SuccessorFormHeader."Successor" := successorname;
+                SuccessorFormHeader.Validate("Successor");
+                //SuccessorFormHeader."Successor Job Title" := plandate;
+                SuccessorFormHeader."Start Date" := enddate;
+                SuccessorFormHeader."Completion Date" := enddate;
+
+                if SuccessorFormHeader.Modify(true) then begin
+                    status := 'success*Your successor form request was successfully updated*' + SuccessorFormHeader."No.";
+                end else begin
+                    status := 'danger*Your successor form request could not be updated';
+                end;
+            end else begin
+                status := 'danger*successor form request not found or not in Open status';
+            end;
+        end;
+    end;
+
     procedure addTrainingNeedsLine(docNo: Code[20]; courseIdValue: Code[20]; lineDescription: Text; institution: Code[30]; source: Integer) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
@@ -1078,6 +1172,138 @@ Codeunit 50012 "HRPortal"
             end;
         end else begin
             status := 'danger*Training needs request not found or not in Open status';
+        end;
+    end;
+
+    procedure addSuccessorJustificationLines(docNo: Code[20]; criteria: Integer; rating: Integer; comments: Text) status: Text
+    var
+        SuccessorJustificationHeader: Record "Succ. Sel. Justification Hdr";
+        SuccessorLine: Record "Succ. Sel. Justification Line";
+    //CriteriaEnum: Enum "Succ. Sel. Justif. Criteria";
+
+    begin
+        //status := 'danger*Could not add training line';
+
+        SuccessorJustificationHeader.Reset;
+        SuccessorJustificationHeader.SetRange("No.", docNo);
+
+
+        if SuccessorJustificationHeader.FindFirst() then begin
+
+            //if not Evaluate(CriteriaEnum, Format(criteria)) then
+            //Error('Invalid Criteria value: %1', criteria);
+            //status := 'danger*Invalid Criteria value' + criteria;
+
+            SuccessorLine.Init;
+            SuccessorLine.Criteria := criteria;
+            SuccessorLine.Rating := rating;
+            SuccessorLine.Comments := comments;
+
+            if SuccessorLine.Insert(true) then begin
+                status := 'success*Line added successfully';
+            end else begin
+                status := 'danger*Could not add  line';
+            end;
+        end else begin
+            status := 'danger*Request not found or not in Open status';
+        end;
+    end;
+
+    procedure addSuccessorFormLines(docNo: Code[20]; ssdevelopmentarea: Text; sstimeframe: Text; sstrainingrequired: Integer; ssprogress: Text) status: Text
+    var
+        SuccessorFormHeader: Record "Successor Form Header";
+        SuccessorFormLine: Record "Successor Form Line";
+    //CriteriaEnum: Enum "Succ. Sel. Justif. Criteria";
+
+    begin
+        //status := 'danger*Could not add training line';
+
+        SuccessorFormHeader.Reset;
+        SuccessorFormHeader.SetRange("No.", docNo);
+
+
+        if SuccessorFormHeader.FindFirst() then begin
+
+            //if not Evaluate(CriteriaEnum, Format(criteria)) then
+            //Error('Invalid Criteria value: %1', criteria);
+            //status := 'danger*Invalid Criteria value' + criteria;
+
+            SuccessorFormLine.Init;
+            SuccessorFormLine."Development Area/Activity" := ssdevelopmentarea;
+            SuccessorFormLine."Timeframe" := sstimeframe;
+            SuccessorFormLine."Progress/Comment" := ssprogress;
+            SuccessorFormLine."Training Required" := sstrainingrequired;
+
+
+            if SuccessorFormLine.Insert(true) then begin
+                status := 'success*Line added successfully';
+            end else begin
+                status := 'danger*Could not add  line';
+            end;
+        end else begin
+            status := 'danger*Request not found or not in Open status';
+        end;
+    end;
+
+    procedure removeSuccessorFormLine(empNo: Code[20]; docNo: Code[20]; entryNo: Integer) status: Text
+    var
+        SuccessorFormHeader: Record "Successor Form Header";
+        SuccessorLine: Record "Successor Form Line";
+    begin
+        //status := 'danger*Could not remove training line';
+
+        SuccessorFormHeader.Reset;
+        SuccessorFormHeader.SetRange("No.", docNo);
+        //SuccessorJustificationHeader.SetRange("Employee No", empNo);
+        //SuccessorJustificationHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if SuccessorFormHeader.FindFirst() then begin
+            SuccessorLine.Reset;
+            SuccessorLine.SetRange("Document No.", docNo);
+            SuccessorLine.SetRange("Line No.", entryNo);
+
+            if SuccessorLine.FindFirst() then begin
+                if SuccessorLine.Delete(true) then begin
+                    status := 'success*line removed successfully';
+                end else begin
+                    status := 'danger*Could not remove line';
+                end;
+            end else begin
+                status := 'danger*line not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    procedure removeSuccessorJustificationLine(empNo: Code[20]; docNo: Code[20]; entryNo: Integer) status: Text
+    var
+        SuccessorJustificationHeader: Record "Succ. Sel. Justification Hdr";
+        SuccessorLine: Record "Succ. Sel. Justification Line";
+    begin
+        //status := 'danger*Could not remove training line';
+
+        SuccessorJustificationHeader.Reset;
+        SuccessorJustificationHeader.SetRange("No.", docNo);
+        //SuccessorJustificationHeader.SetRange("Employee No", empNo);
+        //SuccessorJustificationHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if SuccessorJustificationHeader.FindFirst() then begin
+            SuccessorLine.Reset;
+            SuccessorLine.SetRange("Document No.", docNo);
+            SuccessorLine.SetRange("Line No.", entryNo);
+
+            if SuccessorLine.FindFirst() then begin
+                if SuccessorLine.Delete(true) then begin
+                    status := 'success*line removed successfully';
+                end else begin
+                    status := 'danger*Could not remove line';
+                end;
+            end else begin
+                status := 'danger*line not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
         end;
     end;
 

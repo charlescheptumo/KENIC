@@ -17,6 +17,11 @@ page 50365 "Successor Form Top Dev Areas"
                 {
                     ApplicationArea = All;
                 }
+                field("Document No"; Rec."Document No.")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
             }
         }
     }

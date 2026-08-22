@@ -14,6 +14,16 @@ page 50361 "Succ. Sel. Justif. Lines"
         {
             repeater(Lines)
             {
+                field("Document No"; Rec."Document No.")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
+                field("Entry No"; Rec."Line No.")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
                 field("Criteria"; Rec."Criteria")
                 {
                     ApplicationArea = All;

@@ -293,7 +293,7 @@ codeunit 50015 "EssQueries"
 
         tbl_employee.SetRange("No.", empNumber);
         if tbl_employee.FindSet(true) then begin
-            data := 'success* ' + tbl_employee.FullName + '*' + tbl_employee."Global Dimension 1 Code" + '*' + tbl_employee."ID Number" + '*' + tbl_employee."Directorate Code" + '*' + tbl_employee."Department Code" + '*' + tbl_employee.Division + '*' + Format(tbl_employee."ICT Help Desk Admin") + '*' + Format(tbl_employee.Gender) + '*' + tbl_employee."No." + '*' + tbl_employee."Global Dimension 2 Code" + '*' + FORMAT(tbl_employee."HOD") + '*' + tbl_employee."User ID";
+            data := 'success* ' + tbl_employee.FullName + '*' + tbl_employee."Global Dimension 1 Code" + '*' + tbl_employee."ID Number" + '*' + tbl_employee."Directorate Code" + '*' + tbl_employee."Department Code" + '*' + tbl_employee.Division + '*' + Format(tbl_employee."ICT Help Desk Admin") + '*' + Format(tbl_employee.Gender) + '*' + tbl_employee."No." + '*' + tbl_employee."Global Dimension 2 Code" + '*' + FORMAT(tbl_employee."HOD") + '*' + tbl_employee."User ID" + '*' + tbl_employee."Job Title";
         end;
         exit(data);
     end;

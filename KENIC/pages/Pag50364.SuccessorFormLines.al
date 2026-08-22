@@ -29,6 +29,16 @@ page 50364 "Successor Form Lines"
                 {
                     ApplicationArea = All;
                 }
+                field("Document No"; Rec."Document No.")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
+                field("Entry No"; Rec."Line No.")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
             }
         }
     }
