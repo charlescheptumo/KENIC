@@ -1100,8 +1100,8 @@ Codeunit 50012 "HRPortal"
         if docNo = '' then begin
             SuccessorFormHeader.Init;
             SuccessorFormHeader."Name" := m_name;
-            SuccessorFormHeader.Validate("Name");
-            //SuccessorFormHeader."Job Title" := plandate;
+            //SuccessorFormHeader.Validate("Name");
+            SuccessorFormHeader."Job Title" := m_jobtitle;
             SuccessorFormHeader."Successor" := successorname;
             SuccessorFormHeader.Validate("Successor");
             //SuccessorFormHeader."Successor Job Title" := plandate;
@@ -1195,6 +1195,7 @@ Codeunit 50012 "HRPortal"
             //status := 'danger*Invalid Criteria value' + criteria;
 
             SuccessorLine.Init;
+            SuccessorLine."Document No." := docNo;
             SuccessorLine.Criteria := criteria;
             SuccessorLine.Rating := rating;
             SuccessorLine.Comments := comments;
@@ -1229,6 +1230,7 @@ Codeunit 50012 "HRPortal"
             //status := 'danger*Invalid Criteria value' + criteria;
 
             SuccessorFormLine.Init;
+            SuccessorFormLine."Document No." := docNo;
             SuccessorFormLine."Development Area/Activity" := ssdevelopmentarea;
             SuccessorFormLine."Timeframe" := sstimeframe;
             SuccessorFormLine."Progress/Comment" := ssprogress;
