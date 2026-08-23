@@ -13,6 +13,11 @@ page 50365 "Successor Form Top Dev Areas"
         {
             repeater(Lines)
             {
+                field("DevelopmentArea"; Rec."Development Area")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
                 field("Development Area"; Rec."Development Area")
                 {
                     ApplicationArea = All;

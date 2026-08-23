@@ -13,6 +13,11 @@ page 50364 "Successor Form Lines"
         {
             repeater(Lines)
             {
+                field("DevArea"; Rec."Development Area/Activity")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
                 field("Development Area/Activity"; Rec."Development Area/Activity")
                 {
                     ApplicationArea = All;
@@ -21,9 +26,19 @@ page 50364 "Successor Form Lines"
                 {
                     ApplicationArea = All;
                 }
+                field("Progress"; Rec."Progress/Comment")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
                 field("Progress/Comment"; Rec."Progress/Comment")
                 {
                     ApplicationArea = All;
+                }
+                field("TrainingReq"; Rec."Training Required")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Training Required"; Rec."Training Required")
                 {
