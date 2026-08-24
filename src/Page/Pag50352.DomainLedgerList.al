@@ -232,7 +232,7 @@ page 50352 "Domain Ledger List"
                         OriginalInvoiceNo := CopyStr(Format(Rec.RefundForId), 1, 20);
 
                         if not SalesInvoiceHeader.Get(OriginalInvoiceNo) then
-                            Error('Posted Sales Invoice %1 (from Refund For ID %2) does not exist.', OriginalInvoiceNo, Rec.RefundForId);
+                            Error('Cannot create credit memo. The original invoice %1 (Domain Ledger ID: %2) has not been posted yet. Please post the original invoice first before processing this refund.', OriginalInvoiceNo, Rec.RefundForId);
 
                         if not CorrectPostedSalesInvoice.CreateCreditMemoCopyDocument(SalesInvoiceHeader, SalesHeader) then
                             Error('Could not create credit memo for invoice %1. The invoice may be fully or partially applied.', OriginalInvoiceNo);
@@ -295,7 +295,9 @@ page 50352 "Domain Ledger List"
                     SalesHeader."Document Type" := SalesHeader."Document Type"::Invoice;
                     SalesHeader."No." := InvoiceNo;
                     SalesHeader."No. Series" := '';
-                    SalesHeader.Insert(true);
+                    SalesHeader."Posting No." := InvoiceNo;
+                    SalesHeader."Posting No. Series" := '';
+                    SalesHeader.Insert(false);
                     SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
                     SalesHeader.Validate("Posting Date", Today);
                     SalesHeader.Validate("Document Date", Today);
