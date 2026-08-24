@@ -2,6 +2,7 @@ namespace KENIC.KENIC;
 
 using Microsoft.Sales.Customer;
 using Microsoft.Sales.Document;
+using Microsoft.Sales.History;
 
 page 50352 "Domain Ledger List"
 {
@@ -140,6 +141,10 @@ page 50352 "Domain Ledger List"
                 {
                     ApplicationArea = All;
                 }
+                field("Credit Memo No."; Rec."Credit Memo No.")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }
@@ -170,6 +175,7 @@ page 50352 "Domain Ledger List"
                 ApplicationArea = All;
                 Caption = 'Process Single Transaction';
                 Image = Refresh;
+                Visible = false;
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
@@ -184,6 +190,7 @@ page 50352 "Domain Ledger List"
                 Caption = 'Process Batch Transactions';
                 Image = Refresh;
                 Promoted = true;
+                Visible = false;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
 
@@ -206,14 +213,38 @@ page 50352 "Domain Ledger List"
                     Customer: Record Customer;
                     SalesHeader: Record "Sales Header";
                     SalesLine: Record "Sales Line";
+                    SalesInvoiceHeader: Record "Sales Invoice Header";
+                    CorrectPostedSalesInvoice: Codeunit "Correct Posted Sales Invoice";
                     ItemNo: Code[20];
                     InvoiceNo: Code[20];
+                    OriginalInvoiceNo: Code[20];
                 begin
-                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer']) then
+                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
 
                     if Rec.InvoiceCreated then
-                        Error('An invoice has already been created for this entry (%1).', Rec."Sales Invoice No.");
+                        Error('A document has already been created for this entry (%1).', Rec."Sales Invoice No.");
+
+                    if Rec.TransType = 'Refund' then begin
+                        if Rec.RefundForId = 0 then
+                            Error('Refund For ID is not set on this entry. Cannot create credit memo.');
+
+                        OriginalInvoiceNo := CopyStr(Format(Rec.RefundForId), 1, 20);
+
+                        if not SalesInvoiceHeader.Get(OriginalInvoiceNo) then
+                            Error('Posted Sales Invoice %1 (from Refund For ID %2) does not exist.', OriginalInvoiceNo, Rec.RefundForId);
+
+                        if not CorrectPostedSalesInvoice.CreateCreditMemoCopyDocument(SalesInvoiceHeader, SalesHeader) then
+                            Error('Could not create credit memo for invoice %1. The invoice may be fully or partially applied.', OriginalInvoiceNo);
+
+                        Rec.InvoiceCreated := true;
+                        Rec."Credit Memo No." := SalesHeader."No.";
+                        Rec."Sales Invoice No." := SalesHeader."No.";
+                        Rec.Modify();
+
+                        Message('Credit Memo %1 created successfully for %2 (refund of invoice %3).', SalesHeader."No.", Rec.DomainName, OriginalInvoiceNo);
+                        exit;
+                    end;
 
                     if not Customer.Get(Rec.ClientRoid) then
                         Error('Customer %1 does not exist.', Rec.ClientRoid);

@@ -190,6 +190,11 @@ table 50169 "Domain Ledger Entry"
             Caption = 'Sales Invoice No.';
             TableRelation = "Sales Invoice Header"."No.";
         }
+        field(37; "Credit Memo No."; Code[20])
+        {
+            Caption = 'Credit Memo No.';
+            TableRelation = "Sales Header"."No." where("Document Type" = const("Credit Memo"));
+        }
     }
 
     keys
