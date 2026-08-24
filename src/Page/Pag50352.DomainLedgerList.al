@@ -136,6 +136,10 @@ page 50352 "Domain Ledger List"
                 {
                     ApplicationArea = All;
                 }
+                field("Sales Invoice No."; Rec."Sales Invoice No.")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }
@@ -164,111 +168,127 @@ page 50352 "Domain Ledger List"
             action(ProcessSingle)
             {
                 ApplicationArea = All;
-                Caption = 'Process SIngle Transaction';
+                Caption = 'Process Single Transaction';
                 Image = Refresh;
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
 
                 trigger OnAction()
-                var
-                    DomainDialog: Page "Get Domain Ledger";
                 begin
-                    // DomainDialog.RunModal();
-                    // CurrPage.Update(false);
                 end;
             }
             action(ProcessBatch)
             {
                 ApplicationArea = All;
-                Caption = 'Process batch Transactions';
+                Caption = 'Process Batch Transactions';
                 Image = Refresh;
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
 
                 trigger OnAction()
-                var
-                    DomainDialog: Page "Get Domain Ledger";
                 begin
-                    // DomainDialog.RunModal();
-                    // CurrPage.Update(false);
                 end;
             }
-           action(CreateInvoice)
-{
-    ApplicationArea = All;
-    Caption = 'Create Invoice';
-    Image = CreateInvoice;
-    Promoted = true;
-    PromotedCategory = Process;
-    PromotedIsBig = true;
+            action(CreateInvoice)
+            {
+                ApplicationArea = All;
+                Caption = 'Create Invoice';
+                Image = CreateInvoice;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
 
-    trigger OnAction()
-    var
-        CMSetup: Record "Cash Management Setup";
-        Customer: Record Customer;
-        SalesHeader: Record "Sales Header";
-        SalesLine: Record "Sales Line";
-        ItemNo: Code[20];
-    begin
-        if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal']) then
-            Error('Create Invoice is only available for Registration, Renewal, or AutoRenewal transactions.');
-
-        if Rec.InvoiceCreated then
-            Error('An invoice has already been created for this entry (%1).', Rec."Sales Invoice No.");
-
-        if not Customer.Get(Rec.ClientRoid) then
-            Error('Customer %1 does not exist.', Rec.ClientRoid);
-
-        CMSetup.Get();
-
-        case Rec.TransType of
-            'Registration':
+                trigger OnAction()
+                var
+                    CMSetup: Record "Cash Management Setup";
+                    Customer: Record Customer;
+                    SalesHeader: Record "Sales Header";
+                    SalesLine: Record "Sales Line";
+                    ItemNo: Code[20];
+                    InvoiceNo: Code[20];
                 begin
-                    CMSetup.TestField("Domain Registration");
-                    ItemNo := CMSetup."Domain Registration";
+                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer']) then
+                        Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
+
+                    if Rec.InvoiceCreated then
+                        Error('An invoice has already been created for this entry (%1).', Rec."Sales Invoice No.");
+
+                    if not Customer.Get(Rec.ClientRoid) then
+                        Error('Customer %1 does not exist.', Rec.ClientRoid);
+
+                    CMSetup.Get();
+
+                    case Rec.TransType of
+                        'Registration':
+                            begin
+                                CMSetup.TestField("Domain Registration");
+                                ItemNo := CMSetup."Domain Registration";
+                            end;
+                        'Renewal':
+                            begin
+                                CMSetup.TestField("Domain Renewal");
+                                ItemNo := CMSetup."Domain Renewal";
+                            end;
+                        'AutoRenewal':
+                            begin
+                                CMSetup.TestField("Domain AutoRenewal");
+                                ItemNo := CMSetup."Domain AutoRenewal";
+                            end;
+                        'Access fee':
+                            begin
+                                CMSetup.TestField("Access fee");
+                                ItemNo := CMSetup."Access fee";
+                            end;
+                        'Application':
+                            begin
+                                CMSetup.TestField(Application);
+                                ItemNo := CMSetup.Application;
+                            end;
+                        'Restoration':
+                            begin
+                                CMSetup.TestField(Restoration);
+                                ItemNo := CMSetup.Restoration;
+                            end;
+                        'Transfer':
+                            begin
+                                CMSetup.TestField(Transfer);
+                                ItemNo := CMSetup.Transfer;
+                            end;
+                    end;
+
+                    InvoiceNo := CopyStr(Format(Rec.ID), 1, 20);
+
+                    SalesHeader.Init();
+                    SalesHeader."Document Type" := SalesHeader."Document Type"::Invoice;
+                    SalesHeader."No." := InvoiceNo;
+                    SalesHeader."No. Series" := '';
+                    SalesHeader.Insert(true);
+                    SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
+                    SalesHeader.Validate("Posting Date", Today);
+                    SalesHeader.Validate("Document Date", Today);
+                    SalesHeader.Modify(true);
+
+                    SalesLine.Init();
+                    SalesLine."Document Type" := SalesHeader."Document Type";
+                    SalesLine."Document No." := SalesHeader."No.";
+                    SalesLine."Line No." := 10000;
+                    SalesLine.Insert(true);
+                    SalesLine.Validate(Type, SalesLine.Type::Item);
+                    SalesLine.Validate("No.", ItemNo);
+                    SalesLine.Validate(Quantity, 1);
+                    SalesLine.Validate("Unit Price", Rec.Amount);
+                    SalesLine.Description := CopyStr(Rec.Description, 1, 100);
+                    SalesLine.Modify(true);
+
+                    Rec.InvoiceCreated := true;
+                    Rec."Sales Invoice No." := SalesHeader."No.";
+                    Rec.Modify();
+
+                    Message('Sales Invoice %1 created successfully for %2.', SalesHeader."No.", Rec.DomainName);
                 end;
-            'Renewal':
-                begin
-                    CMSetup.TestField("Domain Renewal");
-                    ItemNo := CMSetup."Domain Renewal";
-                end;
-            'AutoRenewal':
-                begin
-                    CMSetup.TestField("Domain AutoRenewal");
-                    ItemNo := CMSetup."Domain AutoRenewal";
-                end;
-        end;
-
-        SalesHeader.Init();
-        SalesHeader."Document Type" := SalesHeader."Document Type"::Invoice;
-        SalesHeader.Insert(true);
-        SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
-        SalesHeader.Validate("Posting Date", Today);
-        SalesHeader.Validate("Document Date", Today);
-        SalesHeader.Modify(true);
-
-        SalesLine.Init();
-        SalesLine."Document Type" := SalesHeader."Document Type";
-        SalesLine."Document No." := SalesHeader."No.";
-        SalesLine."Line No." := 10000;
-        SalesLine.Insert(true);
-        SalesLine.Validate(Type, SalesLine.Type::Item);
-        SalesLine.Validate("No.", ItemNo);
-        SalesLine.Validate(Quantity, 1);
-        SalesLine.Validate("Unit Price", Rec.Amount);
-        SalesLine.Description := Rec.Description;
-        SalesLine.Modify(true);
-
-        Rec.InvoiceCreated := true;
-        Rec."Sales Invoice No." := SalesHeader."No.";
-        Rec.Modify();
-
-        Message('Sales Invoice %1 created successfully for %2.', SalesHeader."No.", Rec.DomainName);
-    end;
-}
+            }
         }
-
     }
 }

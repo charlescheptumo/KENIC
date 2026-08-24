@@ -425,6 +425,26 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Domain AutoRenewal field.';
                 }
+                field("Access fee";Rec."Access fee")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Access fee field.';
+                }
+                field(Application;Rec.Application)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Application field.';
+                }
+                field(Restoration;Rec.Restoration)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Restoration field.';
+                }
+                field(Transfer;Rec.Transfer)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Transfer field.';
+                }
                 field("Agency Notice Nos"; Rec."Agency Notice Nos")
                 {
                     ApplicationArea = Basic;
