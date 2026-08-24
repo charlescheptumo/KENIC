@@ -5,12 +5,12 @@ table 50173 "Succ. Sel. Justification Hdr"
 
     fields
     {
-        field(1; "No."; Code[20])
+        field(1; "No."; Code[50])
         {
             Caption = 'No.';
             DataClassification = ToBeClassified;
         }
-        field(2; "Department"; Code[20])
+        field(2; "Department"; Code[50])
         {
             Caption = 'Department';
             TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1));
@@ -71,7 +71,7 @@ table 50173 "Succ. Sel. Justification Hdr"
             Caption = 'Additional Comments';
             DataClassification = ToBeClassified;
         }
-        field(11; "No. Series"; Code[20])
+        field(11; "No. Series"; Code[50])
         {
             Caption = 'No. Series';
             Editable = false;

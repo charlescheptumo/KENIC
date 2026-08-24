@@ -5,7 +5,7 @@ table 50175 "Successor Form Header"
 
     fields
     {
-        field(1; "No."; Code[20])
+        field(1; "No."; Code[50])
         {
             Caption = 'No.';
             DataClassification = ToBeClassified;
@@ -81,7 +81,7 @@ table 50175 "Successor Form Header"
             Caption = 'Successor Signature Date';
             DataClassification = ToBeClassified;
         }
-        field(24; "No. Series"; Code[20])
+        field(24; "No. Series"; Code[30])
         {
             Caption = 'No. Series';
             Editable = false;

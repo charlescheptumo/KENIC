@@ -6,7 +6,7 @@ table 50174 "Succ. Sel. Justification Line"
 
     fields
     {
-        field(1; "Document No."; Code[20])
+        field(1; "Document No."; Code[50])
         {
             Caption = 'Document No.';
             TableRelation = "Succ. Sel. Justification Hdr"."No.";
