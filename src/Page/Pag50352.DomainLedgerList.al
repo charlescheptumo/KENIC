@@ -218,6 +218,7 @@ page 50352 "Domain Ledger List"
                     ItemNo: Code[20];
                     InvoiceNo: Code[20];
                     OriginalInvoiceNo: Code[20];
+                    CreditMemoNo: Code[20];
                 begin
                     if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
@@ -230,12 +231,18 @@ page 50352 "Domain Ledger List"
                             Error('Refund For ID is not set on this entry. Cannot create credit memo.');
 
                         OriginalInvoiceNo := CopyStr(Format(Rec.RefundForId), 1, 20);
+                        CreditMemoNo := CopyStr(Format(Rec.ID), 1, 20);
 
                         if not SalesInvoiceHeader.Get(OriginalInvoiceNo) then
                             Error('Cannot create credit memo. The original invoice %1 (Domain Ledger ID: %2) has not been posted yet. Please post the original invoice first before processing this refund.', OriginalInvoiceNo, Rec.RefundForId);
 
                         if not CorrectPostedSalesInvoice.CreateCreditMemoCopyDocument(SalesInvoiceHeader, SalesHeader) then
                             Error('Could not create credit memo for invoice %1. The invoice may be fully or partially applied.', OriginalInvoiceNo);
+
+                        SalesHeader.Rename(SalesHeader."Document Type", CreditMemoNo);
+                        SalesHeader."Posting No." := CreditMemoNo;
+                        SalesHeader."Posting No. Series" := '';
+                        SalesHeader.Modify(true);
 
                         Rec.InvoiceCreated := true;
                         Rec."Credit Memo No." := SalesHeader."No.";
