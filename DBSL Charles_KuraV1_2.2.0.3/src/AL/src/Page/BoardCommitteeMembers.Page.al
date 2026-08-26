@@ -17,6 +17,7 @@ Page 55001 "Board Committee Members"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Committee field.';
+                    Editable = false;
                 }
                 // field("Code";rec.Code)
                 // {

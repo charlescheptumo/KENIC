@@ -75,6 +75,13 @@ page 58118 "Head of E-Board"
             group(Meetings)
             {
                 Caption = 'Meetings';
+                action("Meeting Plan List")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Meeting Plan';
+                    RunObject = Page "Meeting Plan List";
+                    ToolTip = 'Manage meeting plans.';
+                }
 
                 action("Board meetings")
                 {
@@ -83,7 +90,7 @@ page 58118 "Head of E-Board"
                     RunObject = Page "Board Meetings List";
                     ToolTip = 'Manage active board meetings.';
                 }
-                action("Published Meetings")
+                action("Published Meetings")//page 58158 "Meeting Plan List"
                 {
                     ApplicationArea = Basic, Suite;
                     Caption = 'Published Meetings';
@@ -235,7 +242,7 @@ page 58118 "Head of E-Board"
                 }
             }
 
-              group("ESign Documents")
+            group("ESign Documents")
             {
                 Caption = 'E-Sign Documents';
 

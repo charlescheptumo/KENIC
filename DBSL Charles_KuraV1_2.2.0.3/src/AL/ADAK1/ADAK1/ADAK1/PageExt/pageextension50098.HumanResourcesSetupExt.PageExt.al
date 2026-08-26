@@ -308,6 +308,11 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the Board meeting Nos field.', Comment = '%';
             }
+            field("Meeting Plan Nos"; Rec."Meeting Plan Nos.")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the meeting plan Nos field.', Comment = '%';
+            }
             field("Project Team Nos"; Rec."Project Team Nos")
             {
                 ApplicationArea = All;

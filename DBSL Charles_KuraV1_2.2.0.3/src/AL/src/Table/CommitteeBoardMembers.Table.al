@@ -7,6 +7,7 @@ Table 55001 "Committee Board Members"
         field(1; Committee; Code[20])
         {
             NotBlank = true;
+            
         }
         field(2; "Code"; Code[20])
         {

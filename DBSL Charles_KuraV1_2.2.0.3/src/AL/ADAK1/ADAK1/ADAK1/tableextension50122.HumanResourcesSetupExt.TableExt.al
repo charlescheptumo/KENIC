@@ -1012,7 +1012,7 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
         {
             Caption = 'Succ. Sel. Justification Nos.';
             TableRelation = "No. Series";
-            DataClassification = CustomerContent;
+            DataClassification = CustomerContent; //
         }
          field(69676; "Successor Form Nos."; Code[20])
         {
@@ -1021,6 +1021,12 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
             DataClassification = CustomerContent;
         }
 
+         field(69677; "Meeting Plan Nos."; Code[20])
+        {
+            Caption = 'Meeting Plan Nos.';
+            TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        }
     }
 
     var
