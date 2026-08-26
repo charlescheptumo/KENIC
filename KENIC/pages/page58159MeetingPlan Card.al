@@ -53,23 +53,41 @@ page 58159 "Meeting Plan Card"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the lifecycle status of the meeting plan.';
                 }
-                
                 field("Description"; Rec."Description")
                 {
                     ApplicationArea = All;
                     MultiLine = true;
                     ToolTip = 'Enter additional descriptions or objectives for this plan.';
                 }
-                
                 field("Created By"; Rec."Created By")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                     ToolTip = 'Displays the user who created this plan.';
                 }
                 field("Created At"; Rec."Created At")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                     ToolTip = 'Displays the timestamp when this record was created.';
+                }
+            }
+
+            part(DateOptions; "Meeting Date Options Subform")
+            {
+                ApplicationArea = All;
+                SubPageLink = "Meeting Plan Id" = field("Id");
+            }
+
+            group(PollResults)
+            {
+                Caption = 'Live Poll Votes';
+
+                part(PollVotes; "Meeting Date Polls Subform")
+                {
+                    ApplicationArea = All;
+                    Provider = DateOptions;
+                    SubPageLink = "Meeting Date Option Id" = field("Id");
                 }
             }
         }
