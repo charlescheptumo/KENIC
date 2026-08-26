@@ -23,6 +23,11 @@ page 58159 "Meeting Plan Card"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Select the board committee for this plan.';
+
+                    trigger OnValidate()
+                    begin
+                        CurrPage.Update(true);
+                    end;
                 }
                 field("Committee Description"; Rec."Committee Description")
                 {
@@ -59,18 +64,23 @@ page 58159 "Meeting Plan Card"
                     MultiLine = true;
                     ToolTip = 'Enter additional descriptions or objectives for this plan.';
                 }
-                field("Created By"; Rec."Created By")
+                field(Posted; Rec.Posted)
                 {
                     ApplicationArea = All;
-                    Editable = false;
-                    ToolTip = 'Displays the user who created this plan.';
+                    ToolTip = '';
                 }
-                field("Created At"; Rec."Created At")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    ToolTip = 'Displays the timestamp when this record was created.';
-                }
+                // field("Created By"; Rec."Created By")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                //     ToolTip = 'Displays the user who created this plan.';
+                // }
+                // field("Created At"; Rec."Created At")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                //     ToolTip = 'Displays the timestamp when this record was created.';
+                // }
             }
 
             part(DateOptions; "Meeting Date Options Subform")
@@ -92,4 +102,58 @@ page 58159 "Meeting Plan Card"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action(PostPlan)
+            {
+                ApplicationArea = All;
+                Caption = 'Post / Publish to Portal';
+                Image = PostOrder;
+                Enabled = not IsPosted;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                ToolTip = 'Publish this meeting plan to the board portal.';
+
+                trigger OnAction()
+                var
+                    ConfirmQst: Label 'Do you want to proceed publishing to portal?';
+                    SuccessMsg: Label 'Meeting Plan %1 has been published successfully.', Comment = '%1 = Plan Id';
+                begin
+                    Rec.TestField(Posted, false);
+
+                    if not Confirm(ConfirmQst, false) then
+                        exit;
+
+                    Rec.Posted := true;
+                    Rec.Status := Rec.Status::Posted;
+                    Rec.Modify(true);
+
+                    CurrPage.Update(false);
+                    Message(SuccessMsg, Rec."Id");
+                end;
+            }
+        }
+    }
+
+    trigger OnAfterGetRecord()
+    begin
+        SetControlAppearance();
+    end;
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        SetControlAppearance();
+    end;
+
+    local procedure SetControlAppearance()
+    begin
+        IsPosted := Rec.Posted;
+    end;
+
+    var
+        IsPosted: Boolean;
 }

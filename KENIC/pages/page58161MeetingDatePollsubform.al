@@ -1,10 +1,11 @@
 page 58161 "Meeting Date Polls Subform"
 {
     ApplicationArea = All;
-    Caption = 'Votes Cast';
+   // Caption = 'Meeting Date Polls';
     PageType = ListPart;
     SourceTable = "Meeting Date Polls";
-    Editable = false;
+    InsertAllowed = false;
+    DeleteAllowed = false;
 
     layout
     {
@@ -12,26 +13,30 @@ page 58161 "Meeting Date Polls Subform"
         {
             repeater(Group)
             {
-                field("Id"; Rec."Id")
+                field("Member No."; Rec."Member No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the unique poll vote record ID.';
-                    Visible = false;
+                    Editable = false;
                 }
-                field("Meeting Date Option Id"; Rec."Meeting Date Option Id")
+                field("Member Name"; Rec."Member Name")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the target date option ID.';
+                    Editable = false;
+                }
+                field("Has Voted"; Rec."Has Voted")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Indicates if this member has submitted a vote for this date option.';
                 }
                 field("User Id"; Rec."User Id")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the board member/user who cast the vote.';
+                    Editable = false;
                 }
                 field("Voted At"; Rec."Voted At")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Displays the exact date and timestamp when the vote was submitted.';
+                    Editable = false;
                 }
             }
         }

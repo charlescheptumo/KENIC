@@ -40,12 +40,13 @@ page 58160 "Meeting Date Options Subform"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the vote count.';
                 }
-                field("Created At"; Rec."Created At")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Displays when this option was created.';
-                }
+                // field("Created At"; Rec."Created At")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Displays when this option was created.';
+                // }
             }
         }
     }
+    
 }

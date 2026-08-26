@@ -18,14 +18,31 @@ table 58148 "Meeting Date Polls"
             DataClassification = ToBeClassified;
             TableRelation = "Meeting Date Options".Id;
         }
-        field(3; "User Id"; Code[50])
+        field(3; "Member No."; Code[20])
+        {
+            Caption = 'Member No.';
+            DataClassification = ToBeClassified;
+            TableRelation = "Committee Board Members"."Director No";
+        }
+        field(4; "Member Name"; Text[250])
+        {
+            Caption = 'Member Name';
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(5; "User Id"; Code[50])
         {
             Caption = 'User Id';
             DataClassification = ToBeClassified;
             TableRelation = User."User Name";
             ValidateTableRelation = false;
         }
-        field(4; "Voted At"; DateTime)
+        field(6; "Has Voted"; Boolean)
+        {
+            Caption = 'Has Voted';
+            DataClassification = ToBeClassified;
+        }
+        field(7; "Voted At"; DateTime)
         {
             Caption = 'Voted At';
             DataClassification = ToBeClassified;
@@ -39,7 +56,7 @@ table 58148 "Meeting Date Polls"
         {
             Clustered = true;
         }
-        key(UserOption; "Meeting Date Option Id", "User Id")
+        key(OptionMember; "Meeting Date Option Id", "Member No.")
         {
             Unique = true;
         }
@@ -47,8 +64,7 @@ table 58148 "Meeting Date Polls"
 
     trigger OnInsert()
     begin
-        "Voted At" := CurrentDateTime();
-        if "User Id" = '' then
-            "User Id" := CopyStr(UserId(), 1, MaxStrLen("User Id"));
+        if "Has Voted" and ("Voted At" = 0DT) then
+            "Voted At" := CurrentDateTime();
     end;
 }

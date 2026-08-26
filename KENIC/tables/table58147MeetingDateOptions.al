@@ -62,9 +62,12 @@ table 58147 "Meeting Date Options"
 
     keys
     {
-        key(PK; "Id", "Meeting Plan Id")
+        key(PK; "Id")
         {
             Clustered = true;
+        }
+        key(FK_Plan; "Meeting Plan Id")
+        {
         }
     }
 

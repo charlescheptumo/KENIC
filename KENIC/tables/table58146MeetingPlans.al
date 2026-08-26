@@ -11,15 +11,60 @@ table 58146 "Meeting Plans"
             Caption = 'Id';
             DataClassification = ToBeClassified;
         }
+        // field(2; "Committee Id"; Code[20])
+        // {
+        //     Caption = 'Committee Id';
+        //     DataClassification = ToBeClassified;
+        //     TableRelation = "Board Committees".Code;
+
+        //     trigger OnValidate()
+        //     begin
+        //         CalcFields("Committee Description");
+
+        //         if "Committee Id" <> xRec."Committee Id" then
+        //             RegeneratePollVotes();
+        //     end;
+        // }
         field(2; "Committee Id"; Code[20])
         {
             Caption = 'Committee Id';
             DataClassification = ToBeClassified;
+            //TableRelation = "Committee Board Members".Committee;
             TableRelation = "Board Committees".Code;
 
             trigger OnValidate()
+            var
+                MeetingOption: Record "Meeting Date Options";
+                CommitteeMember: Record "Committee Board Members";
+                DatePoll: Record "Meeting Date Polls";
             begin
-                CalcFields("Committee Description");
+                if Rec."Committee Id" <> xRec."Committee Id" then begin
+
+                    MeetingOption.Reset();
+                    MeetingOption.SetRange("Meeting Plan Id", Rec.Id);
+                    if MeetingOption.FindSet() then
+                        repeat
+
+                            DatePoll.Reset();
+                            DatePoll.SetRange("Meeting Date Option Id", MeetingOption.Id);
+                            DatePoll.DeleteAll(true);
+
+
+                            if Rec."Committee Id" <> '' then begin
+                                CommitteeMember.Reset();
+                                CommitteeMember.SetRange(Committee, Rec."Committee Id");
+                                if CommitteeMember.FindSet() then
+                                    repeat
+                                        DatePoll.Init();
+                                        DatePoll."Meeting Date Option Id" := MeetingOption.Id;
+                                        DatePoll."Member No." := CommitteeMember."Director No";
+                                        DatePoll."Member Name" := CommitteeMember.Names;
+                                        DatePoll."Has Voted" := false;
+                                        DatePoll.Insert(true);
+                                    until CommitteeMember.Next() = 0;
+                            end;
+                        until MeetingOption.Next() = 0;
+                end;
             end;
         }
         field(3; "Committee Description"; Text[200])
@@ -55,8 +100,8 @@ table 58146 "Meeting Plans"
         {
             Caption = 'Status';
             DataClassification = ToBeClassified;
-            OptionCaption = 'Draft,Approved,Cancelled,Completed';
-            OptionMembers = Draft,Approved,Cancelled,Completed;
+            OptionCaption = 'Draft,Posted,Approved,Cancelled,Completed,Closed';
+            OptionMembers = Draft,Posted,Approved,Cancelled,Completed,Closed;
         }
         field(9; "Created By"; Code[50])
         {
@@ -77,6 +122,12 @@ table 58146 "Meeting Plans"
             DataClassification = ToBeClassified;
             Editable = false;
             TableRelation = "No. Series";
+        }
+        field(12; "Posted"; Boolean)
+        {
+            Caption = 'Posted';
+            DataClassification = ToBeClassified;
+            Editable = false;
         }
     }
 
@@ -105,6 +156,52 @@ table 58146 "Meeting Plans"
 
         "Created By" := CopyStr(UserId(), 1, MaxStrLen("Created By"));
         "Created At" := CurrentDateTime();
+    end;
+
+    local procedure RegeneratePollVotes()
+    var
+        DateOption: Record "Meeting Date Options";
+        CommitteeMember: Record "Committee Board Members";
+        DatePoll: Record "Meeting Date Polls";
+        ConfirmQst: Label 'Changing the Committee will reset all existing vote records for this meeting plan. Do you want to continue?';
+    begin
+        if Rec."Id" = '' then
+            exit;
+
+        // Check if any date options exist before processing
+        DateOption.Reset();
+        DateOption.SetRange("Meeting Plan Id", Rec."Id");
+        if DateOption.IsEmpty() then
+            exit;
+
+        // Safety prompt when interactive
+        if GuiAllowed then
+            if not Confirm(ConfirmQst, false) then
+                Error('Committee change aborted.');
+
+        if DateOption.FindSet() then
+            repeat
+                // 1. Remove existing poll entries for this date option line
+                DatePoll.Reset();
+                DatePoll.SetRange("Meeting Date Option Id", DateOption.Id);
+                if not DatePoll.IsEmpty() then
+                    DatePoll.DeleteAll(true);
+
+                // 2. Populate new committee members if a committee is assigned
+                if Rec."Committee Id" <> '' then begin
+                    CommitteeMember.Reset();
+                    CommitteeMember.SetRange(Committee, Rec."Committee Id");
+                    if CommitteeMember.FindSet() then
+                        repeat
+                            DatePoll.Init();
+                            DatePoll."Meeting Date Option Id" := DateOption.Id;
+                            DatePoll."Member No." := CommitteeMember."Director No";
+                            DatePoll."Member Name" := CommitteeMember.Names;
+                            DatePoll."Has Voted" := false;
+                            DatePoll.Insert(true);
+                        until CommitteeMember.Next() = 0;
+                end;
+            until DateOption.Next() = 0;
     end;
 
     var
