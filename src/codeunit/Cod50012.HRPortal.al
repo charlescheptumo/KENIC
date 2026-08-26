@@ -16054,7 +16054,7 @@ Codeunit 50012 "HRPortal"
             Recipient := portalusers."email";
             Subject := 'E-BOARD LOGIN - One Time Password';
             Body := 'Dear Sir/Madam, ' + 'Your account was successfully created, your One Time Password is:<b> ' + portalusers.Password + '</b> <br>' +
-                '<br> Kindly use the password for your first Login, thereafter, you will be prompted to change it to your preferred passcode.<br> <br> Warm regards, <br>Anti-Doping Agency of Kenya. <br> [THIS IS AN AUTOMATED' +
+                '<br> Kindly use the password for your first Login, thereafter, you will be prompted to change it to your preferred passcode.<br> <br> Warm regards, <br>Kenya Network Information Centre. <br> [THIS IS AN AUTOMATED' +
             ' MESSAGE, KINDLY DO NOT REPLY TO IT]';
             SMTPMail.Create(Recipient, Subject, Body, true);
             smail1.Send(SMTPMail, Enum::"Email Scenario"::Default);

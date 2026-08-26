@@ -62,6 +62,11 @@ Table 56900 "portalusers"
         {
             DataClassification = ToBeClassified;
         }
+
+        field(17; isFirstlogin; Boolean)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
