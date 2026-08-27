@@ -12,37 +12,43 @@ table 58148 "Meeting Date Polls"
             AutoIncrement = true;
             DataClassification = ToBeClassified;
         }
-        field(2; "Meeting Date Option Id"; Integer)
+        field(2; "Meeting Plan Id"; Code[20])
+        {
+            Caption = 'Meeting Plan Id';
+            DataClassification = ToBeClassified;
+            TableRelation = "Meeting Plans".Id;
+        }
+        field(3; "Meeting Date Option Id"; Integer)
         {
             Caption = 'Meeting Date Option Id';
             DataClassification = ToBeClassified;
-            TableRelation = "Meeting Date Options".Id;
+            TableRelation = "Meeting Date Options".Id where("Meeting Plan Id" = field("Meeting Plan Id"));
         }
-        field(3; "Member No."; Code[20])
+        field(4; "Member No."; Code[20])
         {
             Caption = 'Member No.';
             DataClassification = ToBeClassified;
             TableRelation = "Committee Board Members"."Director No";
         }
-        field(4; "Member Name"; Text[250])
+        field(5; "Member Name"; Text[250])
         {
             Caption = 'Member Name';
             DataClassification = ToBeClassified;
             Editable = false;
         }
-        field(5; "User Id"; Code[50])
+        field(6; "User Id"; Code[50])
         {
             Caption = 'User Id';
             DataClassification = ToBeClassified;
             TableRelation = User."User Name";
             ValidateTableRelation = false;
         }
-        field(6; "Has Voted"; Boolean)
+        field(7; "Has Voted"; Boolean)
         {
             Caption = 'Has Voted';
             DataClassification = ToBeClassified;
         }
-        field(7; "Voted At"; DateTime)
+        field(8; "Voted At"; DateTime)
         {
             Caption = 'Voted At';
             DataClassification = ToBeClassified;
@@ -56,7 +62,7 @@ table 58148 "Meeting Date Polls"
         {
             Clustered = true;
         }
-        key(OptionMember; "Meeting Date Option Id", "Member No.")
+        key(OptionMember; "Meeting Plan Id", "Meeting Date Option Id", "Member No.")
         {
             Unique = true;
         }

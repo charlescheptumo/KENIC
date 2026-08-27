@@ -9,7 +9,6 @@ table 58147 "Meeting Date Options"
         field(1; "Id"; Integer)
         {
             Caption = 'Id';
-            AutoIncrement = true;
             DataClassification = ToBeClassified;
         }
         field(2; "Meeting Plan Id"; Code[20])
@@ -55,24 +54,49 @@ table 58147 "Meeting Date Options"
         {
             Caption = 'Vote Count';
             FieldClass = FlowField;
-            CalcFormula = count("Meeting Date Polls" where("Meeting Date Option Id" = field("Id")));
+            CalcFormula = count("Meeting Date Polls" where("Meeting Plan Id" = field("Meeting Plan Id"),
+                                                           "Meeting Date Option Id" = field("Id"),
+                                                           "Has Voted" = const(true)));
             Editable = false;
         }
     }
 
     keys
     {
-        key(PK; "Id")
+        key(PK; "Meeting Plan Id", "Id")
         {
             Clustered = true;
-        }
-        key(FK_Plan; "Meeting Plan Id")
-        {
         }
     }
 
     trigger OnInsert()
+    var
+        MeetingPlan: Record "Meeting Plans";
+        LastOption: Record "Meeting Date Options";
     begin
         "Created At" := CurrentDateTime();
+
+      
+        if "Id" = 0 then begin
+            LastOption.SetRange("Meeting Plan Id", "Meeting Plan Id");
+            if LastOption.FindLast() then
+                "Id" := LastOption."Id" + 10000
+            else
+                "Id" := 10000;
+        end;
+
+        if MeetingPlan.Get("Meeting Plan Id") then
+            MeetingPlan.CreatePollsForOption("Id");
+    end;
+
+    trigger OnDelete()
+    var
+        DatePoll: Record "Meeting Date Polls";
+    begin
+        DatePoll.Reset();
+        DatePoll.SetRange("Meeting Plan Id", "Meeting Plan Id");
+        DatePoll.SetRange("Meeting Date Option Id", "Id");
+        if not DatePoll.IsEmpty() then
+            DatePoll.DeleteAll(true);
     end;
 }

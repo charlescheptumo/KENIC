@@ -97,7 +97,8 @@ page 58159 "Meeting Plan Card"
                 {
                     ApplicationArea = All;
                     Provider = DateOptions;
-                    SubPageLink = "Meeting Date Option Id" = field("Id");
+                    SubPageLink = "Meeting Plan Id" = field("Meeting Plan Id"),
+                  "Meeting Date Option Id" = field("Id");
                 }
             }
         }

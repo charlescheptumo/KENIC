@@ -5,6 +5,7 @@ page 58160 "Meeting Date Options Subform"
     PageType = ListPart;
     SourceTable = "Meeting Date Options";
     AutoSplitKey = true;
+    DelayedInsert = true;
 
     layout
     {
