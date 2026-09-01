@@ -4,7 +4,7 @@ page 58160 "Meeting Date Options Subform"
     Caption = 'Proposed Meeting Dates';
     PageType = ListPart;
     SourceTable = "Meeting Date Options";
-    AutoSplitKey = true;
+    AutoSplitKey = false; 
     DelayedInsert = true;
 
     layout
@@ -35,19 +35,18 @@ page 58160 "Meeting Date Options Subform"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the proposed meeting location/venue or online link.';
                 }
-                field("Vote count"; Rec."Vote Count")
-
+                field("Vote Count"; Rec."Vote Count")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the vote count.';
                 }
-                // field("Created At"; Rec."Created At")
-                // {
-                //     ApplicationArea = All;
-                //     ToolTip = 'Displays when this option was created.';
-                // }
             }
         }
     }
-    
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+
+        Rec."Created At" := CurrentDateTime();
+    end;
 }

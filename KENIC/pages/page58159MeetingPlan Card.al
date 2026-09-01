@@ -12,6 +12,7 @@ page 58159 "Meeting Plan Card"
             group(General)
             {
                 Caption = 'General';
+                Editable = not IsPosted; // Group-level editable allows dynamic expressions
 
                 field("Id"; Rec."Id")
                 {
@@ -67,26 +68,15 @@ page 58159 "Meeting Plan Card"
                 field(Posted; Rec.Posted)
                 {
                     ApplicationArea = All;
-                    ToolTip = '';
+                    ToolTip = 'Specifies whether the meeting plan has been published to the portal.';
                 }
-                // field("Created By"; Rec."Created By")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                //     ToolTip = 'Displays the user who created this plan.';
-                // }
-                // field("Created At"; Rec."Created At")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                //     ToolTip = 'Displays the timestamp when this record was created.';
-                // }
             }
 
             part(DateOptions; "Meeting Date Options Subform")
             {
                 ApplicationArea = All;
                 SubPageLink = "Meeting Plan Id" = field("Id");
+                Editable = not IsPosted;
             }
 
             group(PollResults)
@@ -98,11 +88,12 @@ page 58159 "Meeting Plan Card"
                     ApplicationArea = All;
                     Provider = DateOptions;
                     SubPageLink = "Meeting Plan Id" = field("Meeting Plan Id"),
-                  "Meeting Date Option Id" = field("Id");
+                                  "Meeting Date Option Id" = field("Id");
                 }
             }
         }
     }
+
     actions
     {
         area(Processing)
@@ -133,7 +124,8 @@ page 58159 "Meeting Plan Card"
                     Rec.Status := Rec.Status::Posted;
                     Rec.Modify(true);
 
-                    CurrPage.Update(false);
+                    SetControlAppearance();
+                    CurrPage.Update(true);
                     Message(SuccessMsg, Rec."Id");
                 end;
             }

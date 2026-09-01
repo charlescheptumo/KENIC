@@ -76,7 +76,6 @@ table 58147 "Meeting Date Options"
     begin
         "Created At" := CurrentDateTime();
 
-      
         if "Id" = 0 then begin
             LastOption.SetRange("Meeting Plan Id", "Meeting Plan Id");
             if LastOption.FindLast() then
@@ -85,8 +84,38 @@ table 58147 "Meeting Date Options"
                 "Id" := 10000;
         end;
 
-        if MeetingPlan.Get("Meeting Plan Id") then
-            MeetingPlan.CreatePollsForOption("Id");
+        // if MeetingPlan.Get("Meeting Plan Id") then
+        //     CreatePollsForThisOption(MeetingPlan."Committee Id");
+    end;
+
+    local procedure CreatePollsForThisOption(CommitteeId: Code[20])
+    var
+        CommitteeMember: Record "Committee Board Members";
+        DatePoll: Record "Meeting Date Polls";
+    begin
+        if (CommitteeId = '') or ("Meeting Plan Id" = '') or ("Id" = 0) then
+            exit;
+
+        CommitteeMember.SetRange(Committee, CommitteeId);
+        if CommitteeMember.FindSet() then
+            repeat
+                if CommitteeMember."Director No" <> '' then begin
+                    DatePoll.Reset();
+                    DatePoll.SetRange("Meeting Plan Id", Rec."Meeting Plan Id");
+                    DatePoll.SetRange("Meeting Date Option Id", Rec."Id");
+                    DatePoll.SetRange("Member No.", CommitteeMember."Director No");
+
+                    if DatePoll.IsEmpty() then begin
+                        Clear(DatePoll); 
+                        DatePoll."Meeting Plan Id" := Rec."Meeting Plan Id";
+                        DatePoll."Meeting Date Option Id" := Rec."Id";
+                        DatePoll."Member No." := CommitteeMember."Director No";
+                        DatePoll."Member Name" := CommitteeMember.Names;
+                        DatePoll."Has Voted" := false;
+                        DatePoll.Insert(false); 
+                    end;
+                end;
+            until CommitteeMember.Next() = 0;
     end;
 
     trigger OnDelete()

@@ -47,6 +47,18 @@ table 58148 "Meeting Date Polls"
         {
             Caption = 'Has Voted';
             DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            begin
+                if "Has Voted" then begin
+                    "Voted At" := CurrentDateTime();
+                    if "User Id" = '' then
+                        "User Id" := UserId();
+                end else begin
+                    "Voted At" := 0DT;
+                    "User Id" := '';
+                end;
+            end;
         }
         field(8; "Voted At"; DateTime)
         {
@@ -66,11 +78,27 @@ table 58148 "Meeting Date Polls"
         {
             Unique = true;
         }
+      
+        key(VoteCountIndex; "Meeting Plan Id", "Meeting Date Option Id", "Has Voted")
+        {
+        }
     }
 
     trigger OnInsert()
     begin
-        if "Has Voted" and ("Voted At" = 0DT) then
+        if "Has Voted" and ("Voted At" = 0DT) then begin
             "Voted At" := CurrentDateTime();
+            if "User Id" = '' then
+                "User Id" := UserId();
+        end;
+    end;
+
+    trigger OnModify()
+    begin
+        if "Has Voted" and ("Voted At" = 0DT) then begin
+            "Voted At" := CurrentDateTime();
+            if "User Id" = '' then
+                "User Id" := UserId();
+        end;
     end;
 }

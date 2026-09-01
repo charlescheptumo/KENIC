@@ -21,8 +21,9 @@ table 58146 "Meeting Plans"
             begin
                 CalcFields("Committee Description");
 
-                if (Rec."Committee Id" <> xRec."Committee Id") and (xRec."Committee Id" <> '') then
-                    RegeneratePollVotes();
+
+                // if (Rec."Committee Id" <> xRec."Committee Id") and (xRec."Committee Id" <> '') then
+                //     RegeneratePollVotes();
             end;
         }
         field(3; "Committee Description"; Text[200])
@@ -132,77 +133,82 @@ table 58146 "Meeting Plans"
             DatePoll.DeleteAll(true);
     end;
 
-    procedure CreatePollsForOption(OptionId: Integer)
-    var
-        CommitteeMember: Record "Committee Board Members";
-        DatePoll: Record "Meeting Date Polls";
-    begin
-        if (Rec."Id" = '') or (Rec."Committee Id" = '') then
-            exit;
+   procedure CreatePollsForOption(OptionId: Integer)
+var
+    CommitteeMember: Record "Committee Board Members";
+    DatePoll: Record "Meeting Date Polls";
+begin
+    if (Rec."Id" = '') or (Rec."Committee Id" = '') then
+        exit;
 
-        CommitteeMember.SetRange(Committee, Rec."Committee Id");
-        if CommitteeMember.FindSet() then
-            repeat
+    CommitteeMember.SetRange(Committee, Rec."Committee Id");
+    if CommitteeMember.FindSet() then
+        repeat
+            if CommitteeMember."Director No" <> '' then begin
                 DatePoll.Reset();
                 DatePoll.SetRange("Meeting Plan Id", Rec."Id");
                 DatePoll.SetRange("Meeting Date Option Id", OptionId);
                 DatePoll.SetRange("Member No.", CommitteeMember."Director No");
 
                 if DatePoll.IsEmpty() then begin
-                    DatePoll.Init();
+                    Clear(DatePoll);
                     DatePoll."Meeting Plan Id" := Rec."Id";
                     DatePoll."Meeting Date Option Id" := OptionId;
                     DatePoll."Member No." := CommitteeMember."Director No";
                     DatePoll."Member Name" := CommitteeMember.Names;
                     DatePoll."Has Voted" := false;
-                    DatePoll.Insert(true);
+                    DatePoll.Insert(false);
                 end;
-            until CommitteeMember.Next() = 0;
-    end;
+            end;
+        until CommitteeMember.Next() = 0;
+end;
 
-    local procedure RegeneratePollVotes()
-    var
-        DateOption: Record "Meeting Date Options";
-        CommitteeMember: Record "Committee Board Members";
-        DatePoll: Record "Meeting Date Polls";
-        ConfirmQst: Label 'Changing the Committee will reset all existing vote records for this meeting plan. Do you want to continue?';
-    begin
-        if Rec."Id" = '' then
-            exit;
+local procedure RegeneratePollVotes()
+var
+    DateOption: Record "Meeting Date Options";
+    CommitteeMember: Record "Committee Board Members";
+    DatePoll: Record "Meeting Date Polls";
+    ConfirmQst: Label 'Changing the Committee will reset existing vote records. Continue?';
+begin
+    if Rec."Id" = '' then
+        exit;
 
-        DateOption.Reset();
-        DateOption.SetRange("Meeting Plan Id", Rec."Id");
-        if DateOption.IsEmpty() then
-            exit;
+    DateOption.Reset();
+    DateOption.SetRange("Meeting Plan Id", Rec."Id");
+    if DateOption.IsEmpty() then
+        exit;
 
+    if xRec."Committee Id" <> '' then
         if GuiAllowed then
             if not Confirm(ConfirmQst, false) then
                 Error('Committee change aborted.');
 
-        if DateOption.FindSet() then
-            repeat
-                DatePoll.Reset();
-                DatePoll.SetRange("Meeting Plan Id", Rec."Id");
-                DatePoll.SetRange("Meeting Date Option Id", DateOption.Id);
-                if not DatePoll.IsEmpty() then
-                    DatePoll.DeleteAll(true);
+    if DateOption.FindSet() then
+        repeat
+            DatePoll.Reset();
+            DatePoll.SetRange("Meeting Plan Id", Rec."Id");
+            DatePoll.SetRange("Meeting Date Option Id", DateOption."Id");
+            if not DatePoll.IsEmpty() then
+                DatePoll.DeleteAll(true);
 
-                if Rec."Committee Id" <> '' then begin
-                    CommitteeMember.Reset();
-                    CommitteeMember.SetRange(Committee, Rec."Committee Id");
-                    if CommitteeMember.FindSet() then
-                        repeat
-                            DatePoll.Init();
+            if Rec."Committee Id" <> '' then begin
+                CommitteeMember.Reset();
+                CommitteeMember.SetRange(Committee, Rec."Committee Id");
+                if CommitteeMember.FindSet() then
+                    repeat
+                        if CommitteeMember."Director No" <> '' then begin
+                            Clear(DatePoll); 
                             DatePoll."Meeting Plan Id" := Rec."Id";
-                            DatePoll."Meeting Date Option Id" := DateOption.Id;
+                            DatePoll."Meeting Date Option Id" := DateOption."Id";
                             DatePoll."Member No." := CommitteeMember."Director No";
                             DatePoll."Member Name" := CommitteeMember.Names;
                             DatePoll."Has Voted" := false;
-                            DatePoll.Insert(true);
-                        until CommitteeMember.Next() = 0;
-                end;
-            until DateOption.Next() = 0;
-    end;
+                            DatePoll.Insert(false); 
+                        end;
+                    until CommitteeMember.Next() = 0;
+            end;
+        until DateOption.Next() = 0;
+end;
 
     var
         NoSeriesMgt: Codeunit "No. Series";
