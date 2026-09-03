@@ -210,7 +210,7 @@ Table 69126 "Overtime Header"
             //     end;
             // end;
         }
-        field(5; "Application Code"; Code[10])
+        field(5; "Application Code"; Code[20])
         {
         }
         field(6; Status; Enum "Purchase Document Status")
