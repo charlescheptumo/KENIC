@@ -37,6 +37,18 @@ table 50176 "Successor Form Line"
             Caption = 'Training Required';
             DataClassification = CustomerContent;
         }
+        field(7; "Status"; text[50])
+        {
+            DataClassification = CustomerContent;
+        }
+        field(8; "Supervisor Comments"; Text[200])
+        {
+            DataClassification = CustomerContent;
+        }
+        field(9; "Employee Comments"; Text[200])
+        {
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

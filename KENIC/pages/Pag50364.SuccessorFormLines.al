@@ -34,6 +34,7 @@ page 50364 "Successor Form Lines"
                 field("Progress/Comment"; Rec."Progress/Comment")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("TrainingReq"; Rec."Training Required")
                 {
@@ -41,6 +42,18 @@ page 50364 "Successor Form Lines"
                     Visible = false;
                 }
                 field("Training Required"; Rec."Training Required")
+                {
+                    ApplicationArea = All;
+                }
+                field("Status"; Rec."Status")
+                {
+                    ApplicationArea = All;
+                }
+                field("Supervisor Comments"; Rec."Supervisor Comments")
+                {
+                    ApplicationArea = All;
+                }
+                field("Employee Comments"; Rec."Employee Comments")
                 {
                     ApplicationArea = All;
                 }
