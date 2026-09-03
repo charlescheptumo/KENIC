@@ -18,13 +18,13 @@ table 50175 "Successor Form Header"
 
             trigger OnValidate()
             var
-                EmployeeRec: Record Employee;   
-                begin
-                    if EmployeeRec.Get(Rec."Name") then begin
-                        "Job Title" := EmployeeRec."Job Title";
+                EmployeeRec: Record Employee;
+            begin
+                if EmployeeRec.Get(Rec."Name") then begin
+                    "Job Title" := EmployeeRec."Job Title";
 
-                    end;
                 end;
+            end;
         }
         field(3; "Job Title"; Text[100])
         {
@@ -87,6 +87,11 @@ table 50175 "Successor Form Header"
             Editable = false;
             TableRelation = "No. Series";
             DataClassification = ToBeClassified;
+        }
+        field(25; Status; Option)
+        {
+            Caption = 'Status';
+            OptionMembers = Open,"Pending Approval",Released;
         }
     }
 

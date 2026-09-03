@@ -35,7 +35,7 @@ table 50173 "Succ. Sel. Justification Hdr"
                 if EmployeeRec.Get(Rec."Successor Name") then begin
                     "Current Role" := EmployeeRec."Job Title";
                     "Current Position" := EmployeeRec."Current Position ID";
-                    Department:= EmployeeRec."Department Code";
+                    Department := EmployeeRec."Department Code";
                 end;
             end;
         }
@@ -77,6 +77,11 @@ table 50173 "Succ. Sel. Justification Hdr"
             Editable = false;
             TableRelation = "No. Series";
             DataClassification = ToBeClassified;
+        }
+        field(12; Status; Option)
+        {
+            Caption = 'Status';
+            OptionMembers = Open,"Pending Approval",Released;
         }
     }
 
