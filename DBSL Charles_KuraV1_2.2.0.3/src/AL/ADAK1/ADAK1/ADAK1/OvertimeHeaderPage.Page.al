@@ -48,7 +48,7 @@ Page 69173 "Overtime Header Page"
                 field("Overtime Amount"; Rec."Overtime Amount")
                 {
                     ApplicationArea = Basic;
-                    Visible = true;
+                    Visible = false;
                     ToolTip = 'Specifies the value of the Overtime Amount field.';
                 }
                 field("Total Hours"; Rec."Total Hours")
@@ -67,6 +67,7 @@ Page 69173 "Overtime Header Page"
                     Caption = 'Region';
                     Editable = false;
                     ToolTip = 'Specifies the value of the Region field.';
+                    Visible = false;
                 }
                 field("Dim Code 2"; Rec."Dim Code 2")
                 {
@@ -74,6 +75,7 @@ Page 69173 "Overtime Header Page"
                     Caption = 'Constituency';
                     Editable = false;
                     ToolTip = 'Specifies the value of the Constituency field.';
+                    Visible = false;
                 }
                 field("Responsibility Center"; Rec."Responsibility Center")
                 {
