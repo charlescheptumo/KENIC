@@ -46,7 +46,7 @@ page 50359 "Succ. Sel. Justification Card"
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the Status field.';
                 }
             }

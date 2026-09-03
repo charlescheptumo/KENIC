@@ -155,6 +155,21 @@ Codeunit 59500 "Custom Approvals Codeunit"
         RunWorkflowOnSendPVForApprovalCode: label 'RUNWORKFLOWONSENDPVFORAPPROVAL';
         OnCancelPVApprovalRequestTxt: label 'An Approval of a Payments Document is canceled';
         RunWorkflowOnCancelPVForApprovalCode: label 'RUNWORKFLOWONCANCELPVFORAPPROVAL';
+        //Overtime
+        OnSendOvertimeApprovalRequestTxt: label 'Approval of an Overtime Application is requested';
+        RunWorkflowOnSendOvertimeForApprovalCode: label 'RUNWORKFLOWONSENDOVERTIMEFORAPPROVAL';
+        OnCancelOvertimeApprovalRequestTxt: label 'An Approval of an Overtime Application is canceled';
+        RunWorkflowOnCancelOvertimeForApprovalCode: label 'RUNWORKFLOWONCANCELOVERTIMEFORAPPROVAL';
+        //Successor Form
+        OnSendSuccessorApprovalRequestTxt: label 'Approval of a Successor Form is requested';
+        RunWorkflowOnSendSuccessorForApprovalCode: label 'RUNWORKFLOWONSENDSUCCESSORFORAPPROVAL';
+        OnCancelSuccessorApprovalRequestTxt: label 'An Approval of a Successor Form is canceled';
+        RunWorkflowOnCancelSuccessorForApprovalCode: label 'RUNWORKFLOWONCANCELSUCCESSORFORAPPROVAL';
+        //SuccessorSelection 
+        OnSendSuccessorSelectionApprovalRequestTxt: label 'Approval of a Successor Selection is requested';
+        RunWorkflowOnSendSuccessorSelectionForApprovalCode: label 'RUNWORKFLOWONSENDSUCCESSORSELECTIONFORAPPROVAL';
+        OnCancelSuccessorSelectionApprovalRequestTxt: label 'An Approval of a Successor Selection is canceled';
+        RunWorkflowOnCancelSuccessorSelectionForApprovalCode: label 'RUNWORKFLOWONCANCELSUCCESSORSELECTIONFORAPPROVAL';
 
         //Imprest Memo
         OnSendIMApprovalRequestTxt: label 'Approval of an Imprest Memo is requested';
@@ -563,6 +578,17 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //PV
             Database::"payments":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendPVForApprovalCode));
+            //Overtime Header
+            Database::"Overtime Header":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendOvertimeForApprovalCode));
+
+            //Successor Form
+            Database::"Successor Form Header":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendSuccessorForApprovalCode));
+            //Successor Selection 
+            Database::"Succ. Sel. Justification Hdr":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendSuccessorSelectionForApprovalCode));
+
             //Imprest Memo
             Database::"Imprest Memo":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendIMForApprovalCode));
@@ -911,6 +937,25 @@ Codeunit 59500 "Custom Approvals Codeunit"
         RunWorkflowOnSendPVForApprovalCode, Database::"Payments", OnSendPVApprovalRequestTxt, 0, false);
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelPVForApprovalCode, Database::"Payments", OnCancelPVApprovalRequestTxt, 0, false);
+        //Overtime Header
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendOvertimeForApprovalCode, Database::"Overtime Header", OnSendOvertimeApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelOvertimeForApprovalCode, Database::"Overtime Header", OnCancelOvertimeApprovalRequestTxt, 0, false);
+
+        //Successor Form
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendSuccessorForApprovalCode, Database::"Successor Form Header", OnSendSuccessorApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelSuccessorForApprovalCode, Database::"Successor Form Header", OnCancelSuccessorApprovalRequestTxt, 0, false);
+
+        //Successor Selection
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendSuccessorSelectionForApprovalCode, Database::"Succ. Sel. Justification Hdr", OnSendSuccessorSelectionApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelSuccessorSelectionForApprovalCode, Database::"Succ. Sel. Justification Hdr", OnCancelSuccessorSelectionApprovalRequestTxt, 0, false);
+
+
 
         //Imprest Memo
         WorkFlowEventHandling.AddEventToLibrary(
@@ -1308,6 +1353,15 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //PV
             Database::"Payments":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendPVForApprovalCode, Variant);
+            Database::"Overtime Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendOvertimeForApprovalCode, Variant);
+            //Successor Form
+            Database::"Successor Form Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendSuccessorForApprovalCode, Variant);
+
+            //successor justification
+            Database::"Succ. Sel. Justification Hdr":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendSuccessorSelectionForApprovalCode, Variant);
 
             //Imprest Memo
             Database::"Imprest Memo":
@@ -1578,6 +1632,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //pv
             Database::"Payments":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelPVForApprovalCode, Variant);
+            //Overtime Header
+            Database::"Overtime Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelOvertimeForApprovalCode, Variant);
+
+            //successor form
+            Database::"Successor Form Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelSuccessorForApprovalCode, Variant);
+            //successor justification
+            Database::"Succ. Sel. Justification Hdr":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelSuccessorSelectionForApprovalCode, Variant);
 
             //Imprest Memo
             Database::"Imprest Memo":
@@ -1823,6 +1887,9 @@ Codeunit 59500 "Custom Approvals Codeunit"
         StandardPurchaseCode: Record "Standard Purchase Code";
         //PV
         Payments: Record payments;
+        overtimeHeader: Record "Overtime Header";
+        SuccessorFormHeader: Record "Successor Form Header";
+        SuccessorSelectionHeader: Record "Succ. Sel. Justification Hdr";
 
         //Imprest Memo
         ImprestMemo: Record "Imprest Memo";
@@ -2122,6 +2189,34 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     payments.Validate(Status, payments.Status::Open);
                     payments.Modify;
                     Variant := payments;
+                    Handled := true;
+                end;
+            //overtime Header
+            Database::"Overtime Header":
+                begin
+                    RecRef.SetTable(overtimeHeader);
+                    overtimeHeader.Validate(Status, overtimeHeader.Status::Open);
+                    overtimeHeader.Modify;
+                    Variant := overtimeHeader;
+                    Handled := true;
+                end;
+
+            //Successor Form
+            Database::"Successor Form Header":
+                begin
+                    RecRef.SetTable(SuccessorFormHeader);
+                    SuccessorFormHeader.Validate(Status, SuccessorFormHeader.Status::Open);
+                    SuccessorFormHeader.Modify;
+                    Variant := SuccessorFormHeader;
+                    Handled := true;
+                end;
+            //Successor Justification
+            Database::"Succ. Sel. Justification Hdr":
+                begin
+                    RecRef.SetTable(SuccessorSelectionHeader);
+                    SuccessorSelectionHeader.Validate(Status, SuccessorSelectionHeader.Status::Open);
+                    SuccessorSelectionHeader.Modify;
+                    Variant := SuccessorSelectionHeader;
                     Handled := true;
                 end;
 
@@ -2682,6 +2777,11 @@ Codeunit 59500 "Custom Approvals Codeunit"
         StandardPurchaseCode: Record "Standard Purchase Code";
         //pv
         Payments: record payments;
+        overtimeHeader: Record "Overtime Header";
+        //Successor Form
+        SuccessorFormHeader: Record "Successor Form Header";
+        //Successor Justification
+        SuccessorSelectionHeader: Record "Succ. Sel. Justification Hdr";
         //Imprest Memo
         ImprestMemo: Record "Imprest Memo";
 
@@ -2968,6 +3068,31 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     payments.Modify;
                     Variant := payments;
                 end;
+            //overtime
+            Database::"Overtime Header":
+                begin
+                    RecRef.SetTable(overtimeHeader);
+                    overtimeHeader.Validate(Status, overtimeHeader.Status::Released);
+                    overtimeHeader.Modify;
+                    Variant := overtimeHeader;
+                end;
+            //Successor Form
+            Database::"Successor Form Header":
+                begin
+                    RecRef.SetTable(SuccessorFormHeader);
+                    SuccessorFormHeader.Validate(Status, SuccessorFormHeader.Status::Released);
+                    SuccessorFormHeader.Modify;
+                    Variant := SuccessorFormHeader;
+                end;
+            //Successor Justification
+            Database::"Succ. Sel. Justification Hdr":
+                begin
+                    RecRef.SetTable(SuccessorSelectionHeader);
+                    SuccessorSelectionHeader.Validate(Status, SuccessorSelectionHeader.Status::Released);
+                    SuccessorSelectionHeader.Modify;
+                    Variant := SuccessorSelectionHeader;
+                end;
+
 
             //Imprest Memo
             Database::"Imprest Memo":
@@ -3639,6 +3764,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         StandardPurchaseCode: Record "Standard Purchase Code";
         //pv
         payments: Record payments;
+        //overtime
+        Overtime: Record "Overtime Header";
+        //successor form
+        SuccessorForm: Record "Successor Form Header";
+        //Successor selection Justification
+        SuccessorSelectionJustification: Record "Succ. Sel. Justification Hdr";
         //Imprest Memo
         ImprestMemo: Record "Imprest Memo";
         ImprestMemo2: Record "Imprest Memo";
@@ -3975,6 +4106,33 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     payments.Validate(Status, payments.Status::"Pending Approval");
                     payments.Modify;
                     Variant := payments;
+                    IsHandled := true;
+                end;
+            // overtime Header
+            Database::"Overtime Header":
+                begin
+                    RecRef.SetTable(Overtime);
+                    Overtime.Validate(Status, Overtime.Status::"Pending Approval");
+                    Overtime.Modify;
+                    Variant := Overtime;
+                    IsHandled := true;
+                end;
+            //successor form
+            Database::"Successor Form Header":
+                begin
+                    RecRef.SetTable(SuccessorForm);
+                    SuccessorForm.Validate(Status, SuccessorForm.Status::"Pending Approval");
+                    SuccessorForm.Modify;
+                    Variant := SuccessorForm;
+                    IsHandled := true;
+                end;
+            //Successor selection Justification
+            Database::"Succ. Sel. Justification Hdr":
+                begin
+                    RecRef.SetTable(SuccessorSelectionJustification);
+                    SuccessorSelectionJustification.Validate(Status, SuccessorSelectionJustification.Status::"Pending Approval");
+                    SuccessorSelectionJustification.Modify;
+                    Variant := SuccessorSelectionJustification;
                     IsHandled := true;
                 end;
 
@@ -4979,6 +5137,18 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                     RecNo := FieldRef.Value;
                     DocumentAttachment.SetRange("No.", RecNo);
                 end;
+            Database::"Succ. Sel. Justification Hdr":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.SetRange("No.", RecNo);
+                end;
+            Database::"Successor Form Header":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.SetRange("No.", RecNo);
+                end;
             Database::"Number Plate Request":
                 begin
                     FieldRef := RecRef.Field(1);
@@ -5344,6 +5514,24 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                     RecNo := FieldRef.Value;
                     DocumentAttachment.Validate("No.", RecNo);
                 end;
+            Database::"Overtime Header":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.Validate("No.", RecNo);
+                end;
+            Database::"Succ. Sel. Justification Hdr":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.Validate("No.", RecNo);
+                end;
+            Database::"Successor Form Header":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.Validate("No.", RecNo);
+                end;
             Database::ContractRenewal:
                 begin
                     FieldRef := RecRef.Field(1);
@@ -5376,6 +5564,9 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
     local procedure OnBeforeDrillDown(DocumentAttachment: Record "Document Attachment"; var RecRef: RecordRef);
     var
         PaymentTerms: Record "Payments";
+        SuccessionJustification: Record "Succ. Sel. Justification Hdr";
+        SuccessorForm: Record "Successor Form Header";
+        overtime: Record "Overtime Header";
         PayTerms: Record "Payment Terms";
         PHeader: Record "Purchase Header";
         Receipts: record "Receipts Header1";
@@ -5469,6 +5660,30 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                     PHeader.SetRange("No.", DocumentAttachment."No.");
                     if PHeader.FindFirst() then
                         RecRef.GetTable(PHeader);
+                end;
+            Database::"Succ. Sel. Justification Hdr":
+                begin
+                    RecRef.Open(Database::"Succ. Sel. Justification Hdr");
+                    SuccessionJustification.Reset();
+                    SuccessionJustification.SetRange("No.", DocumentAttachment."No.");
+                    if SuccessionJustification.FindFirst() then
+                        RecRef.GetTable(SuccessionJustification);
+                end;
+            Database::"Successor Form Header":
+                begin
+                    RecRef.Open(Database::"Successor Form Header");
+                    SuccessorForm.Reset();
+                    SuccessorForm.SetRange("No.", DocumentAttachment."No.");
+                    if SuccessorForm.FindFirst() then
+                        RecRef.GetTable(SuccessorForm);
+                end;
+            Database::"Overtime Header":
+                begin
+                    RecRef.Open(Database::"Overtime Header");
+                    overtime.Reset();
+                    overtime.SetRange("Emp No.", DocumentAttachment."No.");
+                    if overtime.FindFirst() then
+                        RecRef.GetTable(overtime);
                 end;
             Database::"Measurement &  Payment Header":
                 begin
@@ -5793,6 +6008,9 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
         CustomFunction: Codeunit "Custom Function";
         ImprestMemo: Record "Imprest Memo";
         Payment: Record payments;
+        SuccessionJustification: Record "Succ. Sel. Justification Hdr";
+        SuccessorForm: Record "Successor Form Header";
+        overtime: Record "Overtime Header";
         "Account Type": Enum "Gen. Journal Account Type";
         CommitmentType: Enum "Commitment Type";
         PurchaseLine: Record "Purchase Line";
@@ -5865,6 +6083,21 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                 begin
                     RecRef.SetTable(ImprestMemo);
                     CustomFunction.UnCommitImprest(ImprestMemo);
+                end;
+            Database::"Succ. Sel. Justification Hdr":
+                begin
+                    RecRef.SetTable(SuccessionJustification);
+                    SuccessionJustification.Modify;
+                end;
+            Database::"Successor Form Header":
+                begin
+                    RecRef.SetTable(SuccessorForm);
+                    SuccessorForm.Modify;
+                end;
+            Database::"Overtime Header":
+                begin
+                    RecRef.SetTable(overtime);
+                    overtime.Modify;
                 end;
             Database::payments:
                 begin

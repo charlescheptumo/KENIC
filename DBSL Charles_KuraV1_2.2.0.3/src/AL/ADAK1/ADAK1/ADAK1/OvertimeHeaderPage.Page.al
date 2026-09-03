@@ -20,7 +20,7 @@ Page 69173 "Overtime Header Page"
                 field("EMp No."; Rec."EMp No.")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the EMp No. field.';
                 }
                 field(Name; Rec.Name)
@@ -139,6 +139,23 @@ Page 69173 "Overtime Header Page"
                     ApprovalEntries.Setfilters(DATABASE::Overtime,DocumentType,"Application Code");
                     */
 
+                end;
+            }
+            action(ConvertToLeave)
+            {
+                ApplicationArea = All;
+                Caption = 'Convert Hours to Leave Days';
+                Image = ConvertCurrency;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Enabled = not Rec.Converted;
+                ToolTip = 'Convert the recorded overtime hours into leave days and credit them to the employee leave balance.';
+
+                trigger OnAction()
+                begin
+                    Rec.ConvertHoursToLeave();
+                    CurrPage.Update(false);
                 end;
             }
             action("Send Approval Request")

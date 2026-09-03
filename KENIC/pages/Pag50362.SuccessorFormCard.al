@@ -45,7 +45,7 @@ page 50362 "Successor Form Card"
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the Status field.';
                 }
             }

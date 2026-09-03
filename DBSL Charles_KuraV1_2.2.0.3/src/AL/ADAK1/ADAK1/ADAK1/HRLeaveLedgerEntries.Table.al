@@ -10,6 +10,7 @@ Table 69215 "HR Leave Ledger Entries"
         field(1; "Entry No."; Integer)
         {
             Caption = 'Entry No.';
+            AutoIncrement = true;
         }
         field(2; "Leave Period"; Code[20])
         {
