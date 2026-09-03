@@ -4,7 +4,7 @@ Table 69126 "Overtime Header"
 
     fields
     {
-        field(1; "EMp No."; Code[10])
+        field(1; "EMp No."; Code[20])
         {
             TableRelation = Employee."No.";
 
