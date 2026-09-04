@@ -42,9 +42,9 @@ page 50356 "Domain Receipt List"
                 field(NcbaKes; Rec.NcbaKes) { ApplicationArea = All; }
                 field(ImKes; Rec.ImKes) { ApplicationArea = All; }
                 field(ImUsd; Rec.ImUsd) { ApplicationArea = All; }
-                field(Posted;Rec.Posted) { ApplicationArea = All; }
-                field("Posted By";Rec."Posted By") { ApplicationArea = All; }
-                field("Posted Date";Rec."Posted Date") { ApplicationArea = All; }
+                field(Posted; Rec.Posted) { ApplicationArea = All; }
+                field("Posted By"; Rec."Posted By") { ApplicationArea = All; }
+                field("Posted Date"; Rec."Posted Date") { ApplicationArea = All; }
             }
         }
     }
@@ -100,8 +100,25 @@ page 50356 "Domain Receipt List"
                 var
                     DomainReceiptMgt: Codeunit "Payments-post";
                 begin
-                    DomainReceiptMgt.PostReceipt(Rec);
+                    DomainReceiptMgt.PostReceiptWithLog(Rec, false);
                     CurrPage.Update(false);
+                end;
+            }
+            action(ViewPostingLog)
+            {
+                ApplicationArea = All;
+                Caption = 'View Posting Log';
+                Image = Log;
+                Promoted = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    PostingLog: Record "Transaction Posting Log";
+                begin
+                    PostingLog.SetRange("Source Table", 'Domain Receipt');
+                    PostingLog.SetRange("Source Record ID", Rec.ReceiptId);
+                    Page.Run(0, PostingLog); // opens a default generated list view; swap 0 for a dedicated page ID once you build one
                 end;
             }
         }

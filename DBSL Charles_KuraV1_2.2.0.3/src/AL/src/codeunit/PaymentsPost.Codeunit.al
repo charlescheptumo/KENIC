@@ -5455,7 +5455,165 @@ Codeunit 57000 "Payments-Post"
 
     //     end;
     // end;
-    procedure PostReceipt(ReceiptRec: Record "Domain Receipt")
+    // procedure PostReceipt(ReceiptRec: Record "Domain Receipt")
+    // var
+    //     GenJnLine: Record "Gen. Journal Line";
+    //     LineNo: Integer;
+    //     GLEntry: Record "G/L Entry";
+    //     CMSetup: Record "Cash Management Setup";
+    //     BankAccountNo: Code[20];
+    //     DocNo: Code[20];
+    // begin
+    //     if Confirm(Text017, false, ReceiptRec.ReceiptId) = true then begin
+
+    //         ReceiptRec.TestField(ReceiptDate);
+    //         ReceiptRec.TestField(Roid);
+
+    //         if ReceiptRec.Amount = 0 then
+    //             Error('Amount cannot be zero');
+
+    //         CMSetup.Get();
+    //         CMSetup.TestField("Receipt Template");
+    //         CMSetup.TestField("Receipt Batch Name");
+
+    //         // Determine bank account based on the receipt channel
+    //         BankAccountNo := '';
+    //         if ReceiptRec.Mpesa then begin
+    //             CMSetup.TestField(Mpesa);
+    //             BankAccountNo := CMSetup.Mpesa;
+    //         end else
+    //             if ReceiptRec.IPay then begin
+    //                 CMSetup.TestField(IPay);
+    //                 BankAccountNo := CMSetup.IPay;
+    //             end else
+    //                 if ReceiptRec.NcbaKes then begin
+    //                     CMSetup.TestField(NCBA);
+    //                     BankAccountNo := CMSetup.NCBA;
+    //                 end else
+    //                     if ReceiptRec.ImKes then begin
+    //                         CMSetup.TestField("IM KES");
+    //                         BankAccountNo := CMSetup."IM KES";
+    //                     end else
+    //                         if ReceiptRec.ImUsd then begin
+    //                             CMSetup.TestField("IM USD");
+    //                             BankAccountNo := CMSetup."IM USD";
+    //                         end else
+    //                             if ReceiptRec.Cash then begin
+    //                                 ReceiptRec.TestField(BankCode);
+    //                                 BankAccountNo := ReceiptRec.BankCode;
+    //                             end else begin
+    //                                 ReceiptRec.TestField(BankCode);
+    //                                 BankAccountNo := ReceiptRec.BankCode;
+    //                             end;
+
+    //         if BankAccountNo = '' then
+    //             Error('Unable to determine the Bank Account for receipt %1. Please check the payment channel setup.', ReceiptRec.ReceiptId);
+
+    //         DocNo := Format(ReceiptRec.ReceiptId);
+
+    //         // Delete Lines Present on the General Journal Line
+    //         GenJnLine.Reset;
+    //         GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
+    //         GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
+    //         GenJnLine.DeleteAll;
+
+    //         Batch.Init;
+    //         Batch."Journal Template Name" := CMSetup."Receipt Template";
+    //         Batch.Name := CMSetup."Receipt Batch Name";
+    //         if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
+    //             Batch.Insert;
+
+    //         //Bank Entry
+    //         LineNo := LineNo + 10000;
+
+    //         GenJnLine.Init;
+    //         GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+    //         GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+    //         GenJnLine."Line No." := LineNo;
+    //         GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
+    //         GenJnLine."Account No." := BankAccountNo;
+    //         GenJnLine.Validate(GenJnLine."Account No.");
+    //         GenJnLine."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
+    //         GenJnLine."Document No." := DocNo;
+    //         GenJnLine."External Document No." := ReceiptRec.ChequeNumber;
+    //         GenJnLine.Description := 'Received from:' + ReceiptRec.DrawerName;
+    //         GenJnLine.Amount := ReceiptRec.Amount;
+    //         GenJnLine.Validate(GenJnLine.Amount);
+
+    //         if GenJnLine.Amount <> 0 then
+    //             GenJnLine.Insert;
+
+    //         //Customer Entry (Roid is the Customer)
+    //         LineNo := LineNo + 10000;
+    //         GenJnLine.Init;
+    //         GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+    //         GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+    //         GenJnLine."Line No." := LineNo;
+    //         GenJnLine."Account Type" := GenJnLine."account type"::Customer;
+    //         GenJnLine."Account No." := ReceiptRec.Roid;
+    //         GenJnLine.Validate(GenJnLine."Account No.");
+    //         GenJnLine."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
+    //         GenJnLine."Document No." := DocNo;
+    //         GenJnLine."External Document No." := ReceiptRec.ChequeNumber;
+    //         GenJnLine.Description := 'Received from:' + ReceiptRec.DrawerName;
+    //         GenJnLine.Amount := -ReceiptRec.Amount;
+    //         GenJnLine.Validate(GenJnLine.Amount);
+
+    //         if GenJnLine.Amount <> 0 then
+    //             GenJnLine.Insert;
+
+    //         Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+
+    //         GLEntry.Reset;
+    //         GLEntry.SetRange(GLEntry."Document No.", DocNo);
+    //         GLEntry.SetRange(GLEntry.Reversed, false);
+    //         if GLEntry.FindFirst then begin
+    //             ReceiptRec.Posted := true;
+    //             ReceiptRec."Posted By" := UserId;
+    //             ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
+    //             ReceiptRec."Posted Time" := Time;
+    //             ReceiptRec.Modify;
+    //         end;
+
+    //     end;
+    // end;
+
+    procedure PostReceiptWithLog(var ReceiptRec: Record "Domain Receipt"; Silent: Boolean)
+    var
+        PostingLog: Record "Transaction Posting Log";
+        Success: Boolean;
+        ErrorText: Text;
+    begin
+        ClearLastError();
+        Success := PostReceiptSafe(ReceiptRec, Silent);
+        if not Success then
+            ErrorText := GetLastErrorText();
+
+        PostingLog.Init();
+        PostingLog."Source Table" := 'Domain Receipt';
+        PostingLog."Source Record ID" := ReceiptRec.ReceiptId;
+        PostingLog."Document No." := Format(ReceiptRec.ReceiptId);
+        PostingLog."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
+        PostingLog.Amount := ReceiptRec.Amount;
+        PostingLog."User ID" := CopyStr(UserId, 1, 50);
+        PostingLog.Posted := Success;
+        PostingLog."Error Description" := CopyStr(ErrorText, 1, 500);
+        PostingLog."Log DateTime" := CurrentDateTime;
+        PostingLog.Insert(true);
+    end;
+
+    procedure PostReceiptSafe(var ReceiptRec: Record "Domain Receipt"; Silent: Boolean): Boolean
+    begin
+        exit(PostReceiptTry(ReceiptRec, Silent));
+    end;
+
+    [TryFunction]
+    local procedure PostReceiptTry(var ReceiptRec: Record "Domain Receipt"; Silent: Boolean)
+    begin
+        PostReceiptInternal(ReceiptRec, Silent);
+    end;
+
+    local procedure PostReceiptInternal(var ReceiptRec: Record "Domain Receipt"; Silent: Boolean)
     var
         GenJnLine: Record "Gen. Journal Line";
         LineNo: Integer;
@@ -5463,121 +5621,125 @@ Codeunit 57000 "Payments-Post"
         CMSetup: Record "Cash Management Setup";
         BankAccountNo: Code[20];
         DocNo: Code[20];
+        ProceedWithPosting: Boolean;
     begin
-        if Confirm(Text017, false, ReceiptRec.ReceiptId) = true then begin
+        if Silent then
+            ProceedWithPosting := true
+        else
+            ProceedWithPosting := Confirm(Text017, false, ReceiptRec.ReceiptId);
 
-            ReceiptRec.TestField(ReceiptDate);
-            ReceiptRec.TestField(Roid);
+        if not ProceedWithPosting then
+            exit;
 
-            if ReceiptRec.Amount = 0 then
-                Error('Amount cannot be zero');
+        ReceiptRec.TestField(ReceiptDate);
+        ReceiptRec.TestField(Roid);
 
-            CMSetup.Get();
-            CMSetup.TestField("Receipt Template");
-            CMSetup.TestField("Receipt Batch Name");
+        if ReceiptRec.Amount = 0 then
+            Error('Amount cannot be zero');
 
-            // Determine bank account based on the receipt channel
-            BankAccountNo := '';
-            if ReceiptRec.Mpesa then begin
-                CMSetup.TestField(Mpesa);
-                BankAccountNo := CMSetup.Mpesa;
+        CMSetup.Get();
+        CMSetup.TestField("Receipt Template");
+        CMSetup.TestField("Receipt Batch Name");
+
+        // Determine bank account based on the receipt channel
+        BankAccountNo := '';
+        if ReceiptRec.Mpesa then begin
+            CMSetup.TestField(Mpesa);
+            BankAccountNo := CMSetup.Mpesa;
+        end else
+            if ReceiptRec.IPay then begin
+                CMSetup.TestField(IPay);
+                BankAccountNo := CMSetup.IPay;
             end else
-                if ReceiptRec.IPay then begin
-                    CMSetup.TestField(IPay);
-                    BankAccountNo := CMSetup.IPay;
+                if ReceiptRec.NcbaKes then begin
+                    CMSetup.TestField(NCBA);
+                    BankAccountNo := CMSetup.NCBA;
                 end else
-                    if ReceiptRec.NcbaKes then begin
-                        CMSetup.TestField(NCBA);
-                        BankAccountNo := CMSetup.NCBA;
+                    if ReceiptRec.ImKes then begin
+                        CMSetup.TestField("IM KES");
+                        BankAccountNo := CMSetup."IM KES";
                     end else
-                        if ReceiptRec.ImKes then begin
-                            CMSetup.TestField("IM KES");
-                            BankAccountNo := CMSetup."IM KES";
+                        if ReceiptRec.ImUsd then begin
+                            CMSetup.TestField("IM USD");
+                            BankAccountNo := CMSetup."IM USD";
                         end else
-                            if ReceiptRec.ImUsd then begin
-                                CMSetup.TestField("IM USD");
-                                BankAccountNo := CMSetup."IM USD";
-                            end else
-                                if ReceiptRec.Cash then begin
-                                    ReceiptRec.TestField(BankCode);
-                                    BankAccountNo := ReceiptRec.BankCode;
-                                end else begin
-                                    ReceiptRec.TestField(BankCode);
-                                    BankAccountNo := ReceiptRec.BankCode;
-                                end;
+                            if ReceiptRec.Cash then begin
+                                ReceiptRec.TestField(BankCode);
+                                BankAccountNo := ReceiptRec.BankCode;
+                            end else begin
+                                ReceiptRec.TestField(BankCode);
+                                BankAccountNo := ReceiptRec.BankCode;
+                            end;
 
-            if BankAccountNo = '' then
-                Error('Unable to determine the Bank Account for receipt %1. Please check the payment channel setup.', ReceiptRec.ReceiptId);
+        if BankAccountNo = '' then
+            Error('Unable to determine the Bank Account for receipt %1. Please check the payment channel setup.', ReceiptRec.ReceiptId);
 
-            DocNo := Format(ReceiptRec.ReceiptId);
+        DocNo := Format(ReceiptRec.ReceiptId);
 
-            // Delete Lines Present on the General Journal Line
-            GenJnLine.Reset;
-            GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
-            GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
-            GenJnLine.DeleteAll;
+        // Delete Lines Present on the General Journal Line
+        GenJnLine.Reset;
+        GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
+        GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
+        GenJnLine.DeleteAll;
 
-            Batch.Init;
-            Batch."Journal Template Name" := CMSetup."Receipt Template";
-            Batch.Name := CMSetup."Receipt Batch Name";
-            if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
-                Batch.Insert;
+        Batch.Init;
+        Batch."Journal Template Name" := CMSetup."Receipt Template";
+        Batch.Name := CMSetup."Receipt Batch Name";
+        if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
+            Batch.Insert;
 
-            //Bank Entry
-            LineNo := LineNo + 10000;
+        //Bank Entry
+        LineNo := LineNo + 10000;
 
-            GenJnLine.Init;
-            GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
-            GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
-            GenJnLine."Line No." := LineNo;
-            GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
-            GenJnLine."Account No." := BankAccountNo;
-            GenJnLine.Validate(GenJnLine."Account No.");
-            GenJnLine."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
-            GenJnLine."Document No." := DocNo;
-            GenJnLine."External Document No." := ReceiptRec.ChequeNumber;
-            GenJnLine.Description := 'Received from:' + ReceiptRec.DrawerName;
-            GenJnLine.Amount := ReceiptRec.Amount;
-            GenJnLine.Validate(GenJnLine.Amount);
+        GenJnLine.Init;
+        GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+        GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+        GenJnLine."Line No." := LineNo;
+        GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
+        GenJnLine."Account No." := BankAccountNo;
+        GenJnLine.Validate(GenJnLine."Account No.");
+        GenJnLine."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
+        GenJnLine."Document No." := DocNo;
+        GenJnLine."External Document No." := ReceiptRec.ChequeNumber;
+        GenJnLine.Description := 'Received from:' + ReceiptRec.DrawerName;
+        GenJnLine.Amount := ReceiptRec.Amount;
+        GenJnLine.Validate(GenJnLine.Amount);
 
-            if GenJnLine.Amount <> 0 then
-                GenJnLine.Insert;
+        if GenJnLine.Amount <> 0 then
+            GenJnLine.Insert;
 
-            //Customer Entry (Roid is the Customer)
-            LineNo := LineNo + 10000;
-            GenJnLine.Init;
-            GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
-            GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
-            GenJnLine."Line No." := LineNo;
-            GenJnLine."Account Type" := GenJnLine."account type"::Customer;
-            GenJnLine."Account No." := ReceiptRec.Roid;
-            GenJnLine.Validate(GenJnLine."Account No.");
-            GenJnLine."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
-            GenJnLine."Document No." := DocNo;
-            GenJnLine."External Document No." := ReceiptRec.ChequeNumber;
-            GenJnLine.Description := 'Received from:' + ReceiptRec.DrawerName;
-            GenJnLine.Amount := -ReceiptRec.Amount;
-            GenJnLine.Validate(GenJnLine.Amount);
+        //Customer Entry (Roid is the Customer)
+        LineNo := LineNo + 10000;
+        GenJnLine.Init;
+        GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+        GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+        GenJnLine."Line No." := LineNo;
+        GenJnLine."Account Type" := GenJnLine."account type"::Customer;
+        GenJnLine."Account No." := ReceiptRec.Roid;
+        GenJnLine.Validate(GenJnLine."Account No.");
+        GenJnLine."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
+        GenJnLine."Document No." := DocNo;
+        GenJnLine."External Document No." := ReceiptRec.ChequeNumber;
+        GenJnLine.Description := 'Received from:' + ReceiptRec.DrawerName;
+        GenJnLine.Amount := -ReceiptRec.Amount;
+        GenJnLine.Validate(GenJnLine.Amount);
 
-            if GenJnLine.Amount <> 0 then
-                GenJnLine.Insert;
+        if GenJnLine.Amount <> 0 then
+            GenJnLine.Insert;
 
-            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+        Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
 
-            GLEntry.Reset;
-            GLEntry.SetRange(GLEntry."Document No.", DocNo);
-            GLEntry.SetRange(GLEntry.Reversed, false);
-            if GLEntry.FindFirst then begin
-                ReceiptRec.Posted := true;
-                ReceiptRec."Posted By" := UserId;
-                ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
-                ReceiptRec."Posted Time" := Time;
-                ReceiptRec.Modify;
-            end;
-
+        GLEntry.Reset;
+        GLEntry.SetRange(GLEntry."Document No.", DocNo);
+        GLEntry.SetRange(GLEntry.Reversed, false);
+        if GLEntry.FindFirst then begin
+            ReceiptRec.Posted := true;
+            ReceiptRec."Posted By" := UserId;
+            ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
+            ReceiptRec."Posted Time" := Time;
+            ReceiptRec.Modify;
         end;
     end;
-
 
     procedure PostImprestMemoSurr(var ImprestMemo: Record "Imprest Memo")
     var
