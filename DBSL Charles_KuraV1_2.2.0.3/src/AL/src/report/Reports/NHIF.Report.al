@@ -9,7 +9,8 @@ Report 69020 NHIF
     {
         dataitem("Assignment Matrix-X"; "Assignment Matrix-X")
         {
-            DataItemTableView = sorting("Employee No Sort Key", Type, Code, "Payroll Period", "Reference No") where(Type = const(Deduction), Code = filter('SHIF'));
+            // DataItemTableView = sorting("Employee No Sort Key", Type, Code, "Payroll Period", "Reference No") where(Type = const(Deduction), Code = filter('SHIF'));//D004
+            DataItemTableView = sorting("Employee No Sort Key", Type, Code, "Payroll Period", "Reference No") where(Type = const(Deduction), Code = filter('D004'));//D004
             RequestFilterFields = "Payroll Period", "Code", "Posting Group Filter", "Payroll Grouping";
             RequestFilterHeading = 'SHIF';
             column(ReportForNavId_1213; 1213)
