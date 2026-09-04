@@ -1611,6 +1611,7 @@ Page 69031 "Employee Card-P"
     trigger OnModifyRecord(): Boolean
     begin
         Rec.TestField(Status, EmployeeRec.Status::Active);
+        
 
     end;
 
