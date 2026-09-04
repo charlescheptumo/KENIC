@@ -1,12 +1,12 @@
-
-Page 69232 "Leave Planner List"
+page 58163 "Approved Leave Planner List"
 {
     ApplicationArea = Basic;
     CardPageID = "Leave Planner Card";
     PageType = List;
     SourceTable = "HR Leave Planner Header";
-    SourceTableView = where("Approval Status" = filter(Open | "Pending Approval"));
+    SourceTableView = where("Approval Status" = const(Approved));
     UsageCategory = Lists;
+    Editable = false;
 
     layout
     {
@@ -28,7 +28,6 @@ Page 69232 "Leave Planner List"
                 field(Names; Rec.Names)
                 {
                     ApplicationArea = Basic;
-                    Visible = false;
                     ToolTip = 'Specifies the value of the Names field.';
                 }
                 field("Job Tittle"; Rec."Job Tittle")
@@ -47,6 +46,11 @@ Page 69232 "Leave Planner List"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Leave Period field.';
                 }
+                field("Approval Status"; Rec."Approval Status")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Approval Status field.';
+                }
             }
         }
     }
@@ -55,5 +59,3 @@ Page 69232 "Leave Planner List"
     {
     }
 }
-
-

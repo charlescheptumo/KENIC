@@ -43,6 +43,8 @@ Table 69207 "HR Leave Planner Lines"
                     if ("Days Applied" <> 0) and ("Start Date" <> 0D) then
                         "Return Date" := DetermineLeaveReturnDate("Start Date", "Days Applied");
                     "End Date" := DeterminethisLeaveEndDate("Return Date");
+
+                    CheckOverlappingLeave();
                     Modify;
                 end;
             end;
@@ -321,6 +323,26 @@ Table 69207 "HR Leave Planner Lines"
                 exit(true);
         end;
     end;
+
+    local procedure CheckOverlappingLeave()
+var
+    LeaveLine: Record "HR Leave Planner Lines";
+begin
+    if ("Start Date" = 0D) or ("End Date" = 0D) then
+        exit;
+
+    LeaveLine.Reset();
+    LeaveLine.SetRange("Employee No", "Employee No");
+    LeaveLine.SetFilter("Start Date", '<=%1', "End Date");
+    LeaveLine.SetFilter("End Date", '>=%1', "Start Date");
+    if LeaveLine.FindSet() then
+        repeat
+           
+            if (LeaveLine."Application Code" <> "Application Code") or (LeaveLine."Line No." <> "Line No.") then
+                Error('Employee already has leave booked from %1 to %2 that overlaps with these dates.',
+                    LeaveLine."Start Date", LeaveLine."End Date");
+        until LeaveLine.Next() = 0;
+end;
 
 
     procedure DetermineIfIsNonWorking(var bcDate: Date) Isnonworking: Boolean

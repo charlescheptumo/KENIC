@@ -1505,6 +1505,14 @@ page 60002 "HR Role Center"
                                 RunObject = page "Leave Planner List";
                                 ToolTip = 'Executes the Leave Planner List action.';
                             }
+
+                            action("Approved Leave Planner")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Approved Leave Planner List';
+                                RunObject = page "Approved Leave Planner List";
+                                ToolTip = 'Executes the Approved Leave Planner List action.';
+                            }
                             action("Employee Leave Balances")
                             {
                                 ApplicationArea = BasicHR;
