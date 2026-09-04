@@ -20,7 +20,7 @@ Page 69173 "Overtime Header Page"
                 field("EMp No."; Rec."EMp No.")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the EMp No. field.';
                 }
                 field(Name; Rec.Name)
@@ -48,7 +48,7 @@ Page 69173 "Overtime Header Page"
                 field("Overtime Amount"; Rec."Overtime Amount")
                 {
                     ApplicationArea = Basic;
-                    Visible = true;
+                    Visible = false;
                     ToolTip = 'Specifies the value of the Overtime Amount field.';
                 }
                 field("Total Hours"; Rec."Total Hours")
@@ -67,6 +67,7 @@ Page 69173 "Overtime Header Page"
                     Caption = 'Region';
                     Editable = false;
                     ToolTip = 'Specifies the value of the Region field.';
+                    Visible = false;
                 }
                 field("Dim Code 2"; Rec."Dim Code 2")
                 {
@@ -74,6 +75,7 @@ Page 69173 "Overtime Header Page"
                     Caption = 'Constituency';
                     Editable = false;
                     ToolTip = 'Specifies the value of the Constituency field.';
+                    Visible = false;
                 }
                 field("Responsibility Center"; Rec."Responsibility Center")
                 {
@@ -137,6 +139,23 @@ Page 69173 "Overtime Header Page"
                     ApprovalEntries.Setfilters(DATABASE::Overtime,DocumentType,"Application Code");
                     */
 
+                end;
+            }
+            action(ConvertToLeave)
+            {
+                ApplicationArea = All;
+                Caption = 'Convert Hours to Leave Days';
+                Image = ConvertCurrency;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Enabled = not Rec.Converted;
+                ToolTip = 'Convert the recorded overtime hours into leave days and credit them to the employee leave balance.';
+
+                trigger OnAction()
+                begin
+                    Rec.ConvertHoursToLeave();
+                    CurrPage.Update(false);
                 end;
             }
             action("Send Approval Request")

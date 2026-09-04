@@ -115,4 +115,12 @@ table 58130 "Mpesa Transaction"
         }
         key(TransIdKey; TransId) { }
     }
+
+    trigger OnInsert()
+    var
+        ExistingRec: Record "Mpesa Transaction";
+    begin
+        if ExistingRec.Get(Rec.MpesaApiId) then
+            Error('Mpesa transaction %1 already exists in Business Central.', Rec.MpesaApiId);
+    end;
 }

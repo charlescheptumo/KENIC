@@ -1008,23 +1008,30 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
         {
             TableRelation = "No. Series".Code;
         }
-         field(69675; "Succ. Sel. Justification Nos."; Code[20])
+        field(69675; "Succ. Sel. Justification Nos."; Code[20])
         {
             Caption = 'Succ. Sel. Justification Nos.';
             TableRelation = "No. Series";
             DataClassification = CustomerContent; //
         }
-         field(69676; "Successor Form Nos."; Code[20])
+        field(69676; "Successor Form Nos."; Code[20])
         {
             Caption = 'Successor Form Nos.';
             TableRelation = "No. Series";
             DataClassification = CustomerContent;
         }
 
-         field(69677; "Meeting Plan Nos."; Code[20])
+        field(69677; "Meeting Plan Nos."; Code[20])
         {
             Caption = 'Meeting Plan Nos.';
             TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        }
+        field(50100; "Leave Hours per Hour"; Decimal)
+        {
+            Caption = 'Leave Hours per Hour';
+            DecimalPlaces = 0 : 5;
+            ToolTip = 'Specifies the multiplier used to convert overtime hours into leave hours (e.g. 1 = hour-for-hour, 1.5 = time-and-a-half in leave hours).';
             DataClassification = CustomerContent;
         }
     }

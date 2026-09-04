@@ -479,7 +479,7 @@ TableExtension 50012 "Purchase Header Ext" extends "Purchase Header"
 
             end;
         }
-        field(50017; "Request-By No."; Code[10])
+        field(50017; "Request-By No."; Code[30])
         {
 
             Editable = true;
@@ -3333,7 +3333,7 @@ TableExtension 50012 "Purchase Header Ext" extends "Purchase Header"
         NoSeriesMgt: Codeunit "No. Series";
         PurchSetup: Record "Procurement Setup";
     begin
-         Rec."Posted By" := USERID;
+        Rec."Posted By" := USERID;
         if rec."Document Type" = rec."Document Type"::"Purchase Requisition" then begin
             IF rec."No." = '' THEN BEGIN
 

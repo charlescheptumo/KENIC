@@ -4,54 +4,72 @@ Table 69127 "Overtime lines"
 
     fields
     {
-        field(1; "EmpNo."; Code[10])
+        field(1; "EmpNo."; Code[30])
         {
         }
         field(2; Day; Date)
         {
         }
+        // field(3; "Start Time"; Time)
+        // {
+
+        //     trigger OnValidate()
+        //     begin
+
+        //         TestField(Day);
+        //         TestField("Overtime Type");
+
+        //         if ("End Time" <> 0T) and ("Start Time" <> 0T) then
+        //             value := ("End Time" - "Start Time");
+
+        //         if value <> 0 then
+        //             Hours := value / 3600000;
+        //         Validate("Overtime Type");
+        //     end;
+        // }
+        // field(4; "End Time"; Time)
+        // {
+
+        //     trigger OnValidate()
+        //     begin
+
+        //         TestField(Day);
+        //         TestField("Overtime Type");
+
+        //         if "End Time" < "Start Time" then
+        //             Error('End Time can not be less than the start time enter right time');
+
+        //         if "End Time" = "Start Time" then
+        //             Error('Time to can not beequal to time from enter right time');
+        //         if ("End Time" <> 0T) and ("Start Time" <> 0T) then
+        //             value := "End Time" - "Start Time";
+        //         if value <> 0 then
+        //             Hours := value / 3600000;
+        //         Validate("Overtime Type");
+        //     end;
+        // }
         field(3; "Start Time"; Time)
         {
-
             trigger OnValidate()
             begin
-
                 TestField(Day);
                 TestField("Overtime Type");
-
-                if ("End Time" <> 0T) and ("Start Time" <> 0T) then
-                    value := ("End Time" - "Start Time");
-
-                if value <> 0 then
-                    Hours := value / 3600000;
-                Validate("Overtime Type");
+                UpdateHours();
             end;
         }
         field(4; "End Time"; Time)
         {
-
             trigger OnValidate()
             begin
-
                 TestField(Day);
                 TestField("Overtime Type");
-
-                if "End Time" < "Start Time" then
-                    Error('End Time can not be less than the start time enter right time');
-
-                if "End Time" = "Start Time" then
-                    Error('Time to can not beequal to time from enter right time');
-                if ("End Time" <> 0T) and ("Start Time" <> 0T) then
-                    value := "End Time" - "Start Time";
-                if value <> 0 then
-                    Hours := value / 3600000;
-                Validate("Overtime Type");
+                UpdateHours();
             end;
         }
         field(5; "Work Done"; Text[150])
         {
         }
-        field(6; "Application Code"; Code[10])
+        field(6; "Application Code"; Code[30])
         {
         }
         field(13; "Overtime Type"; Code[20])
@@ -101,6 +119,22 @@ Table 69127 "Overtime lines"
     fieldgroups
     {
     }
+
+    local procedure UpdateHours()
+    var
+        DurationMs: Decimal;
+    begin
+        Hours := 0;
+        if ("Start Time" <> 0T) and ("End Time" <> 0T) then begin
+            if "End Time" <= "Start Time" then
+                Error('End Time must be later than Start Time.');
+            DurationMs := "End Time" - "Start Time";
+            Hours := DurationMs / 3600000; // milliseconds → hours
+        end;
+
+        if "Overtime Type" <> '' then
+            Validate("Overtime Type"); // re-triggers Overtime Rate / Overtime Amount calc using the new Hours
+    end;
 
     var
         Overtim: Record "Overtime Header";

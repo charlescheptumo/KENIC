@@ -21,6 +21,8 @@ Report 89028 "1 Page Payslip"
 
 
             column(CoRec_Picture; CoRec.Picture) { }
+            column(CoRec_Stamp; CoRec.Stamp) { }
+            column(CoRec_Signature; CoRec.Signature) { }
             column(CoName; CoName) { }
             column(Retirement_Date; "Retirement Date")
             {
@@ -36,6 +38,9 @@ Report 89028 "1 Page Payslip"
             {
             }
             column(Addr_1__2_; Addr[1] [2])
+            {
+            }
+            column(Addr_1__3_; Addr[1] [3])
             {
             }
             column(Addr_1__4_; Addr[1] [4])
@@ -108,12 +113,21 @@ Report 89028 "1 Page Payslip"
                 if not AssignMatrix.FindFirst() then
                     CurrReport.Skip();
 
+                // if not CompanyPictureLoaded then begin
+                //     CoRec.Get();
+                //     CoRec.CalcFields(Picture);
+                //     CompanyPictureLoaded := true;
+                // end else
+                //     Clear(CoRec.Picture);
                 if not CompanyPictureLoaded then begin
                     CoRec.Get();
-                    CoRec.CalcFields(Picture);
+                    CoRec.CalcFields(Picture, Stamp, Signature);
                     CompanyPictureLoaded := true;
-                end else
+                end else begin
                     Clear(CoRec.Picture);
+                    Clear(CoRec.Stamp);
+                    Clear(CoRec.Signature);
+                end;
                 Clear(Addr);
                 Clear(DeptArr);
                 Clear(BasicPay);
@@ -134,6 +148,7 @@ Report 89028 "1 Page Payslip"
 
                 Addr[1] [1] := Employee."No.";
                 Addr[1] [2] := Employee."First Name" + ' ' + Employee."Last Name";
+                Addr[1] [3] := Employee."Job Title";
                 Addr[1] [4] := Employee."P.I.N";
                 Addr[1] [5] := Employee."N.H.I.F No";
                 Addr[1] [6] := Employee.NSSF;
@@ -655,6 +670,7 @@ Report 89028 "1 Page Payslip"
         PayPeriodCaption = 'Pay Period:';
         EmpNoCaption = 'Employee No:';
         NameCaption = 'Name:';
+        JobTitleCaption = 'Position:';
         DeptCaption = 'DEP:';
         EarningsCaption = 'Earnings:';
         AmountCaption = 'Amount';

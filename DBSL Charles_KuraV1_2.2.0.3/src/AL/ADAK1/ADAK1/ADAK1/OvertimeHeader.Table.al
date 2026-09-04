@@ -4,18 +4,18 @@ Table 69126 "Overtime Header"
 
     fields
     {
-        field(1; "EMp No."; Code[10])
+        field(1; "EMp No."; Code[20])
         {
             TableRelation = Employee."No.";
 
             trigger OnValidate()
             begin
 
-                if "Application Code" <> xRec."Application Code" then begin
-                    hrsetup.Get;
-                    NoSeriesMgt.TestManual(hrsetup."Overtime Req Nos.");
-                    "No. series" := '';
-                end;
+                  if "Application Code" <> xRec."Application Code" then begin
+                hrsetup.Get;
+                NoSeriesMgt.TestManual(hrsetup."Overtime Req Nos.");
+                "No. series" := '';
+                 end;
 
 
                 if "EMp No." = '' then Name := '';
@@ -210,7 +210,7 @@ Table 69126 "Overtime Header"
             //     end;
             // end;
         }
-        field(5; "Application Code"; Code[10])
+        field(5; "Application Code"; Code[30])
         {
         }
         field(6; Status; Enum "Purchase Document Status")
@@ -256,7 +256,7 @@ Table 69126 "Overtime Header"
             //     end;
             // end;
         }
-        field(7; "No. series"; Code[10])
+        field(7; "No. series"; Code[30])
         {
         }
         field(8; "Weekend Hours"; Decimal)
@@ -269,7 +269,7 @@ Table 69126 "Overtime Header"
         field(9; "Application Date"; Date)
         {
         }
-        field(10; "Responsibility Center"; Code[10])
+        field(10; "Responsibility Center"; Code[30])
         {
         }
         field(11; "Dim Code 1"; Code[20])
@@ -518,6 +518,55 @@ Table 69126 "Overtime Header"
 
         end
 
+    end;
+
+    procedure ConvertHoursToLeave()
+    var
+        LeaveLedgerEntry: Record "HR Leave Ledger Entries";
+        HrLeavePeriodsL: Record "HR Leave Periods";
+        HoursEarned: Decimal;
+        DaysApplied: Decimal;
+    begin
+        TestField("Application Code");
+        TestField(Converted, false);
+       // TestField(Status, Status::Released);
+
+        CalcFields("Total Hours");
+        TestField("Total Hours");
+
+        hrsetup.Get();
+        hrsetup.TestField("Leave Hours per Hour");
+
+        HoursEarned := "Total Hours" * hrsetup."Leave Hours per Hour";
+        DaysApplied := Round(HoursEarned / 8, 0.1, '>');
+
+        if not Confirm('Convert %1 overtime hours into %2 leave day(s) for %3?', false, "Total Hours", DaysApplied, Name) then
+            exit;
+
+        HrLeavePeriodsL.SetRange(Closed, false);
+        if not HrLeavePeriodsL.FindFirst() then
+            Error('There is no open Leave Period. Please contact HR.');
+
+        LeaveLedgerEntry.Init();
+        LeaveLedgerEntry."Leave Period" := Format(HrLeavePeriodsL.Code);
+        LeaveLedgerEntry."Staff No." := "EMp No.";
+        LeaveLedgerEntry."Staff Name" := Name;
+        LeaveLedgerEntry."Posting Date" := Today;
+        LeaveLedgerEntry."Leave Entry Type" := LeaveLedgerEntry."Leave Entry Type"::Positive;
+        LeaveLedgerEntry."Leave Approval Date" := Today;
+        LeaveLedgerEntry."Document No." := "Application Code";
+        LeaveLedgerEntry."No. of days" := DaysApplied;
+        LeaveLedgerEntry."Leave Posting Description" := 'Leave day(s) converted from overtime hours';
+        LeaveLedgerEntry."Leave Type" := 'ANNUAL';
+        LeaveLedgerEntry."Leave Start Date" := Today;
+        LeaveLedgerEntry.Closed := false;
+        LeaveLedgerEntry.Insert(true);
+
+        Converted := true;
+        "Leave Created" := true;
+        Modify(true);
+
+        Message('%1 leave day(s) have been credited to %2. New balance will reflect automatically.', DaysApplied, Name);
     end;
 }
 

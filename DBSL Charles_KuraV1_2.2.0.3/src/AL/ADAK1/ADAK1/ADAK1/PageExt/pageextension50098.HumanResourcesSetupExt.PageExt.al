@@ -528,6 +528,11 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Recruitment Requsition Nos. field.';
                 }
+                field("Leave Hours per Hour"; Rec."Leave Hours per Hour")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the multiplier used to convert overtime hours into leave hours.';
+                }
                 field("Vacancy Nos."; Rec."Vacancy Nos.")
                 {
                     ApplicationArea = Basic;
@@ -695,6 +700,11 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Overtime Payroll Code field.';
+                }
+                field("Overtime Req Nos."; Rec."Overtime Req Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Overtime Req Nos. field.';
                 }
             }
             group("HR Setups")
