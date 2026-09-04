@@ -79,18 +79,18 @@ page 58159 "Meeting Plan Card"
                 Editable = not IsPosted;
             }
 
-            group(PollResults)
-            {
-                Caption = 'Live Poll Votes';
+            // group(PollResults)
+            // {
+            //     Caption = 'Live Poll Votes';
 
-                part(PollVotes; "Meeting Date Polls Subform")
-                {
-                    ApplicationArea = All;
-                    Provider = DateOptions;
-                    SubPageLink = "Meeting Plan Id" = field("Meeting Plan Id"),
-                                  "Meeting Date Option Id" = field("Id");
-                }
-            }
+            //     part(PollVotes; "Meeting Date Polls Subform")
+            //     {
+            //         ApplicationArea = All;
+            //         Provider = DateOptions;
+            //         SubPageLink = "Meeting Plan Id" = field("Meeting Plan Id"),
+            //                       "Meeting Date Option Id" = field("Id");
+            //     }
+            // }
         }
     }
 
