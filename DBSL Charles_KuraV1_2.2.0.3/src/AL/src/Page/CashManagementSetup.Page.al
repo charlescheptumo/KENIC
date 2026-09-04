@@ -385,6 +385,11 @@ Page 57008 "Cash Management Setup"
                 {
                     ToolTip = 'Specifies the value of the Batch Check Voucher Nos field.', Comment = '%';
                 }
+
+            }
+            group(RegistrySetups)
+            {
+                Caption = 'Registry Setups';
                 field(Mpesa; Rec.Mpesa)
                 {
                     ApplicationArea = Basic;
@@ -425,22 +430,22 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Domain AutoRenewal field.';
                 }
-                field("Access fee";Rec."Access fee")
+                field("Access fee"; Rec."Access fee")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Access fee field.';
                 }
-                field(Application;Rec.Application)
+                field(Application; Rec.Application)
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Application field.';
                 }
-                field(Restoration;Rec.Restoration)
+                field(Restoration; Rec.Restoration)
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Restoration field.';
                 }
-                field(Transfer;Rec.Transfer)
+                field(Transfer; Rec.Transfer)
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Transfer field.';
@@ -455,6 +460,87 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Retention Nos field.';
                 }
+                field("Domain Cust Posting Group"; Rec."Domain Cust Posting Group")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain Cust Posting Group field.';
+                }
+                field("Domain Cust Bus Posting Group"; Rec."Domain Cust Bus Posting Group")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain Cust Bus Posting Group field.';
+                }
+                field("Domain Cust VAT Bus Posting Group"; Rec."Domain Cust VAT Bus Posting Group")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain Cust VAT Bus Posting Group field.';
+                }
+                field("1Y Defer code Renew"; Rec."1Y Defer code Renew")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 1Y Defer code Renew field.';
+                }
+                field("2Y Defer code Renew"; Rec."2Y Defer code Renew")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 2Y Defer code Renew field.';
+                }
+                field("3Y Defer code Renew"; Rec."3Y Defer code Renew")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 3Y Defer code Renew field.';
+                }
+                field("4Y Defer code Renew"; Rec."4Y Defer code Renew")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 4Y Defer code Renew field.';
+                }
+                field("5Y Defer code Renew"; Rec."5Y Defer code Renew")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 5Y Defer code Renew field.';
+                }
+                field("1Y Defer code Register"; Rec."1Y Defer code Register")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 1Y Defer code Register field.';
+                }
+                field("2Y Defer code Register"; Rec."2Y Defer code Register")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 2Y Defer code Register field.';
+                }
+                field("3Y Defer code Register"; Rec."3Y Defer code Register")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 3Y Defer code Register field.';
+                }
+                field("4Y Defer code Register"; Rec."4Y Defer code Register")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 4Y Defer code Register field.';
+                }
+                field("5Y Defer code Register"; Rec."5Y Defer code Register")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 5Y Defer code Register field.';
+                }
+                field("Domain L2 Registration"; Rec."Domain L2 Registration")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain L2 Registration field.';
+                }
+                field("Domain L2 Renewal"; Rec."Domain L2 Renewal")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain L2 Renewal field.';
+                }
+                field("Domain L2 Autorenewal"; Rec."Domain L2 Autorenewal")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain L2 Autorenewal field.';
+                }
+
             }
             group("Reversal Nos Series")
             {

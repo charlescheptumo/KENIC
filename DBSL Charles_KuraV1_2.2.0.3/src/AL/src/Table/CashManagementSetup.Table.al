@@ -608,13 +608,87 @@ Table 57004 "Cash Management Setup"
             Caption = 'Transfer';
             TableRelation = Item;
         }
+        field(57080; "Domain Cust Posting Group"; Code[30])
+        {
+            Caption = 'Domain Cust Posting Group';
+            TableRelation = "Customer Posting Group";
+        }
+        field(57081; "Domain Cust Bus Posting Group"; Code[30])
+        {
+            Caption = 'Domain Cust Bus Posting Group';
+            TableRelation = "Gen. Business Posting Group";
+        }
+        field(57082; "Domain Cust VAT Bus Posting Group"; Code[30])
+        {
+            Caption = 'Domain Cust VAT Bus Posting Group';
+            TableRelation = "VAT Business Posting Group";
+        }
+        field(57083; "1Y Defer code Renew"; Code[30])
+        {
+            Caption = '1Y Defer code Renew';
+            TableRelation = "Deferral Template";
+        }
+        field(57084; "2Y Defer code Renew"; Code[30])
+        {
+            Caption = '2Y Defer code Renew';
+            TableRelation = "Deferral Template";
+        }
+        field(57085; "3Y Defer code Renew"; Code[30])
+        {
+            Caption = '3Y Defer code Renew';
+            TableRelation = "Deferral Template";
+        }
+        field(57086; "4Y Defer code Renew"; Code[30])
+        {
+            Caption = '4Y Defer code Renew';
+            TableRelation = "Deferral Template";
+        }
+        field(57087; "5Y Defer code Renew"; Code[30])
+        {
+            Caption = '5Y Defer code Renew';
+            TableRelation = "Deferral Template";
+        }
+        field(57088; "1Y Defer code Register";Code[30])
+        {
+            Caption = '1Y Defer code Register';
+            TableRelation = "Deferral Template";
+        }
+        field(57089; "2Y Defer code Register";Code[30])
+        {
+            Caption = '2Y Defer code Register';
+            TableRelation = "Deferral Template";
+        }
+        field(57090; "3Y Defer code Register";Code[30])
+        {
+            Caption = '3Y Defer code Register';
+            TableRelation = "Deferral Template";
+        }
+        field(57091; "4Y Defer code Register";Code[30])
+        {
+            Caption = '4Y Defer code Register';
+            TableRelation = "Deferral Template";
+        }
+        field(57092; "5Y Defer code Register";Code[30])
+        {
+            Caption = '5Y Defer code Register';
+            TableRelation = "Deferral Template";
+        }
 
-
-
-
-
-
-
+        field(57093; "Domain L2 Registration"; Code[50])
+        {
+            TableRelation = Item;
+            Caption = 'Domain L2 Registration ';
+        }
+        field(57094; "Domain L2 Renewal"; Code[50])
+        {
+            TableRelation = Item;
+            Caption = 'Domain L2 Renewal';
+        }
+        field(57095; "Domain L2 Autorenewal"; Code[50])
+        {
+            TableRelation = Item;
+            Caption = 'Domain L2 Autorenewal';
+        }
 
     }
 
