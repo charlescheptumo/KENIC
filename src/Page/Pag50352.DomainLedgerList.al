@@ -310,6 +310,17 @@ page 50352 "Domain Ledger List"
                     SalesHeader.Validate("Document Date", Today);
                     SalesHeader.Modify(true);
 
+                    // SalesLine.Init();
+                    // SalesLine."Document Type" := SalesHeader."Document Type";
+                    // SalesLine."Document No." := SalesHeader."No.";
+                    // SalesLine."Line No." := 10000;
+                    // SalesLine.Insert(true);
+                    // SalesLine.Validate(Type, SalesLine.Type::Item);
+                    // SalesLine.Validate("No.", ItemNo);
+                    // SalesLine.Validate(Quantity, 1);
+                    // SalesLine.Validate("Unit Price", Rec.Amount);
+                    // SalesLine.Description := CopyStr(Rec.Description, 1, 100);
+                    // SalesLine.Modify(true);
                     SalesLine.Init();
                     SalesLine."Document Type" := SalesHeader."Document Type";
                     SalesLine."Document No." := SalesHeader."No.";
@@ -320,6 +331,17 @@ page 50352 "Domain Ledger List"
                     SalesLine.Validate(Quantity, 1);
                     SalesLine.Validate("Unit Price", Rec.Amount);
                     SalesLine.Description := CopyStr(Rec.Description, 1, 100);
+
+                    // New: assign deferral code based on domain length and transaction type
+                    if Rec.TransType in ['Renewal', 'AutoRenewal', 'Registration'] then begin
+                        DomainLengthYears := GetDomainLengthYears(Rec.Created, Rec.ExDate);
+                        if DomainLengthYears > 0 then begin
+                            DeferralCode := GetDeferralCode(Rec.TransType, DomainLengthYears, CMSetup);
+                            if DeferralCode <> '' then
+                                SalesLine.Validate("Deferral Code", DeferralCode);
+                        end;
+                    end;
+
                     SalesLine.Modify(true);
 
                     Rec.InvoiceCreated := true;
@@ -331,4 +353,66 @@ page 50352 "Domain Ledger List"
             }
         }
     }
+    local procedure GetDomainLengthYears(CreatedDT: DateTime; ExpiryDT: DateTime): Integer
+    var
+        CreatedD: Date;
+        ExpiryD: Date;
+        DaysDiff: Integer;
+        Years: Integer;
+    begin
+        CreatedD := DT2Date(CreatedDT);
+        ExpiryD := DT2Date(ExpiryDT);
+
+        if ExpiryD <= CreatedD then
+            exit(0);
+
+        DaysDiff := ExpiryD - CreatedD;
+        Years := Round(DaysDiff / 365, 1, '=');
+
+        if Years < 1 then
+            Years := 1;
+        if Years > 5 then
+            Years := 5;
+
+        exit(Years);
+    end;
+
+    local procedure GetDeferralCode(TransType: Text[50]; Years: Integer; CMSetup: Record "Cash Management Setup"): Code[30]
+    var
+        DeferralCode: Code[30];
+    begin
+        if TransType in ['Renewal', 'AutoRenewal'] then begin
+            case Years of
+                1:
+                    DeferralCode := CMSetup."1Y Defer code Renew";
+                2:
+                    DeferralCode := CMSetup."2Y Defer code Renew";
+                3:
+                    DeferralCode := CMSetup."3Y Defer code Renew";
+                4:
+                    DeferralCode := CMSetup."4Y Defer code Renew";
+                5:
+                    DeferralCode := CMSetup."5Y Defer code Renew";
+            end;
+        end else if TransType = 'Registration' then begin
+            case Years of
+                1:
+                    DeferralCode := CMSetup."1Y Defer code Register";
+                2:
+                    DeferralCode := CMSetup."2Y Defer code Register";
+                3:
+                    DeferralCode := CMSetup."3Y Defer code Register";
+                4:
+                    DeferralCode := CMSetup."4Y Defer code Register";
+                5:
+                    DeferralCode := CMSetup."5Y Defer code Register";
+            end;
+        end;
+
+        exit(DeferralCode);
+    end;
+
+    var
+        DomainLengthYears: Integer;
+        DeferralCode: Code[30];
 }
