@@ -31,7 +31,7 @@ Page 69230 "Leave Planner Lines"
                 field("Days Applied"; Rec."Days Applied")
                 {
                     ApplicationArea = Basic;
-                    Visible = false;
+                    Visible = true;
                     ToolTip = 'Specifies the value of the Days Applied field.';
                 }
                 field("Start Date"; Rec."Start Date")
