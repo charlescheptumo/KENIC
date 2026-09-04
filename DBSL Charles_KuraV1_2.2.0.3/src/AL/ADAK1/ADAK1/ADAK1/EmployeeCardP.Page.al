@@ -193,13 +193,13 @@ Page 69031 "Employee Card-P"
                 //     Caption = 'N.S.S.F No.';
                 //     ToolTip = 'Specifies the value of the N.S.S.F No. field.';
                 // }
-                 field("NSSF No1"; Rec."NSSF")
+                field("NSSF No1"; Rec."NSSF")
                 {
                     ApplicationArea = Basic;
                     Caption = 'N.S.S.F No.';
                     ToolTip = 'Specifies the value of the N.S.S.F No. field.';
                 }
-                
+
                 field("ID Number"; Rec."ID Number")
                 {
                     ApplicationArea = Basic;
@@ -1068,6 +1068,143 @@ Page 69031 "Employee Card-P"
                     Report.Run(50116, true, false, EmployeeRec);
                 end;
             }
+            action(SendApprovalRequest)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Send A&pproval Request';
+                Enabled = not OpenApprovalEntriesExist;
+                Image = SendApprovalRequest;
+                Promoted = true;
+                PromotedCategory = Category6;
+                ToolTip = 'Send this Employee record for approval.';
+
+                trigger OnAction()
+                var
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                    VarVariant: Variant;
+                begin
+                    Rec.TestField("Approval Status", Rec."Approval Status"::Open);
+
+                    VarVariant := Rec;
+                    if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                        CustomApprovals.OnSendDocForApproval(VarVariant);
+                end;
+            }
+            action(CancelApprovalRequest)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Cancel Approval Re&quest';
+                Enabled = true;
+                Image = Cancel;
+                Promoted = true;
+                PromotedCategory = Category6;
+                ToolTip = 'Cancel the approval request for this Employee record.';
+
+                trigger OnAction()
+                var
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                    VarVariant: Variant;
+                begin
+                    Rec.TestField("Approval Status", Rec."Approval Status"::"Pending Approval");
+                    VarVariant := Rec;
+                    CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
+                end;
+            }
+            action(Approvals)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Approvals';
+                Image = Approvals;
+                Promoted = true;
+                PromotedCategory = Category6;
+                PromotedIsBig = false;
+                ToolTip = 'View the approval entries for this Employee record.';
+
+                trigger OnAction()
+                var
+                    ApprovalMgt: Codeunit "Approvals Mgmt.";
+                begin
+                    ApprovalMgt.OpenApprovalEntriesPage(Rec.RecordId);
+                end;
+            }
+            group(Approval)
+            {
+                Caption = 'Approval';
+                action(Approve)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Approve';
+                    Image = Approve;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    PromotedOnly = true;
+                    ToolTip = 'Approve the requested changes.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.ApproveRecordApprovalRequest(Rec.RecordId);
+                    end;
+                }
+                action(Reject)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Reject';
+                    Image = Reject;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    PromotedOnly = true;
+                    ToolTip = 'Reject the requested changes.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.RejectRecordApprovalRequest(Rec.RecordId);
+                    end;
+                }
+                action(Delegate)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Delegate';
+                    Image = Delegate;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedOnly = true;
+                    ToolTip = 'Delegate the requested changes to the substitute approver.';
+                    Visible = OpenApprovalEntriesExistForCurrUser;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.DelegateRecordApprovalRequest(Rec.RecordId);
+                    end;
+                }
+                action(Comment)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Comments';
+                    Image = ViewComments;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedOnly = true;
+                    ToolTip = 'View or add comments for the record.';
+                    Visible = not OpenApprovalEntriesExist;
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.GetApprovalComment(Rec);
+                    end;
+                }
+            }
             separator(Action1000000046)
             {
             }
@@ -1436,6 +1573,7 @@ Page 69031 "Employee Card-P"
 
 
         Rec.SetRange("No.");
+        SetControlAppearance();
 
         /*
          IF "Terminal Dues Paid?"=TRUE THEN
@@ -1467,10 +1605,27 @@ Page 69031 "Employee Card-P"
 
         if UserSetup."Payroll View" = false then
             Error('You do not have sufficient rights to view payroll!Please contact system administrator.');
+        SetControlAppearance();
     end;
 
+    trigger OnModifyRecord(): Boolean
+    begin
+        Rec.TestField(Status, EmployeeRec.Status::Active);
+
+    end;
+
+    local procedure SetControlAppearance()
     var
-       // [InDataSet]
+        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+    begin
+        OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RecordId);
+        OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RecordId);
+    end;
+
+
+
+    var
+        // [InDataSet]
         MapPointVisible: Boolean;
         PayPeriod: Record "Payroll PeriodX";
         CurrentMonth: Date;
@@ -1501,6 +1656,8 @@ Page 69031 "Employee Card-P"
         someform: Page "Employee Card-P";
         text: Text[250];
         lostdays2: Integer;
+        OpenApprovalEntriesExist: Boolean;
+        OpenApprovalEntriesExistForCurrUser: Boolean;
         LD: Decimal;
         "insurance Relief2": Decimal;
         "insurance Reliefcalc": Decimal;
