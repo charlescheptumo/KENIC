@@ -37,13 +37,13 @@ Page 69230 "Leave Planner Lines"
                 field("Start Date"; Rec."Start Date")
                 {
                     ApplicationArea = Basic;
-                    Visible = false;
+                    Visible = true;
                     ToolTip = 'Specifies the value of the Start Date field.';
                 }
                 field("End Date"; Rec."End Date")
                 {
                     ApplicationArea = Basic;
-                    Visible = false;
+                    Visible = true;
                     ToolTip = 'Specifies the value of the End Date field.';
                 }
                 field("Return Date"; Rec."Return Date")

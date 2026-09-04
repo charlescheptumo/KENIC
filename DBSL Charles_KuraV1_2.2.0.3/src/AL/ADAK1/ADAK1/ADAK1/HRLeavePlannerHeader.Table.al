@@ -146,6 +146,20 @@ Table 69217 "HR Leave Planner Header"
         {
             TableRelation = "HR Leave Periods";
         }
+        field(20; "Department Code"; Code[10])
+        {
+            Caption = 'Department Code';
+            TableRelation = "Responsibility Center".Code;
+            DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            var
+                RespCenter: Record "Responsibility Center";
+            begin
+                if RespCenter.Get("Department Code") then
+                    "Responsibility Center" := RespCenter.Code;
+            end;
+        }
     }
 
     keys
@@ -166,7 +180,7 @@ Table 69217 "HR Leave Planner Header"
         if "Application Code" = '' then begin
             HRSetup.Get;
             HRSetup.TestField(HRSetup."Leave Planner Nos.");
-             rec."Application Code" := NoSeriesMgt.GetNextNo(HRSetup."Leave Planner Nos.", WorkDate(), true);
+            rec."Application Code" := NoSeriesMgt.GetNextNo(HRSetup."Leave Planner Nos.", WorkDate(), true);
         end;
 
         //GET APPLICANT DETAILS FROM HR EMPLOYEES TABLE AND COPY THEM TO THE LEAVE APPLICATION TABLE
