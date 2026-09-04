@@ -165,7 +165,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         RunWorkflowOnSendOvertimeForApprovalCode: label 'RUNWORKFLOWONSENDOVERTIMEFORAPPROVAL';
         OnCancelOvertimeApprovalRequestTxt: label 'An Approval of an Overtime Application is canceled';
         RunWorkflowOnCancelOvertimeForApprovalCode: label 'RUNWORKFLOWONCANCELOVERTIMEFORAPPROVAL';
-        
+
         //Successor Form
         OnSendSuccessorApprovalRequestTxt: label 'Approval of a Successor Form is requested';
         RunWorkflowOnSendSuccessorForApprovalCode: label 'RUNWORKFLOWONSENDSUCCESSORFORAPPROVAL';
@@ -497,6 +497,11 @@ Codeunit 59500 "Custom Approvals Codeunit"
         OnCancelESignHeaderApprovalRequestTxt: label 'An Approval of E-Signature document is cancelled';
         RunWorkflowOnCancelESignHeaderForApprovalCode: label 'RUNWORKFLOWONCANCELESIGNHEADERFORAPPROVAL';
 
+        //New Employee Workflow
+        OnSendEmployeeCardApprovalRequestTxt: label 'Approval of a Employee Card is requested';
+        RunWorkflowOnSendEmployeeCardForApprovalCode: label 'RUNWORKFLOWONSENDEMPLOYEECARDFORAPPROVAL';
+        OnCancelEmployeeCardApprovalRequestTxt: label 'An Approval of a Employee Card is canceled';
+        RunWorkflowOnCancelEmployeeCardForApprovalCode: label 'RUNWORKFLOWONCANCELEMPLOYEECARDFORAPPROVAL';
 
     procedure CheckApprovalsWorkflowEnabled(var Variant: Variant): Boolean
     var
@@ -584,7 +589,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //PV
             Database::"payments":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendPVForApprovalCode));
-                //Employee
+            //Employee
             Database::"Employee":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendEmployeeForApprovalCode1));
 
@@ -952,6 +957,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         RunWorkflowOnSendEmployeeForApprovalCode1, Database::"Employee", OnSendEmployeeApprovalRequestTxt, 0, false);
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelEmployeeForApprovalCode1, Database::"Employee", OnCancelEmployeeApprovalRequestTxt, 0, false);
+
         //Overtime Header
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnSendOvertimeForApprovalCode, Database::"Overtime Header", OnSendOvertimeApprovalRequestTxt, 0, false);
@@ -1268,6 +1274,11 @@ Codeunit 59500 "Custom Approvals Codeunit"
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelCircularResolutionForApprovalCode, Database::"Circular Resolution Header", OnCancelCircularResolutionApprovalRequestTxt, 0, false);
 
+        //Employee Card
+        WorkFlowEventHandling.AddEventToLibrary(RunWorkflowOnSendEmployeeCardForApprovalCode, Database::"Employee", OnSendEmployeeCardApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+            RunWorkflowOnCancelEmployeeCardForApprovalCode, Database::"Employee", OnCancelEmployeeCardApprovalRequestTxt, 0, false);
+
         //ESign Header
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnSendESignHeaderForApprovalCode, Database::"ESign Header", OnSendESignHeaderApprovalRequestTxt, 0, false);
@@ -1368,7 +1379,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //PV
             Database::"Payments":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendPVForApprovalCode, Variant);
-               
+
 
             Database::"Overtime Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendOvertimeForApprovalCode, Variant);
@@ -1649,7 +1660,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //pv
             Database::"Payments":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelPVForApprovalCode, Variant);
-           
+
             //Overtime Header
             Database::"Overtime Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelOvertimeForApprovalCode, Variant);
@@ -3095,14 +3106,14 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     payments.Modify;
                     Variant := payments;
                 end;
-                // //Employee
-                // Database::Employee:
-                // begin
-                //     RecRef.SetTable(Employee);
-                //     Employee.Validate("Approval Status", Employee."Approval Status"::Released);
-                //     Employee.Modify;
-                //     Variant := Employee;
-                // end;
+            // //Employee
+            // Database::Employee:
+            // begin
+            //     RecRef.SetTable(Employee);
+            //     Employee.Validate("Approval Status", Employee."Approval Status"::Released);
+            //     Employee.Modify;
+            //     Variant := Employee;
+            // end;
             //overtime
             Database::"Overtime Header":
                 begin
