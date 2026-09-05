@@ -28,6 +28,10 @@ page 58159 "Meeting Plan Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Meeting Code"; Rec."Meeting Code")
+                {
+                    ApplicationArea = All;
+                }
                 field("Year"; Rec."Year")
                 {
                     ApplicationArea = All;
@@ -70,6 +74,12 @@ page 58159 "Meeting Plan Card"
                     ApplicationArea = All;
                 }
             }
+            // part(CommitteeMembers; "Committee Members Subform")
+            // {
+            //     Caption = 'Committee Members';
+            //     ApplicationArea = All;
+            //     SubPageLink = "Meeting Plan Id" = field("Id");
+            // }
             part(DateOptions; "Meeting Date Options Subform")
             {
                 Caption = 'Proposed Dates';
@@ -131,6 +141,21 @@ page 58159 "Meeting Plan Card"
                         Rec.SelectWinningDate(DateOption."Id");
                         CurrPage.Update(false);
                     end;
+                end;
+            }
+            action(OpenBoardMeeting)
+            {
+                Caption = 'Open Board Meeting';
+                ApplicationArea = All;
+                Image = Card;
+                Enabled = Rec."Meeting Code" <> '';
+
+                trigger OnAction()
+                var
+                    BoardMeeting: Record "Board Meetings";
+                begin
+                    if BoardMeeting.Get(Rec."Meeting Code") then
+                        Page.Run(Page::"Board Meeting Card", BoardMeeting);
                 end;
             }
         }

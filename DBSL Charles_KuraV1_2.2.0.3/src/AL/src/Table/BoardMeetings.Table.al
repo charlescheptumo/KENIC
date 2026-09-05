@@ -88,6 +88,37 @@ Table 55002 "Board Meetings"
         {
             TableRelation = "Financial Year Code";
         }
+
+        field(23; "Date Confirmed"; Boolean)
+        {
+            Caption = 'Date Confirmed';
+            DataClassification = ToBeClassified;
+            Editable = false;
+            // Set automatically by Meeting Plans.SyncConfirmedDateToMeeting() once a linked poll
+            // closes with a winning date, or manually via the "Confirm Meeting Date" action on
+            // the Board Meeting Card for meetings scheduled without a formal poll.
+        }
+
+        field(24; "Online Meeting Provider"; Option)
+        {
+            Caption = 'Online Meeting Provider';
+            DataClassification = ToBeClassified;
+            OptionCaption = ' ,Microsoft Teams,Zoom,Google Meet,Webex,Other';
+            OptionMembers = " ","Microsoft Teams",Zoom,"Google Meet",Webex,Other;
+        }
+
+        field(25; "Online Meeting Link"; Text[500])
+        {
+            Caption = 'Online Meeting Link';
+            DataClassification = ToBeClassified;
+            ExtendedDatatype = URL;
+
+            trigger OnValidate()
+            begin
+                if ("Online Meeting Link" <> '') and (not "Date Confirmed") then
+                    Error(DateNotConfirmedErr);
+            end;
+        }
     }
 
     keys
@@ -106,10 +137,33 @@ Table 55002 "Board Meetings"
         end;
     end;
 
+    /// <summary>
+    /// Manually marks the meeting date as confirmed, for meetings scheduled directly (without
+    /// going through the Meeting Plans poll workflow). Meetings whose date was confirmed by a
+    /// closed poll are already flagged automatically and don't need this.
+    /// </summary>
+    procedure ConfirmMeetingDate()
+    begin
+        if Rec."Date Confirmed" then
+            Error(AlreadyConfirmedErr);
+
+        Rec.TestField("Start date");
+
+        if GuiAllowed then
+            if not Confirm(ConfirmDateQst, true) then
+                exit;
+
+        Rec."Date Confirmed" := true;
+        Rec.Modify(true);
+    end;
+
     var
         Committees: Record "Board Committees";
         NoSeriesMgt: Codeunit "No. Series";
         HRSet: Record "Human Resources Setup";
         Atendance: Record "board meeting attendance";
         Members: Record "committee board members";
+        DateNotConfirmedErr: Label 'You can only attach an online meeting link once the meeting date has been confirmed. Confirm the date via its poll (Meeting Plan) or the Confirm Meeting Date action.';
+        AlreadyConfirmedErr: Label 'This meeting''s date is already confirmed.';
+        ConfirmDateQst: Label 'Mark this meeting''s date and time as confirmed? Do this only once the schedule is final.';
 }

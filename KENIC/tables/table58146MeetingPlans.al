@@ -21,12 +21,13 @@ table 58146 "Meeting Plans"
             begin
                 CalcFields("Committee Description");
 
-                if (Rec."Committee Id" <> xRec."Committee Id") and (xRec."Committee Id" <> '') then begin
-                    if Rec."Voting Status" <> Rec."Voting Status"::"Not Started" then
-                        Error(CannotChangeCommitteeErr);
+                if Rec."Committee Id" = xRec."Committee Id" then
+                    exit;
 
-                    RegeneratePollVotes();
-                end;
+                if (xRec."Committee Id" <> '') and (Rec."Voting Status" <> Rec."Voting Status"::"Not Started") then
+                    Error(CannotChangeCommitteeErr);
+
+                SyncCommitteeMembers();
             end;
         }
         field(3; "Committee Description"; Text[200])
@@ -138,6 +139,45 @@ table 58146 "Meeting Plans"
                                                                                "Id" = field("Selected Meeting Date Option Id")));
             Editable = false;
         }
+        field(19; "Meeting Code"; Code[20])
+        {
+            Caption = 'Meeting Code';
+            DataClassification = ToBeClassified;
+            TableRelation = "Board Meetings".No;
+
+            trigger OnValidate()
+            var
+                BoardMeeting: Record "Board Meetings";
+            begin
+                if Rec."Meeting Code" = xRec."Meeting Code" then
+                    exit;
+
+                if (xRec."Meeting Code" <> '') and (Rec."Voting Status" <> Rec."Voting Status"::"Not Started") then
+                    Error(CannotChangeMeetingErr);
+
+                if Rec."Meeting Code" = '' then
+                    exit;
+
+                if not BoardMeeting.Get(Rec."Meeting Code") then
+                    exit;
+
+                // Auto-populate from the linked Board Meeting, mirroring how selecting a
+                // Committee auto-populates its members. Only fills blanks - never overwrites
+                // values the user already entered by hand.
+                if Rec."Title" = '' then
+                    Rec."Title" := BoardMeeting.Title;
+
+                if BoardMeeting."Meeting group Code" <> '' then
+                    Rec.Validate("Committee Id", BoardMeeting."Meeting group Code");
+
+                if BoardMeeting."Start date" <> 0D then begin
+                    if Rec."Year" = 0 then
+                        Rec."Year" := Date2DMY(BoardMeeting."Start date", 3);
+                    if Rec."Quarter" = Rec."Quarter"::" " then
+                        Rec."Quarter" := GetQuarter(BoardMeeting."Start date");
+                end;
+            end;
+        }
     }
 
     keys
@@ -191,7 +231,6 @@ table 58146 "Meeting Plans"
     procedure CreatePollsForOption(OptionId: Integer)
     var
         CommitteeMember: Record "Committee Board Members";
-        DatePoll: Record "Meeting Date Polls";
     begin
         if (Rec."Id" = '') or (Rec."Committee Id" = '') then
             exit;
@@ -200,73 +239,74 @@ table 58146 "Meeting Plans"
         CommitteeMember.SetRange(Committee, Rec."Committee Id");
         if CommitteeMember.FindSet() then
             repeat
-                if CommitteeMember."Director No" <> '' then begin
-                    DatePoll.Reset();
-                    DatePoll.SetRange("Meeting Plan Id", Rec."Id");
-                    DatePoll.SetRange("Meeting Date Option Id", OptionId);
-                    DatePoll.SetRange("Member No.", CommitteeMember."Director No");
-
-                    if DatePoll.IsEmpty() then begin
-                        Clear(DatePoll);
-                        DatePoll."Meeting Plan Id" := Rec."Id";
-                        DatePoll."Meeting Date Option Id" := OptionId;
-                        DatePoll."Member No." := CommitteeMember."Director No";
-                        DatePoll."Member Name" := CommitteeMember.Names;
-                        DatePoll."Has Voted" := false;
-                        DatePoll.Insert(false);
-                    end;
-                end;
+                if CommitteeMember."Director No" <> '' then
+                    InsertPollRowIfMissing(OptionId, CommitteeMember."Director No", CommitteeMember.Names);
             until CommitteeMember.Next() = 0;
     end;
 
     /// <summary>
-    /// Rebuilds every poll row for every existing date option against the current committee.
-    /// Only intended to run when the Committee itself changes on a plan that has no votes yet
-    /// (guarded by the "Not Started" check in the "Committee Id" OnValidate trigger).
+    /// Re-syncs the per-option poll rows for every date option that already exists, whenever
+    /// "Committee Id" changes on the Meeting Plan. Does NOT populate any members by itself -
+    /// members are only ever generated per proposed date, via CreatePollsForOption (called from
+    /// Meeting Date Options.OnInsert). If no dates exist yet, this simply clears old votes and
+    /// does nothing else; members will appear once dates are typed in.
     /// </summary>
-    local procedure RegeneratePollVotes()
+    local procedure SyncCommitteeMembers()
     var
         DateOption: Record "Meeting Date Options";
-        CommitteeMember: Record "Committee Board Members";
         DatePoll: Record "Meeting Date Polls";
     begin
         if Rec."Id" = '' then
             exit;
 
-        DateOption.Reset();
-        DateOption.SetRange("Meeting Plan Id", Rec."Id");
-        if DateOption.IsEmpty() then
+        DatePoll.Reset();
+        DatePoll.SetRange("Meeting Plan Id", Rec."Id");
+        if not DatePoll.IsEmpty() then
+            if GuiAllowed then
+                if not Confirm(ConfirmCommitteeChangeQst, false) then
+                    Error(CommitteeChangeAbortedErr);
+
+        // Wipe every existing poll row for this plan (old committee's votes no longer apply).
+        DatePoll.Reset();
+        DatePoll.SetRange("Meeting Plan Id", Rec."Id");
+        if not DatePoll.IsEmpty() then
+            DatePoll.DeleteAll(true);
+
+        if Rec."Committee Id" = '' then
             exit;
 
-        if GuiAllowed then
-            if not Confirm(ConfirmCommitteeChangeQst, false) then
-                Error(CommitteeChangeAbortedErr);
-
+        // Regenerate per-option poll rows for every date option that already exists, against
+        // the new committee. If no date options exist yet, this loop simply does nothing.
+        DateOption.Reset();
+        DateOption.SetRange("Meeting Plan Id", Rec."Id");
         if DateOption.FindSet() then
             repeat
-                DatePoll.Reset();
-                DatePoll.SetRange("Meeting Plan Id", Rec."Id");
-                DatePoll.SetRange("Meeting Date Option Id", DateOption."Id");
-                if not DatePoll.IsEmpty() then
-                    DatePoll.DeleteAll(true);
-
-                if Rec."Committee Id" <> '' then begin
-                    CommitteeMember.Reset();
-                    CommitteeMember.SetRange(Committee, Rec."Committee Id");
-                    if CommitteeMember.FindSet() then
-                        repeat
-                            if CommitteeMember."Director No" <> '' then begin
-                                Clear(DatePoll);
-                                DatePoll."Meeting Plan Id" := Rec."Id";
-                                DatePoll."Meeting Date Option Id" := DateOption."Id";
-                                DatePoll."Member No." := CommitteeMember."Director No";
-                                DatePoll."Member Name" := CommitteeMember.Names;
-                                DatePoll."Has Voted" := false;
-                                DatePoll.Insert(false);
-                            end;
-                        until CommitteeMember.Next() = 0;
-                end;
+                CreatePollsForOption(DateOption."Id");
             until DateOption.Next() = 0;
+    end;
+
+    /// <summary>
+    /// Shared insert used when generating per-date poll rows. Idempotent: does nothing if a row
+    /// for this plan/option/member already exists.
+    /// </summary>
+    local procedure InsertPollRowIfMissing(OptionId: Integer; MemberNo: Code[20]; MemberName: Text[250])
+    var
+        DatePoll: Record "Meeting Date Polls";
+    begin
+        DatePoll.Reset();
+        DatePoll.SetRange("Meeting Plan Id", Rec."Id");
+        DatePoll.SetRange("Meeting Date Option Id", OptionId);
+        DatePoll.SetRange("Member No.", MemberNo);
+        if not DatePoll.IsEmpty() then
+            exit;
+
+        Clear(DatePoll);
+        DatePoll."Meeting Plan Id" := Rec."Id";
+        DatePoll."Meeting Date Option Id" := OptionId;
+        DatePoll."Member No." := MemberNo;
+        DatePoll."Member Name" := MemberName;
+        DatePoll."Has Voted" := false;
+        DatePoll.Insert(false);
     end;
 
     /// <summary>
@@ -311,6 +351,7 @@ table 58146 "Meeting Plans"
             Rec."Selected Meeting Date Option Id" := WinningOptionId;
 
         Rec.Modify(true);
+        SyncConfirmedDateToMeeting();
 
         if IsTie and GuiAllowed then
             Message(TieDetectedMsg);
@@ -334,6 +375,7 @@ table 58146 "Meeting Plans"
 
         Rec."Selected Meeting Date Option Id" := OptionId;
         Rec.Modify(true);
+        SyncConfirmedDateToMeeting();
     end;
 
     /// <summary>
@@ -367,12 +409,61 @@ table 58146 "Meeting Plans"
         IsTie := TieCount > 1;
     end;
 
+    /// <summary>
+    /// Pushes the winning date option's date/time/venue into the linked Board Meeting and marks
+    /// it confirmed. Called from ClosePoll (automatic winner) and SelectWinningDate (manual
+    /// tie-break or override). Does nothing if this plan isn't linked to a Board Meeting, or if
+    /// no winner has been selected yet.
+    /// </summary>
+    local procedure SyncConfirmedDateToMeeting()
+    var
+        BoardMeeting: Record "Board Meetings";
+        WinningOption: Record "Meeting Date Options";
+    begin
+        if (Rec."Meeting Code" = '') or (Rec."Selected Meeting Date Option Id" = 0) then
+            exit;
+
+        if not BoardMeeting.Get(Rec."Meeting Code") then
+            exit;
+
+        if not WinningOption.Get(Rec."Id", Rec."Selected Meeting Date Option Id") then
+            exit;
+
+        BoardMeeting."Start date" := WinningOption."Proposed Date";
+        BoardMeeting."Start time" := WinningOption."Start Time";
+        BoardMeeting."End Date" := WinningOption."Proposed Date";
+        BoardMeeting."End time" := WinningOption."End Time";
+        if WinningOption."Venue" <> '' then
+            BoardMeeting."Venue/Location" := WinningOption."Venue";
+
+        BoardMeeting."Date Confirmed" := true;
+        BoardMeeting.Modify(true);
+    end;
+
+    local procedure GetQuarter(ForDate: Date): Option " ",Q1,Q2,Q3,Q4
+    var
+        MonthNo: Integer;
+    begin
+        MonthNo := Date2DMY(ForDate, 2);
+        case true of
+            MonthNo <= 3:
+                exit("Quarter"::Q1);
+            MonthNo <= 6:
+                exit("Quarter"::Q2);
+            MonthNo <= 9:
+                exit("Quarter"::Q3);
+            else
+                exit("Quarter"::Q4);
+        end;
+    end;
+
     var
         NoSeriesMgt: Codeunit "No. Series";
         HRSet: Record "Human Resources Setup";
         ConfirmCommitteeChangeQst: Label 'Changing the Committee will reset existing vote records. Continue?';
         CommitteeChangeAbortedErr: Label 'Committee change aborted.';
         CannotChangeCommitteeErr: Label 'You cannot change the Committee once voting has started or closed.';
+        CannotChangeMeetingErr: Label 'You cannot change the linked Board Meeting once voting has started or closed.';
         CannotChangeVoteModeErr: Label 'You cannot change the voting mode once voting has started or closed.';
         PollAlreadyStartedErr: Label 'The poll has already been started for this Meeting Plan.';
         NeedAtLeastTwoDatesErr: Label 'At least two proposed dates are required before opening the poll.';

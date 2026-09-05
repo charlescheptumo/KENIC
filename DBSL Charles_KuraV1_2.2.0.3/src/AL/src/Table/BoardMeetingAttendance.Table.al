@@ -80,6 +80,22 @@ Table 55009 "Board Meeting Attendance"
         {
             DataClassification = ToBeClassified;
         }
+
+        field(14; "Attendance Mode"; Option)
+        {
+            Caption = 'Attendance Mode';
+            DataClassification = ToBeClassified;
+            OptionCaption = ' ,In-Person,Virtual';
+            OptionMembers = " ","In-Person",Virtual;
+        }
+
+        field(15; "Online Meeting Link"; Text[500])
+        {
+            Caption = 'Online Meeting Link';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Board Meetings"."Online Meeting Link" where(No = field("Meeting Code")));
+            Editable = false;
+        }
     }
 
     keys
