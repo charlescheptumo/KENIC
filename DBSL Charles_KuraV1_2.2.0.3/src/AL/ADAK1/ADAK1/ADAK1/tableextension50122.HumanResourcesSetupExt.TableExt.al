@@ -1026,7 +1026,13 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
             Caption = 'Meeting Plan Nos.';
             TableRelation = "No. Series";
             DataClassification = CustomerContent;
-        }
+        } //Resolution Nos.
+        field(69678; "Resolution Nos."; Code[20])
+        {
+            Caption = 'Resolution Nos.';
+            TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        } //Resolution Nos.
         field(50100; "Leave Hours per Hour"; Decimal)
         {
             Caption = 'Leave Hours per Hour';

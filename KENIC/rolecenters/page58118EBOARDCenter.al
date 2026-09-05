@@ -104,6 +104,14 @@ page 58118 "Head of E-Board"
                     RunObject = Page "Closed Board Meetings List";
                     ToolTip = 'View archived/closed board meetings.';
                 }
+
+                action("Meeting Resolutions")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Meeting Resolutions';
+                    RunObject = Page "Meeting Resolution List";
+                    ToolTip = 'Manage board and committee resolutions and their voting.';
+                }
             }
 
             group("Director Payments")
