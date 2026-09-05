@@ -1,11 +1,10 @@
+#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006
 page 58160 "Meeting Date Options Subform"
 {
-    ApplicationArea = All;
-    Caption = 'Proposed Meeting Dates';
+    Caption = 'Proposed Dates';
     PageType = ListPart;
     SourceTable = "Meeting Date Options";
-    AutoSplitKey = false; 
-    DelayedInsert = true;
+    AutoSplitKey = true;
 
     layout
     {
@@ -16,37 +15,24 @@ page 58160 "Meeting Date Options Subform"
                 field("Proposed Date"; Rec."Proposed Date")
                 {
                     ApplicationArea = All;
-                    ShowMandatory = true;
-                    ToolTip = 'Specifies the proposed date for the meeting.';
                 }
                 field("Start Time"; Rec."Start Time")
                 {
                     ApplicationArea = All;
-                    ShowMandatory = true;
-                    ToolTip = 'Specifies the planned start time.';
                 }
                 field("End Time"; Rec."End Time")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the planned end time.';
                 }
                 field("Venue"; Rec."Venue")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the proposed meeting location/venue or online link.';
                 }
                 field("Vote Count"; Rec."Vote Count")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the vote count.';
                 }
             }
         }
     }
-
-    trigger OnNewRecord(BelowxRec: Boolean)
-    begin
-
-        Rec."Created At" := CurrentDateTime();
-    end;
 }

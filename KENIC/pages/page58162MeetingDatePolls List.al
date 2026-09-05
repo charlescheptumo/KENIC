@@ -13,21 +13,21 @@ page 58162 "Meeting Date Polls List"
         {
             repeater(Control1)
             {
-                field("Id"; Rec."Id")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the unique poll record ID.';
-                }
+                // field("Id"; Rec."Id")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the unique poll record ID.';
+                // }
                 field("Meeting Date Option Id"; Rec."Meeting Date Option Id")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the target meeting date option ID.';
                 }
-                field("User Id"; Rec."User Id")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the board member or user who voted.';
-                }
+                // field("User Id"; Rec."User Id")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the board member or user who voted.';
+                // }
                 field("Voted At"; Rec."Voted At")
                 {
                     ApplicationArea = All;

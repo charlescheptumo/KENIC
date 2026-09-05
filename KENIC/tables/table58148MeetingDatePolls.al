@@ -6,61 +6,79 @@ table 58148 "Meeting Date Polls"
 
     fields
     {
-        field(1; "Id"; Integer)
-        {
-            Caption = 'Id';
-            AutoIncrement = true;
-            DataClassification = ToBeClassified;
-        }
-        field(2; "Meeting Plan Id"; Code[20])
+        field(1; "Meeting Plan Id"; Code[20])
         {
             Caption = 'Meeting Plan Id';
             DataClassification = ToBeClassified;
             TableRelation = "Meeting Plans".Id;
+            Editable = false;
         }
-        field(3; "Meeting Date Option Id"; Integer)
+        field(2; "Meeting Date Option Id"; Integer)
         {
             Caption = 'Meeting Date Option Id';
             DataClassification = ToBeClassified;
-            TableRelation = "Meeting Date Options".Id where("Meeting Plan Id" = field("Meeting Plan Id"));
+            TableRelation = "Meeting Date Options"."Id" where("Meeting Plan Id" = field("Meeting Plan Id"));
+            Editable = false;
         }
-        field(4; "Member No."; Code[20])
+        field(3; "Member No."; Code[20])
         {
             Caption = 'Member No.';
             DataClassification = ToBeClassified;
-            TableRelation = "Committee Board Members"."Director No";
+            TableRelation = "Board Members";
+            Editable = false;
         }
-        field(5; "Member Name"; Text[250])
+        field(4; "Member Name"; Text[250])
         {
             Caption = 'Member Name';
             DataClassification = ToBeClassified;
             Editable = false;
         }
-        field(6; "User Id"; Code[50])
+        field(5; "Proposed Date"; Date)
         {
-            Caption = 'User Id';
-            DataClassification = ToBeClassified;
-            TableRelation = User."User Name";
-            ValidateTableRelation = false;
+            Caption = 'Proposed Date';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Meeting Date Options"."Proposed Date" where("Meeting Plan Id" = field("Meeting Plan Id"),
+                                                                               "Id" = field("Meeting Date Option Id")));
+            Editable = false;
         }
-        field(7; "Has Voted"; Boolean)
+        field(6; "Has Voted"; Boolean)
         {
             Caption = 'Has Voted';
             DataClassification = ToBeClassified;
 
             trigger OnValidate()
+            var
+                MeetingPlan: Record "Meeting Plans";
+                OtherPoll: Record "Meeting Date Polls";
             begin
+                if "Has Voted" = xRec."Has Voted" then
+                    exit;
+
+                MeetingPlan.Get("Meeting Plan Id");
+                if MeetingPlan."Voting Status" <> MeetingPlan."Voting Status"::Open then
+                    Error(VotingNotOpenErr);
+
                 if "Has Voted" then begin
                     "Voted At" := CurrentDateTime();
-                    if "User Id" = '' then
-                        "User Id" := UserId();
-                end else begin
+
+                    if not MeetingPlan."Allow Multiple Date Votes" then begin
+                        OtherPoll.Reset();
+                        OtherPoll.SetRange("Meeting Plan Id", "Meeting Plan Id");
+                        OtherPoll.SetRange("Member No.", "Member No.");
+                        OtherPoll.SetFilter("Meeting Date Option Id", '<>%1', "Meeting Date Option Id");
+                        OtherPoll.SetRange("Has Voted", true);
+                        if OtherPoll.FindSet() then
+                            repeat
+                                OtherPoll."Has Voted" := false;
+                                OtherPoll."Voted At" := 0DT;
+                                OtherPoll.Modify();
+                            until OtherPoll.Next() = 0;
+                    end;
+                end else
                     "Voted At" := 0DT;
-                    "User Id" := '';
-                end;
             end;
         }
-        field(8; "Voted At"; DateTime)
+        field(7; "Voted At"; DateTime)
         {
             Caption = 'Voted At';
             DataClassification = ToBeClassified;
@@ -70,35 +88,15 @@ table 58148 "Meeting Date Polls"
 
     keys
     {
-        key(PK; "Id")
+        key(PK; "Meeting Plan Id", "Meeting Date Option Id", "Member No.")
         {
             Clustered = true;
         }
-        key(OptionMember; "Meeting Plan Id", "Meeting Date Option Id", "Member No.")
-        {
-            Unique = true;
-        }
-      
-        key(VoteCountIndex; "Meeting Plan Id", "Meeting Date Option Id", "Has Voted")
+        key(ByMember; "Meeting Plan Id", "Member No.")
         {
         }
     }
 
-    trigger OnInsert()
-    begin
-        if "Has Voted" and ("Voted At" = 0DT) then begin
-            "Voted At" := CurrentDateTime();
-            if "User Id" = '' then
-                "User Id" := UserId();
-        end;
-    end;
-
-    trigger OnModify()
-    begin
-        if "Has Voted" and ("Voted At" = 0DT) then begin
-            "Voted At" := CurrentDateTime();
-            if "User Id" = '' then
-                "User Id" := UserId();
-        end;
-    end;
+    var
+        VotingNotOpenErr: Label 'Voting is not currently open for this Meeting Plan.';
 }

@@ -21,6 +21,21 @@ table 58147 "Meeting Date Options"
         {
             Caption = 'Proposed Date';
             DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            var
+                DateOption: Record "Meeting Date Options";
+            begin
+                if "Proposed Date" = 0D then
+                    exit;
+
+                DateOption.Reset();
+                DateOption.SetRange("Meeting Plan Id", "Meeting Plan Id");
+                DateOption.SetRange("Proposed Date", "Proposed Date");
+                DateOption.SetFilter("Id", '<>%1', "Id");
+                if not DateOption.IsEmpty() then
+                    Error(DuplicateDateErr);
+            end;
         }
         field(4; "Start Time"; Time)
         {
@@ -36,7 +51,7 @@ table 58147 "Meeting Date Options"
             begin
                 if ("Start Time" <> 0T) and ("End Time" <> 0T) then
                     if "End Time" <= "Start Time" then
-                        Error('End Time must be later than Start Time.');
+                        Error(EndTimeErr);
             end;
         }
         field(6; "Venue"; Text[250])
@@ -55,8 +70,8 @@ table 58147 "Meeting Date Options"
             Caption = 'Vote Count';
             FieldClass = FlowField;
             CalcFormula = count("Meeting Date Polls" where("Meeting Plan Id" = field("Meeting Plan Id"),
-                                                           "Meeting Date Option Id" = field("Id"),
-                                                           "Has Voted" = const(true)));
+                                                             "Meeting Date Option Id" = field("Id"),
+                                                             "Has Voted" = const(true)));
             Editable = false;
         }
     }
@@ -84,48 +99,33 @@ table 58147 "Meeting Date Options"
                 "Id" := 10000;
         end;
 
-        // if MeetingPlan.Get("Meeting Plan Id") then
-        //     CreatePollsForThisOption(MeetingPlan."Committee Id");
-    end;
+        if MeetingPlan.Get("Meeting Plan Id") then begin
+            if MeetingPlan."Voting Status" <> MeetingPlan."Voting Status"::"Not Started" then
+                Error(CannotAddOptionErr);
 
-    local procedure CreatePollsForThisOption(CommitteeId: Code[20])
-    var
-        CommitteeMember: Record "Committee Board Members";
-        DatePoll: Record "Meeting Date Polls";
-    begin
-        if (CommitteeId = '') or ("Meeting Plan Id" = '') or ("Id" = 0) then
-            exit;
-
-        CommitteeMember.SetRange(Committee, CommitteeId);
-        if CommitteeMember.FindSet() then
-            repeat
-                if CommitteeMember."Director No" <> '' then begin
-                    DatePoll.Reset();
-                    DatePoll.SetRange("Meeting Plan Id", Rec."Meeting Plan Id");
-                    DatePoll.SetRange("Meeting Date Option Id", Rec."Id");
-                    DatePoll.SetRange("Member No.", CommitteeMember."Director No");
-
-                    if DatePoll.IsEmpty() then begin
-                        Clear(DatePoll); 
-                        DatePoll."Meeting Plan Id" := Rec."Meeting Plan Id";
-                        DatePoll."Meeting Date Option Id" := Rec."Id";
-                        DatePoll."Member No." := CommitteeMember."Director No";
-                        DatePoll."Member Name" := CommitteeMember.Names;
-                        DatePoll."Has Voted" := false;
-                        DatePoll.Insert(false); 
-                    end;
-                end;
-            until CommitteeMember.Next() = 0;
+            MeetingPlan.CreatePollsForOption("Id");
+        end;
     end;
 
     trigger OnDelete()
     var
+        MeetingPlan: Record "Meeting Plans";
         DatePoll: Record "Meeting Date Polls";
     begin
+        if MeetingPlan.Get("Meeting Plan Id") then
+            if MeetingPlan."Voting Status" <> MeetingPlan."Voting Status"::"Not Started" then
+                Error(CannotRemoveOptionErr);
+
         DatePoll.Reset();
         DatePoll.SetRange("Meeting Plan Id", "Meeting Plan Id");
         DatePoll.SetRange("Meeting Date Option Id", "Id");
         if not DatePoll.IsEmpty() then
             DatePoll.DeleteAll(true);
     end;
+
+    var
+        DuplicateDateErr: Label 'This date has already been proposed for this Meeting Plan.';
+        EndTimeErr: Label 'End Time must be later than Start Time.';
+        CannotAddOptionErr: Label 'You cannot add proposed dates once voting has started or closed.';
+        CannotRemoveOptionErr: Label 'You cannot remove proposed dates once voting has started or closed.';
 }
