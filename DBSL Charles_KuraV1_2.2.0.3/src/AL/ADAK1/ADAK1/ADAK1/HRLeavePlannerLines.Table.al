@@ -13,20 +13,10 @@ Table 69207 "HR Leave Planner Lines"
 
             trigger OnValidate()
             begin
-
-                //RESET;
-                //SETRANGE("Employee No",LeaveHeader."Employee No");
-                if LeaveHeader.Find('-') then
+                LeaveHeader.Reset();
+                LeaveHeader.SetRange("Application Code", "Application Code");
+                if ("Employee No" = '') and LeaveHeader.FindFirst() then
                     "Employee No" := LeaveHeader."Employee No";
-                /*
-               HRLeaveTypes.GET("Leave Type");
-               HREmp.GET("Employee No");
-               IF HREmp.Gender=HRLeaveTypes.Gender THEN
-               EXIT
-               ELSE
-               ERROR('This leave type is restricted to the '+ FORMAT(HRLeaveTypes.Gender) +' gender')
-               */
-
             end;
         }
         field(4; "Days Applied"; Decimal)
@@ -325,24 +315,24 @@ Table 69207 "HR Leave Planner Lines"
     end;
 
     local procedure CheckOverlappingLeave()
-var
-    LeaveLine: Record "HR Leave Planner Lines";
-begin
-    if ("Start Date" = 0D) or ("End Date" = 0D) then
-        exit;
+    var
+        LeaveLine: Record "HR Leave Planner Lines";
+    begin
+        if ("Start Date" = 0D) or ("End Date" = 0D) then
+            exit;
 
-    LeaveLine.Reset();
-    LeaveLine.SetRange("Employee No", "Employee No");
-    LeaveLine.SetFilter("Start Date", '<=%1', "End Date");
-    LeaveLine.SetFilter("End Date", '>=%1', "Start Date");
-    if LeaveLine.FindSet() then
-        repeat
-           
-            if (LeaveLine."Application Code" <> "Application Code") or (LeaveLine."Line No." <> "Line No.") then
-                Error('Employee already has leave booked from %1 to %2 that overlaps with these dates.',
-                    LeaveLine."Start Date", LeaveLine."End Date");
-        until LeaveLine.Next() = 0;
-end;
+        LeaveLine.Reset();
+        LeaveLine.SetRange("Employee No", "Employee No");
+        LeaveLine.SetFilter("Start Date", '<=%1', "End Date");
+        LeaveLine.SetFilter("End Date", '>=%1', "Start Date");
+        if LeaveLine.FindSet() then
+            repeat
+
+                if (LeaveLine."Application Code" <> "Application Code") or (LeaveLine."Line No." <> "Line No.") then
+                    Error('Employee already has leave booked from %1 to %2 that overlaps with these dates.',
+                        LeaveLine."Start Date", LeaveLine."End Date");
+            until LeaveLine.Next() = 0;
+    end;
 
 
     procedure DetermineIfIsNonWorking(var bcDate: Date) Isnonworking: Boolean

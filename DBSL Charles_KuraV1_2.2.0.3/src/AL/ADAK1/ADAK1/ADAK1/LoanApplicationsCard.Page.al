@@ -55,16 +55,16 @@ Page 69012 "Loan Applications Card"
                 ApplicationArea = Basic;
                 ToolTip = 'Specifies the value of the Issued Date field.';
             }
-             field("Start Date"; Rec."Start Date")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Start Date field.';
-                }
-                field("End Date"; Rec."End Date")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the End Date field.';
-                }
+            field("Start Date"; Rec."Start Date")
+            {
+                ApplicationArea = Basic;
+                ToolTip = 'Specifies the value of the Start Date field.';
+            }
+            field("End Date"; Rec."End Date")
+            {
+                ApplicationArea = Basic;
+                ToolTip = 'Specifies the value of the End Date field.';
+            }
             field(Instalment; Rec.Instalment)
             {
                 ApplicationArea = Basic;
@@ -227,20 +227,15 @@ Page 69012 "Loan Applications Card"
 
 
                     if Rec."Opening Loan" = false then begin
-                        Schedule1.RESET;
-                        Schedule1.SETRANGE("Loan No.", REC."Loan No");
-                        Schedule1.SETRANGE(Schedule1."Employee No.", REC."Employee No");
-                        IF NOT Schedule1.FINDSET THEN
-                            ERROR('No schedule created yet');
-                        if Schedule1.FindSet then
-                            lanAmount := Schedule1."Monthly Repayment";
+                        Schedule1.Reset;
+                        Schedule1.SetRange("Loan No.", Rec."Loan No");
+                        Schedule1.SetRange(Schedule1."Employee No.", Rec."Employee No");
+                        if not Schedule1.FindSet then
+                            Error('No schedule created yet');
+                        lanAmount := Schedule1."Monthly Repayment";
+
                         Emp.Get(Rec."Employee No");
-                        Schedule1.RESET;
-                        Schedule1.SETRANGE("Loan No.", REC."Loan No");
-                        Schedule1.SETRANGE(Schedule1."Employee No.", REC."Employee No");
-                        IF NOT Schedule1.FINDSET THEN
-                            if Schedule1.FindSet then
-                                lanAmount := Schedule1."Monthly Repayment";
+
                         AssMatrix.Init;
                         AssMatrix."Employee No" := Rec."Employee No";
                         AssMatrix.Type := AssMatrix.Type::Deduction;
@@ -251,16 +246,10 @@ Page 69012 "Loan Applications Card"
                         else
                             AssMatrix.Code := Rec."Deduction Code";
                         AssMatrix."Payroll Period" := Rec."Issued Date";
-
                         AssMatrix.Description := Rec.Description;
                         AssMatrix."Payroll Group" := Emp."Posting Group";
                         AssMatrix."Department Code" := Emp."Global Dimension 1 Code";
-                        LoanRepaymentSchedule.Get(Rec."Employee No");
-                        LoanRepaymentSchedule.SetRange(LoanRepaymentSchedule."Repayment Date", rec."Issued Date");
-                        if LoanRepaymentSchedule.FindSet then
-                            AssMatrix.Amount := lanAmount;
-                        //  Message('%1', IanAmount);
-                        //CC  AssMatrix.Amount := Rec.Repayment;
+                        AssMatrix.Amount := lanAmount;
                         AssMatrix."Next Period Entry" := true;
                         AssMatrix.Validate(AssMatrix.Amount);
                         AssMatrix.Insert;
@@ -269,6 +258,7 @@ Page 69012 "Loan Applications Card"
                         Rec.Modify;
                         Message('Loan Issued');
                     end else begin
+
 
                         Emp.Get(Rec."Employee No");
                         AssMatrix.Init;
