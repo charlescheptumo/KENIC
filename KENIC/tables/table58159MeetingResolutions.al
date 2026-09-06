@@ -30,7 +30,7 @@ table 58159 "Meeting Resolutions"
 
             trigger OnValidate()
             begin
-                if (Rec."Resolution Type" = Rec."Resolution Type"::Information) and (Rec."Status" = Rec."Status"::Escalated) then
+                if (Rec."Resolution Type" = Rec."Resolution Type"::Information) and (Rec."Resolution Status" = Rec."Resolution Status"::Escalated) then
                     Error(InformationCannotEscalateErr);
             end;
         }
@@ -53,9 +53,9 @@ table 58159 "Meeting Resolutions"
             DataClassification = ToBeClassified;
             TableRelation = "Board Meetings".No;
         }
-        field(8; "Status"; Option)
+        field(8; "Resolution Status"; Option)
         {
-            Caption = 'Status';
+            Caption = 'Resolution Status';
             DataClassification = ToBeClassified;
             OptionCaption = 'Raised,Under Discussion,Escalated,Voting Open,Approved,Rejected,Withdrawn,Noted';
             OptionMembers = Raised,"Under Discussion",Escalated,"Voting Open",Approved,Rejected,Withdrawn,Noted;
@@ -182,7 +182,7 @@ table 58159 "Meeting Resolutions"
 
     fieldgroups
     {
-        fieldgroup(DropDown; "No.", "Title", "Resolution Type", "Status")
+        fieldgroup(DropDown; "No.", "Title", "Resolution Type", "Resolution Status")
         {
         }
     }
@@ -197,7 +197,7 @@ table 58159 "Meeting Resolutions"
 
         "Created By" := UserId();
         "Created At" := CurrentDateTime();
-        "Status" := "Status"::Raised;
+        "Resolution Status" := "Resolution Status"::Raised;
         "Voting Status" := "Voting Status"::"Not Started";
         "Outcome" := "Outcome"::" ";
     end;
@@ -221,11 +221,11 @@ table 58159 "Meeting Resolutions"
         if Rec."Resolution Type" = Rec."Resolution Type"::Information then
             Error(InformationCannotEscalateErr);
 
-        if not (Rec."Status" in [Rec."Status"::Raised, Rec."Status"::"Under Discussion"]) then
+        if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
             Error(CannotEscalateFromStatusErr);
 
         Rec."Voting Meeting Code" := FullBoardMeetingCode;
-        Rec."Status" := Rec."Status"::Escalated;
+        Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
         Rec.Modify(true);
 
         LogAction(ActionBuffer."Action Taken"::"Escalated to Board", FullBoardMeetingCode, '');
@@ -233,7 +233,7 @@ table 58159 "Meeting Resolutions"
 
     procedure OpenVoting()
     begin
-        if Rec."Status" <> Rec."Status"::Escalated then
+        if Rec."Resolution Status" <> Rec."Resolution Status"::Escalated then
             Error(MustBeEscalatedErr);
 
         if Rec."Voting Status" <> Rec."Voting Status"::"Not Started" then
@@ -246,7 +246,7 @@ table 58159 "Meeting Resolutions"
 
         Rec."Voting Status" := Rec."Voting Status"::Open;
         Rec."Voting Opened At" := CurrentDateTime();
-        Rec."Status" := Rec."Status"::"Voting Open";
+        Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
         Rec.Modify(true);
 
         LogAction(ActionBuffer."Action Taken"::"Voting Opened", Rec."Voting Meeting Code", '');
@@ -267,10 +267,10 @@ table 58159 "Meeting Resolutions"
         Rec."Voting Closed At" := CurrentDateTime();
         if Approved then begin
             Rec."Outcome" := Rec."Outcome"::Approved;
-            Rec."Status" := Rec."Status"::Approved;
+            Rec."Resolution Status" := Rec."Resolution Status"::Approved;
         end else begin
             Rec."Outcome" := Rec."Outcome"::Rejected;
-            Rec."Status" := Rec."Status"::Rejected;
+            Rec."Resolution Status" := Rec."Resolution Status"::Rejected;
         end;
         Rec.Modify(true);
 
@@ -283,7 +283,7 @@ table 58159 "Meeting Resolutions"
         if Rec."Voting Status" = Rec."Voting Status"::Closed then
             Error(CannotWithdrawAfterVotingClosedErr);
 
-        Rec."Status" := Rec."Status"::Withdrawn;
+        Rec."Resolution Status" := Rec."Resolution Status"::Withdrawn;
         Rec.Modify(true);
 
         LogAction(ActionBuffer."Action Taken"::Withdrawn, Rec."Voting Meeting Code", '');
@@ -294,10 +294,10 @@ table 58159 "Meeting Resolutions"
         if Rec."Resolution Type" <> Rec."Resolution Type"::Information then
             Error(OnlyInformationCanBeNotedErr);
 
-        if Rec."Status" in [Rec."Status"::Approved, Rec."Status"::Rejected, Rec."Status"::Withdrawn, Rec."Status"::Noted] then
+        if Rec."Resolution Status" in [Rec."Resolution Status"::Approved, Rec."Resolution Status"::Rejected, Rec."Resolution Status"::Withdrawn, Rec."Resolution Status"::Noted] then
             Error(AlreadyFinalizedErr);
 
-        Rec."Status" := Rec."Status"::Noted;
+        Rec."Resolution Status" := Rec."Resolution Status"::Noted;
         Rec.Modify(true);
     end;
 

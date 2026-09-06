@@ -34,7 +34,7 @@ page 58168 "Meeting Resolution List"
                 {
                     ApplicationArea = All;
                 }
-                field("Status"; Rec."Status")
+                field("Resolution Status"; Rec."Resolution Status")
                 {
                     ApplicationArea = All;
                 }

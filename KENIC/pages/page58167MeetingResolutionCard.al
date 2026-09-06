@@ -12,35 +12,37 @@ page 58167 "Meeting Resolution Card"
         {
             group(General)
             {
-                field("No."; Rec."No.")
+                Caption = 'General';
+
+                field(ControlNo; Rec."No.")
                 {
                     ApplicationArea = All;
                 }
-                field("Title"; Rec."Title")
+                field(ControlTitle; Rec."Title")
                 {
                     ApplicationArea = All;
                 }
-                field("Description"; Rec."Description")
+                field(ControlDescription; Rec."Description")
                 {
                     ApplicationArea = All;
                 }
-                field("Resolution Type"; Rec."Resolution Type")
+                field(ControlResolutionType; Rec."Resolution Type")
                 {
                     ApplicationArea = All;
                 }
-                field("Committee Id"; Rec."Committee Id")
+                field(ControlCommitteeId; Rec."Committee Id")
                 {
                     ApplicationArea = All;
                 }
-                field("Committee Description"; Rec."Committee Description")
+                field(ControlCommitteeDescription; Rec."Committee Description")
                 {
                     ApplicationArea = All;
                 }
-                field("Raised At Meeting Code"; Rec."Raised At Meeting Code")
+                field(ControlRaisedAtMeetingCode; Rec."Raised At Meeting Code")
                 {
                     ApplicationArea = All;
                 }
-                field("Status"; Rec."Status")
+                field(ControlResolutionStatus; Rec."Resolution Status")
                 {
                     ApplicationArea = All;
                 }
@@ -49,48 +51,48 @@ page 58167 "Meeting Resolution Card"
             {
                 Caption = 'Voting';
 
-                field("Majority Type"; Rec."Majority Type")
+                field(ControlMajorityType; Rec."Majority Type")
                 {
                     ApplicationArea = All;
                 }
-                field("Special Majority Percentage"; Rec."Special Majority Percentage")
+                field(ControlSpecialMajorityPercentage; Rec."Special Majority Percentage")
                 {
                     ApplicationArea = All;
                     Editable = Rec."Majority Type" = Rec."Majority Type"::"Special Majority";
                 }
-                field("Voting Meeting Code"; Rec."Voting Meeting Code")
+                field(ControlVotingMeetingCode; Rec."Voting Meeting Code")
                 {
                     ApplicationArea = All;
                 }
-                field("Voting Status"; Rec."Voting Status")
+                field(ControlVotingStatus; Rec."Voting Status")
                 {
                     ApplicationArea = All;
                 }
-                field("Voting Opened At"; Rec."Voting Opened At")
+                field(ControlVotingOpenedAt; Rec."Voting Opened At")
                 {
                     ApplicationArea = All;
                 }
-                field("Voting Closed At"; Rec."Voting Closed At")
+                field(ControlVotingClosedAt; Rec."Voting Closed At")
                 {
                     ApplicationArea = All;
                 }
-                field("Eligible Voters"; Rec."Eligible Voters")
+                field(ControlEligibleVoters; Rec."Eligible Voters")
                 {
                     ApplicationArea = All;
                 }
-                field("For Votes"; Rec."For Votes")
+                field(ControlForVotes; Rec."For Votes")
                 {
                     ApplicationArea = All;
                 }
-                field("Against Votes"; Rec."Against Votes")
+                field(ControlAgainstVotes; Rec."Against Votes")
                 {
                     ApplicationArea = All;
                 }
-                field("Abstain Votes"; Rec."Abstain Votes")
+                field(ControlAbstainVotes; Rec."Abstain Votes")
                 {
                     ApplicationArea = All;
                 }
-                field("Outcome"; Rec."Outcome")
+                field(ControlOutcome; Rec."Outcome")
                 {
                     ApplicationArea = All;
                 }
@@ -119,8 +121,7 @@ page 58167 "Meeting Resolution Card"
                 Caption = 'Escalate to Board';
                 ApplicationArea = All;
                 Image = Approve;
-                Enabled = (Rec."Resolution Type" <> Rec."Resolution Type"::Information) and
-                          (Rec."Status" in [Rec."Status"::Raised, Rec."Status"::"Under Discussion"]);
+                Enabled = CanEscalate;
 
                 trigger OnAction()
                 var
@@ -140,7 +141,7 @@ page 58167 "Meeting Resolution Card"
                 Caption = 'Open Voting';
                 ApplicationArea = All;
                 Image = Start;
-                Enabled = (Rec."Status" = Rec."Status"::Escalated) and (Rec."Voting Status" = Rec."Voting Status"::"Not Started");
+                Enabled = CanOpenVoting;
 
                 trigger OnAction()
                 begin
@@ -153,7 +154,7 @@ page 58167 "Meeting Resolution Card"
                 Caption = 'Close Voting';
                 ApplicationArea = All;
                 Image = Stop;
-                Enabled = Rec."Voting Status" = Rec."Voting Status"::Open;
+                Enabled = CanCloseVoting;
 
                 trigger OnAction()
                 begin
@@ -166,7 +167,7 @@ page 58167 "Meeting Resolution Card"
                 Caption = 'Withdraw';
                 ApplicationArea = All;
                 Image = Cancel;
-                Enabled = Rec."Voting Status" <> Rec."Voting Status"::Closed;
+                Enabled = CanWithdraw;
 
                 trigger OnAction()
                 begin
@@ -179,8 +180,7 @@ page 58167 "Meeting Resolution Card"
                 Caption = 'Mark Noted';
                 ApplicationArea = All;
                 Image = Approve;
-                Enabled = (Rec."Resolution Type" = Rec."Resolution Type"::Information) and
-                          not (Rec."Status" in [Rec."Status"::Approved, Rec."Status"::Rejected, Rec."Status"::Withdrawn, Rec."Status"::Noted]);
+                Enabled = CanMarkNoted;
 
                 trigger OnAction()
                 begin
@@ -190,4 +190,37 @@ page 58167 "Meeting Resolution Card"
             }
         }
     }
+
+    trigger OnAfterGetRecord()
+    begin
+        SetControlStates();
+    end;
+
+    local procedure SetControlStates()
+    begin
+        CanEscalate := (Rec."Resolution Type" <> Rec."Resolution Type"::Information) and
+                       (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]);
+
+        CanOpenVoting := (Rec."Resolution Status" = Rec."Resolution Status"::Escalated) and 
+                         (Rec."Voting Status" = Rec."Voting Status"::"Not Started");
+
+        CanCloseVoting := Rec."Voting Status" = Rec."Voting Status"::Open;
+
+        CanWithdraw := Rec."Voting Status" <> Rec."Voting Status"::Closed;
+
+        CanMarkNoted := (Rec."Resolution Type" = Rec."Resolution Type"::Information) and
+                        not (Rec."Resolution Status" in [
+                            Rec."Resolution Status"::Approved, 
+                            Rec."Resolution Status"::Rejected, 
+                            Rec."Resolution Status"::Withdrawn, 
+                            Rec."Resolution Status"::Noted
+                        ]);
+    end;
+
+    var
+        CanEscalate: Boolean;
+        CanOpenVoting: Boolean;
+        CanCloseVoting: Boolean;
+        CanWithdraw: Boolean;
+        CanMarkNoted: Boolean;
 }
