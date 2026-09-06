@@ -220,6 +220,13 @@ table 58159 "Meeting Resolutions"
             ResolutionVote.DeleteAll(true);
     end;
 
+    /// <summary>
+    /// Escalates the resolution to the Full Board and opens voting in one atomic step: picks up
+    /// the meeting once, generates a ballot for every current Board member, and opens voting
+    /// immediately. There is deliberately no separate "Open Voting" step - once escalated, a
+    /// resolution is posted and its core setup fields (Resolution Type, Committee Id, Majority
+    /// Type, Special Majority Percentage) lock, per the Card's Editable rules.
+    /// </summary>
     procedure EscalateToBoard(FullBoardMeetingCode: Code[20])
     begin
         if Rec."Resolution Type" = Rec."Resolution Type"::Information then
@@ -228,32 +235,21 @@ table 58159 "Meeting Resolutions"
         if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
             Error(CannotEscalateFromStatusErr);
 
-        Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
-        Rec."Posted" := true;
-        Rec.Modify(true);
-
-        LogAction(ActionBuffer."Action Taken"::"Escalated to Board", FullBoardMeetingCode, '');
-    end;
-
-    procedure OpenVoting()
-    begin
-        if Rec."Resolution Status" <> Rec."Resolution Status"::Escalated then
-            Error(MustBeEscalatedErr);
-
-        if Rec."Voting Status" <> Rec."Voting Status"::"Not Started" then
-            Error(VotingAlreadyStartedErr);
-
         if Rec."Majority Type" = Rec."Majority Type"::"Special Majority" then
             Rec.TestField("Special Majority Percentage");
 
         GenerateBoardBallots();
 
+        Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
+        Rec."Posted" := true;
+        Rec.Modify(true);
+        LogAction(ActionBuffer."Action Taken"::"Escalated to Board", FullBoardMeetingCode, '');
+
         Rec."Voting Status" := Rec."Voting Status"::Open;
         Rec."Voting Opened At" := CurrentDateTime();
         Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
         Rec.Modify(true);
-
-        LogAction(ActionBuffer."Action Taken"::"Voting Opened", GetLastKnownMeetingCode(), '');
+        LogAction(ActionBuffer."Action Taken"::"Voting Opened", FullBoardMeetingCode, '');
     end;
 
     procedure CloseVoting()
@@ -387,8 +383,6 @@ table 58159 "Meeting Resolutions"
         ActionBuffer: Record "Resolution Actions";
         InformationCannotEscalateErr: Label 'Information items are never escalated for voting. Use Mark Noted instead.';
         CannotEscalateFromStatusErr: Label 'This resolution cannot be escalated from its current status.';
-        MustBeEscalatedErr: Label 'The resolution must be escalated to the Full Board before voting can be opened.';
-        VotingAlreadyStartedErr: Label 'Voting has already been started for this resolution.';
         VotingNotOpenErr: Label 'Voting is not currently open for this resolution.';
         CannotWithdrawAfterVotingClosedErr: Label 'You cannot withdraw a resolution after voting has closed.';
         OnlyInformationCanBeNotedErr: Label 'Only Information-type resolutions can be marked Noted.';

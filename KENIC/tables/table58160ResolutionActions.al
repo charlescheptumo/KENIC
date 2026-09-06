@@ -55,6 +55,20 @@ table 58160 "Resolution Actions"
             DataClassification = ToBeClassified;
             Editable = false;
         }
+        field(9; "Meeting Title"; Text[250])
+        {
+            Caption = 'Meeting Title';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Board Meetings".Title where(No = field("Meeting Code")));
+            Editable = false;
+        }
+        field(10; "Meeting Description"; Text[250])
+        {
+            Caption = 'Meeting Description';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Board Meetings".Description where(No = field("Meeting Code")));
+            Editable = false;
+        }
     }
 
     keys

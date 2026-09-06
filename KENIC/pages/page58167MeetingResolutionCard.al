@@ -29,10 +29,17 @@ page 58167 "Meeting Resolution Card"
                 field(ControlResolutionType; Rec."Resolution Type")
                 {
                     ApplicationArea = All;
+                    Editable = not Rec."Posted";
+
+                    trigger OnValidate()
+                    begin
+                        SetControlStates();
+                    end;
                 }
                 field(ControlCommitteeId; Rec."Committee Id")
                 {
                     ApplicationArea = All;
+                    Editable = not Rec."Posted";
                 }
                 field(ControlCommitteeDescription; Rec."Committee Description")
                 {
@@ -54,11 +61,17 @@ page 58167 "Meeting Resolution Card"
                 field(ControlMajorityType; Rec."Majority Type")
                 {
                     ApplicationArea = All;
+                    Editable = not Rec."Posted";
+
+                    trigger OnValidate()
+                    begin
+                        SetControlStates();
+                    end;
                 }
                 field(ControlSpecialMajorityPercentage; Rec."Special Majority Percentage")
                 {
                     ApplicationArea = All;
-                    Editable = Rec."Majority Type" = Rec."Majority Type"::"Special Majority";
+                    Editable = SpecialMajorityEditable;
                 }
                 field(ControlVotingStatus; Rec."Voting Status")
                 {
@@ -117,6 +130,7 @@ page 58167 "Meeting Resolution Card"
                 Caption = 'Escalate to Board';
                 ApplicationArea = All;
                 Image = Approve;
+                ToolTip = 'Escalates this resolution to the Full Board and opens voting in one step. This also posts the resolution and locks its type, committee, and majority settings.';
                 Enabled = CanEscalate;
 
                 trigger OnAction()
@@ -129,19 +143,7 @@ page 58167 "Meeting Resolution Card"
                         FullBoardMeetingCode := BoardMeeting.No;
 
                     Rec.EscalateToBoard(FullBoardMeetingCode);
-                    CurrPage.Update(false);
-                end;
-            }
-            action(OpenVoting)
-            {
-                Caption = 'Open Voting';
-                ApplicationArea = All;
-                Image = Start;
-                Enabled = CanOpenVoting;
-
-                trigger OnAction()
-                begin
-                    Rec.OpenVoting();
+                    SetControlStates();
                     CurrPage.Update(false);
                 end;
             }
@@ -155,6 +157,7 @@ page 58167 "Meeting Resolution Card"
                 trigger OnAction()
                 begin
                     Rec.CloseVoting();
+                    SetControlStates();
                     CurrPage.Update(false);
                 end;
             }
@@ -168,6 +171,7 @@ page 58167 "Meeting Resolution Card"
                 trigger OnAction()
                 begin
                     Rec.Withdraw();
+                    SetControlStates();
                     CurrPage.Update(false);
                 end;
             }
@@ -181,24 +185,40 @@ page 58167 "Meeting Resolution Card"
                 trigger OnAction()
                 begin
                     Rec.MarkNoted();
+                    SetControlStates();
                     CurrPage.Update(false);
                 end;
             }
         }
     }
 
+    trigger OnOpenPage()
+    begin
+        SetControlStates();
+    end;
+
     trigger OnAfterGetRecord()
     begin
         SetControlStates();
     end;
 
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        SetControlStates();
+    end;
+
+    /// <summary>
+    /// All conditional Enabled/Editable logic lives here, as plain boolean variables computed in
+    /// code - never as inline "in [...]" expressions directly on a page property. That inline
+    /// pattern is what caused the "identifier 'XxxNN' could not be found" errors earlier; moving
+    /// the same logic into a procedure body avoids it entirely. Called on open, on every record
+    /// change, on every relevant field edit, and explicitly after every action - so the buttons
+    /// never go stale without needing to close and reopen the card.
+    /// </summary>
     local procedure SetControlStates()
     begin
         CanEscalate := (Rec."Resolution Type" <> Rec."Resolution Type"::Information) and
                        (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]);
-
-        CanOpenVoting := (Rec."Resolution Status" = Rec."Resolution Status"::Escalated) and
-                         (Rec."Voting Status" = Rec."Voting Status"::"Not Started");
 
         CanCloseVoting := Rec."Voting Status" = Rec."Voting Status"::Open;
 
@@ -211,12 +231,14 @@ page 58167 "Meeting Resolution Card"
                             Rec."Resolution Status"::Withdrawn,
                             Rec."Resolution Status"::Noted
                         ]);
+
+        SpecialMajorityEditable := (Rec."Majority Type" = Rec."Majority Type"::"Special Majority") and not Rec."Posted";
     end;
 
     var
         CanEscalate: Boolean;
-        CanOpenVoting: Boolean;
         CanCloseVoting: Boolean;
         CanWithdraw: Boolean;
         CanMarkNoted: Boolean;
+        SpecialMajorityEditable: Boolean;
 }
