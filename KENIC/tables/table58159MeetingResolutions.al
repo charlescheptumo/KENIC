@@ -47,12 +47,9 @@ table 58159 "Meeting Resolutions"
             CalcFormula = lookup("Board Committees".Description where(Code = field("Committee Id")));
             Editable = false;
         }
-        field(7; "Raised At Meeting Code"; Code[20])
-        {
-            Caption = 'Raised At Meeting Code';
-            DataClassification = ToBeClassified;
-            TableRelation = "Board Meetings".No;
-        }
+        // field(7; "Raised At Meeting Code") removed - which meeting a resolution was raised or
+        // discussed at is now tracked entirely via Resolution Actions rows (see GetLastKnownMeetingCode),
+        // so it isn't duplicated as a stored header field.
         field(8; "Resolution Status"; Option)
         {
             Caption = 'Resolution Status';
@@ -89,12 +86,10 @@ table 58159 "Meeting Resolutions"
                     Error(CannotChangeAfterVotingStartedErr);
             end;
         }
-        field(11; "Voting Meeting Code"; Code[20])
-        {
-            Caption = 'Voting Meeting Code';
-            DataClassification = ToBeClassified;
-            TableRelation = "Board Meetings".No;
-        }
+        // field(11; "Voting Meeting Code") removed - same reasoning as "Raised At Meeting Code"
+        // above. EscalateToBoard() still accepts a meeting code and logs it on the Resolution
+        // Actions row; later steps (OpenVoting/CloseVoting/Withdraw) look it back up from there
+        // via GetLastKnownMeetingCode() rather than duplicating it in a header field.
         field(12; "Voting Status"; Option)
         {
             Caption = 'Voting Status';
@@ -170,6 +165,15 @@ table 58159 "Meeting Resolutions"
             Editable = false;
             TableRelation = "No. Series";
         }
+        field(23; "Posted"; Boolean)
+        {
+            Caption = 'Posted';
+            DataClassification = ToBeClassified;
+            Editable = false;
+            // Set true the moment the resolution is escalated to the Full Board (see
+            // EscalateToBoard). A simple, always-visible signal that this resolution has left
+            // committee-level discussion, independent of its more granular Resolution Status.
+        }
     }
 
     keys
@@ -224,8 +228,8 @@ table 58159 "Meeting Resolutions"
         if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
             Error(CannotEscalateFromStatusErr);
 
-        Rec."Voting Meeting Code" := FullBoardMeetingCode;
         Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
+        Rec."Posted" := true;
         Rec.Modify(true);
 
         LogAction(ActionBuffer."Action Taken"::"Escalated to Board", FullBoardMeetingCode, '');
@@ -249,7 +253,7 @@ table 58159 "Meeting Resolutions"
         Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
         Rec.Modify(true);
 
-        LogAction(ActionBuffer."Action Taken"::"Voting Opened", Rec."Voting Meeting Code", '');
+        LogAction(ActionBuffer."Action Taken"::"Voting Opened", GetLastKnownMeetingCode(), '');
     end;
 
     procedure CloseVoting()
@@ -275,7 +279,7 @@ table 58159 "Meeting Resolutions"
         Rec.Modify(true);
 
         OutcomeNotes := StrSubstNo(VoteTallyTxt, Rec."For Votes", Rec."Against Votes", Rec."Abstain Votes");
-        LogAction(ActionBuffer."Action Taken"::"Voting Closed", Rec."Voting Meeting Code", OutcomeNotes);
+        LogAction(ActionBuffer."Action Taken"::"Voting Closed", GetLastKnownMeetingCode(), OutcomeNotes);
     end;
 
     procedure Withdraw()
@@ -286,7 +290,7 @@ table 58159 "Meeting Resolutions"
         Rec."Resolution Status" := Rec."Resolution Status"::Withdrawn;
         Rec.Modify(true);
 
-        LogAction(ActionBuffer."Action Taken"::Withdrawn, Rec."Voting Meeting Code", '');
+        LogAction(ActionBuffer."Action Taken"::Withdrawn, GetLastKnownMeetingCode(), '');
     end;
 
     procedure MarkNoted()
@@ -345,6 +349,24 @@ table 58159 "Meeting Resolutions"
                     end;
                 end;
             until CommitteeMember.Next() = 0;
+    end;
+
+    /// <summary>
+    /// Looks up the most recent meeting code logged against this resolution in Resolution
+    /// Actions (typically set when it was escalated). Used so later steps (Open/Close Voting,
+    /// Withdraw) can keep logging against the same meeting without it being duplicated as a
+    /// separate stored field on the header.
+    /// </summary>
+    local procedure GetLastKnownMeetingCode(): Code[20]
+    var
+        ResolutionAction: Record "Resolution Actions";
+    begin
+        ResolutionAction.SetRange("Resolution No.", Rec."No.");
+        ResolutionAction.SetFilter("Meeting Code", '<>%1', '');
+        if ResolutionAction.FindLast() then
+            exit(ResolutionAction."Meeting Code");
+
+        exit('');
     end;
 
     local procedure LogAction(ActionTaken: Option "Discussed & Agreed",Deferred,"Escalated to Board","Voting Opened","Voting Closed",Withdrawn; MeetingCode: Code[20]; Notes: Text[2048])

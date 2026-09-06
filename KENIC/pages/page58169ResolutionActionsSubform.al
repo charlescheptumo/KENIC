@@ -31,6 +31,7 @@ page 58169 "Resolution Actions Subform"
                 field("Action Date"; Rec."Action Date")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Created By"; Rec."Created By")
                 {

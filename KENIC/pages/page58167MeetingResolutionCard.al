@@ -38,11 +38,11 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                 }
-                field(ControlRaisedAtMeetingCode; Rec."Raised At Meeting Code")
+                field(ControlResolutionStatus; Rec."Resolution Status")
                 {
                     ApplicationArea = All;
                 }
-                field(ControlResolutionStatus; Rec."Resolution Status")
+                field(ControlPosted; Rec."Posted")
                 {
                     ApplicationArea = All;
                 }
@@ -59,10 +59,6 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                     Editable = Rec."Majority Type" = Rec."Majority Type"::"Special Majority";
-                }
-                field(ControlVotingMeetingCode; Rec."Voting Meeting Code")
-                {
-                    ApplicationArea = All;
                 }
                 field(ControlVotingStatus; Rec."Voting Status")
                 {
@@ -129,7 +125,7 @@ page 58167 "Meeting Resolution Card"
                     FullBoardMeetingCode: Code[20];
                 begin
                     BoardMeeting.SetRange("Meeting Type", BoardMeeting."Meeting Type"::Board);
-                    if Page.RunModal(0, BoardMeeting) = Action::LookupOK then
+                    if Page.RunModal(Page::"Board Meetings List", BoardMeeting) = Action::LookupOK then
                         FullBoardMeetingCode := BoardMeeting.No;
 
                     Rec.EscalateToBoard(FullBoardMeetingCode);
@@ -201,7 +197,7 @@ page 58167 "Meeting Resolution Card"
         CanEscalate := (Rec."Resolution Type" <> Rec."Resolution Type"::Information) and
                        (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]);
 
-        CanOpenVoting := (Rec."Resolution Status" = Rec."Resolution Status"::Escalated) and 
+        CanOpenVoting := (Rec."Resolution Status" = Rec."Resolution Status"::Escalated) and
                          (Rec."Voting Status" = Rec."Voting Status"::"Not Started");
 
         CanCloseVoting := Rec."Voting Status" = Rec."Voting Status"::Open;
@@ -210,9 +206,9 @@ page 58167 "Meeting Resolution Card"
 
         CanMarkNoted := (Rec."Resolution Type" = Rec."Resolution Type"::Information) and
                         not (Rec."Resolution Status" in [
-                            Rec."Resolution Status"::Approved, 
-                            Rec."Resolution Status"::Rejected, 
-                            Rec."Resolution Status"::Withdrawn, 
+                            Rec."Resolution Status"::Approved,
+                            Rec."Resolution Status"::Rejected,
+                            Rec."Resolution Status"::Withdrawn,
                             Rec."Resolution Status"::Noted
                         ]);
     end;
