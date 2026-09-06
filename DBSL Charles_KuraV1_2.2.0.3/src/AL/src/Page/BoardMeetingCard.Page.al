@@ -185,10 +185,10 @@ Page 55003 "Board Meeting Card"
 
         area(factboxes)
         {
-            part(Attachments; "Doc. Attachment List Factbox")
+            systempart(BoardMeetingLinks; Links)
             {
-                ApplicationArea = Basic;
-                SubPageLink = "Table ID" = const(55002), "No." = field(No);
+               ApplicationArea = RecordLinks;
+                 Caption = 'Board Pack Links';
             }
             systempart(Control22; Notes) { }
         }
@@ -197,7 +197,32 @@ Page 55003 "Board Meeting Card"
     actions
     {
         area(navigation)
+
         {
+            group("Functions")
+            {
+                Caption = 'F&unctions';
+                Image = "Action";
+
+                action(UploadDocument)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Upload Board Pack';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload board pack documents (papers, agenda items) for this meeting to SharePoint.';
+
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        Rec.TestField(No);
+                        DMSManagement.UploadBoardMeetingDocuments(Rec.No, 'Board Meetings', Rec.RecordId);
+                    end;
+                }
+            }
             group(ActionGroup24)
             {
                 action("Board Meeting Attendance")

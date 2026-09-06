@@ -109,7 +109,9 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                 }
+              
             }
+            
             part(History; "Resolution Actions Subform")
             {
                 Caption = 'History';
@@ -123,12 +125,42 @@ page 58167 "Meeting Resolution Card"
                 SubPageLink = "Resolution No." = field("No.");
             }
         }
+        area(factboxes)
+        {
+            systempart(BoardMeetingLinks; Links)
+            {
+                ApplicationArea = RecordLinks;
+                Caption = 'Resolution Document Links';
+            }
+        }
     }
 
     actions
     {
         area(Processing)
         {
+            group("Functions")
+            {
+                Caption = 'F&unctions';
+                Image = "Action";
+                action(UploadDocument)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Upload Resolution Documents';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload supporting papers for this resolution (proposal, amendments, board pack) to SharePoint.';
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        Rec.TestField("No.");
+                        DMSManagement.UploadBoardMeetingDocuments(Rec."No.", 'Meeting Resolutions', Rec.RecordId);
+                    end;
+                }
+            }
             action(EscalateToBoard)
             {
                 Caption = 'Escalate to Board';

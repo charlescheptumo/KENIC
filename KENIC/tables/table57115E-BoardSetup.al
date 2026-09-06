@@ -158,6 +158,12 @@ table 57115 "E-Board Setup"
             ToolTip = 'The folder name within SharePoint/DMS designated for storing E-signature documents.';
         }
 
+        field(112; "Board Meeting DMS Link"; Text[100])
+        {
+            Caption = 'Board Meeting DMS Link';
+            ToolTip = 'The folder name within the document library for board meeting board packs.';
+        }
+
 
     }
 

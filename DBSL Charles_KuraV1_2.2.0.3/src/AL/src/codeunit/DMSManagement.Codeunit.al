@@ -3919,5 +3919,55 @@ begin
     end else
         Error('Failed to upload E-Signature document "%1" to SharePoint.', FileName);
 end;
+
+//Upload board meeting documents (board pack)
+procedure UploadBoardMeetingDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
+var
+    EBoardSetup: Record "E-Board Setup";
+    DocLink: Record "Record Link";
+    SharePointMgt: Codeunit "Sharepoint Management";
+    Docname: Text[250];
+    FileName: Text[250];
+    ServerRelativeFolder: Text;
+    FileInStream: InStream;
+    UploadPromptMsg: Label 'Select the board pack document to upload';
+begin
+    EBoardSetup.GetRecordOnce();
+
+    if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+        exit(false);
+
+    Docname := DocNo;
+    Docname := ConvertStr(Docname, ':', '_');
+    Docname := ConvertStr(Docname, '\', '_');
+    Docname := ConvertStr(Docname, '/', '_');
+
+    ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
+        EBoardSetup."SharePoint Site Link",
+        EBoardSetup."SharePoint Site Main Library",
+        EBoardSetup."SharePoint Document Library",
+        EBoardSetup."Board Meeting DMS Link");
+
+    ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
+    SharePointMgt.CreateFolder(ServerRelativeFolder);
+
+    if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
+        DocLink.Init();
+        DocLink."Link ID" := 0;
+        DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+        DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
+        DocLink.Type := DocLink.Type::Link;
+        DocLink.Company := CompanyName();
+        DocLink."User ID" := UserId();
+        DocLink.Created := CreateDateTime(Today(), Time());
+        DocLink."Record ID" := TabID;
+        DocLink.Insert();
+
+        Message('Board pack document "%1" uploaded to SharePoint successfully.', FileName);
+        exit(true);
+    end else
+        Error('Failed to upload document "%1" to SharePoint.', FileName);
+end;
+
 }
 
