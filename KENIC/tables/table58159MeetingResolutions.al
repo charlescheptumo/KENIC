@@ -110,6 +110,23 @@ table 58159 "Meeting Resolutions"
             DataClassification = ToBeClassified;
             Editable = false;
         }
+        field(24; "Voting Deadline"; DateTime)
+        {
+            // Optional. Editable any time up until voting actually closes - unlike the other
+            // setup fields, extending a deadline for low turnout is a normal thing to want to do
+            // even after voting has opened, so it isn't locked by "Posted".
+            Caption = 'Voting Deadline';
+            DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            begin
+                if Rec."Voting Status" = Rec."Voting Status"::Closed then
+                    Error(CannotChangeDeadlineAfterClosedErr);
+
+                if (Rec."Voting Deadline" <> 0DT) and (Rec."Voting Deadline" <= CurrentDateTime()) then
+                    Error(DeadlineMustBeFutureErr);
+            end;
+        }
         field(15; "Outcome"; Option)
         {
             Caption = 'Outcome';
@@ -384,6 +401,8 @@ table 58159 "Meeting Resolutions"
         InformationCannotEscalateErr: Label 'Information items are never escalated for voting. Use Mark Noted instead.';
         CannotEscalateFromStatusErr: Label 'This resolution cannot be escalated from its current status.';
         VotingNotOpenErr: Label 'Voting is not currently open for this resolution.';
+        CannotChangeDeadlineAfterClosedErr: Label 'You cannot change the voting deadline after voting has closed.';
+        DeadlineMustBeFutureErr: Label 'The voting deadline must be in the future.';
         CannotWithdrawAfterVotingClosedErr: Label 'You cannot withdraw a resolution after voting has closed.';
         OnlyInformationCanBeNotedErr: Label 'Only Information-type resolutions can be marked Noted.';
         AlreadyFinalizedErr: Label 'This resolution has already reached a final status.';

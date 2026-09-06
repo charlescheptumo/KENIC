@@ -81,6 +81,10 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                 }
+                field(ControlVotingDeadline; Rec."Voting Deadline")
+                {
+                    ApplicationArea = All;
+                }
                 field(ControlVotingClosedAt; Rec."Voting Closed At")
                 {
                     ApplicationArea = All;
@@ -193,7 +197,10 @@ page 58167 "Meeting Resolution Card"
     }
 
     trigger OnOpenPage()
+    var
+        DeadlineEnforcer: Codeunit "Resolution Deadline Enforcer";
     begin
+        DeadlineEnforcer.CloseOverdueResolutions();
         SetControlStates();
     end;
 
