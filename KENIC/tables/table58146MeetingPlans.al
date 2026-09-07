@@ -94,7 +94,7 @@ table 58146 "Meeting Plans"
         }
         field(13; "Voting Status"; Option)
         {
-            Caption = 'Voting Status';
+            Caption = 'Poll Status';
             DataClassification = ToBeClassified;
             OptionCaption = 'Not Started,Open,Closed';
             OptionMembers = "Not Started",Open,Closed;
