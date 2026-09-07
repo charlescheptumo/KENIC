@@ -6,7 +6,7 @@ Table 69025 "Posted Leave Days"
 
     fields
     {
-        field(1; "Employee No"; Code[10])
+        field(1; "Employee No"; Code[20])
         {
             TableRelation = Employee;
         }

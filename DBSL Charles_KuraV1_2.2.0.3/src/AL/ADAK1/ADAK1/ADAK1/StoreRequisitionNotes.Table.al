@@ -26,7 +26,7 @@ Table 57026 "Store Requisition Notes"
         {
             DataClassification = ToBeClassified;
         }
-        field(6; "Employee No"; Code[10])
+        field(6; "Employee No"; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = Employee."No.";

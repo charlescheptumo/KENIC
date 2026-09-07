@@ -480,7 +480,7 @@ TableExtension 50013 tableextension50013 extends "Purchase Line"
             FieldClass = FlowField;
             Editable = false;
         }
-        field(50028; "Employee No"; Code[10])
+        field(50028; "Employee No"; Code[20])
         {
             TableRelation = Employee."No.";
             trigger OnValidate()

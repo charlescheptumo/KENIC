@@ -9,7 +9,7 @@ Table 69055 "Employee Transfers"
             AutoIncrement = true;
             DataClassification = ToBeClassified;
         }
-        field(2; "Employee No"; Code[10])
+        field(2; "Employee No"; Code[20])
         {
             DataClassification = ToBeClassified;
         }

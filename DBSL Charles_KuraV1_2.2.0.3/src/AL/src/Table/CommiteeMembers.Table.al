@@ -13,7 +13,7 @@ Table 70027 "Commitee Members"
             NotBlank = false;
             TableRelation = "Procurement Committee";
         }
-        field(3; "Employee No"; Code[10])
+        field(3; "Employee No"; Code[20])
         {
             NotBlank = true;
             TableRelation = Employee;
