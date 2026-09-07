@@ -188,7 +188,7 @@ Table 69070 "Temporary Employee"
                 PostCode.CheckClearPostCodeCityCounty(City, "Post Code", County, "Country/Region Code", xRec."Country/Region Code");
             end;
         }
-        field(26; "Manager No."; Code[10])
+        field(26; "Manager No."; Code[20])
         {
             Caption = 'Manager No.';
             TableRelation = Employee;

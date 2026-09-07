@@ -6,7 +6,7 @@ Table 69017 "Balance adjustments"
 
     fields
     {
-        field(1; "Employee Number"; Code[10])
+        field(1; "Employee Number"; Code[20])
         {
             NotBlank = true;
             TableRelation = Employee."No.";

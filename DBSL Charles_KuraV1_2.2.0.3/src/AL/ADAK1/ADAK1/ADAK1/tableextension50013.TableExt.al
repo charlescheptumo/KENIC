@@ -606,7 +606,7 @@ TableExtension 50013 tableextension50013 extends "Purchase Line"
         field(50038; "Include in Purch. Order"; Boolean)
         {
         }
-        field(50039; "Request-By No."; Code[10])
+        field(50039; "Request-By No."; Code[20])
         {
             TableRelation = Employee."No.";
             trigger OnValidate()

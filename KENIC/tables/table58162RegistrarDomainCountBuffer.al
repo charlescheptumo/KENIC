@@ -2,6 +2,7 @@ table 58162 "Registrar Domain Count Buffer"
 {
     Caption = 'Registrar Domain Count Buffer';
     DataClassification = ToBeClassified;
+    TableType = Temporary; 
 
     fields
     {
