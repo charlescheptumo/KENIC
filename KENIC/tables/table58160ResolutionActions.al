@@ -20,8 +20,7 @@ table 58160 "Resolution Actions"
         }
         field(3; "Meeting Code"; Code[20])
         {
-            // The specific meeting (committee or Full Board) this discussion/action happened at.
-            // Optional - a manual "logged after the fact" note doesn't strictly need one.
+           
             Caption = 'Meeting Code';
             DataClassification = ToBeClassified;
             TableRelation = "Board Meetings".No;

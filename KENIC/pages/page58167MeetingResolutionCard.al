@@ -246,14 +246,7 @@ page 58167 "Meeting Resolution Card"
         SetControlStates();
     end;
 
-    /// <summary>
-    /// All conditional Enabled/Editable logic lives here, as plain boolean variables computed in
-    /// code - never as inline "in [...]" expressions directly on a page property. That inline
-    /// pattern is what caused the "identifier 'XxxNN' could not be found" errors earlier; moving
-    /// the same logic into a procedure body avoids it entirely. Called on open, on every record
-    /// change, on every relevant field edit, and explicitly after every action - so the buttons
-    /// never go stale without needing to close and reopen the card.
-    /// </summary>
+  
     local procedure SetControlStates()
     begin
         CanEscalate := (Rec."Resolution Type" <> Rec."Resolution Type"::Information) and

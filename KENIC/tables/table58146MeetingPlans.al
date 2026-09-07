@@ -161,9 +161,7 @@ table 58146 "Meeting Plans"
                 if not BoardMeeting.Get(Rec."Meeting Code") then
                     exit;
 
-                // Auto-populate from the linked Board Meeting, mirroring how selecting a
-                // Committee auto-populates its members. Only fills blanks - never overwrites
-                // values the user already entered by hand.
+              
                 if Rec."Title" = '' then
                     Rec."Title" := BoardMeeting.Title;
 
@@ -224,10 +222,7 @@ table 58146 "Meeting Plans"
             DatePoll.DeleteAll(true);
     end;
 
-    /// <summary>
-    /// Generates one poll row per eligible committee member for a single Meeting Date Option.
-    /// Called from Meeting Date Options.OnInsert whenever a new proposed date is added.
-    /// </summary>
+    
     procedure CreatePollsForOption(OptionId: Integer)
     var
         CommitteeMember: Record "Committee Board Members";
@@ -244,13 +239,7 @@ table 58146 "Meeting Plans"
             until CommitteeMember.Next() = 0;
     end;
 
-    /// <summary>
-    /// Re-syncs the per-option poll rows for every date option that already exists, whenever
-    /// "Committee Id" changes on the Meeting Plan. Does NOT populate any members by itself -
-    /// members are only ever generated per proposed date, via CreatePollsForOption (called from
-    /// Meeting Date Options.OnInsert). If no dates exist yet, this simply clears old votes and
-    /// does nothing else; members will appear once dates are typed in.
-    /// </summary>
+   
     local procedure SyncCommitteeMembers()
     var
         DateOption: Record "Meeting Date Options";
@@ -266,7 +255,7 @@ table 58146 "Meeting Plans"
                 if not Confirm(ConfirmCommitteeChangeQst, false) then
                     Error(CommitteeChangeAbortedErr);
 
-        // Wipe every existing poll row for this plan (old committee's votes no longer apply).
+      
         DatePoll.Reset();
         DatePoll.SetRange("Meeting Plan Id", Rec."Id");
         if not DatePoll.IsEmpty() then
@@ -275,8 +264,6 @@ table 58146 "Meeting Plans"
         if Rec."Committee Id" = '' then
             exit;
 
-        // Regenerate per-option poll rows for every date option that already exists, against
-        // the new committee. If no date options exist yet, this loop simply does nothing.
         DateOption.Reset();
         DateOption.SetRange("Meeting Plan Id", Rec."Id");
         if DateOption.FindSet() then
@@ -285,10 +272,7 @@ table 58146 "Meeting Plans"
             until DateOption.Next() = 0;
     end;
 
-    /// <summary>
-    /// Shared insert used when generating per-date poll rows. Idempotent: does nothing if a row
-    /// for this plan/option/member already exists.
-    /// </summary>
+   
     local procedure InsertPollRowIfMissing(OptionId: Integer; MemberNo: Code[20]; MemberName: Text[250])
     var
         DatePoll: Record "Meeting Date Polls";
@@ -309,11 +293,7 @@ table 58146 "Meeting Plans"
         DatePoll.Insert(false);
     end;
 
-    /// <summary>
-    /// Opens the poll for voting. Requires a committee, at least two date options, and that
-    /// polls have already been generated for every option (they are generated automatically
-    /// as each option is inserted, so this mainly validates and stamps the open time).
-    /// </summary>
+   
     procedure OpenPoll()
     var
         DateOption: Record "Meeting Date Options";
@@ -332,10 +312,7 @@ table 58146 "Meeting Plans"
         Rec.Modify(true);
     end;
 
-    /// <summary>
-    /// Closes the poll. If a single date option has the strictly highest vote count it is
-    /// selected automatically; otherwise the caller must resolve the tie with SelectWinningDate.
-    /// </summary>
+    
     procedure ClosePoll()
     var
         WinningOptionId: Integer;
@@ -358,10 +335,7 @@ table 58146 "Meeting Plans"
             Message(TieDetectedMsg);
     end;
 
-    /// <summary>
-    /// Manually sets (or overrides) the winning date option, for use when ClosePoll() reported
-    /// a tie, or when the chairperson wants to override the calculated result.
-    /// </summary>
+   
     procedure SelectWinningDate(OptionId: Integer)
     var
         DateOption: Record "Meeting Date Options";
@@ -379,10 +353,6 @@ table 58146 "Meeting Plans"
         SyncConfirmedDateToMeeting();
     end;
 
-    /// <summary>
-    /// Finds the date option(s) with the highest Vote Count. Sets IsTie := true when two or
-    /// more options share the maximum, in which case WinningOptionId is not meaningful.
-    /// </summary>
     local procedure DetermineWinningOption(var WinningOptionId: Integer; var IsTie: Boolean)
     var
         DateOption: Record "Meeting Date Options";
@@ -410,12 +380,6 @@ table 58146 "Meeting Plans"
         IsTie := TieCount > 1;
     end;
 
-    /// <summary>
-    /// Pushes the winning date option's date/time/venue into the linked Board Meeting and marks
-    /// it confirmed. Called from ClosePoll (automatic winner) and SelectWinningDate (manual
-    /// tie-break or override). Does nothing if this plan isn't linked to a Board Meeting, or if
-    /// no winner has been selected yet.
-    /// </summary>
     local procedure SyncConfirmedDateToMeeting()
     var
         BoardMeeting: Record "Board Meetings";

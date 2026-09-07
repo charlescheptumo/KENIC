@@ -27,10 +27,7 @@ page 58169 "Resolution Actions Subform"
                 field("Action Taken"; Rec."Action Taken")
                 {
                     ApplicationArea = All;
-                    // Only locked for rows the system logged automatically (Escalated to Board,
-                    // Voting Opened, Voting Closed, Withdrawn). A manually added row - which
-                    // always starts as "Discussed & Agreed" by default - stays editable so it can
-                    // be switched to "Deferred" if that's what actually happened.
+                   
                     Editable = not IsSystemGenerated;
                 }
                 field("Chaired By"; Rec."Chaired By")

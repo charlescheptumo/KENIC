@@ -47,9 +47,7 @@ table 58159 "Meeting Resolutions"
             CalcFormula = lookup("Board Committees".Description where(Code = field("Committee Id")));
             Editable = false;
         }
-        // field(7; "Raised At Meeting Code") removed - which meeting a resolution was raised or
-        // discussed at is now tracked entirely via Resolution Actions rows (see GetLastKnownMeetingCode),
-        // so it isn't duplicated as a stored header field.
+     
         field(8; "Resolution Status"; Option)
         {
             Caption = 'Resolution Status';
@@ -86,10 +84,7 @@ table 58159 "Meeting Resolutions"
                     Error(CannotChangeAfterVotingStartedErr);
             end;
         }
-        // field(11; "Voting Meeting Code") removed - same reasoning as "Raised At Meeting Code"
-        // above. EscalateToBoard() still accepts a meeting code and logs it on the Resolution
-        // Actions row; later steps (OpenVoting/CloseVoting/Withdraw) look it back up from there
-        // via GetLastKnownMeetingCode() rather than duplicating it in a header field.
+        
         field(12; "Voting Status"; Option)
         {
             Caption = 'Voting Status';
@@ -112,9 +107,7 @@ table 58159 "Meeting Resolutions"
         }
         field(24; "Voting Deadline"; DateTime)
         {
-            // Optional. Editable any time up until voting actually closes - unlike the other
-            // setup fields, extending a deadline for low turnout is a normal thing to want to do
-            // even after voting has opened, so it isn't locked by "Posted".
+           
             Caption = 'Voting Deadline';
             DataClassification = ToBeClassified;
 
@@ -187,9 +180,7 @@ table 58159 "Meeting Resolutions"
             Caption = 'Posted';
             DataClassification = ToBeClassified;
             Editable = false;
-            // Set true the moment the resolution is escalated to the Full Board (see
-            // EscalateToBoard). A simple, always-visible signal that this resolution has left
-            // committee-level discussion, independent of its more granular Resolution Status.
+           
         }
     }
 
@@ -237,13 +228,7 @@ table 58159 "Meeting Resolutions"
             ResolutionVote.DeleteAll(true);
     end;
 
-    /// <summary>
-    /// Escalates the resolution to the Full Board and opens voting in one atomic step: picks up
-    /// the meeting once, generates a ballot for every current Board member, and opens voting
-    /// immediately. There is deliberately no separate "Open Voting" step - once escalated, a
-    /// resolution is posted and its core setup fields (Resolution Type, Committee Id, Majority
-    /// Type, Special Majority Percentage) lock, per the Card's Editable rules.
-    /// </summary>
+  
     procedure EscalateToBoard(FullBoardMeetingCode: Code[20])
     begin
         if Rec."Resolution Type" = Rec."Resolution Type"::Information then
@@ -364,12 +349,7 @@ table 58159 "Meeting Resolutions"
             until CommitteeMember.Next() = 0;
     end;
 
-    /// <summary>
-    /// Looks up the most recent meeting code logged against this resolution in Resolution
-    /// Actions (typically set when it was escalated). Used so later steps (Open/Close Voting,
-    /// Withdraw) can keep logging against the same meeting without it being duplicated as a
-    /// separate stored field on the header.
-    /// </summary>
+   
     local procedure GetLastKnownMeetingCode(): Code[20]
     var
         ResolutionAction: Record "Resolution Actions";
