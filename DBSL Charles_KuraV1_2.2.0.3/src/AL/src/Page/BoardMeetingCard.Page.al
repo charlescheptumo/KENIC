@@ -16,6 +16,7 @@ Page 55003 "Board Meeting Card"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the No field.';
+                    Editable = false;
                 }
                 field(Title; Rec.Title)
                 {

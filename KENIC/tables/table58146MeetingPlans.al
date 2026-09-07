@@ -141,40 +141,11 @@ table 58146 "Meeting Plans"
         }
         field(19; "Meeting Code"; Code[20])
         {
+         
             Caption = 'Meeting Code';
             DataClassification = ToBeClassified;
+            Editable = false;
             TableRelation = "Board Meetings".No;
-
-            trigger OnValidate()
-            var
-                BoardMeeting: Record "Board Meetings";
-            begin
-                if Rec."Meeting Code" = xRec."Meeting Code" then
-                    exit;
-
-                if (xRec."Meeting Code" <> '') and (Rec."Voting Status" <> Rec."Voting Status"::"Not Started") then
-                    Error(CannotChangeMeetingErr);
-
-                if Rec."Meeting Code" = '' then
-                    exit;
-
-                if not BoardMeeting.Get(Rec."Meeting Code") then
-                    exit;
-
-              
-                if Rec."Title" = '' then
-                    Rec."Title" := BoardMeeting.Title;
-
-                if BoardMeeting."Meeting group Code" <> '' then
-                    Rec.Validate("Committee Id", BoardMeeting."Meeting group Code");
-
-                if BoardMeeting."Start date" <> 0D then begin
-                    if Rec."Year" = 0 then
-                        Rec."Year" := Date2DMY(BoardMeeting."Start date", 3);
-                    if Rec."Quarter" = Rec."Quarter"::" " then
-                        Rec."Quarter" := GetQuarter(BoardMeeting."Start date");
-                end;
-            end;
         }
     }
 
@@ -222,7 +193,7 @@ table 58146 "Meeting Plans"
             DatePoll.DeleteAll(true);
     end;
 
-    
+
     procedure CreatePollsForOption(OptionId: Integer)
     var
         CommitteeMember: Record "Committee Board Members";
@@ -239,7 +210,7 @@ table 58146 "Meeting Plans"
             until CommitteeMember.Next() = 0;
     end;
 
-   
+
     local procedure SyncCommitteeMembers()
     var
         DateOption: Record "Meeting Date Options";
@@ -255,7 +226,7 @@ table 58146 "Meeting Plans"
                 if not Confirm(ConfirmCommitteeChangeQst, false) then
                     Error(CommitteeChangeAbortedErr);
 
-      
+
         DatePoll.Reset();
         DatePoll.SetRange("Meeting Plan Id", Rec."Id");
         if not DatePoll.IsEmpty() then
@@ -272,7 +243,7 @@ table 58146 "Meeting Plans"
             until DateOption.Next() = 0;
     end;
 
-   
+
     local procedure InsertPollRowIfMissing(OptionId: Integer; MemberNo: Code[20]; MemberName: Text[250])
     var
         DatePoll: Record "Meeting Date Polls";
@@ -293,7 +264,7 @@ table 58146 "Meeting Plans"
         DatePoll.Insert(false);
     end;
 
-   
+
     procedure OpenPoll()
     var
         DateOption: Record "Meeting Date Options";
@@ -312,7 +283,7 @@ table 58146 "Meeting Plans"
         Rec.Modify(true);
     end;
 
-    
+
     procedure ClosePoll()
     var
         WinningOptionId: Integer;
@@ -335,7 +306,7 @@ table 58146 "Meeting Plans"
             Message(TieDetectedMsg);
     end;
 
-   
+
     procedure SelectWinningDate(OptionId: Integer)
     var
         DateOption: Record "Meeting Date Options";
@@ -380,29 +351,45 @@ table 58146 "Meeting Plans"
         IsTie := TieCount > 1;
     end;
 
+   
     local procedure SyncConfirmedDateToMeeting()
     var
         BoardMeeting: Record "Board Meetings";
         WinningOption: Record "Meeting Date Options";
     begin
-        if (Rec."Meeting Code" = '') or (Rec."Selected Meeting Date Option Id" = 0) then
+        if Rec."Selected Meeting Date Option Id" = 0 then
             exit;
 
-        if not BoardMeeting.Get(Rec."Meeting Code") then
-            exit;
+        if Rec."Meeting Code" <> '' then
+            exit; 
 
         if not WinningOption.Get(Rec."Id", Rec."Selected Meeting Date Option Id") then
             exit;
 
+        if Rec."Year" = 0 then
+            Rec."Year" := Date2DMY(WinningOption."Proposed Date", 3);
+        if Rec."Quarter" = Rec."Quarter"::" " then
+            Rec."Quarter" := GetQuarter(WinningOption."Proposed Date");
+
+        BoardMeeting.Init();
+        BoardMeeting.Insert(true); 
+
+        if Rec."Committee Id" <> '' then
+            BoardMeeting.Validate("Meeting group Code", Rec."Committee Id"); 
+
+        BoardMeeting.Title := Rec."Title";
+        BoardMeeting.Description := Rec."Description";
         BoardMeeting."Start date" := WinningOption."Proposed Date";
         BoardMeeting."Start time" := WinningOption."Start Time";
         BoardMeeting."End Date" := WinningOption."Proposed Date";
         BoardMeeting."End time" := WinningOption."End Time";
         if WinningOption."Venue" <> '' then
             BoardMeeting."Venue/Location" := WinningOption."Venue";
-
         BoardMeeting."Date Confirmed" := true;
         BoardMeeting.Modify(true);
+
+        Rec."Meeting Code" := BoardMeeting.No;
+        Rec.Modify(true);
     end;
 
     local procedure GetQuarter(ForDate: Date): Option " ",Q1,Q2,Q3,Q4
@@ -428,7 +415,6 @@ table 58146 "Meeting Plans"
         ConfirmCommitteeChangeQst: Label 'Changing the Committee will reset existing vote records. Continue?';
         CommitteeChangeAbortedErr: Label 'Committee change aborted.';
         CannotChangeCommitteeErr: Label 'You cannot change the Committee once voting has started or closed.';
-        CannotChangeMeetingErr: Label 'You cannot change the linked Board Meeting once voting has started or closed.';
         CannotChangeVoteModeErr: Label 'You cannot change the voting mode once voting has started or closed.';
         PollAlreadyStartedErr: Label 'The poll has already been started for this Meeting Plan.';
         NeedAtLeastTwoDatesErr: Label 'At least two proposed dates are required before opening the poll.';

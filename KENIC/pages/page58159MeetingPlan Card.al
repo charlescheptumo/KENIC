@@ -15,6 +15,7 @@ page 58159 "Meeting Plan Card"
                 field("Id"; Rec."Id")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Title"; Rec."Title")
                 {
@@ -31,6 +32,7 @@ page 58159 "Meeting Plan Card"
                 field("Meeting Code"; Rec."Meeting Code")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Year"; Rec."Year")
                 {
