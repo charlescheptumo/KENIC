@@ -2,7 +2,7 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
 {
     actions
     {
-       
+
         addafter("Registry Data Integration")
         {
             group("Manual Domain Transactions")
@@ -23,7 +23,7 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     Caption = 'Receipts List';
                     ToolTip = 'Open the Receipts page.';
 
-                    RunObject = page "Receipts List"; 
+                    RunObject = page "Receipts List";
                 }
                 action("Sales Credit Memos")
                 {
@@ -32,7 +32,38 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     ToolTip = 'Open the Sales Credit Memos page.';
                     RunObject = page "Sales Credit Memos";
                 }
+                action("Payment Voucher")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Voucher';
+                    ToolTip = 'Open the Payment Voucher.';
+                    RunObject = page "Payments List";
+                }
             }
+            group("Registry reports")
+            {
+                Caption = 'Registry reports';
+                // ToolTip = 'Manage .';
+
+                action("Domain Registration")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Domain Registrations Report';
+                    ToolTip = 'View domain registration counts by registrar for a selected year.';
+                    Image = "Report";
+                    RunObject = report "Domain Registrations Report";
+                }
+
+                action("Domain Renewal")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Domain Renewals Report';
+                    ToolTip = 'View domain renewal counts by registrar for a selected year.';
+                    Image = "Report";
+                    RunObject = report "Domain Renewals Report";
+                }
+            }
+
         }
     }
 }
