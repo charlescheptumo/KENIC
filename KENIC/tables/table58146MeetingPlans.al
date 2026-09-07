@@ -141,7 +141,7 @@ table 58146 "Meeting Plans"
         }
         field(19; "Meeting Code"; Code[20])
         {
-         
+
             Caption = 'Meeting Code';
             DataClassification = ToBeClassified;
             Editable = false;
@@ -351,7 +351,7 @@ table 58146 "Meeting Plans"
         IsTie := TieCount > 1;
     end;
 
-   
+ 
     local procedure SyncConfirmedDateToMeeting()
     var
         BoardMeeting: Record "Board Meetings";
@@ -372,10 +372,7 @@ table 58146 "Meeting Plans"
             Rec."Quarter" := GetQuarter(WinningOption."Proposed Date");
 
         BoardMeeting.Init();
-        BoardMeeting.Insert(true); 
-
-        if Rec."Committee Id" <> '' then
-            BoardMeeting.Validate("Meeting group Code", Rec."Committee Id"); 
+        BoardMeeting.Insert(true);  
 
         BoardMeeting.Title := Rec."Title";
         BoardMeeting.Description := Rec."Description";
@@ -386,6 +383,12 @@ table 58146 "Meeting Plans"
         if WinningOption."Venue" <> '' then
             BoardMeeting."Venue/Location" := WinningOption."Venue";
         BoardMeeting."Date Confirmed" := true;
+
+        BoardMeeting.Modify(true);
+
+        if Rec."Committee Id" <> '' then
+            BoardMeeting.Validate("Meeting group Code", Rec."Committee Id");
+
         BoardMeeting.Modify(true);
 
         Rec."Meeting Code" := BoardMeeting.No;
