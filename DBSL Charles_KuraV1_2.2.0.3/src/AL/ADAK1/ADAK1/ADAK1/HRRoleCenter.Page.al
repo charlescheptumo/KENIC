@@ -2026,7 +2026,7 @@ page 60002 "HR Role Center"
                         }
                         group("360 Degree-Appraisal")
                         {
-                            Visible = false;
+                            Visible = true;
                             action("360 Degree Appraisals")
                             {
                                 ApplicationArea = BasicHR;
