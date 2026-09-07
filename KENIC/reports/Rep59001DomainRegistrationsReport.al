@@ -4,7 +4,7 @@ report 59001 "Domain Registrations Report"
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
     DefaultLayout = RDLC;
-    //RDLCLayout = './KENIC/layout/Rep59001DomainRegistrations.rdlc';
+    RDLCLayout = './KENIC/layout/Rep59001DomainRegistrations.rdlc';
 
     dataset
     {

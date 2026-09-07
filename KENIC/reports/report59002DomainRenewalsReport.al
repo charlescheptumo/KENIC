@@ -4,7 +4,7 @@ report 59002 "Domain Renewals Report"
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
     DefaultLayout = RDLC;
-    //RDLCLayout = './KENIC/layout/Rep59002DomainRenewals.rdlc';
+    RDLCLayout = './KENIC/layout/Rep59002DomainRenewals.rdlc';
 
     dataset
     {

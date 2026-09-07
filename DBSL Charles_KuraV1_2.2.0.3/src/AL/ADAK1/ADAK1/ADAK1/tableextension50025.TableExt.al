@@ -386,7 +386,7 @@ TableExtension 50025 "tableextension50025" extends "Purch. Inv. Line"
             FieldClass = FlowField;
             Editable = false;
         }
-        field(50028; "Employee No"; Code[10])
+        field(50028; "Employee No"; Code[20])
         {
             TableRelation = Employee."No.";
         }
