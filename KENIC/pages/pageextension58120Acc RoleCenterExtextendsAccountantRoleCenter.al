@@ -23,7 +23,7 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     Caption = 'Receipts List';
                     ToolTip = 'Open the Receipts page.';
 
-                    RunObject = page "Cash Receipt Journal"; 
+                    RunObject = page "Receipts List"; 
                 }
                 action("Sales Credit Memos")
                 {
