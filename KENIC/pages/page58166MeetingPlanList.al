@@ -18,11 +18,17 @@ page 58166 "Meeting Plan List"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Committee Id"; Rec."Committee Id")
+                {
+                    ApplicationArea = All;
+                }
                 field("Title"; Rec."Title")
                 {
                     ApplicationArea = All;
                 }
-                field("Committee Id"; Rec."Committee Id")
+
+                field("Quarter"; Rec."Quarter")
                 {
                     ApplicationArea = All;
                 }
@@ -30,11 +36,7 @@ page 58166 "Meeting Plan List"
                 {
                     ApplicationArea = All;
                 }
-                field("Quarter"; Rec."Quarter")
-                {
-                    ApplicationArea = All;
-                }
-                field("Voting Status"; Rec."Voting Status")
+                field("Poll Status"; Rec."Voting Status")
                 {
                     ApplicationArea = All;
                 }
@@ -42,7 +44,7 @@ page 58166 "Meeting Plan List"
                 {
                     ApplicationArea = All;
                 }
-                field("Status"; Rec."Status")
+                field("Posted"; Rec.Posted)
                 {
                     ApplicationArea = All;
                 }

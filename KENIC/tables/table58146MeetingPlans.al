@@ -141,7 +141,9 @@ table 58146 "Meeting Plans"
         }
         field(19; "Meeting Code"; Code[20])
         {
-
+            // No longer a manual input. Set automatically by SyncConfirmedDateToMeeting() the
+            // moment a winning date is determined (poll close, or manual tie-break) - shows
+            // which Board Meeting was auto-generated from this plan. Never set by the user.
             Caption = 'Meeting Code';
             DataClassification = ToBeClassified;
             Editable = false;
@@ -351,8 +353,7 @@ table 58146 "Meeting Plans"
         IsTie := TieCount > 1;
     end;
 
- 
-    local procedure SyncConfirmedDateToMeeting()
+       local procedure SyncConfirmedDateToMeeting()
     var
         BoardMeeting: Record "Board Meetings";
         WinningOption: Record "Meeting Date Options";
@@ -372,7 +373,7 @@ table 58146 "Meeting Plans"
             Rec."Quarter" := GetQuarter(WinningOption."Proposed Date");
 
         BoardMeeting.Init();
-        BoardMeeting.Insert(true);  
+        BoardMeeting.Insert(true); 
 
         BoardMeeting.Title := Rec."Title";
         BoardMeeting.Description := Rec."Description";
@@ -384,10 +385,17 @@ table 58146 "Meeting Plans"
             BoardMeeting."Venue/Location" := WinningOption."Venue";
         BoardMeeting."Date Confirmed" := true;
 
+
         BoardMeeting.Modify(true);
 
-        if Rec."Committee Id" <> '' then
+        if Rec."Committee Id" <> '' then begin
+            
             BoardMeeting.Validate("Meeting group Code", Rec."Committee Id");
+            BoardMeeting.Modify(true); 
+
+           
+            BoardMeeting.Validate("Meeting group Code", Rec."Committee Id");
+        end;
 
         BoardMeeting.Modify(true);
 

@@ -17,26 +17,31 @@ Page 55009 "Board Meeting Attendance"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the Meeting Code.';
+                    Visible = false;
                 }
                 field("Meeting Name"; Rec."Meeting Name")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the Meeting Name.';
+                    Visible = false;
                 }
                 field("Meeting Date"; Rec."Meeting Date")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the Meeting Date.';
+                    Visible = false;
                 }
                 field("Commitee No"; Rec."Commitee No")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the Committee No.';
+                    Visible = false;
                 }
                 field("Committee  Name"; Rec."Committee  Name")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the Committee Name.';
+                    Visible = false;
                 }
                 field("Member No"; Rec."Member No")
                 {
@@ -72,6 +77,7 @@ Page 55009 "Board Meeting Attendance"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'The virtual meeting link, for members attending virtually.';
+                    Visible = false;
                 }
                 field(Venue; Rec.Venue)
                 {
