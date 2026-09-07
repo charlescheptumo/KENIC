@@ -50,7 +50,7 @@ Table 60008 "Visitors Management"
         {
             DataClassification = ToBeClassified;
         }
-        field(5; "Drivers Number"; Code[10])
+        field(5; "Drivers Number"; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = if ("Vehicle Owner Type" = const("Company Vehicle")) "Vehicle Drivers".Driver
