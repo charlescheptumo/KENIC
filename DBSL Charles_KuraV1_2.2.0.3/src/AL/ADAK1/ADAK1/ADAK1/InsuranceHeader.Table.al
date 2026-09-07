@@ -20,7 +20,7 @@ Table 69739 "Insurance Header"
         {
             DataClassification = ToBeClassified;
         }
-        field(3; "Employee No."; Code[10])
+        field(3; "Employee No."; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = Employee."No.";

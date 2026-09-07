@@ -128,7 +128,7 @@ Table 56060 "ICT Inventory"
             Editable = false;
             FieldClass = FlowField;
         }
-        field(15; "Current Assigned Employee"; Code[10])
+        field(15; "Current Assigned Employee"; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = Employee."No." where(Status = const(Active));

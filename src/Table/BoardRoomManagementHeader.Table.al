@@ -15,7 +15,7 @@ Table 50030 "Board Room Management Header"
             DataClassification = ToBeClassified;
             Editable = false;
         }
-        field(3; "Employee No"; Code[10])
+        field(3; "Employee No"; Code[20])
         {
             DataClassification = ToBeClassified;
             Editable = true;

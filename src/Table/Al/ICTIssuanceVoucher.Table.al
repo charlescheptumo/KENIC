@@ -32,7 +32,7 @@ Table 56061 "ICT Issuance Voucher"
                 end;
             end;
         }
-        field(3; "Issued To No."; Code[10])
+        field(3; "Issued To No."; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = Employee."No.";
