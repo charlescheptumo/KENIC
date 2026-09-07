@@ -16,76 +16,98 @@ Page 55009 "Board Meeting Attendance"
                 field("Meeting Code"; Rec."Meeting Code")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
                     ToolTip = 'Specifies the Meeting Code.';
-                }
-                field("Member No"; Rec."Member No")
-                {
-                    ApplicationArea = Basic;
-                    Editable = true;
-                    ToolTip = 'Specifies the Member No.';
-                }
-                field("Member Name"; Rec."Member Name")
-                {
-                    ApplicationArea = Basic;
-                    Editable = true;
-                    ToolTip = 'Specifies the Member Name.';
-                }
-                field("Commitee No"; Rec."Commitee No")
-                {
-                    ApplicationArea = Basic;
-                    Editable = true;
-                    ToolTip = 'Specifies the Committee No.';
-                }
-                field("Committee  Name"; Rec."Committee  Name")
-                {
-                    ApplicationArea = Basic;
-                    Editable = true;
-                    ToolTip = 'Specifies the Committee Name.';
                 }
                 field("Meeting Name"; Rec."Meeting Name")
                 {
                     ApplicationArea = Basic;
-                    Editable = true;
                     ToolTip = 'Specifies the Meeting Name.';
                 }
                 field("Meeting Date"; Rec."Meeting Date")
                 {
                     ApplicationArea = Basic;
-                    Editable = true;
                     ToolTip = 'Specifies the Meeting Date.';
                 }
-                field(Venue; Rec.Venue)
+                field("Commitee No"; Rec."Commitee No")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
-                    visible = false;
-                    ToolTip = 'Specifies the Venue.';
+                    ToolTip = 'Specifies the Committee No.';
                 }
-                field(Attendance; Rec.Attendance)
+                field("Committee  Name"; Rec."Committee  Name")
                 {
                     ApplicationArea = Basic;
-                    Editable = true;
-                    Visible = false;
-                    ToolTip = 'Specifies the Attendance status.';
+                    ToolTip = 'Specifies the Committee Name.';
+                }
+                field("Member No"; Rec."Member No")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the Member No. Cannot be changed once the line is created - delete and re-add if the wrong member was picked.';
+                }
+                field("Member Name"; Rec."Member Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the Member Name.';
                 }
                 field("Attendance Confirmation"; Rec."Attendance Confirmation")
                 {
                     ApplicationArea = Basic;
-                    Editable = true;
-                    Visible = false;
-                    ToolTip = 'Specifies the Attendance Confirmation.';
+                    ToolTip = 'Specifies whether the member confirmed in advance that they would attend.';
+                }
+                field(Attendance; Rec.Attendance)
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies whether the member was actually present, sent apologies, or was absent.';
+                }
+                field("Attendance Mode"; Rec."Attendance Mode")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies whether the member attended in person or virtually.';
                 }
                 field("Has Attended"; Rec."Has Attended")
                 {
                     ApplicationArea = Basic;
-                    Editable = true;
+                    ToolTip = 'Derived automatically from Attendance = Present. Cannot be set directly.';
+                }
+                field("Online Meeting Link"; Rec."Online Meeting Link")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'The virtual meeting link, for members attending virtually.';
+                }
+                field(Venue; Rec.Venue)
+                {
+                    ApplicationArea = Basic;
                     Visible = false;
-                    ToolTip = 'Specifies whether the member has attended.';
+                    ToolTip = 'Specifies the Venue.';
+                }
+                field("E-mail"; Rec."E-mail")
+                {
+                    ApplicationArea = Basic;
+                    Visible = false;
+                    ToolTip = 'Specifies the Member E-mail.';
                 }
             }
         }
     }
 
-    actions { }
+    actions
+    {
+        area(Processing)
+        {
+            action(GenerateAttendanceReport)
+            {
+                Caption = 'Generate Attendance Report';
+                ApplicationArea = All;
+                Image = Report;
+                ToolTip = 'Generates an attendance report for the meeting(s) currently shown, for use as evidence supporting board allowance payments.';
+
+                trigger OnAction()
+                var
+                    AttendanceReport: Report "Board Meeting Attendance Rpt";
+                begin
+                    AttendanceReport.SetTableView(Rec);
+                    AttendanceReport.RunModal();
+                end;
+            }
+        }
+    }
 }
