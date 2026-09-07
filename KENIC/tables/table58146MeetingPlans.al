@@ -328,6 +328,7 @@ table 58146 "Meeting Plans"
 
         Rec."Voting Status" := Rec."Voting Status"::Open;
         Rec."Poll Opened At" := CurrentDateTime();
+        Rec.Posted := true;
         Rec.Modify(true);
     end;
 
