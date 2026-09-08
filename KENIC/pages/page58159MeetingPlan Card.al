@@ -160,6 +160,38 @@ page 58159 "Meeting Plan Card"
                         Page.Run(Page::"Board Meeting Card", BoardMeeting);
                 end;
             }
+
+            action(ForceDeletePlan)
+{
+    Caption = 'Force Delete';
+    ApplicationArea = All;
+    Image = Delete;
+    ToolTip = 'Bypasses voting status checks to delete this plan and associated records.';
+
+    trigger OnAction()
+    var
+        DateOption: Record "Meeting Date Options";
+        DatePoll: Record "Meeting Date Polls";
+    begin
+        if not Confirm('Are you sure you want to force-delete this Meeting Plan and all related votes?') then
+            exit;
+
+       
+        DatePoll.Reset();
+        DatePoll.SetRange("Meeting Plan Id", Rec."Id");
+        DatePoll.DeleteAll(false);
+
+     
+        DateOption.Reset();
+        DateOption.SetRange("Meeting Plan Id", Rec."Id");
+        DateOption.DeleteAll(false);
+
+        
+        Rec.Delete(false);
+
+        CurrPage.Close();
+    end;
+}
         }
     }
 }
