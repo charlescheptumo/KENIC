@@ -2,6 +2,7 @@ table 58163 "Registrar Domain Renewal Buf"
 {
     Caption = 'Registrar Domain Renewal Buffer';
     DataClassification = ToBeClassified;
+    TableType = Temporary;
 
     fields
     {

@@ -12,7 +12,6 @@ report 59002 "Domain Renewals Report"
         {
             DataItemTableView = sorting("Registrar Name");
 
-           
             column(CompanyInfo_Name; CompanyInfo.Name) { }
             column(CompanyInfo_Picture; CompanyInfo.Picture) { }
             column(CompanyInfo_Address; CompanyInfo.Address) { }
@@ -21,7 +20,7 @@ report 59002 "Domain Renewals Report"
             column(CompanyInfo_Phone; CompanyInfo."Phone No.") { }
             column(CompanyInfo_Email; CompanyInfo."E-Mail") { }
 
-            column(Report_Year; YearFilter) { }
+            column(Report_Period; PeriodText) { }
 
             column(Registrar_Roid; "Registrar Roid") { }
             column(Registrar_Name; "Registrar Name") { }
@@ -51,17 +50,23 @@ report 59002 "Domain Renewals Report"
                 {
                     Caption = 'Options';
 
-                    field(YearFilter; YearFilter)
+                    field(StartDate; StartDate)
                     {
-                        Caption = 'Year';
+                        Caption = 'From Date';
                         ApplicationArea = All;
-                        ToolTip = 'Specifies the year to report domain renewal counts for.';
+                        ToolTip = 'Specifies the start of the period to report domain renewal counts for.';
+                    }
+                    field(EndDate; EndDate)
+                    {
+                        Caption = 'To Date';
+                        ApplicationArea = All;
+                        ToolTip = 'Specifies the end of the period to report domain renewal counts for.';
                     }
                     field(HideZeroRegistrars; HideZeroRegistrars)
                     {
                         Caption = 'Hide Registrars With No Activity';
                         ApplicationArea = All;
-                        ToolTip = 'Specifies whether registrars with zero renewals for the selected year should be excluded from the report.';
+                        ToolTip = 'Specifies whether registrars with zero renewals for the selected period should be excluded from the report.';
                     }
                 }
             }
@@ -69,15 +74,27 @@ report 59002 "Domain Renewals Report"
 
         trigger OnOpenPage()
         begin
-            if YearFilter = 0 then
-                YearFilter := Date2DMY(Today, 3);
+            HideZeroRegistrars := true;
+
+            if StartDate = 0D then
+                StartDate := CalcDate('<-CM>', Today);
+            if EndDate = 0D then
+                EndDate := Today;
         end;
     }
 
     trigger OnPreReport()
     begin
+        if StartDate = 0D then
+            Error('Please specify a From Date.');
+        if EndDate = 0D then
+            Error('Please specify a To Date.');
+        if StartDate > EndDate then
+            Error('From Date cannot be after To Date.');
+
         CompanyInfo.Get();
         CompanyInfo.CalcFields(Picture);
+        PeriodText := Format(StartDate) + ' .. ' + Format(EndDate);
         BuildBuffer();
     end;
 
@@ -85,7 +102,9 @@ report 59002 "Domain Renewals Report"
         CompanyInfo: Record "Company Information";
         DomainLedgerEntry: Record "Domain Ledger Entry";
         DomainClient: Record "Domain Client";
-        YearFilter: Integer;
+        StartDate: Date;
+        EndDate: Date;
+        PeriodText: Text[50];
         HideZeroRegistrars: Boolean;
 
     local procedure BuildBuffer()
@@ -98,7 +117,6 @@ report 59002 "Domain Renewals Report"
         RegistrarBuffer.Reset();
         RegistrarBuffer.DeleteAll();
 
-      
         DomainClient.Reset();
         if DomainClient.FindSet() then
             repeat
@@ -111,9 +129,8 @@ report 59002 "Domain Renewals Report"
                 RegistrarBuffer.Insert();
             until DomainClient.Next() = 0;
 
-      
-        FromDateTime := CreateDateTime(DMY2Date(1, 1, YearFilter), 0T);
-        ToDateTime := CreateDateTime(DMY2Date(31, 12, YearFilter), 235959T);
+        FromDateTime := CreateDateTime(StartDate, 0T);
+        ToDateTime := CreateDateTime(EndDate, 235959T);
 
         DomainLedgerEntry.Reset();
         DomainLedgerEntry.SetRange(Created, FromDateTime, ToDateTime);
@@ -122,7 +139,6 @@ report 59002 "Domain Renewals Report"
         if DomainLedgerEntry.FindSet() then
             repeat
                 if not RegistrarBuffer.Get(DomainLedgerEntry.ClientRoid) then begin
-                 
                     RegistrarBuffer.Init();
                     RegistrarBuffer."Registrar Roid" := DomainLedgerEntry.ClientRoid;
                     RegistrarBuffer."Registrar Name" := DomainLedgerEntry.ClientRoid;

@@ -1632,8 +1632,8 @@
         <Field Name="CompanyInfo_Email">
           <DataField>CompanyInfo_Email</DataField>
         </Field>
-        <Field Name="Report_Year">
-          <DataField>Report_Year</DataField>
+        <Field Name="Report_Period">
+          <DataField>Report_Period</DataField>
         </Field>
         <Field Name="Registrar_Roid">
           <DataField>Registrar_Roid</DataField>
