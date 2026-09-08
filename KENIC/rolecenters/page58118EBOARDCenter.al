@@ -134,121 +134,121 @@ page 58118 "Head of E-Board"
                 }
             }
 
-            group("Circular Resolutions")
-            {
-                Caption = 'Circular Resolutions';
+            // group("Circular Resolutions")
+            // {
+            //     Caption = 'Circular Resolutions';
 
-                action("Circular Resolution List")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Pending Circular Resolutions';
-                    RunObject = Page "Circular Resolution List";
-                }
-                action("Approved Circular Resolution List")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Approved Circular Resolutions';
-                    RunObject = Page "Approved Circular Resolution";
-                }
-                action("Posted Circular Resolution")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Posted Circular Resolutions';
-                    RunObject = Page "Posted Circular Resolution";
-                }
-                action("Closed Circular Resolution")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Closed Circular Resolutions';
-                    RunObject = Page "Closed Circular Resolution";
-                }
-                action("Rejected Circular Resolution")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Rejected Circular Resolutions';
-                    RunObject = Page "Rejected Circular Resolution";
-                }
-                action("Circular Resolution Archive")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Circular Resolution Archive';
-                    RunObject = Page "Circular Resolution Archive";
-                }
-            }
+            //     action("Circular Resolution List")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Pending Circular Resolutions';
+            //         RunObject = Page "Circular Resolution List";
+            //     }
+            //     action("Approved Circular Resolution List")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Approved Circular Resolutions';
+            //         RunObject = Page "Approved Circular Resolution";
+            //     }
+            //     action("Posted Circular Resolution")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Posted Circular Resolutions';
+            //         RunObject = Page "Posted Circular Resolution";
+            //     }
+            //     action("Closed Circular Resolution")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Closed Circular Resolutions';
+            //         RunObject = Page "Closed Circular Resolution";
+            //     }
+            //     action("Rejected Circular Resolution")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Rejected Circular Resolutions';
+            //         RunObject = Page "Rejected Circular Resolution";
+            //     }
+            //     action("Circular Resolution Archive")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Circular Resolution Archive';
+            //         RunObject = Page "Circular Resolution Archive";
+            //     }
+            // }
 
-            group("Compliance Management")
-            {
-                Caption = 'Compliance';
+            // group("Compliance Management")
+            // {
+            //     Caption = 'Compliance';
 
-                group("Categories & Legislation")
-                {
-                    Caption = 'Categories & Legislation';
+            //     group("Categories & Legislation")
+            //     {
+            //         Caption = 'Categories & Legislation';
 
-                    action("Compliance Categories")
-                    {
-                        ApplicationArea = All;
-                        Caption = 'Compliance Categories';
-                        RunObject = Page "Compliance Categories";
-                        ToolTip = 'Manage compliance categories and responsible users.';
-                    }
-                    action("Compliance Legislation List")
-                    {
-                        ApplicationArea = All;
-                        Caption = 'Compliance Legislation';
-                        RunObject = Page "Compliance Legislation List";
-                        ToolTip = 'Manage compliance legislation list.';
-                    }
-                }
+            //         action("Compliance Categories")
+            //         {
+            //             ApplicationArea = All;
+            //             Caption = 'Compliance Categories';
+            //             RunObject = Page "Compliance Categories";
+            //             ToolTip = 'Manage compliance categories and responsible users.';
+            //         }
+            //         action("Compliance Legislation List")
+            //         {
+            //             ApplicationArea = All;
+            //             Caption = 'Compliance Legislation';
+            //             RunObject = Page "Compliance Legislation List";
+            //             ToolTip = 'Manage compliance legislation list.';
+            //         }
+            //     }
 
-                group("Obligations Breakdown")
-                {
-                    Caption = 'Obligations';
+            //     group("Obligations Breakdown")
+            //     {
+            //         Caption = 'Obligations';
 
-                    action("Pending Obligations")
-                    {
-                        ApplicationArea = All;
-                        Caption = 'Open Obligations';
-                        RunObject = Page "Pending Compliance Obligations";
-                        ToolTip = 'Manage open compliance obligations and schedules.';
-                    }
-                    action("Posted Obligations")
-                    {
-                        ApplicationArea = All;
-                        Caption = 'Posted Obligations';
-                        RunObject = Page "Posted Obligations";
-                        ToolTip = 'Manage posted compliance obligations and schedules.';
-                    }
-                    action("Completed Obligations")
-                    {
-                        ApplicationArea = All;
-                        Caption = 'Completed Obligations';
-                        RunObject = Page "Completed Obligations";
-                        ToolTip = 'Manage completed compliance obligations and schedules.';
-                    }
-                    action("Overdue Obligations")
-                    {
-                        ApplicationArea = All;
-                        Caption = 'Overdue Obligations';
-                        RunObject = Page "Overdue Obligations";
-                        ToolTip = 'Manage overdue compliance obligations and schedules.';
-                    }
-                    action("Compliance Obligations")
-                    {
-                        ApplicationArea = All;
-                        Caption = 'Archive Obligations';
-                        RunObject = Page "Compliance Obligations";
-                        ToolTip = 'Manage master compliance obligations and schedules.';
-                    }
-                }
+            //         action("Pending Obligations")
+            //         {
+            //             ApplicationArea = All;
+            //             Caption = 'Open Obligations';
+            //             RunObject = Page "Pending Compliance Obligations";
+            //             ToolTip = 'Manage open compliance obligations and schedules.';
+            //         }
+            //         action("Posted Obligations")
+            //         {
+            //             ApplicationArea = All;
+            //             Caption = 'Posted Obligations';
+            //             RunObject = Page "Posted Obligations";
+            //             ToolTip = 'Manage posted compliance obligations and schedules.';
+            //         }
+            //         action("Completed Obligations")
+            //         {
+            //             ApplicationArea = All;
+            //             Caption = 'Completed Obligations';
+            //             RunObject = Page "Completed Obligations";
+            //             ToolTip = 'Manage completed compliance obligations and schedules.';
+            //         }
+            //         action("Overdue Obligations")
+            //         {
+            //             ApplicationArea = All;
+            //             Caption = 'Overdue Obligations';
+            //             RunObject = Page "Overdue Obligations";
+            //             ToolTip = 'Manage overdue compliance obligations and schedules.';
+            //         }
+            //         action("Compliance Obligations")
+            //         {
+            //             ApplicationArea = All;
+            //             Caption = 'Archive Obligations';
+            //             RunObject = Page "Compliance Obligations";
+            //             ToolTip = 'Manage master compliance obligations and schedules.';
+            //         }
+            //     }
 
-                action("Compliance Calendar Entries")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Compliance Calendar Entries';
-                    RunObject = Page "Compliance Calendar Entries";
-                    ToolTip = 'View and track recurring compliance execution tasks.';
-                }
-            }
+            //     action("Compliance Calendar Entries")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Compliance Calendar Entries';
+            //         RunObject = Page "Compliance Calendar Entries";
+            //         ToolTip = 'View and track recurring compliance execution tasks.';
+            //     }
+            // }
 
             group("ESign Documents")
             {
