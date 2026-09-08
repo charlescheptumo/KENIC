@@ -104,8 +104,8 @@
           <Line Name="HeaderLine">
             <Top>0.85in</Top>
             <Left>0.1in</Left>
-            <Height>0.02in</Height>
-            <Width>10.3in</Width>
+            <Height>0in</Height>
+            <Width>10.05in</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
@@ -120,7 +120,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="Domain Registrations by Registrar - Year: " &amp; Fields!Report_Year.Value</Value>
+                    <Value>="Domain Renewals by Registrar - Period: " &amp; Fields!Report_Period.Value</Value>
                     <Style>
                       <FontSize>14pt</FontSize>
                       <FontWeight>Bold</FontWeight>
@@ -135,11 +135,11 @@
             <Top>1in</Top>
             <Left>0.1in</Left>
             <Height>0.3in</Height>
-            <Width>10.3in</Width>
+            <Width>10.05in</Width>
             <ZIndex>5</ZIndex>
             <Style />
           </Textbox>
-          <Tablix Name="RegistrationTable">
+          <Tablix Name="RenewalTable">
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -1523,10 +1523,10 @@
             </Style>
           </Rectangle>
         </ReportItems>
-        <Height>2.5in</Height>
+        <Height>2.1in</Height>
         <Style />
       </Body>
-      <Width>10.5in</Width>
+      <Width>10.4in</Width>
       <Page>
         <PageFooter>
           <Height>0.37in</Height>
@@ -1707,6 +1707,42 @@
         </Field>
         <Field Name="Total">
           <DataField>Total</DataField>
+        </Field>
+        <Field Name="Year_Jan">
+          <DataField>Year_Jan</DataField>
+        </Field>
+        <Field Name="Year_Feb">
+          <DataField>Year_Feb</DataField>
+        </Field>
+        <Field Name="Year_Mar">
+          <DataField>Year_Mar</DataField>
+        </Field>
+        <Field Name="Year_Apr">
+          <DataField>Year_Apr</DataField>
+        </Field>
+        <Field Name="Year_May">
+          <DataField>Year_May</DataField>
+        </Field>
+        <Field Name="Year_Jun">
+          <DataField>Year_Jun</DataField>
+        </Field>
+        <Field Name="Year_Jul">
+          <DataField>Year_Jul</DataField>
+        </Field>
+        <Field Name="Year_Aug">
+          <DataField>Year_Aug</DataField>
+        </Field>
+        <Field Name="Year_Sep">
+          <DataField>Year_Sep</DataField>
+        </Field>
+        <Field Name="Year_Oct">
+          <DataField>Year_Oct</DataField>
+        </Field>
+        <Field Name="Year_Nov">
+          <DataField>Year_Nov</DataField>
+        </Field>
+        <Field Name="Year_Dec">
+          <DataField>Year_Dec</DataField>
         </Field>
       </Fields>
       <Query>

@@ -120,7 +120,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="Domain Registrations by Registrar - Year: " &amp; Fields!Report_Year.Value</Value>
+                    <Value>="Domain Registrations by Registrar - Period: " &amp; Fields!Report_Period.Value</Value>
                     <Style>
                       <FontSize>14pt</FontSize>
                       <FontWeight>Bold</FontWeight>
@@ -182,7 +182,7 @@
                   <Width>0.55in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.7in</Width>
+                  <Width>0.95in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1043,7 +1043,7 @@
             <Top>1.4in</Top>
             <Left>0.1in</Left>
             <Height>0.45in</Height>
-            <Width>10.05in</Width>
+            <Width>10.3in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
@@ -1447,6 +1447,39 @@
                   <PaddingRight>4pt</PaddingRight>
                 </Style>
               </Textbox>
+              <Textbox Name="GrandTotalDec">
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>=Sum(Fields!Dec.Value, "DataSet_Result")</Value>
+                        <Style>
+                          <FontSize>8pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                          <TextAlign>Right</TextAlign>
+                          <Color>#1a3c6e</Color>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style />
+                  </Paragraph>
+                </Paragraphs>
+                <Top>0.025in</Top>
+                <Left>9.32in</Left>
+                <Height>0.2in</Height>
+                <Width>0.55in</Width>
+                <ZIndex>12</ZIndex>
+                <Style>
+                  <Border>
+                    <Color>#cccccc</Color>
+                    <Style>Solid</Style>
+                    <Width>0.5pt</Width>
+                  </Border>
+                  <BackgroundColor>#e8f0fe</BackgroundColor>
+                  <TextAlign>Right</TextAlign>
+                  <PaddingRight>4pt</PaddingRight>
+                </Style>
+              </Textbox>
               <Textbox Name="GrandTotalTotal">
                 <Paragraphs>
                   <Paragraph>
@@ -1464,11 +1497,11 @@
                     <Style />
                   </Paragraph>
                 </Paragraphs>
-                <Top>0.02778in</Top>
-                <Left>9.35in</Left>
+                <Top>0.025in</Top>
+                <Left>9.87in</Left>
                 <Height>0.2in</Height>
-                <Width>0.7in</Width>
-                <ZIndex>12</ZIndex>
+                <Width>0.43in</Width>
+                <ZIndex>13</ZIndex>
                 <Style>
                   <Border>
                     <Color>#cccccc</Color>
@@ -1484,7 +1517,7 @@
             <Top>1.85in</Top>
             <Left>0.1in</Left>
             <Height>0.25in</Height>
-            <Width>10.05in</Width>
+            <Width>10.57in</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
@@ -1495,10 +1528,10 @@
             </Style>
           </Rectangle>
         </ReportItems>
-        <Height>2.5in</Height>
+        <Height>2.1in</Height>
         <Style />
       </Body>
-      <Width>10.5in</Width>
+      <Width>10.67in</Width>
       <Page>
         <PageFooter>
           <Height>0.37in</Height>
@@ -1679,6 +1712,42 @@
         </Field>
         <Field Name="Total">
           <DataField>Total</DataField>
+        </Field>
+        <Field Name="Year_Jan">
+          <DataField>Year_Jan</DataField>
+        </Field>
+        <Field Name="Year_Feb">
+          <DataField>Year_Feb</DataField>
+        </Field>
+        <Field Name="Year_Mar">
+          <DataField>Year_Mar</DataField>
+        </Field>
+        <Field Name="Year_Apr">
+          <DataField>Year_Apr</DataField>
+        </Field>
+        <Field Name="Year_May">
+          <DataField>Year_May</DataField>
+        </Field>
+        <Field Name="Year_Jun">
+          <DataField>Year_Jun</DataField>
+        </Field>
+        <Field Name="Year_Jul">
+          <DataField>Year_Jul</DataField>
+        </Field>
+        <Field Name="Year_Aug">
+          <DataField>Year_Aug</DataField>
+        </Field>
+        <Field Name="Year_Sep">
+          <DataField>Year_Sep</DataField>
+        </Field>
+        <Field Name="Year_Oct">
+          <DataField>Year_Oct</DataField>
+        </Field>
+        <Field Name="Year_Nov">
+          <DataField>Year_Nov</DataField>
+        </Field>
+        <Field Name="Year_Dec">
+          <DataField>Year_Dec</DataField>
         </Field>
       </Fields>
       <Query>

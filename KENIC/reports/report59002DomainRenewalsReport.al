@@ -37,6 +37,20 @@ report 59002 "Domain Renewals Report"
             column(Nov; Nov) { }
             column(Dec; Dec) { }
             column(Total; Total) { }
+            
+           
+            column(Year_Jan; Year_Jan) { }
+            column(Year_Feb; Year_Feb) { }
+            column(Year_Mar; Year_Mar) { }
+            column(Year_Apr; Year_Apr) { }
+            column(Year_May; Year_May) { }
+            column(Year_Jun; Year_Jun) { }
+            column(Year_Jul; Year_Jul) { }
+            column(Year_Aug; Year_Aug) { }
+            column(Year_Sep; Year_Sep) { }
+            column(Year_Oct; Year_Oct) { }
+            column(Year_Nov; Year_Nov) { }
+            column(Year_Dec; Year_Dec) { }
         }
     }
 
@@ -113,6 +127,7 @@ report 59002 "Domain Renewals Report"
         ToDateTime: DateTime;
         EntryDate: Date;
         MonthNo: Integer;
+        YearNo: Integer;
     begin
         RegistrarBuffer.Reset();
         RegistrarBuffer.DeleteAll();
@@ -147,7 +162,10 @@ report 59002 "Domain Renewals Report"
 
                 EntryDate := DT2Date(DomainLedgerEntry.Created);
                 MonthNo := Date2DMY(EntryDate, 2);
-                IncrementMonth(MonthNo);
+                YearNo := Date2DMY(EntryDate, 3);
+                
+                IncrementMonthWithYear(MonthNo, YearNo);
+                
                 RegistrarBuffer.Total += 1;
                 RegistrarBuffer.Modify();
             until DomainLedgerEntry.Next() = 0;
@@ -159,33 +177,69 @@ report 59002 "Domain Renewals Report"
         end;
     end;
 
-    local procedure IncrementMonth(MonthNo: Integer)
+    local procedure IncrementMonthWithYear(MonthNo: Integer; YearNo: Integer)
     begin
         case MonthNo of
             1:
-                RegistrarBuffer.Jan += 1;
+                begin
+                    RegistrarBuffer.Jan += 1;
+                    RegistrarBuffer.Year_Jan := YearNo;
+                end;
             2:
-                RegistrarBuffer.Feb += 1;
+                begin
+                    RegistrarBuffer.Feb += 1;
+                    RegistrarBuffer.Year_Feb := YearNo;
+                end;
             3:
-                RegistrarBuffer.Mar += 1;
+                begin
+                    RegistrarBuffer.Mar += 1;
+                    RegistrarBuffer.Year_Mar := YearNo;
+                end;
             4:
-                RegistrarBuffer.Apr += 1;
+                begin
+                    RegistrarBuffer.Apr += 1;
+                    RegistrarBuffer.Year_Apr := YearNo;
+                end;
             5:
-                RegistrarBuffer.May += 1;
+                begin
+                    RegistrarBuffer.May += 1;
+                    RegistrarBuffer.Year_May := YearNo;
+                end;
             6:
-                RegistrarBuffer.Jun += 1;
+                begin
+                    RegistrarBuffer.Jun += 1;
+                    RegistrarBuffer.Year_Jun := YearNo;
+                end;
             7:
-                RegistrarBuffer.Jul += 1;
+                begin
+                    RegistrarBuffer.Jul += 1;
+                    RegistrarBuffer.Year_Jul := YearNo;
+                end;
             8:
-                RegistrarBuffer.Aug += 1;
+                begin
+                    RegistrarBuffer.Aug += 1;
+                    RegistrarBuffer.Year_Aug := YearNo;
+                end;
             9:
-                RegistrarBuffer.Sep += 1;
+                begin
+                    RegistrarBuffer.Sep += 1;
+                    RegistrarBuffer.Year_Sep := YearNo;
+                end;
             10:
-                RegistrarBuffer.Oct += 1;
+                begin
+                    RegistrarBuffer.Oct += 1;
+                    RegistrarBuffer.Year_Oct := YearNo;
+                end;
             11:
-                RegistrarBuffer.Nov += 1;
+                begin
+                    RegistrarBuffer.Nov += 1;
+                    RegistrarBuffer.Year_Nov := YearNo;
+                end;
             12:
-                RegistrarBuffer.Dec += 1;
+                begin
+                    RegistrarBuffer.Dec += 1;
+                    RegistrarBuffer.Year_Dec := YearNo;
+                end;
         end;
     end;
 }
