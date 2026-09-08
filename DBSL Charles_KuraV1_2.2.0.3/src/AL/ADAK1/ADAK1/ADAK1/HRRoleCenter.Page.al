@@ -1172,6 +1172,16 @@ page 60002 "HR Role Center"
                                 ToolTip = 'Executes the Closed Training Applications action.';
                             }
                         }
+                        group("Training Evaluation")
+                        {
+                            action("TrainingEvaluation")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Evaluation';
+                                RunObject = page "Training Evaluation List";
+                                ToolTip = 'Executes the Training Evaluation action.';
+                            }
+                        }
                         group("Reports")
                         {
                             caption = 'Reports';
