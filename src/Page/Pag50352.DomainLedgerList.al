@@ -224,6 +224,7 @@ page 50352 "Domain Ledger List"
                     CreditMemoNo: Code[20];
                     TempDocType: Enum "Sales Document Type";
                     TempNo: Code[20];
+                    DotCount: Integer;
                 begin
                     if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
@@ -290,21 +291,38 @@ page 50352 "Domain Ledger List"
 
                     CMSetup.Get();
 
+                    DotCount := CountDots(Rec.DomainName);
+
                     case Rec.TransType of
                         'Registration':
                             begin
-                                CMSetup.TestField("Domain Registration");
-                                ItemNo := CMSetup."Domain Registration";
+                                if DotCount = 1 then begin
+                                    CMSetup.TestField("Domain L2 Registration");
+                                    ItemNo := CMSetup."Domain L2 Registration";
+                                end else begin
+                                    CMSetup.TestField("Domain Registration");
+                                    ItemNo := CMSetup."Domain Registration";
+                                end;
                             end;
                         'Renewal':
                             begin
-                                CMSetup.TestField("Domain Renewal");
-                                ItemNo := CMSetup."Domain Renewal";
+                                if DotCount = 1 then begin
+                                    CMSetup.TestField("Domain L2 Renewal");
+                                    ItemNo := CMSetup."Domain L2 Renewal";
+                                end else begin
+                                    CMSetup.TestField("Domain Renewal");
+                                    ItemNo := CMSetup."Domain Renewal";
+                                end;
                             end;
                         'AutoRenewal':
                             begin
-                                CMSetup.TestField("Domain AutoRenewal");
-                                ItemNo := CMSetup."Domain AutoRenewal";
+                                if DotCount = 1 then begin
+                                    CMSetup.TestField("Domain L2 Autorenewal");
+                                    ItemNo := CMSetup."Domain L2 Autorenewal";
+                                end else begin
+                                    CMSetup.TestField("Domain AutoRenewal");
+                                    ItemNo := CMSetup."Domain AutoRenewal";
+                                end;
                             end;
                         'Access fee':
                             begin
@@ -369,6 +387,7 @@ page 50352 "Domain Ledger List"
                     Rec.Modify();
 
                     Message('Sales Invoice %1 created successfully for %2.', SalesHeader."No.", Rec.DomainName);
+                    RunModal(Page::"Sales Invoice", SalesHeader);
                 end;
             }
         }
@@ -430,6 +449,17 @@ page 50352 "Domain Ledger List"
         end;
 
         exit(DeferralCode);
+    end;
+
+    local procedure CountDots(DomainText: Text): Integer
+    var
+        i: Integer;
+        DotCount: Integer;
+    begin
+        for i := 1 to StrLen(DomainText) do
+            if CopyStr(DomainText, i, 1) = '.' then
+                DotCount += 1;
+        exit(DotCount);
     end;
 
     var
