@@ -131,6 +131,11 @@ Page 69031 "Employee Card-P"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Posting Group field.';
                 }
+                field("Approval Status"; Rec."Approval Status")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Approval Status field.';
+                }
                 field("Special Duty Days"; Rec."Special Duty Days")
                 {
                     ToolTip = 'Specifies the value of the Special Duty Days field.', Comment = '%';
@@ -1612,6 +1617,7 @@ Page 69031 "Employee Card-P"
     begin
         Rec.TestField(Status, EmployeeRec.Status::Active);
         
+
 
     end;
 

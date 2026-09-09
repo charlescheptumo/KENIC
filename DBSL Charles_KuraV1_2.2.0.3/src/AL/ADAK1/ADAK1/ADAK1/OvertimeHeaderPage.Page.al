@@ -162,6 +162,7 @@ Page 69173 "Overtime Header Page"
             {
                 ApplicationArea = Basic;
                 Caption = 'Send A&pproval Request';
+                // Enabled = not OpenApprovalEntriesExist;
                 Image = SendApprovalRequest;
                 Promoted = true;
                 PromotedCategory = Category4;
@@ -171,6 +172,8 @@ Page 69173 "Overtime Header Page"
                 var
                     // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     Text001: label 'This transaction is already pending approval';
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                    VarVariant: Variant;
                 begin
                     Rec.TestField(Status, Rec.Status::Open);
 
@@ -178,23 +181,23 @@ Page 69173 "Overtime Header Page"
                     /*
                     IF "Paying Type"="Paying Type"::" " THEN
                     ERROR('Kindly spceify the paying type')
-                    
+
                     ELSE IF ("Paying Vendor Account"<>'') AND ("Paying Bank Account"<>'') THEN
                     ERROR('You cannot have both paying bank and paying vendor, choose one')
-                    
+
                     ELSE IF ("Paying Type"="Paying Type"::Vendor) AND ("Paying Vendor Account"='') THEN
                     ERROR('Kindly spceify the paying vendor account')
-                    
+
                     ELSE IF ("Paying Type"="Paying Type"::Bank) AND ("Paying Bank Account"='') THEN
                     ERROR('Kindly spceify the paying bank account');
-                    
-                    
+
+
                     IF NOT LinesExists THEN
                        ERROR('There are no Lines created for this Document');
                     //Ensure No Items That should be committed that are not
                     IF LinesCommitmentStatus THEN
                       ERROR('There are some lines that have not been committed');
-                    
+
                     PayLine.RESET;
                     PayLine.SETRANGE(PayLine.No,"No.");
                     PayLine.SETRANGE(PayLine.Type,'MEMBER');
@@ -202,17 +205,17 @@ Page 69173 "Overtime Header Page"
                     IF PayLine."Transaction Type"=PayLine."Transaction Type"::" " THEN
                     ERROR('Transaction Type cannot be blank in payment lines');
                     END;
-                    
+
                     TESTFIELD(Payee);
                     //Release the PV for Approval
-                    
-                    
+
+
                     BankAcc.RESET;
                     BankAcc.SETRANGE(BankAcc."No.","Paying Bank Account");
                     BankAcc.SETRANGE(BankAcc."Bank Type",BankAcc."Bank Type"::Cash);
                     IF BankAcc.FIND('-') THEN BEGIN
                     BankAcc.CALCFIELDS(BankAcc.Balance);
-                    
+
                     IF  BankAcc.Balance<0 THEN
                     ERROR('Kindly ensure that the petty cash float is enough') ;
                     END;
@@ -221,12 +224,17 @@ Page 69173 "Overtime Header Page"
                     // if ApprovalsMgmt.CheckOvertimeApprovalsWorkflowEnabled(Rec) then
                     //   ApprovalsMgmt.OnSendOvertimeForApproval(Rec);
 
+                    VarVariant := Rec;
+                    if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                        CustomApprovals.OnSendDocForApproval(VarVariant);
+
                 end;
             }
-            action("Cancel Approval REquest")
+            action("Cancel Approval Request")
             {
                 ApplicationArea = Basic;
                 Caption = 'Cancel Approval Re&quest';
+                Enabled = true;
                 Image = Cancel;
                 Promoted = true;
                 PromotedCategory = Category4;
@@ -234,9 +242,15 @@ Page 69173 "Overtime Header Page"
 
                 trigger OnAction()
                 var
-                //  ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                    VarVariant: Variant;
                 begin
-                    //  ApprovalsMgmt.OnCancelOvertimeApprovalRequest(Rec);
+                    // ApprovalsMgmt.OnCancelOvertimeApprovalRequest(Rec);
+
+                    Rec.TestField(Status, Rec.Status::"Pending Approval");
+                    VarVariant := Rec;
+                    CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
                 end;
             }
             action("Fill Overtime Details")

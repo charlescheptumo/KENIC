@@ -420,6 +420,11 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Domain registration field.';
                 }
+                field("Domain L2 Registration"; Rec."Domain L2 Registration")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Domain L2 Registration field.';
+                }
                 field("Domain Renewal"; Rec."Domain Renewal")
                 {
                     ApplicationArea = Basic;
@@ -525,11 +530,7 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the 5Y Defer code Register field.';
                 }
-                field("Domain L2 Registration"; Rec."Domain L2 Registration")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Domain L2 Registration field.';
-                }
+
                 field("Domain L2 Renewal"; Rec."Domain L2 Renewal")
                 {
                     ApplicationArea = Basic;
