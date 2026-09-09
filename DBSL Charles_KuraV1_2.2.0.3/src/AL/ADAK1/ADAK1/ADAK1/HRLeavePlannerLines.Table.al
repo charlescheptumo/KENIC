@@ -249,6 +249,7 @@ Table 69207 "HR Leave Planner Lines"
         if HrLeavePlanner.FindFirst() then begin
             Rec."Leave Period" := HrLeavePlanner."Leave Period";
         end;
+        CheckOverlappingLeave();
         /*
         //POPULATE FIELDS
         "Application Date":=TODAY;
@@ -256,6 +257,11 @@ Table 69207 "HR Leave Planner Lines"
          Names:=HREmp.FullName;
         */
 
+    end;
+
+    trigger OnModify()
+    begin
+        CheckOverlappingLeave();
     end;
 
     var
