@@ -20048,4 +20048,164 @@ Codeunit 50012 "HRPortal"
         exit(result);
     end;
 
+     // ============================================================================
+    // NEW PROCEDURES TO ADD TO Cod50012.HRPortal.al
+    // Insert these directly after removeTrainingNeedsLine (before sendTrainingNeedsForApproval).
+    // They follow the exact same pattern as addTrainingNeedsLine / removeTrainingNeedsLine
+    // so the portal-side calling code will look and behave the same way.
+    //
+    // After adding these, update the Web Service published page for codeunit "HRPortal"
+    // and refresh the .NET Service Reference (EssCodeunit.cs) in the ESS portal project
+    // so these become callable from TrainingNeeds.aspx.cs.
+    // ============================================================================
+
+    // --------------------------------------------------------------------------
+    // Training Needs Dev Goal ("Development Goals" grid on the TNA form)
+    //   Development Year option values on the wire: 0 = Year 1, 1 = Year 2, 2 = Year 3
+    // --------------------------------------------------------------------------
+
+    procedure addTrainingNeedsDevGoal(docNo: Code[20]; developmentYear: Integer; goal: Text) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevGoal: Record "Training Needs Dev Goal";
+    begin
+        status := 'danger*Could not add development goal';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevGoal.Reset;
+            DevGoal.SetRange("Training Header No", docNo);
+
+            DevGoal.Init;
+            DevGoal."Training Header No" := docNo;
+            DevGoal."Line No" := DevGoal.Count + 1;
+            DevGoal."Development Year" := developmentYear;
+            DevGoal.Goal := CopyStr(goal, 1, MaxStrLen(DevGoal.Goal));
+
+            if DevGoal.Insert(true) then begin
+                status := 'success*Development goal added successfully';
+            end else begin
+                status := 'danger*Could not add development goal';
+            end;
+        end else begin
+            status := 'danger*Training needs request not found or not in Open status';
+        end;
+    end;
+
+    procedure removeTrainingNeedsDevGoal(empNo: Code[20]; docNo: Code[20]; lineNo: Integer) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevGoal: Record "Training Needs Dev Goal";
+    begin
+        status := 'danger*Could not remove development goal';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange("Employee No", empNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevGoal.Reset;
+            DevGoal.SetRange("Training Header No", docNo);
+            DevGoal.SetRange("Line No", lineNo);
+
+            if DevGoal.FindFirst() then begin
+                if DevGoal.Delete(true) then begin
+                    status := 'success*Development goal removed successfully';
+                end else begin
+                    status := 'danger*Could not remove development goal';
+                end;
+            end else begin
+                status := 'danger*Development goal not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    // --------------------------------------------------------------------------
+    // Training Needs Dev Objective ("Developmental Objectives" grid on the TNA form)
+    //   Option values on the wire (all zero-based, in OptionMembers declaration order):
+    //   developmentGoalYear : 0 = 2024, 1 = 2025, 2 = 2026
+    //   purpose             : 0 = Improved Performance, 1 = New Assignment,
+    //                         2 = Meet Future Staffing Needs, 3 = Career Interests,
+    //                         4 = Develop Unavailable Skills, 5 = Mission
+    //   priority            : 0 = Essential, 1 = Needed, 2 = Helpful
+    //   developmentalActivity: 0 = On the Job Training, 1 = Coaching and Mentoring,
+    //                         2 = Short Course Training, 3 = Job Shadowing,
+    //                         4 = University/College, 5 = Conference,
+    //                         6 = Self Development, 7 = Added Responsibilities,
+    //                         8 = Rotation Assignment
+    // --------------------------------------------------------------------------
+
+    procedure addTrainingNeedsDevObjective(docNo: Code[20]; competency: Text; developmentGoalYear: Integer; purpose: Integer; priority: Integer; developmentalActivity: Integer; evidenceOfAccomplishment: Text) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevObjective: Record "Training Needs Dev Objective";
+    begin
+        status := 'danger*Could not add development objective';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevObjective.Reset;
+            DevObjective.SetRange("Training Header No", docNo);
+
+            DevObjective.Init;
+            DevObjective."Training Header No" := docNo;
+            DevObjective."Line No" := DevObjective.Count + 1;
+            DevObjective.Competency := CopyStr(competency, 1, MaxStrLen(DevObjective.Competency));
+            DevObjective."Development Goal Year" := developmentGoalYear;
+            DevObjective.Purpose := purpose;
+            DevObjective.Priority := priority;
+            DevObjective."Developmental Activity" := developmentalActivity;
+            DevObjective."Evidence of Accomplishment" := CopyStr(evidenceOfAccomplishment, 1, MaxStrLen(DevObjective."Evidence of Accomplishment"));
+
+            if DevObjective.Insert(true) then begin
+                status := 'success*Development objective added successfully';
+            end else begin
+                status := 'danger*Could not add development objective';
+            end;
+        end else begin
+            status := 'danger*Training needs request not found or not in Open status';
+        end;
+    end;
+
+    procedure removeTrainingNeedsDevObjective(empNo: Code[20]; docNo: Code[20]; lineNo: Integer) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevObjective: Record "Training Needs Dev Objective";
+    begin
+        status := 'danger*Could not remove development objective';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange("Employee No", empNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevObjective.Reset;
+            DevObjective.SetRange("Training Header No", docNo);
+            DevObjective.SetRange("Line No", lineNo);
+
+            if DevObjective.FindFirst() then begin
+                if DevObjective.Delete(true) then begin
+                    status := 'success*Development objective removed successfully';
+                end else begin
+                    status := 'danger*Could not remove development objective';
+                end;
+            end else begin
+                status := 'danger*Development objective not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+
 }

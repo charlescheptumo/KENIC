@@ -1494,13 +1494,26 @@ codeunit 50015 "EssQueries"
 
     end;
 
+    // procedure fnGetEvaluationTrainingNeeds(docNumber: Code[30]) data: Text
+    // begin
+    //     tbl_evaluationTrainingNeeds.Reset();
+    //     tbl_evaluationTrainingNeeds.SetRange("Perfomance Evaluation No", docNumber);
+    //     if tbl_evaluationTrainingNeeds.FindSet(true) then begin
+    //         repeat
+    //             data := data + tbl_evaluationTrainingNeeds."Training Need Category" + '*' + tbl_evaluationTrainingNeeds.Description + ':';
+    //         until tbl_evaluationTrainingNeeds.Next = 0;
+    //     end;
+    //     Exit(data);
+
+    // end;
+
     procedure fnGetEvaluationTrainingNeeds(docNumber: Code[30]) data: Text
     begin
         tbl_evaluationTrainingNeeds.Reset();
         tbl_evaluationTrainingNeeds.SetRange("Perfomance Evaluation No", docNumber);
         if tbl_evaluationTrainingNeeds.FindSet(true) then begin
             repeat
-                data := data + tbl_evaluationTrainingNeeds."Training Need Category" + '*' + tbl_evaluationTrainingNeeds.Description + ':';
+                data := data + Format(tbl_evaluationTrainingNeeds."Training Need Number") + '*' + tbl_evaluationTrainingNeeds."Training Need Category" + '*' + tbl_evaluationTrainingNeeds.Description + ':';
             until tbl_evaluationTrainingNeeds.Next = 0;
         end;
         Exit(data);
