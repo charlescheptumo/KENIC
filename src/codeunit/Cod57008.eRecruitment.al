@@ -1085,6 +1085,51 @@ Codeunit 57008 "eRecruitment"
 
     end;
 
+    procedure FnRespondToEmploymentOffer(ApplicantNumber: Code[100]; OfferID: Code[30]; Response: Integer) status: Text
+    var
+        EmploymentOffer: Record "Employment Offer";
+    begin
+        // Only Accepted (1) or Rejected (2) are valid candidate responses -
+        // never allow resetting back to Pending (0) through this procedure.
+        if (Response <> EmploymentOffer."Offer Acceptance Status"::Accepted) and
+           (Response <> EmploymentOffer."Offer Acceptance Status"::Rejected) then begin
+            status := 'danger*Invalid response.';
+            exit(status);
+        end;
+
+        EmploymentOffer.Reset();
+        EmploymentOffer.SetRange("Offer ID", OfferID);
+        if EmploymentOffer.FindFirst() then begin
+            // Security check: the offer must actually belong to the candidate
+            // making this call, not just any Offer ID they happen to send.
+            if EmploymentOffer."Candidate No." <> ApplicantNumber then begin
+                status := 'danger*You are not authorized to respond to this offer.';
+                exit(status);
+            end;
+
+            // A candidate only gets one response - once accepted/rejected,
+            // this procedure will not let them change their answer again.
+            if EmploymentOffer."Offer Acceptance Status" <> EmploymentOffer."Offer Acceptance Status"::Pending then begin
+                status := 'danger*You have already responded to this offer.';
+                exit(status);
+            end;
+
+            EmploymentOffer.Validate("Offer Acceptance Status", Response);
+            EmploymentOffer."Candidate Response Date" := Today;
+
+            if EmploymentOffer.Modify(true) then begin
+                if Response = EmploymentOffer."Offer Acceptance Status"::Accepted then
+                    status := 'success*Thank you. You have accepted the offer.'
+                else
+                    status := 'success*Your response has been recorded.';
+            end else begin
+                status := 'danger*Your response could not be saved. Please try again.';
+            end;
+        end else begin
+            status := 'danger*Sorry, this offer could not be found.';
+        end;
+    end;
+
     procedure FnSubmitProfileApplication(ApplicantNumber: Code[100]) status: Text
     var
         ApplicantProfile: Record Contact;

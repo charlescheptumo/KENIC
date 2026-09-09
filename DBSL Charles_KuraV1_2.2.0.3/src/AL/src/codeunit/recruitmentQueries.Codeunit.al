@@ -223,5 +223,21 @@ codeunit 70112 recruitmentQueries
         exit(data);
     end;
 
+    procedure fnGetEmploymentOfferForApplication(applicationNo: Code[30]) data: Text
+    var
+        tbl_employmentOffer: Record "Employment Offer";
+    begin
+        tbl_employmentOffer.Reset();
+        tbl_employmentOffer.SetRange("Application No.", applicationNo);
+        if tbl_employmentOffer.FindSet(true) then begin
+            repeat
+                data += tbl_employmentOffer."Offer ID" + '*' +
+                        Format(tbl_employmentOffer."Offer Acceptance Status") + '*' +
+                        Format(tbl_employmentOffer."Document Status") + '::::';
+            until tbl_employmentOffer.Next = 0;
+        end;
+        exit(data);
+    end;
+
 
 }
