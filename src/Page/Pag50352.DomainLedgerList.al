@@ -3,6 +3,7 @@ namespace KENIC.KENIC;
 using Microsoft.Sales.Customer;
 using Microsoft.Sales.Document;
 using Microsoft.Sales.History;
+using Microsoft.Sales.Posting;
 
 page 50352 "Domain Ledger List"
 {
@@ -387,7 +388,15 @@ page 50352 "Domain Ledger List"
                     Rec.Modify();
 
                     Message('Sales Invoice %1 created successfully for %2.', SalesHeader."No.", Rec.DomainName);
-                   // RunModal(Page::"Sales Invoice", SalesHeader);
+                    if not SalesPost.Run(SalesHeader) then
+                        Message('Sales Invoice %1 was created but could not be posted automatically: %2\Please post it manually.', InvoiceNo, GetLastErrorText())
+                    else
+                        Message('Sales Invoice %1 created and posted successfully for %2.', InvoiceNo, Rec.DomainName);
+
+                    Rec.InvoiceCreated := true;
+                    Rec."Sales Invoice No." := InvoiceNo;
+                    Rec.Modify();
+                    // RunModal(Page::"Sales Invoice", SalesHeader);
                 end;
             }
         }
@@ -465,4 +474,5 @@ page 50352 "Domain Ledger List"
     var
         DomainLengthYears: Integer;
         DeferralCode: Code[30];
+        SalesPost: Codeunit "Sales-Post";
 }
