@@ -20337,6 +20337,8 @@ Codeunit 50012 "HRPortal"
     var
         OvertimeHeader: Record "Overtime Header";
         OvertimeLine: Record "Overtime lines";
+        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+        VarVariant: Variant;
     begin
         status := 'danger*Could not send overtime application for approval';
 
@@ -20352,11 +20354,12 @@ Codeunit 50012 "HRPortal"
                 exit(status);
             end;
 
-            OvertimeHeader.Status := OvertimeHeader.Status::"Pending Approval";
-            if OvertimeHeader.Modify(true) then begin
+            VarVariant := OvertimeHeader;
+            if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
+                CustomApprovals.OnSendDocForApproval(VarVariant);
                 status := 'success*Overtime application sent for approval successfully';
             end else begin
-                status := 'danger*Could not update overtime application status';
+                status := 'danger*No approval workflow is enabled for overtime applications. Please contact HR/ICT.';
             end;
         end else begin
             status := 'danger*Overtime application not found or not in Open status';
