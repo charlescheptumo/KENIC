@@ -1,5 +1,4 @@
 namespace KENIC.KENIC;
-
 using Microsoft.Sales.Customer;
 using Microsoft.Sales.Document;
 using Microsoft.Sales.History;
@@ -281,6 +280,7 @@ page 50352 "Domain Ledger List"
                         Rec.InvoiceCreated := true;
                         Rec."Credit Memo No." := NewSalesHeader."No.";
                         Rec."Sales Invoice No." := NewSalesHeader."No.";
+
                         Rec.Modify();
 
                         Message('Credit Memo %1 created successfully for %2 (refund of invoice %3).', NewSalesHeader."No.", Rec.DomainName, OriginalInvoiceNo);
@@ -291,9 +291,7 @@ page 50352 "Domain Ledger List"
                         Error('Customer %1 does not exist.', Rec.ClientRoid);
 
                     CMSetup.Get();
-
                     DotCount := CountDots(Rec.DomainName);
-
                     case Rec.TransType of
                         'Registration':
                             begin
@@ -359,6 +357,8 @@ page 50352 "Domain Ledger List"
                     SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
                     SalesHeader.Validate("Posting Date", Today);
                     SalesHeader.Validate("Document Date", Today);
+                   // SalesHeader.status := SalesHeader.status::Released;
+
                     SalesHeader.Modify(true);
 
                     SalesLine.Init();
@@ -377,30 +377,42 @@ page 50352 "Domain Ledger List"
                         if DomainLengthYears > 0 then begin
                             DeferralCode := GetDeferralCode(Rec.TransType, DomainLengthYears, CMSetup);
                             if DeferralCode <> '' then
-                                SalesLine.Validate("Deferral Code", DeferralCode);
+                                SalesLine.Validate("Deferral Code", DeferralCode)
+                            else
+                                Error('Deferral code is not set for %1 year(s) for transaction type %2 in Cash Management Setup.', DomainLengthYears, Rec.TransType);
                         end;
                     end;
+                    salesline.Validate("Deferral Code", DeferralCode);
 
                     SalesLine.Modify(true);
 
                     Rec.InvoiceCreated := true;
                     Rec."Sales Invoice No." := SalesHeader."No.";
+                    SalesHeader.status := SalesHeader.status::Released;
+                    SalesHeader."Created By" := UserId();
                     Rec.Modify();
 
-                    Message('Sales Invoice %1 created successfully for %2.', SalesHeader."No.", Rec.DomainName);
-                    if not SalesPost.Run(SalesHeader) then
-                        Message('Sales Invoice %1 was created but could not be posted automatically: %2\Please post it manually.', InvoiceNo, GetLastErrorText())
-                    else
-                        Message('Sales Invoice %1 created and posted successfully for %2.', InvoiceNo, Rec.DomainName);
+                    Commit();
 
-                    Rec.InvoiceCreated := true;
-                    Rec."Sales Invoice No." := InvoiceNo;
-                    Rec.Modify();
-                    // RunModal(Page::"Sales Invoice", SalesHeader);
+                    if not TryReleaseSalesInvoice(SalesHeader) then begin
+                        Message('Sales Invoice %1 was created but could not be released automatically: %2\Please release and post it manually.', InvoiceNo, GetLastErrorText());
+                        OpenSalesInvoice(SalesHeader);
+                    end else
+                        if not TryPostSalesInvoice(SalesHeader) then begin
+                            Message('Sales Invoice %1 was released but could not be posted automatically: %2\Please post it manually.', InvoiceNo, GetLastErrorText());
+                            OpenSalesInvoice(SalesHeader);
+                        end else
+                            Message('Sales Invoice %1 created and posted successfully for %2.', InvoiceNo, Rec.DomainName);
                 end;
             }
         }
     }
+
+    var
+        DomainLengthYears: Integer;
+        DeferralCode: Code[30];
+        // SalesPost: Codeunit "Sales-Post"; // moved to local scope in TryPostSalesInvoice to avoid "already bound" error
+
     local procedure GetDomainLengthYears(CreatedDT: DateTime; ExpiryDT: DateTime): Integer
     var
         CreatedD: Date;
@@ -471,8 +483,29 @@ page 50352 "Domain Ledger List"
         exit(DotCount);
     end;
 
+    [TryFunction]
+    local procedure TryReleaseSalesInvoice(var SalesHeader: Record "Sales Header")
     var
-        DomainLengthYears: Integer;
-        DeferralCode: Code[30];
-        SalesPost: Codeunit "Sales-Post";
+        ReleaseSalesDocument: Codeunit "Release Sales Document";
+    begin
+        ReleaseSalesDocument.PerformManualRelease(SalesHeader);
+    end;
+
+    [TryFunction]
+    local procedure TryPostSalesInvoice(var SalesHeader: Record "Sales Header")
+    var
+        SalesPost: Codeunit "Sales-Post"; // local instance instead of global, prevents "codeunit already bound" error
+    begin
+        SalesPost.Run(SalesHeader);
+    end;
+
+    local procedure OpenSalesInvoice(var SalesHeader: Record "Sales Header")
+    var
+        SalesInvoicePage: Page "Sales Invoice";
+    begin
+        SalesInvoicePage.SetRecord(SalesHeader);
+        SalesInvoicePage.Run();
+        // CODEUNIT.Run(CODEUNIT::"Sales-Post (Yes/No)", SalesHeader); // removed: re-posts an already-Open invoice, causing "Status must be equal to 'Released'" error
+
+    end;
 }
