@@ -391,7 +391,7 @@ page 50352 "Domain Ledger List"
                     Rec.InvoiceCreated := true;
                     Rec."Sales Invoice No." := SalesHeader."No.";
                     SalesHeader.Status := SalesHeader.Status::Released;
-                    SalesHeader."Created By" := UserId();
+                   // SalesHeader."Created By" := UserId();
                     Rec.Modify();
 
                     Commit();
