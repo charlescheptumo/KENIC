@@ -328,18 +328,18 @@ Table 69207 "HR Leave Planner Lines"
             exit;
 
         LeaveLine.Reset();
+        LeaveLine.SetRange("Application Code", "Application Code");
         LeaveLine.SetFilter("Start Date", '<=%1', "End Date");
         LeaveLine.SetFilter("End Date", '>=%1', "Start Date");
         if LeaveLine.FindSet() then
             repeat
-                if (LeaveLine."Application Code" <> "Application Code") or (LeaveLine."Line No." <> "Line No.") then
-                    Error('These dates (%1 to %2) are already booked by %3 (%4) from %5 to %6.',
+                if LeaveLine."Line No." <> "Line No." then
+                    Error('These dates (%1 to %2) are already booked by %3 (%4) in this leave plan, from %5 to %6.',
                         "Start Date", "End Date",
                         LeaveLine."Employee Name", LeaveLine."Employee No",
                         LeaveLine."Start Date", LeaveLine."End Date");
             until LeaveLine.Next() = 0;
     end;
-
 
     procedure DetermineIfIsNonWorking(var bcDate: Date) Isnonworking: Boolean
     begin
