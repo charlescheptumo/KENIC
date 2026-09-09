@@ -387,7 +387,7 @@ page 50352 "Domain Ledger List"
                     Rec.Modify();
 
                     Message('Sales Invoice %1 created successfully for %2.', SalesHeader."No.", Rec.DomainName);
-                    RunModal(Page::"Sales Invoice", SalesHeader);
+                   // RunModal(Page::"Sales Invoice", SalesHeader);
                 end;
             }
         }
