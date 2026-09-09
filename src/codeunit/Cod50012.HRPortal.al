@@ -20218,9 +20218,10 @@ Codeunit 50012 "HRPortal"
     //   it just corrects the field afterward, from the codeunit side only.
     // --------------------------------------------------------------------------
 
-    procedure createOvertimeHeader(docNo: Code[20]; empNo: Code[20]; applicationDate: Date) status: Text
+    procedure createOvertimeHeader(docNo: Code[20]; empNo: Code[20]; applicationDate: Text[10]) status: Text
     var
         OvertimeHeader: Record "Overtime Header";
+        ParsedDate: Date;
     begin
         status := 'danger*Your overtime application could not be captured';
 
@@ -20233,8 +20234,10 @@ Codeunit 50012 "HRPortal"
                 OvertimeHeader."EMp No." := empNo;
                 OvertimeHeader.Validate("EMp No.");
 
-                if applicationDate <> 0D then
-                    OvertimeHeader."Application Date" := applicationDate;
+                if applicationDate <> '' then begin
+                    if Evaluate(ParsedDate, applicationDate, 9) then
+                        OvertimeHeader."Application Date" := ParsedDate;
+                end;
 
                 if OvertimeHeader.Modify(true) then begin
                     status := 'success*Your overtime application was successfully created*' + OvertimeHeader."Application Code";
@@ -20255,8 +20258,10 @@ Codeunit 50012 "HRPortal"
                     exit(status);
                 end;
 
-                if applicationDate <> 0D then
-                    OvertimeHeader."Application Date" := applicationDate;
+                if applicationDate <> '' then begin
+                    if Evaluate(ParsedDate, applicationDate, 9) then
+                        OvertimeHeader."Application Date" := ParsedDate;
+                end;
 
                 if OvertimeHeader.Modify(true) then begin
                     status := 'success*Your overtime application was successfully updated*' + OvertimeHeader."Application Code";
@@ -20268,7 +20273,7 @@ Codeunit 50012 "HRPortal"
             end;
         end;
     end;
-
+    
     procedure addOvertimeLine(docNo: Code[20]; empNo: Code[20]; day: Date; overtimeType: Code[20]; startTime: Time; endTime: Time; workDone: Text[150]) status: Text
     var
         OvertimeHeader: Record "Overtime Header";
