@@ -212,13 +212,18 @@ page 50352 "Domain Ledger List"
                     CMSetup: Record "Cash Management Setup";
                     Customer: Record Customer;
                     SalesHeader: Record "Sales Header";
+                    NewSalesHeader: Record "Sales Header";
                     SalesLine: Record "Sales Line";
+                    OldSalesLine: Record "Sales Line";
+                    NewSalesLine: Record "Sales Line";
                     SalesInvoiceHeader: Record "Sales Invoice Header";
                     CorrectPostedSalesInvoice: Codeunit "Correct Posted Sales Invoice";
                     ItemNo: Code[20];
                     InvoiceNo: Code[20];
                     OriginalInvoiceNo: Code[20];
                     CreditMemoNo: Code[20];
+                    TempDocType: Enum "Sales Document Type";
+                    TempNo: Code[20];
                 begin
                     if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
@@ -236,20 +241,47 @@ page 50352 "Domain Ledger List"
                         if not SalesInvoiceHeader.Get(OriginalInvoiceNo) then
                             Error('Cannot create credit memo. The original invoice %1 (Domain Ledger ID: %2) has not been posted yet. Please post the original invoice first before processing this refund.', OriginalInvoiceNo, Rec.RefundForId);
 
+                        if NewSalesHeader.Get(NewSalesHeader."Document Type"::"Credit Memo", CreditMemoNo) then
+                            Error('A Credit Memo with number %1 already exists.', CreditMemoNo);
+
                         if not CorrectPostedSalesInvoice.CreateCreditMemoCopyDocument(SalesInvoiceHeader, SalesHeader) then
                             Error('Could not create credit memo for invoice %1. The invoice may be fully or partially applied.', OriginalInvoiceNo);
 
-                        SalesHeader.Rename(SalesHeader."Document Type", CreditMemoNo);
-                        SalesHeader."Posting No." := CreditMemoNo;
-                        SalesHeader."Posting No. Series" := '';
-                        SalesHeader.Modify(true);
+                        TempDocType := SalesHeader."Document Type";
+                        TempNo := SalesHeader."No.";
+
+                        OldSalesLine.Reset();
+                        OldSalesLine.SetRange("Document Type", TempDocType);
+                        OldSalesLine.SetRange("Document No.", TempNo);
+                        if OldSalesLine.FindSet() then
+                            repeat
+                                NewSalesLine := OldSalesLine;
+                                NewSalesLine."Document No." := CreditMemoNo;
+                                NewSalesLine.Insert(false);
+                            until OldSalesLine.Next() = 0;
+
+                        OldSalesLine.Reset();
+                        OldSalesLine.SetRange("Document Type", TempDocType);
+                        OldSalesLine.SetRange("Document No.", TempNo);
+                        OldSalesLine.DeleteAll(false);
+
+                        NewSalesHeader := SalesHeader;
+                        NewSalesHeader."No." := CreditMemoNo;
+                        NewSalesHeader."Posting No." := CreditMemoNo;
+                        NewSalesHeader."Posting No. Series" := '';
+                        NewSalesHeader."No. Series" := '';
+                        NewSalesHeader.Insert(false);
+
+                        SalesHeader.Delete(false);
+
+                        NewSalesHeader.Modify(true);
 
                         Rec.InvoiceCreated := true;
-                        Rec."Credit Memo No." := SalesHeader."No.";
-                        Rec."Sales Invoice No." := SalesHeader."No.";
+                        Rec."Credit Memo No." := NewSalesHeader."No.";
+                        Rec."Sales Invoice No." := NewSalesHeader."No.";
                         Rec.Modify();
 
-                        Message('Credit Memo %1 created successfully for %2 (refund of invoice %3).', SalesHeader."No.", Rec.DomainName, OriginalInvoiceNo);
+                        Message('Credit Memo %1 created successfully for %2 (refund of invoice %3).', NewSalesHeader."No.", Rec.DomainName, OriginalInvoiceNo);
                         exit;
                     end;
 
@@ -310,17 +342,6 @@ page 50352 "Domain Ledger List"
                     SalesHeader.Validate("Document Date", Today);
                     SalesHeader.Modify(true);
 
-                    // SalesLine.Init();
-                    // SalesLine."Document Type" := SalesHeader."Document Type";
-                    // SalesLine."Document No." := SalesHeader."No.";
-                    // SalesLine."Line No." := 10000;
-                    // SalesLine.Insert(true);
-                    // SalesLine.Validate(Type, SalesLine.Type::Item);
-                    // SalesLine.Validate("No.", ItemNo);
-                    // SalesLine.Validate(Quantity, 1);
-                    // SalesLine.Validate("Unit Price", Rec.Amount);
-                    // SalesLine.Description := CopyStr(Rec.Description, 1, 100);
-                    // SalesLine.Modify(true);
                     SalesLine.Init();
                     SalesLine."Document Type" := SalesHeader."Document Type";
                     SalesLine."Document No." := SalesHeader."No.";
@@ -332,7 +353,6 @@ page 50352 "Domain Ledger List"
                     SalesLine.Validate("Unit Price", Rec.Amount);
                     SalesLine.Description := CopyStr(Rec.Description, 1, 100);
 
-                    // New: assign deferral code based on domain length and transaction type
                     if Rec.TransType in ['Renewal', 'AutoRenewal', 'Registration'] then begin
                         DomainLengthYears := GetDomainLengthYears(Rec.Created, Rec.ExDate);
                         if DomainLengthYears > 0 then begin
