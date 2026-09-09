@@ -25,17 +25,13 @@ Table 69207 "HR Leave Planner Lines"
 
             trigger OnValidate()
             begin
-
-
                 TestField("Leave Type");
-                //CALCULATE THE END DATE AND RETURN DATE
-                begin
-                    if ("Days Applied" <> 0) and ("Start Date" <> 0D) then
-                        "Return Date" := DetermineLeaveReturnDate("Start Date", "Days Applied");
+                if ("Days Applied" <> 0) and ("Start Date" <> 0D) then begin
+                    "Return Date" := DetermineLeaveReturnDate("Start Date", "Days Applied");
                     "End Date" := DeterminethisLeaveEndDate("Return Date");
 
+                    // VALIDATE OVERLAP ONLY AFTER END DATE IS CALCULATED
                     CheckOverlappingLeave();
-                    Modify;
                 end;
             end;
         }
@@ -232,6 +228,7 @@ Table 69207 "HR Leave Planner Lines"
         LeavePlannerLines: Record "HR Leave Planner Lines";
         HrLeavePlanner: Record "HR Leave Planner Header";
     begin
+        // 1. Calculate Line No. FIRST
         LeavePlannerLines.Reset();
         LeavePlannerLines.SetRange("Application Code", Rec."Application Code");
         LeavePlannerLines.SetRange("Employee No", Rec."Employee No");
@@ -239,6 +236,8 @@ Table 69207 "HR Leave Planner Lines"
             Rec."Line No." := LeavePlannerLines."Line No." + 1
         else
             Rec."Line No." := 1;
+
+        // 2. Set default leave type & period
         LeaveTypes.Reset();
         LeaveTypes.SetRange(Annual, true);
         if LeaveTypes.FindFirst() then
@@ -249,14 +248,9 @@ Table 69207 "HR Leave Planner Lines"
         if HrLeavePlanner.FindFirst() then begin
             Rec."Leave Period" := HrLeavePlanner."Leave Period";
         end;
-        CheckOverlappingLeave();
-        /*
-        //POPULATE FIELDS
-        "Application Date":=TODAY;
-         IF HREmp.GET("Employee No") THEN
-         Names:=HREmp.FullName;
-        */
 
+        // 3. Validate overlap AFTER Line No. is set and dates/line are ready
+        CheckOverlappingLeave();
     end;
 
     trigger OnModify()
@@ -324,20 +318,32 @@ Table 69207 "HR Leave Planner Lines"
     var
         LeaveLine: Record "HR Leave Planner Lines";
     begin
-        if ("Start Date" = 0D) or ("End Date" = 0D) then
+        if (Rec."Start Date" = 0D) or (Rec."End Date" = 0D) then
             exit;
 
         LeaveLine.Reset();
-        LeaveLine.SetRange("Application Code", "Application Code");
-        LeaveLine.SetFilter("Start Date", '<=%1', "End Date");
-        LeaveLine.SetFilter("End Date", '>=%1', "Start Date");
+        // Scope strictly to this planner instance
+        LeaveLine.SetRange("Application Code", Rec."Application Code");
+
+        // Find any line where date ranges overlap
+        LeaveLine.SetFilter("Start Date", '<=%1', Rec."End Date");
+        LeaveLine.SetFilter("End Date", '>=%1', Rec."Start Date");
+
         if LeaveLine.FindSet() then
             repeat
-                if LeaveLine."Line No." <> "Line No." then
-                    Error('These dates (%1 to %2) are already booked by %3 (%4) in this leave plan, from %5 to %6.',
-                        "Start Date", "End Date",
-                        LeaveLine."Employee Name", LeaveLine."Employee No",
-                        LeaveLine."Start Date", LeaveLine."End Date");
+                // Safely ignore the current record if modifying an existing line
+                if not ((LeaveLine."Application Code" = Rec."Application Code") and
+                        (LeaveLine."Employee No" = Rec."Employee No") and
+                        (LeaveLine."Line No." = Rec."Line No.")) then begin
+                    Error(
+                        'Leave overlap detected on Planner %1!\n\nEmployee %2 (%3) is already scheduled from %4 to %5.\nNo two employees can be on leave at the same time in this planner.',
+                        Rec."Application Code",
+                        LeaveLine."Employee Name",
+                        LeaveLine."Employee No",
+                        LeaveLine."Start Date",
+                        LeaveLine."End Date"
+                    );
+                end;
             until LeaveLine.Next() = 0;
     end;
 
