@@ -196,6 +196,7 @@ page 50352 "Domain Ledger List"
 
                 trigger OnAction()
                 begin
+
                 end;
             }
             action(CreateInvoice)
@@ -357,7 +358,6 @@ page 50352 "Domain Ledger List"
                     SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
                     SalesHeader.Validate("Posting Date", Today);
                     SalesHeader.Validate("Document Date", Today);
-                   // SalesHeader.status := SalesHeader.status::Released;
 
                     SalesHeader.Modify(true);
 
@@ -365,12 +365,15 @@ page 50352 "Domain Ledger List"
                     SalesLine."Document Type" := SalesHeader."Document Type";
                     SalesLine."Document No." := SalesHeader."No.";
                     SalesLine."Line No." := 10000;
-                    SalesLine.Insert(true);
+
                     SalesLine.Validate(Type, SalesLine.Type::Item);
                     SalesLine.Validate("No.", ItemNo);
                     SalesLine.Validate(Quantity, 1);
                     SalesLine.Validate("Unit Price", Rec.Amount);
+
                     SalesLine.Description := CopyStr(Rec.Description, 1, 100);
+
+                    SalesLine.Insert(true);
 
                     if Rec.TransType in ['Renewal', 'AutoRenewal', 'Registration'] then begin
                         DomainLengthYears := GetDomainLengthYears(Rec.Created, Rec.ExDate);
@@ -382,13 +385,12 @@ page 50352 "Domain Ledger List"
                                 Error('Deferral code is not set for %1 year(s) for transaction type %2 in Cash Management Setup.', DomainLengthYears, Rec.TransType);
                         end;
                     end;
-                    salesline.Validate("Deferral Code", DeferralCode);
 
                     SalesLine.Modify(true);
 
                     Rec.InvoiceCreated := true;
                     Rec."Sales Invoice No." := SalesHeader."No.";
-                    SalesHeader.status := SalesHeader.status::Released;
+                    SalesHeader.Status := SalesHeader.Status::Released;
                     SalesHeader."Created By" := UserId();
                     Rec.Modify();
 
@@ -411,7 +413,6 @@ page 50352 "Domain Ledger List"
     var
         DomainLengthYears: Integer;
         DeferralCode: Code[30];
-        // SalesPost: Codeunit "Sales-Post"; // moved to local scope in TryPostSalesInvoice to avoid "already bound" error
 
     local procedure GetDomainLengthYears(CreatedDT: DateTime; ExpiryDT: DateTime): Integer
     var
@@ -494,7 +495,7 @@ page 50352 "Domain Ledger List"
     [TryFunction]
     local procedure TryPostSalesInvoice(var SalesHeader: Record "Sales Header")
     var
-        SalesPost: Codeunit "Sales-Post"; // local instance instead of global, prevents "codeunit already bound" error
+        SalesPost: Codeunit "Sales-Post";
     begin
         SalesPost.Run(SalesHeader);
     end;
@@ -505,7 +506,5 @@ page 50352 "Domain Ledger List"
     begin
         SalesInvoicePage.SetRecord(SalesHeader);
         SalesInvoicePage.Run();
-        // CODEUNIT.Run(CODEUNIT::"Sales-Post (Yes/No)", SalesHeader); // removed: re-posts an already-Open invoice, causing "Status must be equal to 'Released'" error
-
     end;
 }
