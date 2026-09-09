@@ -20048,7 +20048,7 @@ Codeunit 50012 "HRPortal"
         exit(result);
     end;
 
-     // ============================================================================
+    // ============================================================================
     // NEW PROCEDURES TO ADD TO Cod50012.HRPortal.al
     // Insert these directly after removeTrainingNeedsLine (before sendTrainingNeedsForApproval).
     // They follow the exact same pattern as addTrainingNeedsLine / removeTrainingNeedsLine
@@ -20204,6 +20204,162 @@ Codeunit 50012 "HRPortal"
             end;
         end else begin
             status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    // --------------------------------------------------------------------------
+    // Overtime Header
+    //   NOTE: "Overtime Header".OnInsert forces "EMp No." from the calling BC
+    //   user's User Setup — that's fine for a human using BC directly, but wrong
+    //   for a service-account web service call. We let OnInsert run (it still
+    //   generates the Application Code from the No. Series), then immediately
+    //   correct "EMp No." to the employee the portal actually sent, re-validate,
+    //   and save. This does NOT change OvertimeHeader.Table.al or its approach —
+    //   it just corrects the field afterward, from the codeunit side only.
+    // --------------------------------------------------------------------------
+
+    procedure createOvertimeHeader(docNo: Code[20]; empNo: Code[20]; applicationDate: Date) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+    begin
+        status := 'danger*Your overtime application could not be captured';
+
+        if docNo = '' then begin
+            OvertimeHeader.Init;
+
+            if OvertimeHeader.Insert(true) then begin
+                // Correct the employee to the one the portal actually submitted
+                // (OnInsert set it from the service account's User Setup, which is wrong here)
+                OvertimeHeader."EMp No." := empNo;
+                OvertimeHeader.Validate("EMp No.");
+
+                if applicationDate <> 0D then
+                    OvertimeHeader."Application Date" := applicationDate;
+
+                if OvertimeHeader.Modify(true) then begin
+                    status := 'success*Your overtime application was successfully created*' + OvertimeHeader."Application Code";
+                end else begin
+                    status := 'danger*Your overtime application could not be created';
+                end;
+            end else begin
+                status := 'danger*Your overtime application could not be created';
+            end;
+        end else begin
+            OvertimeHeader.Reset;
+            OvertimeHeader.SetRange("Application Code", docNo);
+            OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+            if OvertimeHeader.FindFirst() then begin
+                if OvertimeHeader."EMp No." <> empNo then begin
+                    status := 'danger*You are not authorized to modify this request';
+                    exit(status);
+                end;
+
+                if applicationDate <> 0D then
+                    OvertimeHeader."Application Date" := applicationDate;
+
+                if OvertimeHeader.Modify(true) then begin
+                    status := 'success*Your overtime application was successfully updated*' + OvertimeHeader."Application Code";
+                end else begin
+                    status := 'danger*Your overtime application could not be updated';
+                end;
+            end else begin
+                status := 'danger*Overtime application not found or not in Open status';
+            end;
+        end;
+    end;
+
+    procedure addOvertimeLine(docNo: Code[20]; empNo: Code[20]; day: Date; overtimeType: Code[20]; startTime: Time; endTime: Time; workDone: Text[150]) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+        OvertimeLine: Record "Overtime lines";
+    begin
+        status := 'danger*Could not add overtime line';
+
+        OvertimeHeader.Reset;
+        OvertimeHeader.SetRange("Application Code", docNo);
+        OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+        if OvertimeHeader.FindFirst() then begin
+            OvertimeLine.Init;
+            OvertimeLine."Application Code" := docNo;
+            OvertimeLine."EmpNo." := empNo;
+            OvertimeLine.Day := day;
+            OvertimeLine."Work Done" := CopyStr(workDone, 1, MaxStrLen(OvertimeLine."Work Done"));
+            OvertimeLine."Overtime Type" := overtimeType;
+            OvertimeLine."Start Time" := startTime;
+            OvertimeLine.Validate("End Time", endTime); // triggers UpdateHours(), which computes Hours and re-validates Overtime Type for the correct Rate/Amount
+
+            if OvertimeLine.Insert(true) then begin
+                status := 'success*Overtime line added successfully';
+            end else begin
+                status := 'danger*Could not add overtime line';
+            end;
+        end else begin
+            status := 'danger*Overtime application not found or not in Open status';
+        end;
+    end;
+
+    procedure removeOvertimeLine(empNo: Code[20]; docNo: Code[20]; day: Date; startTime: Time) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+        OvertimeLine: Record "Overtime lines";
+    begin
+        status := 'danger*Could not remove overtime line';
+
+        OvertimeHeader.Reset;
+        OvertimeHeader.SetRange("Application Code", docNo);
+        OvertimeHeader.SetRange("EMp No.", empNo);
+        OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+        if OvertimeHeader.FindFirst() then begin
+            OvertimeLine.Reset;
+            OvertimeLine.SetRange("Application Code", docNo);
+            OvertimeLine.SetRange("EmpNo.", empNo);
+            OvertimeLine.SetRange(Day, day);
+            OvertimeLine.SetRange("Start Time", startTime);
+
+            if OvertimeLine.FindFirst() then begin
+                if OvertimeLine.Delete(true) then begin
+                    status := 'success*Overtime line removed successfully';
+                end else begin
+                    status := 'danger*Could not remove overtime line';
+                end;
+            end else begin
+                status := 'danger*Overtime line not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    procedure sendOvertimeForApproval(docNo: Code[20]) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+        OvertimeLine: Record "Overtime lines";
+    begin
+        status := 'danger*Could not send overtime application for approval';
+
+        OvertimeHeader.Reset;
+        OvertimeHeader.SetRange("Application Code", docNo);
+        OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+        if OvertimeHeader.FindFirst() then begin
+            OvertimeLine.Reset;
+            OvertimeLine.SetRange("Application Code", docNo);
+            if OvertimeLine.IsEmpty then begin
+                status := 'danger*Cannot send for approval. Please add at least one overtime line';
+                exit(status);
+            end;
+
+            OvertimeHeader.Status := OvertimeHeader.Status::"Pending Approval";
+            if OvertimeHeader.Modify(true) then begin
+                status := 'success*Overtime application sent for approval successfully';
+            end else begin
+                status := 'danger*Could not update overtime application status';
+            end;
+        end else begin
+            status := 'danger*Overtime application not found or not in Open status';
         end;
     end;
 
