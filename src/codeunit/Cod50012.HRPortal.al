@@ -986,12 +986,18 @@ Codeunit 50012 "HRPortal"
     //     */
 
     // end;
-    procedure createTrainingNeedsHeader(docNo: Code[20]; empNo: Code[20]; fyCode: Code[10]; typeOfTraining: Integer; description: Text; username: Text; department: Text; jobtitle: Text; supervisorname: Text; supervisorjobtitle: Text; plandate: Date) status: Text
+    procedure createTrainingNeedsHeader(docNo: Code[20]; empNo: Code[20]; fyCode: Code[10]; typeOfTraining: Integer; description: Text; username: Text; department: Text; jobtitle: Text; supervisorname: Text; supervisorjobtitle: Text; plandate: Text[10]) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
         Employee: Record Employee;
+        ParsedPlanDate: Date;
     begin
         status := 'danger*Your training needs request could not be captured';
+
+        if not Evaluate(ParsedPlanDate, plandate, 9) then begin
+            status := 'danger*Invalid plan date format. Please use yyyy-mm-dd.';
+            exit(status);
+        end;
 
         if docNo = '' then begin
             TrainingHeader.Init;
@@ -1006,7 +1012,7 @@ Codeunit 50012 "HRPortal"
             TrainingHeader."Job Title" := jobtitle;
             TrainingHeader."Supervisor Name" := supervisorname;
             TrainingHeader."Supervisor Job Title" := supervisorjobtitle;
-            TrainingHeader."Plan Date" := plandate;
+            TrainingHeader."Plan Date" := ParsedPlanDate;
 
             if TrainingHeader.Insert(true) then begin
                 TrainingHeader."Employee No" := empNo;
@@ -1038,6 +1044,12 @@ Codeunit 50012 "HRPortal"
 
                 TrainingHeader."FY Code" := fyCode;
                 TrainingHeader.Description := description;
+                TrainingHeader."Type of Training" := typeOfTraining;
+                TrainingHeader.Department := department;
+                TrainingHeader."Job Title" := jobtitle;
+                TrainingHeader."Supervisor Name" := supervisorname;
+                TrainingHeader."Supervisor Job Title" := supervisorjobtitle;
+                TrainingHeader."Plan Date" := ParsedPlanDate;
 
                 if TrainingHeader.Modify(true) then begin
                     status := 'success*Your training needs request was successfully updated*' + TrainingHeader.Code;
@@ -20274,12 +20286,18 @@ Codeunit 50012 "HRPortal"
         end;
     end;
     
-    procedure addOvertimeLine(docNo: Code[20]; empNo: Code[20]; day: Date; overtimeType: Code[20]; startTime: Time; endTime: Time; workDone: Text[150]) status: Text
+    procedure addOvertimeLine(docNo: Code[20]; empNo: Code[20]; day: Text[10]; overtimeType: Code[20]; startTime: Time; endTime: Time; workDone: Text[150]) status: Text
     var
         OvertimeHeader: Record "Overtime Header";
         OvertimeLine: Record "Overtime lines";
+        ParsedDay: Date;
     begin
         status := 'danger*Could not add overtime line';
+
+        if not Evaluate(ParsedDay, day, 9) then begin
+            status := 'danger*Invalid day format. Please use yyyy-mm-dd.';
+            exit(status);
+        end;
 
         OvertimeHeader.Reset;
         OvertimeHeader.SetRange("Application Code", docNo);
@@ -20289,11 +20307,11 @@ Codeunit 50012 "HRPortal"
             OvertimeLine.Init;
             OvertimeLine."Application Code" := docNo;
             OvertimeLine."EmpNo." := empNo;
-            OvertimeLine.Day := day;
+            OvertimeLine.Day := ParsedDay;
             OvertimeLine."Work Done" := CopyStr(workDone, 1, MaxStrLen(OvertimeLine."Work Done"));
             OvertimeLine."Overtime Type" := overtimeType;
             OvertimeLine."Start Time" := startTime;
-            OvertimeLine.Validate("End Time", endTime); // triggers UpdateHours(), which computes Hours and re-validates Overtime Type for the correct Rate/Amount
+            OvertimeLine.Validate("End Time", endTime);
 
             if OvertimeLine.Insert(true) then begin
                 status := 'success*Overtime line added successfully';
@@ -20305,12 +20323,18 @@ Codeunit 50012 "HRPortal"
         end;
     end;
 
-    procedure removeOvertimeLine(empNo: Code[20]; docNo: Code[20]; day: Date; startTime: Time) status: Text
+    procedure removeOvertimeLine(empNo: Code[20]; docNo: Code[20]; day: Text[10]; startTime: Time) status: Text
     var
         OvertimeHeader: Record "Overtime Header";
         OvertimeLine: Record "Overtime lines";
+        ParsedDay: Date;
     begin
         status := 'danger*Could not remove overtime line';
+
+        if not Evaluate(ParsedDay, day, 9) then begin
+            status := 'danger*Invalid day format.';
+            exit(status);
+        end;
 
         OvertimeHeader.Reset;
         OvertimeHeader.SetRange("Application Code", docNo);
@@ -20321,7 +20345,7 @@ Codeunit 50012 "HRPortal"
             OvertimeLine.Reset;
             OvertimeLine.SetRange("Application Code", docNo);
             OvertimeLine.SetRange("EmpNo.", empNo);
-            OvertimeLine.SetRange(Day, day);
+            OvertimeLine.SetRange(Day, ParsedDay);
             OvertimeLine.SetRange("Start Time", startTime);
 
             if OvertimeLine.FindFirst() then begin
