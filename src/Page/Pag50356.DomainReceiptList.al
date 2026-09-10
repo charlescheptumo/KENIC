@@ -67,23 +67,69 @@ page 50356 "Domain Receipt List"
                     ReceiptDialog: Page "Get Domain Receipt";
                     DomainReceiptMgt: Codeunit "Payments-post";
                     ReceiptRec: Record "Domain Receipt";
+                    PostingLog: Record "Transaction Posting Log";
                     PostedCount: Integer;
+                    FailedCount: Integer;
                 begin
                     ReceiptDialog.RunModal();
                     CurrPage.Update(false);
 
                     PostedCount := 0;
+                    FailedCount := 0;
+
                     ReceiptRec.Reset();
                     ReceiptRec.SetRange(Posted, false);
                     if ReceiptRec.FindSet() then
                         repeat
-                            DomainReceiptMgt.PostReceipt(ReceiptRec, false);
-                            PostedCount += 1;
+                            if DomainReceiptMgt.TryPostReceipt(ReceiptRec) then
+                                PostedCount += 1
+                            else begin
+                                PostingLog.Init();
+
+                                PostingLog."Source Table" := 'Domain Receipt';
+                                PostingLog."Source Record ID" := ReceiptRec.ReceiptId;
+                                PostingLog."Document No." := Format(ReceiptRec.ReceiptId);
+                                PostingLog."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
+                                PostingLog.Amount := ReceiptRec.Amount;
+                                PostingLog."User ID" := CopyStr(UserId, 1, 50);
+                                PostingLog.Posted := false;
+                                PostingLog."Error Description" := CopyStr(GetLastErrorText(), 1, 500);
+                                PostingLog."Log DateTime" := CurrentDateTime;
+
+                                if PostingLog.FindLast() then
+                                    PostingLog."Entry No." := PostingLog."Entry No." + 1
+                                else
+                                    PostingLog."Entry No." := 1;
+
+                                PostingLog.Insert(true);
+
+                                FailedCount += 1;
+                            end;
                         until ReceiptRec.Next() = 0;
 
                     CurrPage.Update(false);
 
-                    Message('All receipts in the selected range (%1) have been posted.', PostedCount);
+                    Message('%1 receipt(s) posted successfully. %2 receipt(s) failed and were logged - check View Posting Log for details.', PostedCount, FailedCount);
+                end;
+            }
+            action(WriteToRegistry)
+            {
+                ApplicationArea = All;
+                Caption = 'Write to Registry';
+                Image = Export;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                ToolTip = 'Copies all posted manually-created receipts that are not yet in the registry into the Domain Receipt table.';
+
+                trigger OnAction()
+                var
+                    DomainReceiptMgt: Codeunit "Payments-post";
+                    SyncedCount: Integer;
+                begin
+                    SyncedCount := DomainReceiptMgt.SyncManualReceiptsToRegistry();
+                    CurrPage.Update(false);
+                    Message('%1 manually posted receipt(s) written to the Domain Receipt registry.', SyncedCount);
                 end;
             }
             action(CreateTransaction)
