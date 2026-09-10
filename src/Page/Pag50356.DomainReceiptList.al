@@ -65,8 +65,19 @@ page 50356 "Domain Receipt List"
                 trigger OnAction()
                 var
                     ReceiptDialog: Page "Get Domain Receipt";
+                    DomainReceiptMgt: Codeunit "Payments-post";
+                    ReceiptRec: Record "Domain Receipt";
                 begin
                     ReceiptDialog.RunModal();
+                    CurrPage.Update(false);
+
+                    ReceiptRec.Reset();
+                    ReceiptRec.SetRange(Posted, false);
+                    if ReceiptRec.FindSet() then
+                        repeat
+                            DomainReceiptMgt.PostReceipt(ReceiptRec, false);
+                        until ReceiptRec.Next() = 0;
+
                     CurrPage.Update(false);
                 end;
             }
@@ -80,11 +91,7 @@ page 50356 "Domain Receipt List"
                 PromotedIsBig = true;
 
                 trigger OnAction()
-                var
-                    DomainDialog: Page "Get Domain Ledger";
                 begin
-                    // DomainDialog.RunModal();
-                    // CurrPage.Update(false);
                 end;
             }
             action(PostReceipt)
@@ -100,7 +107,7 @@ page 50356 "Domain Receipt List"
                 var
                     DomainReceiptMgt: Codeunit "Payments-post";
                 begin
-                    DomainReceiptMgt.PostReceiptWithLog(Rec, false);
+                    DomainReceiptMgt.PostReceipt(Rec, true);
                     CurrPage.Update(false);
                 end;
             }
@@ -118,7 +125,7 @@ page 50356 "Domain Receipt List"
                 begin
                     PostingLog.SetRange("Source Table", 'Domain Receipt');
                     PostingLog.SetRange("Source Record ID", Rec.ReceiptId);
-                    Page.Run(0, PostingLog); // opens a default generated list view; swap 0 for a dedicated page ID once you build one
+                    Page.Run(0, PostingLog);
                 end;
             }
         }
