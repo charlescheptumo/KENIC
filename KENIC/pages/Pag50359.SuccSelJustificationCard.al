@@ -8,6 +8,7 @@ page 50359 "Succ. Sel. Justification Card"
     SourceTable = "Succ. Sel. Justification Hdr";
     Caption = 'Successor Selection Justification';
     ApplicationArea = All;
+    
     PromotedActionCategories = 'New,Process,Report,Approval Requests,Category5,Comments,Category7,Category8,Category9';
 
     //UsageCategory = lists;
