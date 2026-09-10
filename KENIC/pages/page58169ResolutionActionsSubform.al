@@ -4,6 +4,7 @@ page 58169 "Resolution Actions Subform"
     Caption = 'History';
     PageType = ListPart;
     SourceTable = "Resolution Actions";
+    
     AutoSplitKey = true;
 
     layout

@@ -41,6 +41,11 @@ table 50171 "Domain Receipt"
         field(27; "Posted By"; Code[50]) { }
         field(28; "Posted Date"; Date) { }
         field(29; "Posted Time"; Time) { }
+        field(30; "Source Receipt No."; Code[20])
+        {
+            Caption = 'Source Receipt No.';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
@@ -55,6 +60,9 @@ table 50171 "Domain Receipt"
         }
 
         key(Date; ReceiptDate)
+        {
+        }
+        key(SourceReceipt; "Source Receipt No.")
         {
         }
     }
