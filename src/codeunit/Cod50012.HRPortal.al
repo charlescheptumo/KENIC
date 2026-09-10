@@ -1355,7 +1355,6 @@ Codeunit 50012 "HRPortal"
     procedure sendTrainingNeedsForApproval(docNo: Code[20]) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
-        TrainingLine: Record "Training Needs Requests";
     begin
         status := 'danger*Could not send training needs for approval';
 
@@ -1364,13 +1363,6 @@ Codeunit 50012 "HRPortal"
         TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
 
         if TrainingHeader.FindFirst() then begin
-            TrainingLine.Reset;
-            TrainingLine.SetRange("Training Header No.", docNo);
-            if TrainingLine.IsEmpty then begin
-                status := 'danger*Cannot send for approval. Please add at least one training line';
-                exit(status);
-            end;
-
             TrainingHeader.Status := TrainingHeader.Status::"Pending Approval";
             if TrainingHeader.Modify(true) then begin
                 status := 'success*Training needs request sent for approval successfully';
