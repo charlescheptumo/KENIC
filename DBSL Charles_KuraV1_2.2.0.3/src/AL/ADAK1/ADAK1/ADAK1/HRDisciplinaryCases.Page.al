@@ -89,6 +89,11 @@ Page 69200 "HR Disciplinary Cases"
         }
         area(factboxes)
         {
+            systempart(Links; Links)
+            {
+                ApplicationArea = RecordLinks;
+                Caption = 'Case Documents';
+            }
             systempart(Control1000000001; Outlook)
             {
             }
