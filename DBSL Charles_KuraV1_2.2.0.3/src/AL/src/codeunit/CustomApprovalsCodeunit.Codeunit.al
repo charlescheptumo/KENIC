@@ -6554,6 +6554,14 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
             IsHandle := true;
     end;
 
+     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Page Management", 'OnAfterGetPageID', '', false, false)]
+    local procedure OnAfterGetPageID(var RecordRef: RecordRef; var PageID: Integer; ForceListPage: Boolean)
+    begin
+        if RecordRef.Number = Database::"Overtime Header" then
+            if not ForceListPage then
+                PageID := Page::"Overtime Header Page"; // Page 69173
+    end;
+
     procedure CheckIFSApprovalPossible(VAR IFS: Record "Standard Purchase Code"): Boolean
     begin
         IF NOT IsIFSApprovalsWorkflowEnabled(IFS) THEN
