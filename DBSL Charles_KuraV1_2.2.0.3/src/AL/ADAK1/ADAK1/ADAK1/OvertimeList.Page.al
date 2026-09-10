@@ -5,7 +5,7 @@ Page 69175 "Overtime List"
     CardPageID = "Overtime Header Page";
     PageType = List;
     SourceTable = "Overtime Header";
-    //SourceTableView = where(Status=filter(<>Approved));
+    SourceTableView = where(Status = filter('Open' | 'Pending Approval'));
     UsageCategory = Lists;
 
     layout
