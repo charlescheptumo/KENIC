@@ -5509,25 +5509,31 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt.Insert(true);
     end;
 
-    procedure SyncManualReceiptsToRegistry(): Integer
+    procedure SyncManualReceiptsToRegistry(var SyncedCount: Integer): Integer
     var
         ReceiptHdr: Record "Receipts Header1";
         DomainReceipt: Record "Domain Receipt";
-        SyncedCount: Integer;
+        PostedCount: Integer;
     begin
+        SyncedCount := 0;
+
         ReceiptHdr.Reset();
         ReceiptHdr.SetRange(Posted, true);
-        Message('Posted receipts found: %1', ReceiptHdr.Count());
+
+        PostedCount := ReceiptHdr.Count();
+
         if ReceiptHdr.FindSet() then
             repeat
                 DomainReceipt.Reset();
                 DomainReceipt.SetRange("Source Receipt No.", ReceiptHdr."No.");
+
                 if DomainReceipt.IsEmpty() then begin
                     TransferToDomainRegistry(ReceiptHdr);
                     SyncedCount += 1;
                 end;
             until ReceiptHdr.Next() = 0;
-        exit(SyncedCount);
+
+        exit(PostedCount);
     end;
     // procedure PostReceipt(ReceiptRec: Record "Domain Receipt")
     // var
