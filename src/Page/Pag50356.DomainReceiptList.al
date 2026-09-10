@@ -67,18 +67,23 @@ page 50356 "Domain Receipt List"
                     ReceiptDialog: Page "Get Domain Receipt";
                     DomainReceiptMgt: Codeunit "Payments-post";
                     ReceiptRec: Record "Domain Receipt";
+                    PostedCount: Integer;
                 begin
                     ReceiptDialog.RunModal();
                     CurrPage.Update(false);
 
+                    PostedCount := 0;
                     ReceiptRec.Reset();
                     ReceiptRec.SetRange(Posted, false);
                     if ReceiptRec.FindSet() then
                         repeat
                             DomainReceiptMgt.PostReceipt(ReceiptRec, false);
+                            PostedCount += 1;
                         until ReceiptRec.Next() = 0;
 
                     CurrPage.Update(false);
+
+                    Message('All receipts in the selected range (%1) have been posted.', PostedCount);
                 end;
             }
             action(CreateTransaction)

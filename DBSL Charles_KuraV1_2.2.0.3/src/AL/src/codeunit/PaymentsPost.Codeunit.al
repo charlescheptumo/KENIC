@@ -5588,6 +5588,7 @@ Codeunit 57000 "Payments-Post"
         LineNo: Integer;
         GLEntry: Record "G/L Entry";
         CMSetup: Record "Cash Management Setup";
+        GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
         BankAccountNo: Code[20];
         DocNo: Code[20];
         Proceed: Boolean;
@@ -5690,7 +5691,7 @@ Codeunit 57000 "Payments-Post"
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
 
-            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            GenJnlPostLine.RunWithCheck(GenJnLine);
 
             GLEntry.Reset;
             GLEntry.SetRange(GLEntry."Document No.", DocNo);
@@ -5705,7 +5706,6 @@ Codeunit 57000 "Payments-Post"
 
         end;
     end;
-
     // procedure PostReceiptWithLog(var ReceiptRec: Record "Domain Receipt"; Silent: Boolean)
     // var
     //     PostingLog: Record "Transaction Posting Log";
