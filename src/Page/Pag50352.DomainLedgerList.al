@@ -218,6 +218,7 @@ page 50352 "Domain Ledger List"
                     OldSalesLine: Record "Sales Line";
                     NewSalesLine: Record "Sales Line";
                     SalesInvoiceHeader: Record "Sales Invoice Header";
+                    OrigLedgerEntry: Record "Domain Ledger Entry";
                     CorrectPostedSalesInvoice: Codeunit "Correct Posted Sales Invoice";
                     ItemNo: Code[20];
                     InvoiceNo: Code[20];
@@ -226,6 +227,8 @@ page 50352 "Domain Ledger List"
                     TempDocType: Enum "Sales Document Type";
                     TempNo: Code[20];
                     DotCount: Integer;
+                    RefundDeferralCode: Code[30];
+                    RefundDomainLengthYears: Integer;
                 begin
                     if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
@@ -245,6 +248,17 @@ page 50352 "Domain Ledger List"
 
                         if NewSalesHeader.Get(NewSalesHeader."Document Type"::"Credit Memo", CreditMemoNo) then
                             Error('A Credit Memo with number %1 already exists.', CreditMemoNo);
+
+                        if not OrigLedgerEntry.Get(Rec.RefundForId) then
+                            Error('Original Domain Ledger Entry %1 was not found. Cannot determine deferral code for refund.', Rec.RefundForId);
+
+                        CMSetup.Get();
+                        RefundDeferralCode := '';
+                        if OrigLedgerEntry.TransType in ['Renewal', 'AutoRenewal', 'Registration'] then begin
+                            RefundDomainLengthYears := GetDomainLengthYears(OrigLedgerEntry.Created, OrigLedgerEntry.ExDate);
+                            if RefundDomainLengthYears > 0 then
+                                RefundDeferralCode := GetDeferralCode(OrigLedgerEntry.TransType, RefundDomainLengthYears, CMSetup);
+                        end;
 
                         if not CorrectPostedSalesInvoice.CreateCreditMemoCopyDocument(SalesInvoiceHeader, SalesHeader) then
                             Error('Could not create credit memo for invoice %1. The invoice may be fully or partially applied.', OriginalInvoiceNo);
@@ -276,7 +290,20 @@ page 50352 "Domain Ledger List"
 
                         SalesHeader.Delete(false);
 
+                        NewSalesHeader.Status := NewSalesHeader.Status::Released;
                         NewSalesHeader.Modify(true);
+
+                        if RefundDeferralCode <> '' then begin
+                            NewSalesLine.Reset();
+                            NewSalesLine.SetRange("Document Type", NewSalesHeader."Document Type");
+                            NewSalesLine.SetRange("Document No.", NewSalesHeader."No.");
+                            NewSalesLine.SetRange(Type, NewSalesLine.Type::Item);
+                            if NewSalesLine.FindSet() then
+                                repeat
+                                    NewSalesLine.Validate("Deferral Code", RefundDeferralCode);
+                                    NewSalesLine.Modify(true);
+                                until NewSalesLine.Next() = 0;
+                        end;
 
                         Rec.InvoiceCreated := true;
                         Rec."Credit Memo No." := NewSalesHeader."No.";
@@ -284,7 +311,18 @@ page 50352 "Domain Ledger List"
 
                         Rec.Modify();
 
-                        Message('Credit Memo %1 created successfully for %2 (refund of invoice %3).', NewSalesHeader."No.", Rec.DomainName, OriginalInvoiceNo);
+                        Commit();
+
+                        if not TryReleaseSalesInvoice(NewSalesHeader) then begin
+                            Message('Credit Memo %1 was created but could not be released automatically: %2\Please release and post it manually.', CreditMemoNo, GetLastErrorText());
+                            OpenSalesCreditMemo(NewSalesHeader);
+                        end else
+                            if not TryPostSalesInvoice(NewSalesHeader) then begin
+                                Message('Credit Memo %1 was released but could not be posted automatically: %2\Please post it manually.', CreditMemoNo, GetLastErrorText());
+                                OpenSalesCreditMemo(NewSalesHeader);
+                            end else
+                                Message('Credit Memo %1 created and posted successfully for %2 (refund of invoice %3).', NewSalesHeader."No.", Rec.DomainName, OriginalInvoiceNo);
+
                         exit;
                     end;
 
@@ -391,7 +429,6 @@ page 50352 "Domain Ledger List"
                     Rec.InvoiceCreated := true;
                     Rec."Sales Invoice No." := SalesHeader."No.";
                     SalesHeader.Status := SalesHeader.Status::Released;
-                   // SalesHeader."Created By" := UserId();
                     Rec.Modify();
 
                     Commit();
@@ -506,5 +543,13 @@ page 50352 "Domain Ledger List"
     begin
         SalesInvoicePage.SetRecord(SalesHeader);
         SalesInvoicePage.Run();
+    end;
+
+    local procedure OpenSalesCreditMemo(var SalesHeader: Record "Sales Header")
+    var
+        SalesCreditMemoPage: Page "Sales Credit Memo";
+    begin
+        SalesCreditMemoPage.SetRecord(SalesHeader);
+        SalesCreditMemoPage.Run();
     end;
 }
