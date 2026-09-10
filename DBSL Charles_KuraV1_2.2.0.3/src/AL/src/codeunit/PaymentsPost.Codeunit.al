@@ -5451,9 +5451,83 @@ Codeunit 57000 "Payments-Post"
                 ReceiptRec."Posted Time" := Time;
                 ReceiptRec.Modify;
 
+                TransferToDomainRegistry(ReceiptRec)
+
             end;
 
         end;
+    end;
+
+    local procedure TransferToDomainRegistry(ReceiptRec: Record "Receipts Header1")
+    var
+        DomainReceipt: Record "Domain Receipt";
+        NextReceiptId: Integer;
+    begin
+        // Already transferred? skip
+        DomainReceipt.Reset();
+        DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
+        if not DomainReceipt.IsEmpty() then
+            exit;
+
+        ReceiptRec.CalcFields(Amount);
+
+        DomainReceipt.Reset();
+        if DomainReceipt.FindLast() then
+            NextReceiptId := DomainReceipt.ReceiptId + 1
+        else
+            NextReceiptId := 900000000; // reserved block for manually posted receipts, keeps clear of real registry IDs
+
+        DomainReceipt.Init();
+        DomainReceipt.ReceiptId := NextReceiptId;
+        DomainReceipt.Roid := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
+        DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
+        DomainReceipt.ReceiptDate := CreateDateTime(ReceiptRec.Date, 0T);
+        DomainReceipt.Amount := ReceiptRec.Amount;
+        DomainReceipt.BankCode := CopyStr(ReceiptRec."Bank Code", 1, MaxStrLen(DomainReceipt.BankCode));
+        if ReceiptRec."Cheque Date" <> 0D then
+            DomainReceipt.ChequeDate := CreateDateTime(ReceiptRec."Cheque Date", 0T);
+        DomainReceipt.ChequeNumber := CopyStr(ReceiptRec."Cheque No", 1, MaxStrLen(DomainReceipt.ChequeNumber));
+        DomainReceipt.Details := CopyStr(ReceiptRec."Being Payment of", 1, MaxStrLen(DomainReceipt.Details));
+
+        // Pay-mode flags — check these string values against your actual "Pay Mode" codes
+        DomainReceipt.Cash := ReceiptRec."Pay Mode" = 'CASH';
+        DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
+        DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
+        DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = 'NCBA';
+        if ReceiptRec."Pay Mode" = 'MPESA' then
+            DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
+
+        DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
+        DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
+
+        DomainReceipt.Posted := true;
+        DomainReceipt."Posted By" := ReceiptRec."Posted By";
+        DomainReceipt."Posted Date" := ReceiptRec."Posted Date";
+        DomainReceipt."Posted Time" := ReceiptRec."Posted Time";
+        DomainReceipt."Source Receipt No." := ReceiptRec."No.";
+
+        DomainReceipt.Insert(true);
+    end;
+
+    procedure SyncManualReceiptsToRegistry(): Integer
+    var
+        ReceiptHdr: Record "Receipts Header1";
+        DomainReceipt: Record "Domain Receipt";
+        SyncedCount: Integer;
+    begin
+        ReceiptHdr.Reset();
+        ReceiptHdr.SetRange(Posted, true);
+        Message('Posted receipts found: %1', ReceiptHdr.Count());
+        if ReceiptHdr.FindSet() then
+            repeat
+                DomainReceipt.Reset();
+                DomainReceipt.SetRange("Source Receipt No.", ReceiptHdr."No.");
+                if DomainReceipt.IsEmpty() then begin
+                    TransferToDomainRegistry(ReceiptHdr);
+                    SyncedCount += 1;
+                end;
+            until ReceiptHdr.Next() = 0;
+        exit(SyncedCount);
     end;
     // procedure PostReceipt(ReceiptRec: Record "Domain Receipt")
     // var
@@ -5577,9 +5651,10 @@ Codeunit 57000 "Payments-Post"
 
     //     end;
     // end;
-    procedure PostReceipt(ReceiptRec: Record "Domain Receipt")
+    [TryFunction]
+    procedure TryPostReceipt(var ReceiptRec: Record "Domain Receipt")
     begin
-        PostReceipt(ReceiptRec, true);
+        PostReceipt(ReceiptRec, false);
     end;
 
     procedure PostReceipt(ReceiptRec: Record "Domain Receipt"; ShowConfirm: Boolean)

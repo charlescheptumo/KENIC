@@ -266,7 +266,7 @@ Page 57067 "Receipt"
                         PaymentPost.PostReceipt(Rec);
 
                         //else
-                        error('Receipt Must Be Fully Released.');
+                       // error('Receipt Must Be Fully Released.');
                     CurrPage.Close;
 
 
