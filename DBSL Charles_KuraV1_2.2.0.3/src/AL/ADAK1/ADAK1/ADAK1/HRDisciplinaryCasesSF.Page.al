@@ -22,6 +22,10 @@ Page 69203 "HR Disciplinary Cases SF"
                     ApplicationArea = Basic;
                     Caption = 'Case No.';
                     ToolTip = 'Specifies the value of the Case No. field.';
+                    trigger OnDrillDown()
+                    begin
+                        Page.Run(58171, Rec);
+                    end;
                 }
                 field("Date of Complaint"; Rec."Date of Complaint")
                 {
@@ -192,14 +196,22 @@ Page 69203 "HR Disciplinary Cases SF"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Case Created field.';
                 }
-                field("Financial Year";Rec."Financial Year")
+                field("Financial Year"; Rec."Financial Year")
                 {
-                  ApplicationArea = Basic;
+                    ApplicationArea = Basic;
                 }
             }
         }
+        // area(factboxes)
+        // {
+        //     systempart(Links; Links)
+        //     {
+        //         ApplicationArea = RecordLinks;
+        //         Caption = 'Case Documents';
+        //     }
+        //     systempart(Control22; Notes) { }
+        // }
     }
-
     actions
     {
         area(processing)
@@ -315,7 +327,7 @@ Page 69203 "HR Disciplinary Cases SF"
                         end;
                     end;
                 }
-                 action("Notify Employee")
+                action("Notify Employee")
                 {
                     ApplicationArea = Basic;
                     Image = Reminder;
@@ -326,12 +338,12 @@ Page 69203 "HR Disciplinary Cases SF"
                     trigger OnAction()
                     var
                         DocumentCount: integer;
-                 
+
                         Err002: Label 'Attachment is required.';
                         Txt003: Label 'Are you sure you want sent case letter to employee?';
                     begin
                         if confirm(Txt003, true) then begin
-                          //  Rec.TestField("Date to Respond");
+                            //  Rec.TestField("Date to Respond");
 
                             DocAttach.Reset();
                             DocAttach.SetRange(DocAttach."Table ID", Database::"HR Disciplinary Cases");
@@ -352,7 +364,7 @@ Page 69203 "HR Disciplinary Cases SF"
                 {
                     ApplicationArea = Basic;
                     Image = Reminder;
-                   // Promoted = true;
+                    // Promoted = true;
                     // PromotedIsBig = true;
                     Caption = 'Notify on Disciplinary Hearing';
 
@@ -485,30 +497,25 @@ Page 69203 "HR Disciplinary Cases SF"
             {
                 Caption = 'Attachments';
                 Image = Administration;
-                action(DocAttach0)
+                action(UploadDocument)
                 {
-                    ToolTip = 'Executes the DocAttach0 action.';
-                    // ApplicationArea = All;
-                    // Caption = 'HR Documents';
-                    // Image = Attach;
-                    // Promoted = true;
-                    // PromotedCategory = Category8;
-                    // RunObject = Page "Document Attachment Details";
-                    // RunPageLink = "No."=field("Case Number"),
-                    //               "Document Type"=filter("HR Case");
-                    // RunPageView = where("Document Type"=filter("HR Case"));
-                    // ToolTip = 'Add a file as an attachment. You can attach images as well as documents.';
+                    ApplicationArea = All;
+                    Caption = 'Attach Document';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload supporting documents for this disciplinary case to SharePoint.';
 
-                    // trigger OnAction()
-                    // var
-                    //     DocumentAttachmentDetails: Page "Document Attachment Details";
-                    //     RecRef: RecordRef;
-                    // begin
-                    //     // RecRef.GETTABLE(Rec);
-                    //     // DocumentAttachmentDetails.OpenForRecRef(RecRef);
-                    //     // DocumentAttachmentDetails.RUNMODAL;
-                    // end;
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        Rec.TestField("Case Number");
+                        DMSManagement.UploadHRDisciplinaryCaseDocuments(Rec."Case Number", 'HR Disciplinary Cases', Rec.RecordId);
+                    end;
                 }
+
             }
         }
     }

@@ -3791,183 +3791,230 @@ Codeunit 50009 "DMS Management"
 
     end;
 
-//Upload circular resolutions
- procedure UploadCircularResolutionDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
-var
-    EBoardSetup: Record "E-Board Setup";
-    DocLink: Record "Record Link";
-    SharePointMgt: Codeunit "Sharepoint Management";
-    Docname: Text[250];
-    FileName: Text[250];
-    ServerRelativeFolder: Text;
-    FileInStream: InStream;
-    UploadPromptMsg: Label 'Select the Circular Resolution document to upload';
-begin
-    
-    EBoardSetup.GetRecordOnce();
+    //Upload circular resolutions
+    procedure UploadCircularResolutionDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
+    var
+        EBoardSetup: Record "E-Board Setup";
+        DocLink: Record "Record Link";
+        SharePointMgt: Codeunit "Sharepoint Management";
+        Docname: Text[250];
+        FileName: Text[250];
+        ServerRelativeFolder: Text;
+        FileInStream: InStream;
+        UploadPromptMsg: Label 'Select the Circular Resolution document to upload';
+    begin
 
-    
-    if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
-        exit(false); 
-
-    
-    Docname := DocNo;
-    Docname := ConvertStr(Docname, ':', '_');
-    Docname := ConvertStr(Docname, '\', '_');
-    Docname := ConvertStr(Docname, '/', '_');
-
-    
-    ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
-        EBoardSetup."SharePoint Site Link",
-        EBoardSetup."SharePoint Site Main Library",
-        EBoardSetup."SharePoint Document Library",
-        EBoardSetup."Circular Resolution DMS Link");
-
-  
-    ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
-    SharePointMgt.CreateFolder(ServerRelativeFolder);
-
-    
-    if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
-
-        
-        DocLink.Init();
-        DocLink."Link ID" := 0;
-        DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
-        DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
-        DocLink.Type := DocLink.Type::Link;
-        DocLink.Company := CompanyName();
-        DocLink."User ID" := UserId();
-        DocLink.Created := CreateDateTime(Today(), Time());
-        DocLink."Record ID" := TabID;
-        DocLink.Insert();
-
-        Message('Document "%1" uploaded to SharePoint successfully.', FileName);
-        exit(true);
-    end else
-        Error('Failed to upload document "%1" to SharePoint.', FileName);
-end;
+        EBoardSetup.GetRecordOnce();
 
 
-// Upload E-Signature Documents-ALLOYS upload test
-procedure UploadESignatureDocument(DocNo: Code[20]; DocDesc: Text; TabID: RecordID): Boolean
-var
-    EBoardSetup: Record "E-Board Setup";
-    SharepointSetup: Record "Sharepoint Connector Setup";
-    DocLink: Record "Record Link";
-    ESignHeader: Record "ESign Header";
-    SharePointMgt: Codeunit "Sharepoint Management";
-    Docname: Text[250];
-    FileName: Text[250];
-    ServerRelativeFolder: Text;
-    FileInStream: InStream;
-    UploadPromptMsg: Label 'Select the E-Signature document to upload';
-    WebUrl: Text;
-    SitePrefix: Text;
-begin
-    EBoardSetup.GetRecordOnce();
-    EBoardSetup.TestField("E-Signature DMS Link");
-    SharepointSetup.Get();
+        if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+            exit(false);
 
-    if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
-        exit(false);
 
-    // Document Number for URL safety
-    Docname := DocNo;
-    Docname := ConvertStr(Docname, ':', '_');
-    Docname := ConvertStr(Docname, '\', '_');
-    Docname := ConvertStr(Docname, '/', '_');
+        Docname := DocNo;
+        Docname := ConvertStr(Docname, ':', '_');
+        Docname := ConvertStr(Docname, '\', '_');
+        Docname := ConvertStr(Docname, '/', '_');
 
-    // Build Folder Path
-    ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
-        EBoardSetup."SharePoint Site Link",
-        EBoardSetup."SharePoint Site Main Library",
-        EBoardSetup."SharePoint Document Library",
-        EBoardSetup."E-Signature DMS Link");
 
-    ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
-    SharePointMgt.CreateFolder(ServerRelativeFolder);
+        ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
+            EBoardSetup."SharePoint Site Link",
+            EBoardSetup."SharePoint Site Main Library",
+            EBoardSetup."SharePoint Document Library",
+            EBoardSetup."Circular Resolution DMS Link");
 
-    // Save File & Record Link
-    if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
 
-        // Construct clean browser web URL using Sharepoint Connector Setup
-        SitePrefix := '/sites/' + EBoardSetup."SharePoint Site Link";
-        WebUrl := SharepointSetup."Sharepoint URL" + 
-                  CopyStr(ServerRelativeFolder, StrLen(SitePrefix) + 1) + 
-                  '/' + FileName;
+        ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
+        SharePointMgt.CreateFolder(ServerRelativeFolder);
 
-        DocLink.Init();
-        DocLink."Link ID" := 0;
-        DocLink.URL1 := CopyStr(WebUrl, 1, MaxStrLen(DocLink.URL1));
-        DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
-        DocLink.Type := DocLink.Type::Link;
-        DocLink.Company := CompanyName();
-        DocLink."User ID" := UserId();
-        DocLink.Created := CreateDateTime(Today(), Time());
-        DocLink."Record ID" := TabID;
-        DocLink.Insert();
 
-        // Update Document URL on ESign Header table 
-        if ESignHeader.Get(DocNo) then begin
-            ESignHeader."Document URL" := DocLink.URL1;
-            ESignHeader.Modify(true);
-        end;
+        if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
 
-        Message('E-Signature Document "%1" uploaded to SharePoint successfully.', FileName);
-        exit(true);
-    end else
-        Error('Failed to upload E-Signature document "%1" to SharePoint.', FileName);
-end;
 
-//Upload board meeting documents (board pack)
-procedure UploadBoardMeetingDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
-var
-    EBoardSetup: Record "E-Board Setup";
-    DocLink: Record "Record Link";
-    SharePointMgt: Codeunit "Sharepoint Management";
-    Docname: Text[250];
-    FileName: Text[250];
-    ServerRelativeFolder: Text;
-    FileInStream: InStream;
-    UploadPromptMsg: Label 'Select the board pack document to upload';
-begin
-    EBoardSetup.GetRecordOnce();
+            DocLink.Init();
+            DocLink."Link ID" := 0;
+            DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+            DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
+            DocLink.Type := DocLink.Type::Link;
+            DocLink.Company := CompanyName();
+            DocLink."User ID" := UserId();
+            DocLink.Created := CreateDateTime(Today(), Time());
+            DocLink."Record ID" := TabID;
+            DocLink.Insert();
 
-    if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
-        exit(false);
+            Message('Document "%1" uploaded to SharePoint successfully.', FileName);
+            exit(true);
+        end else
+            Error('Failed to upload document "%1" to SharePoint.', FileName);
+    end;
 
-    Docname := DocNo;
-    Docname := ConvertStr(Docname, ':', '_');
-    Docname := ConvertStr(Docname, '\', '_');
-    Docname := ConvertStr(Docname, '/', '_');
 
-    ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
-        EBoardSetup."SharePoint Site Link",
-        EBoardSetup."SharePoint Site Main Library",
-        EBoardSetup."SharePoint Document Library",
-        EBoardSetup."Board Meeting DMS Link");
+    // Upload E-Signature Documents-ALLOYS upload test
+    procedure UploadESignatureDocument(DocNo: Code[20]; DocDesc: Text; TabID: RecordID): Boolean
+    var
+        EBoardSetup: Record "E-Board Setup";
+        SharepointSetup: Record "Sharepoint Connector Setup";
+        DocLink: Record "Record Link";
+        ESignHeader: Record "ESign Header";
+        SharePointMgt: Codeunit "Sharepoint Management";
+        Docname: Text[250];
+        FileName: Text[250];
+        ServerRelativeFolder: Text;
+        FileInStream: InStream;
+        UploadPromptMsg: Label 'Select the E-Signature document to upload';
+        WebUrl: Text;
+        SitePrefix: Text;
+    begin
+        EBoardSetup.GetRecordOnce();
+        EBoardSetup.TestField("E-Signature DMS Link");
+        SharepointSetup.Get();
 
-    ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
-    SharePointMgt.CreateFolder(ServerRelativeFolder);
+        if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+            exit(false);
 
-    if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
-        DocLink.Init();
-        DocLink."Link ID" := 0;
-        DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
-        DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
-        DocLink.Type := DocLink.Type::Link;
-        DocLink.Company := CompanyName();
-        DocLink."User ID" := UserId();
-        DocLink.Created := CreateDateTime(Today(), Time());
-        DocLink."Record ID" := TabID;
-        DocLink.Insert();
+        // Document Number for URL safety
+        Docname := DocNo;
+        Docname := ConvertStr(Docname, ':', '_');
+        Docname := ConvertStr(Docname, '\', '_');
+        Docname := ConvertStr(Docname, '/', '_');
 
-        Message('Board pack document "%1" uploaded to SharePoint successfully.', FileName);
-        exit(true);
-    end else
-        Error('Failed to upload document "%1" to SharePoint.', FileName);
-end;
+        // Build Folder Path
+        ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
+            EBoardSetup."SharePoint Site Link",
+            EBoardSetup."SharePoint Site Main Library",
+            EBoardSetup."SharePoint Document Library",
+            EBoardSetup."E-Signature DMS Link");
 
+        ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
+        SharePointMgt.CreateFolder(ServerRelativeFolder);
+
+        // Save File & Record Link
+        if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
+
+            // Construct clean browser web URL using Sharepoint Connector Setup
+            SitePrefix := '/sites/' + EBoardSetup."SharePoint Site Link";
+            WebUrl := SharepointSetup."Sharepoint URL" +
+                      CopyStr(ServerRelativeFolder, StrLen(SitePrefix) + 1) +
+                      '/' + FileName;
+
+            DocLink.Init();
+            DocLink."Link ID" := 0;
+            DocLink.URL1 := CopyStr(WebUrl, 1, MaxStrLen(DocLink.URL1));
+            DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
+            DocLink.Type := DocLink.Type::Link;
+            DocLink.Company := CompanyName();
+            DocLink."User ID" := UserId();
+            DocLink.Created := CreateDateTime(Today(), Time());
+            DocLink."Record ID" := TabID;
+            DocLink.Insert();
+
+            // Update Document URL on ESign Header table 
+            if ESignHeader.Get(DocNo) then begin
+                ESignHeader."Document URL" := DocLink.URL1;
+                ESignHeader.Modify(true);
+            end;
+
+            Message('E-Signature Document "%1" uploaded to SharePoint successfully.', FileName);
+            exit(true);
+        end else
+            Error('Failed to upload E-Signature document "%1" to SharePoint.', FileName);
+    end;
+
+    //Upload board meeting documents (board pack)
+    procedure UploadBoardMeetingDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
+    var
+        EBoardSetup: Record "E-Board Setup";
+        DocLink: Record "Record Link";
+        SharePointMgt: Codeunit "Sharepoint Management";
+        Docname: Text[250];
+        FileName: Text[250];
+        ServerRelativeFolder: Text;
+        FileInStream: InStream;
+        UploadPromptMsg: Label 'Select the board pack document to upload';
+    begin
+        EBoardSetup.GetRecordOnce();
+
+        if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+            exit(false);
+
+        Docname := DocNo;
+        Docname := ConvertStr(Docname, ':', '_');
+        Docname := ConvertStr(Docname, '\', '_');
+        Docname := ConvertStr(Docname, '/', '_');
+
+        ServerRelativeFolder := StrSubstNo('/sites/%1/%2/%3/%4',
+            EBoardSetup."SharePoint Site Link",
+            EBoardSetup."SharePoint Site Main Library",
+            EBoardSetup."SharePoint Document Library",
+            EBoardSetup."Board Meeting DMS Link");
+
+        ServerRelativeFolder := ServerRelativeFolder + '/' + Docname;
+        SharePointMgt.CreateFolder(ServerRelativeFolder);
+
+        if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
+            DocLink.Init();
+            DocLink."Link ID" := 0;
+            DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+            DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
+            DocLink.Type := DocLink.Type::Link;
+            DocLink.Company := CompanyName();
+            DocLink."User ID" := UserId();
+            DocLink.Created := CreateDateTime(Today(), Time());
+            DocLink."Record ID" := TabID;
+            DocLink.Insert();
+
+            Message('Board pack document "%1" uploaded to SharePoint successfully.', FileName);
+            exit(true);
+        end else
+            Error('Failed to upload document "%1" to SharePoint.', FileName);
+    end;
+
+
+    // Upload HR disciplinary case supporting documents
+    procedure UploadHRDisciplinaryCaseDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
+    var
+        SharepointSetup: Record "Sharepoint Connector Setup";
+        DocLink: Record "Record Link";
+        SharePointMgt: Codeunit "Sharepoint Management";
+        Docname: Text[250];
+        FileName: Text[250];
+        ServerRelativeFolder: Text;
+        FileInStream: InStream;
+        UploadPromptMsg: Label 'Select the disciplinary case document to upload';
+    begin
+        SharepointSetup.Get();
+        SharepointSetup.TestField("Sharepoint URL");
+        SharepointSetup.TestField("HR disciplinary cases");
+
+        if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+            exit(false);
+
+        Docname := DocNo;
+        Docname := ConvertStr(Docname, ':', '_');
+        Docname := ConvertStr(Docname, '\', '_');
+        Docname := ConvertStr(Docname, '/', '_');
+
+        ServerRelativeFolder := StrSubstNo('%1/%2',
+            SharepointSetup."HR disciplinary cases",
+            Docname);
+
+        SharePointMgt.CreateFolder(ServerRelativeFolder);
+
+        if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
+            DocLink.Init();
+            DocLink."Link ID" := 0;
+            DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+            DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
+            DocLink.Type := DocLink.Type::Link;
+            DocLink.Company := CompanyName();
+            DocLink."User ID" := UserId();
+            DocLink.Created := CreateDateTime(Today(), Time());
+            DocLink."Record ID" := TabID;
+            DocLink.Insert();
+
+            Message('Disciplinary case document "%1" uploaded to SharePoint successfully.', FileName);
+            exit(true);
+        end else
+            Error('Failed to upload document "%1" to SharePoint.', FileName);
+    end;
 }
-

@@ -133,12 +133,11 @@ Page 69173 "Overtime Header Page"
 
                 trigger OnAction()
                 var
-                    ApprovalEntries: Page "Approval Entries";
+                    WorkflowsEntriesBuffer: Record "Workflows Entries Buffer";
+                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                 begin
-                    /*DocumentType:=DocumentType::Overtime;
-                    ApprovalEntries.Setfilters(DATABASE::Overtime,DocumentType,"Application Code");
-                    */
 
+                    ApprovalsMgmt.OpenApprovalEntriesPage(Rec.RecordId);
                 end;
             }
             action(ConvertToLeave)
