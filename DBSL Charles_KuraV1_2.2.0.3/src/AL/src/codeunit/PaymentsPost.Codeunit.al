@@ -5458,27 +5458,43 @@ Codeunit 57000 "Payments-Post"
         end;
     end;
 
+    local procedure ExtractNumericId(ReceiptNo: Code[20]): Integer
+    var
+        NumericPart: Text;
+        i: Integer;
+        Result: Integer;
+    begin
+        NumericPart := '';
+        for i := 1 to StrLen(ReceiptNo) do
+            if ReceiptNo[i] in ['0' .. '9'] then
+                NumericPart += Format(ReceiptNo[i]);
+
+        if NumericPart = '' then
+            Error('Receipt No. %1 contains no numeric digits and cannot be converted to a Domain Receipt ID.', ReceiptNo);
+
+        Evaluate(Result, NumericPart);
+        exit(Result);
+    end;
+
     local procedure TransferToDomainRegistry(ReceiptRec: Record "Receipts Header1")
     var
         DomainReceipt: Record "Domain Receipt";
-        NextReceiptId: Integer;
+        NewReceiptId: Integer;
     begin
-        // Already transferred? skip
         DomainReceipt.Reset();
         DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
         if not DomainReceipt.IsEmpty() then
             exit;
 
+        NewReceiptId := ExtractNumericId(ReceiptRec."No.");
+
+        if DomainReceipt.Get(NewReceiptId) then
+            Error('A Domain Receipt with ID %1 already exists (linked to Source Receipt No. %2). Cannot transfer receipt %3 - the numbers collide.', NewReceiptId, DomainReceipt."Source Receipt No.", ReceiptRec."No.");
+
         ReceiptRec.CalcFields(Amount);
 
-        DomainReceipt.Reset();
-        if DomainReceipt.FindLast() then
-            NextReceiptId := DomainReceipt.ReceiptId + 1
-        else
-            NextReceiptId := 900000000; // reserved block for manually posted receipts, keeps clear of real registry IDs
-
         DomainReceipt.Init();
-        DomainReceipt.ReceiptId := NextReceiptId;
+        DomainReceipt.ReceiptId := NewReceiptId;
         DomainReceipt.Roid := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
         DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
         DomainReceipt.ReceiptDate := CreateDateTime(ReceiptRec.Date, 0T);
@@ -5489,7 +5505,6 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt.ChequeNumber := CopyStr(ReceiptRec."Cheque No", 1, MaxStrLen(DomainReceipt.ChequeNumber));
         DomainReceipt.Details := CopyStr(ReceiptRec."Being Payment of", 1, MaxStrLen(DomainReceipt.Details));
 
-        // Pay-mode flags — check these string values against your actual "Pay Mode" codes
         DomainReceipt.Cash := ReceiptRec."Pay Mode" = 'CASH';
         DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
         DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
@@ -5505,6 +5520,7 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt."Posted Date" := ReceiptRec."Posted Date";
         DomainReceipt."Posted Time" := ReceiptRec."Posted Time";
         DomainReceipt."Source Receipt No." := ReceiptRec."No.";
+        DomainReceipt."External Receipt No." := ReceiptRec."No.";
 
         DomainReceipt.Insert(true);
     end;

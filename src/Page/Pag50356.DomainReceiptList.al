@@ -42,6 +42,7 @@ page 50356 "Domain Receipt List"
                 field(NcbaKes; Rec.NcbaKes) { ApplicationArea = All; }
                 field(ImKes; Rec.ImKes) { ApplicationArea = All; }
                 field(ImUsd; Rec.ImUsd) { ApplicationArea = All; }
+                field(ExternalReceiptNo; Rec."External Receipt No.") { ApplicationArea = All; }
                 field(Posted; Rec.Posted) { ApplicationArea = All; }
                 field("Posted By"; Rec."Posted By") { ApplicationArea = All; }
                 field("Posted Date"; Rec."Posted Date") { ApplicationArea = All; }

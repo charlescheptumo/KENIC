@@ -46,6 +46,11 @@ table 50171 "Domain Receipt"
             Caption = 'Source Receipt No.';
             DataClassification = ToBeClassified;
         }
+        field(31;"External Receipt No."; Code[30])
+        {
+            Caption = 'External Receipt No.';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
