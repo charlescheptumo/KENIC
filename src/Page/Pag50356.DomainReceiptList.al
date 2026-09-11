@@ -42,6 +42,7 @@ page 50356 "Domain Receipt List"
                 field(NcbaKes; Rec.NcbaKes) { ApplicationArea = All; }
                 field(ImKes; Rec.ImKes) { ApplicationArea = All; }
                 field(ImUsd; Rec.ImUsd) { ApplicationArea = All; }
+                field(ExternalReceiptNo; Rec."External Receipt No.") { ApplicationArea = All; }
                 field(Posted; Rec.Posted) { ApplicationArea = All; }
                 field("Posted By"; Rec."Posted By") { ApplicationArea = All; }
                 field("Posted Date"; Rec."Posted Date") { ApplicationArea = All; }
@@ -120,16 +121,23 @@ page 50356 "Domain Receipt List"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                ToolTip = 'Copies all posted manually-created receipts that are not yet in the registry into the Domain Receipt table.';
+                ToolTip = 'Copies posted manually-created receipts that are not yet in the Domain Receipt registry.';
 
                 trigger OnAction()
                 var
                     DomainReceiptMgt: Codeunit "Payments-post";
+                    PostedCount: Integer;
                     SyncedCount: Integer;
                 begin
-                    SyncedCount := DomainReceiptMgt.SyncManualReceiptsToRegistry();
+                    PostedCount := DomainReceiptMgt.SyncManualReceiptsToRegistry(SyncedCount);
+
                     CurrPage.Update(false);
-                    Message('%1 manually posted receipt(s) written to the Domain Receipt registry.', SyncedCount);
+
+                    Message(
+                        '%1 posted receipt(s) found.\%2 new receipt(s) written to the Domain Receipt registry.\%3 receipt(s) were already in the registry.',
+                        PostedCount,
+                        SyncedCount,
+                        PostedCount - SyncedCount);
                 end;
             }
             action(CreateTransaction)

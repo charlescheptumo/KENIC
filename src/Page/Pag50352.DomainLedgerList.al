@@ -145,6 +145,10 @@ page 50352 "Domain Ledger List"
                 {
                     ApplicationArea = All;
                 }
+                field("External Sales Document No."; Rec."External Sales Document No.")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }
@@ -199,6 +203,26 @@ page 50352 "Domain Ledger List"
 
                 end;
             }
+            action(BackfillDomainLedger)
+            {
+                ApplicationArea = All;
+                Caption = 'Write To Domain Ledger';
+                Image = Refresh;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                var
+                    DomainLedgerSync: Codeunit "Custom Function";
+                    SyncedCount: Integer;
+                    TotalCount: Integer;
+                begin
+                    TotalCount := DomainLedgerSync.BackfillDomainLedgerEntries(SyncedCount);
+                    CurrPage.Update(false);
+                    Message('%1 unsynced posted document(s) checked. %2 new Domain Ledger Entries created.', TotalCount, SyncedCount);
+                end;
+            }
             action(CreateInvoice)
             {
                 ApplicationArea = All;
@@ -229,6 +253,8 @@ page 50352 "Domain Ledger List"
                     DotCount: Integer;
                     RefundDeferralCode: Code[30];
                     RefundDomainLengthYears: Integer;
+                    PostedSalesInvHeader: Record "Sales Invoice Header";
+                    PostedSalesCrMemoHeader: Record "Sales Cr.Memo Header";
                 begin
                     if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
@@ -320,8 +346,13 @@ page 50352 "Domain Ledger List"
                             if not TryPostSalesInvoice(NewSalesHeader) then begin
                                 Message('Credit Memo %1 was released but could not be posted automatically: %2\Please post it manually.', CreditMemoNo, GetLastErrorText());
                                 OpenSalesCreditMemo(NewSalesHeader);
-                            end else
+                            end else begin
+                                if PostedSalesCrMemoHeader.Get(CreditMemoNo) then begin
+                                    PostedSalesCrMemoHeader."Domain Ledger Synced" := true;
+                                    PostedSalesCrMemoHeader.Modify();
+                                end;
                                 Message('Credit Memo %1 created and posted successfully for %2 (refund of invoice %3).', NewSalesHeader."No.", Rec.DomainName, OriginalInvoiceNo);
+                            end;
 
                         exit;
                     end;
@@ -440,8 +471,13 @@ page 50352 "Domain Ledger List"
                         if not TryPostSalesInvoice(SalesHeader) then begin
                             Message('Sales Invoice %1 was released but could not be posted automatically: %2\Please post it manually.', InvoiceNo, GetLastErrorText());
                             OpenSalesInvoice(SalesHeader);
-                        end else
+                        end else begin
+                            if PostedSalesInvHeader.Get(InvoiceNo) then begin
+                                PostedSalesInvHeader."Domain Ledger Synced" := true;
+                                PostedSalesInvHeader.Modify();
+                            end;
                             Message('Sales Invoice %1 created and posted successfully for %2.', InvoiceNo, Rec.DomainName);
+                        end;
                 end;
             }
         }

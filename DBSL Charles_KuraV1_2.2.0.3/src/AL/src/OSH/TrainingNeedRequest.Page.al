@@ -240,6 +240,7 @@ Page 99295 "Training Need Request"
                     Caption = 'Approvals';
                     Image = Approvals;
                     Promoted = true;
+                    PromotedCategory = Category9;
                     PromotedIsBig = false;
                     ToolTip = 'Executes the Approvals action.';
 
@@ -266,10 +267,13 @@ Page 99295 "Training Need Request"
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                        VarVariant: Variant;
                     begin
                         Rec.TestField(Status, Rec.Status::Open);
-                        Rec.Status := Rec.Status::"Pending Approval";
-                        Message('Approval Request Sent Successfully');
+                        VarVariant := Rec;
+                        if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                            CustomApprovals.OnSendDocForApproval(VarVariant);
                     end;
                 }
                 action(CancelApprovalRequest)
@@ -285,10 +289,12 @@ Page 99295 "Training Need Request"
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                        VarVariant: Variant;
                     begin
-                        Rec.TestField(Status, Rec.Status::Released);
-                        Rec.Status := Rec.Status::Open;
-                        Message('Cancelled Successfully');
+                        Rec.TestField(Status, Rec.Status::"Pending Approval");
+                        VarVariant := Rec;
+                        CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
                     end;
                 }
                 action(Post)
