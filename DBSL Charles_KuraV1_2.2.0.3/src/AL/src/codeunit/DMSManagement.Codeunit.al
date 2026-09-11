@@ -4017,4 +4017,52 @@ Codeunit 50009 "DMS Management"
         end else
             Error('Failed to upload document "%1" to SharePoint.', FileName);
     end;
+
+    // Upload Training Needs Assessment supporting documents
+    procedure UploadTrainingNeedDocuments(DocNo: Code[50]; DocDesc: Text; TabID: RecordID): Boolean
+    var
+        SharepointSetup: Record "Sharepoint Connector Setup";
+        DocLink: Record "Record Link";
+        SharePointMgt: Codeunit "Sharepoint Management";
+        Docname: Text[250];
+        FileName: Text[250];
+        ServerRelativeFolder: Text;
+        FileInStream: InStream;
+        UploadPromptMsg: Label 'Select the training need document to upload';
+    begin
+        SharepointSetup.Get();
+        SharepointSetup.TestField("Sharepoint URL");
+        SharepointSetup.TestField("Training Needs Assessment");
+
+        if not UploadIntoStream(UploadPromptMsg, '', 'All Files (*.*)|*.*', FileName, FileInStream) then
+            exit(false);
+
+        Docname := DocNo;
+        Docname := ConvertStr(Docname, ':', '_');
+        Docname := ConvertStr(Docname, '\', '_');
+        Docname := ConvertStr(Docname, '/', '_');
+
+        ServerRelativeFolder := StrSubstNo('%1/%2',
+            SharepointSetup."Training Needs Assessment",
+            Docname);
+
+        SharePointMgt.CreateFolder(ServerRelativeFolder);
+
+        if SharePointMgt.SaveFile(ServerRelativeFolder, FileName, FileInStream) then begin
+            DocLink.Init();
+            DocLink."Link ID" := 0;
+            DocLink.URL1 := CopyStr(SharePointMgt.getOdataID(), 1, MaxStrLen(DocLink.URL1));
+            DocLink.Description := CopyStr(Docname + '_' + FileName, 1, MaxStrLen(DocLink.Description));
+            DocLink.Type := DocLink.Type::Link;
+            DocLink.Company := CompanyName();
+            DocLink."User ID" := UserId();
+            DocLink.Created := CreateDateTime(Today(), Time());
+            DocLink."Record ID" := TabID;
+            DocLink.Insert();
+
+            Message('Training need document "%1" uploaded to SharePoint successfully.', FileName);
+            exit(true);
+        end else
+            Error('Failed to upload document "%1" to SharePoint.', FileName);
+    end;
 }
