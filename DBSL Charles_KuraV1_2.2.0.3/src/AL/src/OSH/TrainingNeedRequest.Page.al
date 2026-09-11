@@ -196,6 +196,11 @@ Page 99295 "Training Need Request"
         }
         area(factboxes)
         {
+            systempart(Links; Links)
+            {
+                ApplicationArea = RecordLinks;
+                Caption = 'Training Needs Documents';
+            }
             systempart(Control27; Outlook)
             {
             }
@@ -203,9 +208,6 @@ Page 99295 "Training Need Request"
             {
             }
             systempart(Control25; MyNotes)
-            {
-            }
-            systempart(Control21; Links)
             {
             }
         }
@@ -352,7 +354,32 @@ Page 99295 "Training Need Request"
                     end;
                 }
             }
+        
+            group(Attachments)
+            {
+                Caption = 'Attachments';
+                Image = Administration;
+                action(UploadDocument)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Attach Document';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload supporting documents for this training need request to SharePoint.';
+
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        Rec.TestField(Code);
+                        DMSManagement.UploadTrainingNeedDocuments(Rec.Code, 'Training Needs Assessment', Rec.RecordId);
+                    end;
+                }
+            }
         }
+        
     }
 
     var
