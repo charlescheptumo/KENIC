@@ -82,7 +82,8 @@ page 50356 "Domain Receipt List"
                     ReceiptRec.SetRange(Posted, false);
                     if ReceiptRec.FindSet() then
                         repeat
-                            if DomainReceiptMgt.TryPostReceipt(ReceiptRec) then
+                            Commit();
+                            if DomainReceiptMgt.PostReceipt(ReceiptRec) then
                                 PostedCount += 1
                             else begin
                                 PostingLog.Init();
@@ -166,7 +167,7 @@ page 50356 "Domain Receipt List"
                 var
                     DomainReceiptMgt: Codeunit "Payments-post";
                 begin
-                    DomainReceiptMgt.PostReceipt(Rec, true);
+                    DomainReceiptMgt.PostReceipt(Rec);
                     CurrPage.Update(false);
                 end;
             }
