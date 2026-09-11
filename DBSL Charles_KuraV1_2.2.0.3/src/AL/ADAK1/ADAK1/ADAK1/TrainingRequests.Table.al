@@ -391,16 +391,13 @@ Table 69220 "Training Requests"
 
         end;
 
-        UserSetup.Get(UserId);
-        UserSetup.SetRange("User ID", "Created By");
-        if UserSetup.find('-') then begin
-            "Employee Department" := HREmp."Department Code";
-            "Employee No." := HREmp."No.";
-        end;
+        // HREmp.Get(Rec."Employee No.");
+        // HREmp.SetRange("No.", Rec."Employee No.");
+        // if HREmp.Find('-') then begin
+        //     Rec."Employee Department" := HREmp."Department Code";
+        // end;
 
-        HREmp.Get(Rec."Employee No.");
-        HREmp.SetRange("No.", Rec."Employee No.");
-        if HREmp.Find('-') then begin
+        if HREmp.Get(Rec."Employee No.") then begin
             Rec."Employee Department" := HREmp."Department Code";
         end;
 
