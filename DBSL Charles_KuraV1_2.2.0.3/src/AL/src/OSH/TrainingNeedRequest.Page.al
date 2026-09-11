@@ -297,6 +297,8 @@ Page 99295 "Training Need Request"
                         Rec.TestField(Status, Rec.Status::"Pending Approval");
                         VarVariant := Rec;
                         CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
+                        Rec.Status := Rec.Status::Open;
+                        Rec.Modify();
                     end;
                 }
                 action(Post)
