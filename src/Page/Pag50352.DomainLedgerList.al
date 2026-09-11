@@ -317,6 +317,8 @@ page 50352 "Domain Ledger List"
                         SalesHeader.Delete(false);
 
                         NewSalesHeader.Status := NewSalesHeader.Status::Released;
+                        NewSalesHeader."Posting Date" := DT2Date(OrigLedgerEntry.Created);
+                        NewSalesHeader."Document Date" := DT2Date(OrigLedgerEntry.Created);
                         NewSalesHeader.Modify(true);
 
                         if RefundDeferralCode <> '' then begin
@@ -425,8 +427,8 @@ page 50352 "Domain Ledger List"
                     SalesHeader."Posting No. Series" := '';
                     SalesHeader.Insert(false);
                     SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
-                    SalesHeader.Validate("Posting Date", Today);
-                    SalesHeader.Validate("Document Date", Today);
+                    // SalesHeader.Validate("Posting Date", Today);
+                    // SalesHeader.Validate("Document Date", Today);
 
                     SalesHeader.Modify(true);
 

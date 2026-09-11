@@ -3767,7 +3767,8 @@ codeunit 50018 "Custom Function"
             exit;
         end;
 
-        CMSetup.Get();
+        if not CMSetup.Get() then
+            Error('Cash Management Setup is not configured.');
 
         SalesInvLine.Reset();
         // SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
@@ -3777,13 +3778,13 @@ codeunit 50018 "Custom Function"
 
         // TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup);
         SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
-if not SalesInvLine.FindFirst() then
-    exit;
+        if not SalesInvLine.FindFirst() then
+            exit;
 
-if SalesInvLine.Type = SalesInvLine.Type::Item then
-    TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup)
-else
-    TransTypeText := CopyStr(SalesInvLine.Description, 1, 50);
+        if SalesInvLine.Type = SalesInvLine.Type::Item then
+            TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup)
+        else
+            TransTypeText := CopyStr(SalesInvLine.Description, 1, 50);
 
         DomainLedgerEntry.Init();
         DomainLedgerEntry.ID := GetNextManualLedgerId();
@@ -3858,16 +3859,17 @@ else
         SalesCrMemoHeader.Modify();
     end;
 
-    [TryFunction]
-    procedure TrySyncFromPostedSalesInvoice(var SalesInvHeader: Record "Sales Invoice Header")
+    procedure TrySyncFromPostedSalesInvoice(var SalesInvHeader: Record "Sales Invoice Header"): Boolean
     begin
         SyncFromPostedSalesInvoice(SalesInvHeader);
+        exit(true);
     end;
 
-    [TryFunction]
-    procedure TrySyncFromPostedSalesCrMemo(var SalesCrMemoHeader: Record "Sales Cr.Memo Header")
+    //[TryFunction]
+    procedure TrySyncFromPostedSalesCrMemo(var SalesCrMemoHeader: Record "Sales Cr.Memo Header"): Boolean
     begin
         SyncFromPostedSalesCrMemo(SalesCrMemoHeader);
+        exit(true);
     end;
 
     procedure BackfillDomainLedgerEntries(var SyncedCount: Integer): Integer
