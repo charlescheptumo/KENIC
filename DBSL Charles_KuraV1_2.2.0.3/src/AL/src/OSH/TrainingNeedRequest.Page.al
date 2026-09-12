@@ -293,6 +293,8 @@ Page 99295 "Training Need Request"
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                         CustomApprovals: Codeunit "Custom Approvals Codeunit";
                         VarVariant: Variant;
+                        CustomApprovalEntry: record "Approval Entry";
+                
                     begin
                         Rec.TestField(Status, Rec.Status::"Pending Approval");
                         VarVariant := Rec;
