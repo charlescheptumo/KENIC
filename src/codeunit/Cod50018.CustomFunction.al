@@ -2,7 +2,11 @@
 
 codeunit 50018 "Custom Function"
 {
-    Permissions = TableData "Approval Entry" = RIMD;
+    Permissions =
+        tabledata "Approval Entry" = RIMD,
+        tabledata "Sales Invoice Header" = M,
+        tabledata "Sales Cr.Memo Header" = M;
+
     trigger OnRun()
     begin
 
@@ -3771,12 +3775,6 @@ codeunit 50018 "Custom Function"
             Error('Cash Management Setup is not configured.');
 
         SalesInvLine.Reset();
-        // SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
-        // SalesInvLine.SetRange(Type, SalesInvLine.Type::Item);
-        // if not SalesInvLine.FindFirst() then
-        //     exit;
-
-        // TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup);
         SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
         if not SalesInvLine.FindFirst() then
             exit;
@@ -3865,7 +3863,6 @@ codeunit 50018 "Custom Function"
         exit(true);
     end;
 
-    //[TryFunction]
     procedure TrySyncFromPostedSalesCrMemo(var SalesCrMemoHeader: Record "Sales Cr.Memo Header"): Boolean
     begin
         SyncFromPostedSalesCrMemo(SalesCrMemoHeader);
@@ -3936,8 +3933,6 @@ codeunit 50018 "Custom Function"
             exit(DomainLedgerEntry.ID + 1);
         exit(StartId);
     end;
-
-
 
 }
 
