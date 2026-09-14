@@ -985,6 +985,14 @@ page 60002 "HR Role Center"
                         RunObject = page "Induction Signoff List";
                         ToolTip = 'Executes the Induction Signoffs action.';
                     }
+                    action("Probation Assessment List") //page 58175 "Probation Assessment List"
+                    {
+                        ApplicationArea = BasicHR;
+                        Caption = 'Probation Assessment';
+                        RunObject = page "Probation Assessment List";
+                        ToolTip = 'Executes the Probation assessment action.';
+                    }
+
                     action("Terminated Employee Contracts")
                     {
                         ApplicationArea = BasicHR;

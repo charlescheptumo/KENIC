@@ -1047,6 +1047,13 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
             DataClassification = ToBeClassified;
             TableRelation = "No. Series";
         }
+
+        field(50102; "Probation Assessment Nos."; Code[20])
+        {
+            Caption = 'Probation Assessment Nos.';
+            DataClassification = ToBeClassified;
+            TableRelation = "No. Series";
+        }
     }
 
     var

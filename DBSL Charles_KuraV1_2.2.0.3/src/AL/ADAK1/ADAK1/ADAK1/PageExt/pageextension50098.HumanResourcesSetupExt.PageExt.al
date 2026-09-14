@@ -835,7 +835,12 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 }
                 field("Induction Signoff Nos."; Rec."Induction Signoff Nos.")
                 {
-                    ApplicationArea= Basic;
+                    ApplicationArea = Basic;
+                }//
+
+                field("Probation Assessment Nos."; Rec."Probation Assessment Nos.")
+                {
+                    ApplicationArea = Basic;
                 }
             }
         }
