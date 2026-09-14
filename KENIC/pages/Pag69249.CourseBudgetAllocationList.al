@@ -5,6 +5,7 @@ page 69249 "Course Budget Alloc List"
     Editable = false;
     InsertAllowed = false;
     ModifyAllowed = false;
+    
     PageType = List;
     SourceTable = "Planning Line Entry";
     ApplicationArea = All;
