@@ -833,6 +833,10 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 {
                     ApplicationArea = Basic;
                 }
+                field("Induction Signoff Nos."; Rec."Induction Signoff Nos.")
+                {
+                    ApplicationArea= Basic;
+                }
             }
         }
     }

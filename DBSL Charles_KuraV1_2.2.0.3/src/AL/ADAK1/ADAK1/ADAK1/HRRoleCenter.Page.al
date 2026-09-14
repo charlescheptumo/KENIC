@@ -977,6 +977,13 @@ page 60002 "HR Role Center"
                         Caption = 'Employment Offers';
                         RunObject = page "Employment Offers";
                         ToolTip = 'Executes the Employment Offers action.';
+                    } //page 58173 "Induction Signoff List"
+                    action("Induction Signoff List")
+                    {
+                        ApplicationArea = BasicHR;
+                        Caption = 'Induction Signoff';
+                        RunObject = page "Induction Signoff List";
+                        ToolTip = 'Executes the Induction Signoffs action.';
                     }
                     action("Terminated Employee Contracts")
                     {
