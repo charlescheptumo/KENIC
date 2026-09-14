@@ -2,7 +2,11 @@
 
 codeunit 50018 "Custom Function"
 {
-    Permissions = TableData "Approval Entry" = RIMD;
+    Permissions =
+        tabledata "Approval Entry" = RIMD,
+        tabledata "Sales Invoice Header" = M,
+        tabledata "Sales Cr.Memo Header" = M;
+
     trigger OnRun()
     begin
 
@@ -3767,23 +3771,18 @@ codeunit 50018 "Custom Function"
             exit;
         end;
 
-        CMSetup.Get();
+        if not CMSetup.Get() then
+            Error('Cash Management Setup is not configured.');
 
         SalesInvLine.Reset();
-        // SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
-        // SalesInvLine.SetRange(Type, SalesInvLine.Type::Item);
-        // if not SalesInvLine.FindFirst() then
-        //     exit;
-
-        // TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup);
         SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
-if not SalesInvLine.FindFirst() then
-    exit;
+        if not SalesInvLine.FindFirst() then
+            exit;
 
-if SalesInvLine.Type = SalesInvLine.Type::Item then
-    TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup)
-else
-    TransTypeText := CopyStr(SalesInvLine.Description, 1, 50);
+        if SalesInvLine.Type = SalesInvLine.Type::Item then
+            TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup)
+        else
+            TransTypeText := CopyStr(SalesInvLine.Description, 1, 50);
 
         DomainLedgerEntry.Init();
         DomainLedgerEntry.ID := GetNextManualLedgerId();
@@ -3858,16 +3857,16 @@ else
         SalesCrMemoHeader.Modify();
     end;
 
-    [TryFunction]
-    procedure TrySyncFromPostedSalesInvoice(var SalesInvHeader: Record "Sales Invoice Header")
+    procedure TrySyncFromPostedSalesInvoice(var SalesInvHeader: Record "Sales Invoice Header"): Boolean
     begin
         SyncFromPostedSalesInvoice(SalesInvHeader);
+        exit(true);
     end;
 
-    [TryFunction]
-    procedure TrySyncFromPostedSalesCrMemo(var SalesCrMemoHeader: Record "Sales Cr.Memo Header")
+    procedure TrySyncFromPostedSalesCrMemo(var SalesCrMemoHeader: Record "Sales Cr.Memo Header"): Boolean
     begin
         SyncFromPostedSalesCrMemo(SalesCrMemoHeader);
+        exit(true);
     end;
 
     procedure BackfillDomainLedgerEntries(var SyncedCount: Integer): Integer
@@ -3934,8 +3933,6 @@ else
             exit(DomainLedgerEntry.ID + 1);
         exit(StartId);
     end;
-
-
 
 }
 

@@ -20,11 +20,13 @@ Page 69833 "Exit Plan Lines"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Directorate field.';
+                    visible = false;
                 }
                 field("Primary Directorate Name"; Rec."Primary Directorate Name")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Directorate Name field.';
+                    visible = false;
                 }
                 field("Primary Department"; Rec."Primary Department")
                 {

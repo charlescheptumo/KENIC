@@ -5674,27 +5674,21 @@ Codeunit 57000 "Payments-Post"
     //     end;
     // end;
     [TryFunction]
-    procedure TryPostReceipt(var ReceiptRec: Record "Domain Receipt")
-    begin
-        PostReceipt(ReceiptRec, false);
-    end;
+    // procedure TryPostReceipt(var ReceiptRec: Record "Domain Receipt")
+    // begin
+    //     PostReceipt(ReceiptRec, false);
+    // end;
 
-    procedure PostReceipt(ReceiptRec: Record "Domain Receipt"; ShowConfirm: Boolean)
+    procedure PostReceipt(ReceiptRec: Record "Domain Receipt")
     var
         GenJnLine: Record "Gen. Journal Line";
         LineNo: Integer;
         GLEntry: Record "G/L Entry";
         CMSetup: Record "Cash Management Setup";
-        GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
         BankAccountNo: Code[20];
         DocNo: Code[20];
-        Proceed: Boolean;
     begin
-        Proceed := true;
-        if ShowConfirm then
-            Proceed := Confirm(Text017, false, ReceiptRec.ReceiptId);
-
-        if Proceed then begin
+        if Confirm(Text017, false, ReceiptRec.ReceiptId) = true then begin
 
             ReceiptRec.TestField(ReceiptDate);
             ReceiptRec.TestField(Roid);
@@ -5706,6 +5700,7 @@ Codeunit 57000 "Payments-Post"
             CMSetup.TestField("Receipt Template");
             CMSetup.TestField("Receipt Batch Name");
 
+            // Determine bank account based on the receipt channel
             BankAccountNo := '';
             if ReceiptRec.Mpesa then begin
                 CMSetup.TestField(Mpesa);
@@ -5740,6 +5735,7 @@ Codeunit 57000 "Payments-Post"
 
             DocNo := Format(ReceiptRec.ReceiptId);
 
+            // Delete Lines Present on the General Journal Line
             GenJnLine.Reset;
             GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
             GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
@@ -5751,6 +5747,7 @@ Codeunit 57000 "Payments-Post"
             if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
                 Batch.Insert;
 
+            //Bank Entry
             LineNo := LineNo + 10000;
 
             GenJnLine.Init;
@@ -5770,6 +5767,7 @@ Codeunit 57000 "Payments-Post"
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
 
+            //Customer Entry (Roid is the Customer)
             LineNo := LineNo + 10000;
             GenJnLine.Init;
             GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
@@ -5788,7 +5786,7 @@ Codeunit 57000 "Payments-Post"
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
 
-            GenJnlPostLine.RunWithCheck(GenJnLine);
+            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
 
             GLEntry.Reset;
             GLEntry.SetRange(GLEntry."Document No.", DocNo);
@@ -5803,7 +5801,7 @@ Codeunit 57000 "Payments-Post"
 
         end;
     end;
-    // procedure PostReceiptWithLog(var ReceiptRec: Record "Domain Receipt"; Silent: Boolean)
+        // procedure PostReceiptWithLog(var ReceiptRec: Record "Domain Receipt"; Silent: Boolean)
     // var
     //     PostingLog: Record "Transaction Posting Log";
     //     Success: Boolean;
