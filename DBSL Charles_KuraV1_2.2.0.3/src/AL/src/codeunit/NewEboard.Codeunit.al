@@ -985,27 +985,52 @@ Codeunit 50032 NewEboard
     end;
 
     // [scope('OnPrem')]
+    // procedure generateDirectorPayslip(director: Code[100]; payperiod: Date; directorNo: Text) status: Text
+    // begin
+    //     if objVendor.Get(director) then begin
+    //         objVendor.Reset;
+    //         objVendor.SetRange("No.", director);
+    //         if objVendor.FindFirst then begin
+    //             //AL
+    //             // objVendor.SetRange("Pay Period Filter", payperiod);
+    //             //   if FILE.Exists(FILESPATH+Format(directorNo)+'.pdf') then begin
+    //             //     FILE.Erase(FILESPATH+Format(directorNo)+'.pdf');
+    //             //     Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
+    //             //     status:='success*Downloads'+directorNo+'.pdf';
+    //             //     end else begin
+    //             //       Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
+    //             //       status:='success*Downloads'+directorNo+'.pdf';
+    //             //             end
+    //         end
+    //     end else begin
+    //         status := 'danger*The director number does not exist';
+    //     end;
+    //     Message(Format(status));
+    // end;
+
     procedure generateDirectorPayslip(director: Code[100]; payperiod: Date; directorNo: Text) status: Text
+    var
+        RecRef: RecordRef;
+        BaseImage: Text;
     begin
         if objVendor.Get(director) then begin
             objVendor.Reset;
             objVendor.SetRange("No.", director);
+            objVendor.SetRange("Pay Period Filter", payperiod);
             if objVendor.FindFirst then begin
-                //AL
-                // objVendor.SetRange("Pay Period Filter", payperiod);
-                //   if FILE.Exists(FILESPATH+Format(directorNo)+'.pdf') then begin
-                //     FILE.Erase(FILESPATH+Format(directorNo)+'.pdf');
-                //     Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
-                //     status:='success*Downloads'+directorNo+'.pdf';
-                //     end else begin
-                //       Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
-                //       status:='success*Downloads'+directorNo+'.pdf';
-                //             end
-            end
+                TempBlob_lRec.CreateOutStream(OutStr, TEXTENCODING::UTF8);
+                RecRef.GetTable(objVendor);
+                Report.SaveAs(Report::"1 Director Page Payslip", '', ReportFormat::Pdf, OutStr, RecRef);
+                FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('%1.Pdf', directorNo), true);
+                TempBlob_lRec.CreateInstream(InStr, TEXTENCODING::UTF8);
+                BaseImage := Base64Convert.ToBase64(InStr);
+                status := 'success*' + BaseImage;
+            end else begin
+                status := 'danger*No payslip found for the selected pay period';
+            end;
         end else begin
             status := 'danger*The director number does not exist';
         end;
-        Message(Format(status));
     end;
 
     procedure forgotPass(registrationNo: Code[10]) status: Text

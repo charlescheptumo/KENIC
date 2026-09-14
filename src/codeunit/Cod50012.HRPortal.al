@@ -1355,6 +1355,8 @@ Codeunit 50012 "HRPortal"
     procedure sendTrainingNeedsForApproval(docNo: Code[20]) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
+        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+        VarVariant: Variant;
     begin
         status := 'danger*Could not send training needs for approval';
 
@@ -1363,11 +1365,12 @@ Codeunit 50012 "HRPortal"
         TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
 
         if TrainingHeader.FindFirst() then begin
-            TrainingHeader.Status := TrainingHeader.Status::"Pending Approval";
-            if TrainingHeader.Modify(true) then begin
+            VarVariant := TrainingHeader;
+            if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
+                CustomApprovals.OnSendDocForApproval(VarVariant);
                 status := 'success*Training needs request sent for approval successfully';
             end else begin
-                status := 'danger*Could not update training needs status';
+                status := 'danger*No approval workflow is enabled for training needs. Please contact HR/ICT.';
             end;
         end else begin
             status := 'danger*Training needs request not found or not in Open status';
@@ -20277,7 +20280,7 @@ Codeunit 50012 "HRPortal"
             end;
         end;
     end;
-    
+
     procedure addOvertimeLine(docNo: Code[20]; empNo: Code[20]; day: Text[10]; overtimeType: Code[20]; startTime: Time; endTime: Time; workDone: Text[150]) status: Text
     var
         OvertimeHeader: Record "Overtime Header";
