@@ -94,7 +94,7 @@ page 58174 "Probation Assessment Card"
             }
             group("Section C: Performance Ratings & Qualitative Remarks")
             {
-                Caption = 'Section C: Performance Ratings & Qualitative Remarks';
+                Caption = 'Performance Ratings & Qualitative Remarks';
                 Editable = PageEditable;
 
                 group("Job Knowledge")
@@ -246,27 +246,27 @@ page 58174 "Probation Assessment Card"
                     ToolTip = 'Specifies the date when the employee signed off.';
                 }
             }
-            group("Audit Details")
-            {
-                Caption = 'Audit Details';
-                Editable = false;
+            // group("Audit Details")
+            // {
+            //     Caption = 'Audit Details';
+            //     Editable = false;
 
-                field("Created By"; Rec."Created By")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the user who generated this record.';
-                }
-                field("Created On"; Rec."Created On")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the date and time the record was created.';
-                }
-                field("No. Series"; Rec."No. Series")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the number series code used for this record.';
-                }
-            }
+            //     field("Created By"; Rec."Created By")
+            //     {
+            //         ApplicationArea = Basic;
+            //         ToolTip = 'Specifies the user who generated this record.';
+            //     }
+            //     field("Created On"; Rec."Created On")
+            //     {
+            //         ApplicationArea = Basic;
+            //         ToolTip = 'Specifies the date and time the record was created.';
+            //     }
+            //     field("No. Series"; Rec."No. Series")
+            //     {
+            //         ApplicationArea = Basic;
+            //         ToolTip = 'Specifies the number series code used for this record.';
+            //     }
+            // }
         }
         area(factboxes)
         {
@@ -314,45 +314,45 @@ page 58174 "Probation Assessment Card"
             }
             group("Request Approval")
             {
-                Caption = 'Request Approval';
+                // Caption = 'Request Approval';
 
-                action(SendApprovalRequest)
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Send A&pproval Request';
-                    Image = SendApprovalRequest;
-                    Promoted = true;
-                    PromotedCategory = Category9;
-                    ToolTip = 'Sends the document for approval.';
+                // action(SendApprovalRequest)
+                // {
+                //     ApplicationArea = Basic;
+                //     Caption = 'Send A&pproval Request';
+                //     Image = SendApprovalRequest;
+                //     Promoted = true;
+                //     PromotedCategory = Category9;
+                //     ToolTip = 'Sends the document for approval.';
 
-                    trigger OnAction()
-                    var
-                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
-                        VarVariant: Variant;
-                    begin
-                        VarVariant := Rec;
-                        if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
-                            CustomApprovals.OnSendDocForApproval(VarVariant);
-                    end;
-                }
-                action(CancelApprovalRequest)
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Cancel Approval Re&quest';
-                    Image = Cancel;
-                    Promoted = true;
-                    PromotedCategory = Category9;
-                    ToolTip = 'Cancels the pending approval request.';
+                //     trigger OnAction()
+                //     var
+                //         CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                //         VarVariant: Variant;
+                //     begin
+                //         VarVariant := Rec;
+                //         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                //             CustomApprovals.OnSendDocForApproval(VarVariant);
+                //     end;
+                // }
+                // action(CancelApprovalRequest)
+                // {
+                //     ApplicationArea = Basic;
+                //     Caption = 'Cancel Approval Re&quest';
+                //     Image = Cancel;
+                //     Promoted = true;
+                //     PromotedCategory = Category9;
+                //     ToolTip = 'Cancels the pending approval request.';
 
-                    trigger OnAction()
-                    var
-                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
-                        VarVariant: Variant;
-                    begin
-                        VarVariant := Rec;
-                        CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
-                    end;
-                }
+                //     trigger OnAction()
+                //     var
+                //         CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                //         VarVariant: Variant;
+                //     begin
+                //         VarVariant := Rec;
+                //         CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
+                //     end;
+                // }
             }
         }
     }

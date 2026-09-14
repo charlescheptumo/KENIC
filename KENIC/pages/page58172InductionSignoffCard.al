@@ -157,27 +157,27 @@ page 58172 "Induction Signoff Card"
                     ToolTip = 'Specifies whether the CEO connect briefing is signed off.';
                 }
             }
-            group("Audit Details")
-            {
-                Caption = 'Audit Details';
-                Editable = false;
+            // group("Audit Details")
+            // {
+            //     Caption = 'Audit Details';
+            //     Editable = false;
 
-                field("Created By"; Rec."Created By")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the user who generated this record.';
-                }
-                field("Created On"; Rec."Created On")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the exact date and time the record was created.';
-                }
-                field("No. Series"; Rec."No. Series")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the number series used to allocate the document number.';
-                }
-            }
+            //     field("Created By"; Rec."Created By")
+            //     {
+            //         ApplicationArea = Basic;
+            //         ToolTip = 'Specifies the user who generated this record.';
+            //     }
+            //     field("Created On"; Rec."Created On")
+            //     {
+            //         ApplicationArea = Basic;
+            //         ToolTip = 'Specifies the exact date and time the record was created.';
+            //     }
+            //     field("No. Series"; Rec."No. Series")
+            //     {
+            //         ApplicationArea = Basic;
+            //         ToolTip = 'Specifies the number series used to allocate the document number.';
+            //     }
+            // }
         }
         area(factboxes)
         {
@@ -236,51 +236,51 @@ page 58172 "Induction Signoff Card"
                 trigger OnAction()
                 begin
                     Rec.SetRange("Induction No.", Rec."Induction No.");
-                    // Update report object ID/Name once created
+               
                     // Report.Run(Report::"Induction Signoff Form Report", true, false, Rec);
                 end;
             }
             group("Request Approval")
             {
-                Caption = 'Request Approval';
+              //  Caption = 'Request Approval';
 
-                action(SendApprovalRequest)
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Send A&pproval Request';
-                    Image = SendApprovalRequest;
-                    Promoted = true;
-                    PromotedCategory = Category9;
-                    ToolTip = 'Sends the document for approval.';
+                // action(SendApprovalRequest)
+                // {
+                //     ApplicationArea = Basic;
+                //     Caption = 'Send A&pproval Request';
+                //     Image = SendApprovalRequest;
+                //     Promoted = true;
+                //     PromotedCategory = Category9;
+                //     ToolTip = 'Sends the document for approval.';
 
-                    trigger OnAction()
-                    var
-                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
-                        VarVariant: Variant;
-                    begin
-                        VarVariant := Rec;
-                        if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
-                            CustomApprovals.OnSendDocForApproval(VarVariant);
-                    end;
-                }
-                action(CancelApprovalRequest)
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Cancel Approval Re&quest';
-                    Image = Cancel;
-                    Promoted = true;
-                    PromotedCategory = Category9;
-                    ToolTip = 'Cancels the pending approval request.';
+                //     trigger OnAction()
+                //     var
+                //         CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                //         VarVariant: Variant;
+                //     begin
+                //         VarVariant := Rec;
+                //         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                //             CustomApprovals.OnSendDocForApproval(VarVariant);
+                //     end;
+                // }
+                // action(CancelApprovalRequest)
+                // {
+                //     ApplicationArea = Basic;
+                //     Caption = 'Cancel Approval Re&quest';
+                //     Image = Cancel;
+                //     Promoted = true;
+                //     PromotedCategory = Category9;
+                //     ToolTip = 'Cancels the pending approval request.';
 
-                    trigger OnAction()
-                    var
-                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
-                        VarVariant: Variant;
-                    begin
-                        VarVariant := Rec;
-                        CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
-                    end;
-                }
+                //     trigger OnAction()
+                //     var
+                //         CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                //         VarVariant: Variant;
+                //     begin
+                //         VarVariant := Rec;
+                //         CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
+                //     end;
+                // }
             }
         }
     }
