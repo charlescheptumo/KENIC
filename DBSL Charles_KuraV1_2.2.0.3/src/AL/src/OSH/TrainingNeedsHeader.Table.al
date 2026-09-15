@@ -1,4 +1,3 @@
-#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006 // ForNAV settings
 Table 69194 "Training Needs Header"
 {
 
@@ -11,6 +10,7 @@ Table 69194 "Training Needs Header"
         field(2; "Employee No"; Code[30])
         {
             DataClassification = ToBeClassified;
+            TableRelation = Employee."No.";
 
             trigger OnValidate()
             begin
@@ -111,7 +111,6 @@ Table 69194 "Training Needs Header"
         {
             DataClassification = ToBeClassified;
             TableRelation = Qualification;
-            // OptionMembers = KCPE,KCSE,"A Level","College certificate",Diploma,"Higher National Diploma","Bachelors Degree","Masters Degree","PhD";
         }
         field(21; "Career Aspirations"; Text[250])
         {
@@ -162,7 +161,6 @@ Table 69194 "Training Needs Header"
         {
             OptionCaption = ',Deparmental,Committee,Group Training,Team Building,Individual';
             OptionMembers = ,Departmental,Committee,"Group Training","Team Building",Individual;
-
         }
         field(28; "Directorate Code"; Code[20])
         {
@@ -178,14 +176,26 @@ Table 69194 "Training Needs Header"
         }
         field(30; "Blocked"; boolean)
         {
-
         }
-         field(31; "Region Name"; Text[150])
+        field(31; "Region Name"; Text[150])
         {
             DataClassification = ToBeClassified;
             Editable = false;
         }
-       
+        field(32; "Supervisor Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(33; "Supervisor Job Title"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(34; "Plan Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
@@ -205,11 +215,12 @@ Table 69194 "Training Needs Header"
         if Code = '' then begin
             HRSetup.Get;
             HRSetup.TestField(HRSetup."Training Request Nos");
-                  REC.code := NoSeriesMgt.GetNextNo(HRSetup."Training Request Nos", WorkDate(), true);
+            REC.code := NoSeriesMgt.GetNextNo(HRSetup."Training Request Nos", WorkDate(), true);
         end;
 
         "Created By" := UserId;
         "Created On" := CurrentDatetime;
+        "Plan Date" := Today;
         UserSetup.Reset;
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindFirst then begin

@@ -24,7 +24,7 @@ Table 60010 "Visitors Vehicle Occupants"
         {
             DataClassification = ToBeClassified;
         }
-        field(5; "Visitors Number"; Code[10])
+        field(5; "Visitors Number"; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = if ("Passenger Type" = const(Staff)) Employee."No." where("Employee Posting Group" = filter(<> 'PCASH'));

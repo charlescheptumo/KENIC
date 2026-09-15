@@ -14,7 +14,7 @@ report 99097 "Leave Approval Report"
             column(EmpNo; "No.")
             {
             }
-            column(EmpName; "First Name")
+            column(EmpName; EmpFullName)
             {
             }
             column(EmpDepartment; "Department Code")
@@ -135,6 +135,9 @@ report 99097 "Leave Approval Report"
 
             trigger OnAfterGetRecord()
             begin
+                EmpFullName := "First Name" + ' ' + "Middle Name" + ' ' + "Last Name";
+                EmpFullName := DelChr(EmpFullName, '<>', ' ');
+
                 EmpTotalAllocation := GetEmployeeEntitlement("No.");
                 EmpDaysApplied := GetTotalApplied("No.", FromDate, ToDate);
                 EmpLeaveBalance := EmpTotalAllocation - EmpDaysApplied;
@@ -280,6 +283,7 @@ report 99097 "Leave Approval Report"
         CompanyAddr: array[8] of Text[100];
         FormatAddr: Codeunit "Format Address";
         RespCenter: Record "Responsibility Center";
+        EmpFullName: Text[150];
 
     local procedure GetEmployeeEntitlement(EmployeeNo: Code[20]): Decimal
     var

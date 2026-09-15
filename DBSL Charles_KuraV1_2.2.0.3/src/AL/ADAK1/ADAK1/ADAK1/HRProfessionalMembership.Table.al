@@ -69,7 +69,7 @@ Table 69151 "HR Professional Membership"
         field(14; "Membership No"; Code[20])
         {
         }
-        field(15; "Member No"; Code[10])
+        field(15; "Member No"; Code[20])
         {
         }
         field(16; "Membership Description"; Text[100])

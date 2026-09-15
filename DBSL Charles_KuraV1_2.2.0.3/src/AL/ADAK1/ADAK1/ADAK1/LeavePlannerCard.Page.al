@@ -54,6 +54,12 @@ Page 69231 "Leave Planner Card"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Shortcut Dimension 2 Code field.';
                 }
+
+                field("Department Code"; Rec."Department Code")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Department Code field.';
+                }
             }
             part(Control1000000002; "Leave Planner Lines")
             {

@@ -11,7 +11,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.1.30001.02</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-03-26T12:27:49.9376580Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-09-03T09:20:44.4868645Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -37,10 +37,11 @@
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>9.9325cm</Height>
+                  <Height>9.97873cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
+                        <rd:Selected>true</rd:Selected>
                         <Rectangle Name="Rectangle1">
                           <ReportItems>
                             <Tablix Name="Tablix1">
@@ -241,6 +242,107 @@
                                         <CellContents>
                                           <Textbox Name="Textbox26">
                                             <rd:DefaultName>Textbox26</rd:DefaultName>
+                                            <CanGrow>true</CanGrow>
+                                            <KeepTogether>true</KeepTogether>
+                                            <Paragraphs>
+                                              <Paragraph>
+                                                <TextRuns>
+                                                  <TextRun>
+                                                    <Value />
+                                                    <Style>
+                                                      <FontFamily>Maiandra GD</FontFamily>
+                                                      <FontSize>8pt</FontSize>
+                                                    </Style>
+                                                  </TextRun>
+                                                </TextRuns>
+                                                <Style />
+                                              </Paragraph>
+                                            </Paragraphs>
+                                            <Style>
+                                              <Border>
+                                                <Style>None</Style>
+                                              </Border>
+                                              <PaddingLeft>2pt</PaddingLeft>
+                                              <PaddingRight>2pt</PaddingRight>
+                                              <PaddingTop>2pt</PaddingTop>
+                                              <PaddingBottom>2pt</PaddingBottom>
+                                            </Style>
+                                          </Textbox>
+                                        </CellContents>
+                                      </TablixCell>
+                                    </TablixCells>
+                                  </TablixRow>
+                                  <TablixRow>
+                                    <Height>0.6cm</Height>
+                                    <TablixCells>
+                                      <TablixCell>
+                                        <CellContents>
+                                          <Textbox Name="Textbox5">
+                                            <rd:DefaultName>Textbox5</rd:DefaultName>
+                                            <CanGrow>true</CanGrow>
+                                            <KeepTogether>true</KeepTogether>
+                                            <Paragraphs>
+                                              <Paragraph>
+                                                <TextRuns>
+                                                  <TextRun>
+                                                    <Value>=Parameters!JobTitleCaption.Value &amp; " " &amp; Fields!Addr_1__3_.Value</Value>
+                                                    <Style>
+                                                      <FontFamily>Maiandra GD</FontFamily>
+                                                      <FontSize>8pt</FontSize>
+                                                    </Style>
+                                                  </TextRun>
+                                                </TextRuns>
+                                                <Style />
+                                              </Paragraph>
+                                            </Paragraphs>
+                                            <Style>
+                                              <Border>
+                                                <Style>None</Style>
+                                              </Border>
+                                              <PaddingLeft>2pt</PaddingLeft>
+                                              <PaddingRight>2pt</PaddingRight>
+                                              <PaddingTop>2pt</PaddingTop>
+                                              <PaddingBottom>2pt</PaddingBottom>
+                                            </Style>
+                                          </Textbox>
+                                        </CellContents>
+                                      </TablixCell>
+                                      <TablixCell>
+                                        <CellContents>
+                                          <Textbox Name="Textbox7">
+                                            <rd:DefaultName>Textbox7</rd:DefaultName>
+                                            <CanGrow>true</CanGrow>
+                                            <KeepTogether>true</KeepTogether>
+                                            <Paragraphs>
+                                              <Paragraph>
+                                                <TextRuns>
+                                                  <TextRun>
+                                                    <Value />
+                                                    <Style>
+                                                      <FontFamily>Maiandra GD</FontFamily>
+                                                      <FontSize>8pt</FontSize>
+                                                    </Style>
+                                                  </TextRun>
+                                                </TextRuns>
+                                                <Style />
+                                              </Paragraph>
+                                            </Paragraphs>
+                                            <Style>
+                                              <Border>
+                                                <Style>None</Style>
+                                              </Border>
+                                              <PaddingLeft>2pt</PaddingLeft>
+                                              <PaddingRight>2pt</PaddingRight>
+                                              <PaddingTop>2pt</PaddingTop>
+                                              <PaddingBottom>2pt</PaddingBottom>
+                                            </Style>
+                                          </Textbox>
+                                        </CellContents>
+                                      </TablixCell>
+                                      <TablixCell>
+                                        <CellContents>
+                                          <Textbox Name="Textbox12">
+                                            <rd:DefaultName>Textbox12</rd:DefaultName>
                                             <CanGrow>true</CanGrow>
                                             <KeepTogether>true</KeepTogether>
                                             <Paragraphs>
@@ -755,7 +857,6 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <!-- <Value>=Fields!ArrEarnings_1_Number_.Value</Value> -->
                                                     <Value>=IIf(Fields!ArrEarnings_1_Number_.Value="GROSSSEP","",Fields!ArrEarnings_1_Number_.Value)</Value>
                                                     <Style>
                                                       <FontFamily>Maiandra GD</FontFamily>
@@ -768,8 +869,8 @@
                                             </Paragraphs>
                                             <Style>
                                               <Border>
-                                                <Style>=IIf(Fields!ArrEarnings_1_Number_.Value="Deductions" OR Fields!ArrEarnings_1_Number_.Value="GROSS PAY", "Solid", "None")</Style>
                                                 <Color>Silver</Color>
+                                                <Style>=IIf(Fields!ArrEarnings_1_Number_.Value="Deductions" OR Fields!ArrEarnings_1_Number_.Value="GROSS PAY", "Solid", "None")</Style>
                                               </Border>
                                               <BackgroundColor>=IIf(Fields!ArrEarnings_1_Number_.Value="Deductions" OR Fields!ArrEarnings_1_Number_.Value=" " OR Fields!ArrEarnings_1_Number_.Value="GROSS PAY","Silver",IIf(Fields!ArrEarnings_1_Number_.Value="GROSSSEP","White","Transparent"))</BackgroundColor>
                                               <PaddingLeft>2pt</PaddingLeft>
@@ -804,9 +905,8 @@
                                             </Paragraphs>
                                             <Style>
                                               <Border>
-                                                <!-- <Style>=IIf(Fields!ArrEarnings_1_Number_.Value="Deductions" OR Fields!ArrEarnings_1_Number_.Value="GROSS PAY", "Solid", "None")</Style> -->
-                                                <Style>=IIf(Fields!ArrEarnings_1_Number_.Value="GROSS PAY", "Solid", "None")</Style>
                                                 <Color>Silver</Color>
+                                                <Style>=IIf(Fields!ArrEarnings_1_Number_.Value="GROSS PAY", "Solid", "None")</Style>
                                               </Border>
                                               <BackgroundColor>=IIf(Fields!ArrEarnings_1_Number_.Value="Deductions" OR Fields!ArrEarnings_1_Number_.Value=" " OR Fields!ArrEarnings_1_Number_.Value="GROSS PAY","Silver","Transparent")</BackgroundColor>
                                               <PaddingTop>2pt</PaddingTop>
@@ -934,6 +1034,9 @@
                                     <KeepWithGroup>After</KeepWithGroup>
                                   </TablixMember>
                                   <TablixMember>
+                                    <KeepWithGroup>After</KeepWithGroup>
+                                  </TablixMember>
+                                  <TablixMember>
                                     <Group Name="Details" />
                                     <TablixMembers>
                                       <TablixMember />
@@ -947,7 +1050,7 @@
                               <DataSetName>DataSet_Result</DataSetName>
                               <Top>0.17187cm</Top>
                               <Left>4.84188cm</Left>
-                              <Height>6.5cm</Height>
+                              <Height>7.1cm</Height>
                               <Width>8.88937cm</Width>
                               <Style>
                                 <Border>
@@ -955,6 +1058,38 @@
                                 </Border>
                               </Style>
                             </Tablix>
+                            <Image Name="Image2">
+                              <Source>Database</Source>
+                              <Value>=Fields!CoRec_Signature.Value</Value>
+                              <MIMEType>image/bmp</MIMEType>
+                              <Sizing>FitProportional</Sizing>
+                              <Top>7.82609cm</Top>
+                              <Left>5.88257cm</Left>
+                              <Height>1.44708cm</Height>
+                              <Width>1.95861cm</Width>
+                              <ZIndex>1</ZIndex>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Image>
+                            <Image Name="Image3">
+                              <Source>Database</Source>
+                              <Value>=Fields!CoRec_Stamp.Value</Value>
+                              <MIMEType>image/bmp</MIMEType>
+                              <Sizing>FitProportional</Sizing>
+                              <Top>7.82609cm</Top>
+                              <Left>8.82509cm</Left>
+                              <Height>1.44708cm</Height>
+                              <Width>2.59361cm</Width>
+                              <ZIndex>2</ZIndex>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Image>
                           </ReportItems>
                           <KeepTogether>true</KeepTogether>
                           <Style>
@@ -1001,7 +1136,7 @@
               </Filter>
             </Filters>
             <Top>0cm</Top>
-            <Height>9.9325cm</Height>
+            <Height>9.97873cm</Height>
             <Width>13.73125cm</Width>
             <Style>
               <Border>
@@ -1010,7 +1145,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>9.9325cm</Height>
+        <Height>9.97873cm</Height>
         <Style />
       </Body>
       <Width>18.07606cm</Width>
@@ -1041,6 +1176,9 @@
               <Left>4.84188cm</Left>
               <Height>0.95706cm</Height>
               <Width>8.88937cm</Width>
+              <Visibility>
+                <Hidden>true</Hidden>
+              </Visibility>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1120,6 +1258,15 @@
       </DefaultValue>
       <Prompt>NameCaption</Prompt>
     </ReportParameter>
+    <ReportParameter Name="JobTitleCaption">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>JobTitleCaption</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>JobTitleCaption</Prompt>
+    </ReportParameter>
     <ReportParameter Name="DeptCaption">
       <DataType>String</DataType>
       <DefaultValue>
@@ -1196,7 +1343,7 @@
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>1</NumberOfColumns>
-      <NumberOfRows>12</NumberOfRows>
+      <NumberOfRows>13</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
@@ -1221,41 +1368,46 @@
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>4</RowIndex>
-          <ParameterName>DeptCaption</ParameterName>
+          <ParameterName>JobTitleCaption</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>5</RowIndex>
-          <ParameterName>EarningsCaption</ParameterName>
+          <ParameterName>DeptCaption</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>6</RowIndex>
-          <ParameterName>AmountCaption</ParameterName>
+          <ParameterName>EarningsCaption</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>7</RowIndex>
-          <ParameterName>CopyCaption</ParameterName>
+          <ParameterName>AmountCaption</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>8</RowIndex>
-          <ParameterName>NSSFCaption</ParameterName>
+          <ParameterName>CopyCaption</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>9</RowIndex>
-          <ParameterName>NHIFCaption</ParameterName>
+          <ParameterName>NSSFCaption</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>10</RowIndex>
-          <ParameterName>PinCaption</ParameterName>
+          <ParameterName>NHIFCaption</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>11</RowIndex>
+          <ParameterName>PinCaption</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>12</RowIndex>
           <ParameterName>BankCaption</ParameterName>
         </CellDefinition>
       </CellDefinitions>
@@ -1304,6 +1456,12 @@ End Function
         <Field Name="CoRec_Picture">
           <DataField>CoRec_Picture</DataField>
         </Field>
+        <Field Name="CoRec_Stamp">
+          <DataField>CoRec_Stamp</DataField>
+        </Field>
+        <Field Name="CoRec_Signature">
+          <DataField>CoRec_Signature</DataField>
+        </Field>
         <Field Name="CoName">
           <DataField>CoName</DataField>
         </Field>
@@ -1321,6 +1479,9 @@ End Function
         </Field>
         <Field Name="Addr_1__2_">
           <DataField>Addr_1__2_</DataField>
+        </Field>
+        <Field Name="Addr_1__3_">
+          <DataField>Addr_1__3_</DataField>
         </Field>
         <Field Name="Addr_1__4_">
           <DataField>Addr_1__4_</DataField>

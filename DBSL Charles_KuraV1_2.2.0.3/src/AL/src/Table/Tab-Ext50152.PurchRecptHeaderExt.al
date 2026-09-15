@@ -100,7 +100,7 @@ tableextension 50152 "Purch Recpt Header Ext" extends "Purch. Rcpt. Header"
 
             end;
         }
-        field(50017; "Request-By No."; Code[10])
+        field(50017; "Request-By No."; Code[20])
         {
 
 

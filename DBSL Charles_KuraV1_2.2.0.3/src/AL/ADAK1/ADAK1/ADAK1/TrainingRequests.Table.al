@@ -101,7 +101,7 @@ Table 69220 "Training Requests"
             OptionCaption = 'Open,Pending,Approved,Rejected';
             OptionMembers = Open,Pending,Approved,Rejected,Closed;
         }
-        field(13; "Employee No."; Code[10])
+        field(13; "Employee No."; Code[20])
         {
             NotBlank = true;
             TableRelation = Employee."No.";
@@ -219,7 +219,7 @@ Table 69220 "Training Requests"
         {
             DataClassification = ToBeClassified;
         }
-        field(36; "Supervisor No."; Code[10])
+        field(36; "Supervisor No."; Code[20])
         {
             DataClassification = ToBeClassified;
             NotBlank = true;
@@ -391,16 +391,13 @@ Table 69220 "Training Requests"
 
         end;
 
-        UserSetup.Get(UserId);
-        UserSetup.SetRange("User ID", "Created By");
-        if UserSetup.find('-') then begin
-            "Employee Department" := HREmp."Department Code";
-            "Employee No." := HREmp."No.";
-        end;
+        // HREmp.Get(Rec."Employee No.");
+        // HREmp.SetRange("No.", Rec."Employee No.");
+        // if HREmp.Find('-') then begin
+        //     Rec."Employee Department" := HREmp."Department Code";
+        // end;
 
-        HREmp.Get(Rec."Employee No.");
-        HREmp.SetRange("No.", Rec."Employee No.");
-        if HREmp.Find('-') then begin
+        if HREmp.Get(Rec."Employee No.") then begin
             Rec."Employee Department" := HREmp."Department Code";
         end;
 

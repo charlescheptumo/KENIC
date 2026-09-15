@@ -34,23 +34,23 @@ codeunit 70112 recruitmentQueries
 
         if (recruitmentRequisitionHeader.FindSet(true)) then begin
             repeat
-                data += recruitmentRequisitionHeader."Job No." + '*' + recruitmentRequisitionHeader."Document No." + '*' + 
+                data += recruitmentRequisitionHeader."Job No." + '*' + recruitmentRequisitionHeader."Document No." + '*' +
                 Format(recruitmentRequisitionHeader."Document Date") + '*' + recruitmentRequisitionHeader."Job Grade ID" + '*' +
                  recruitmentRequisitionHeader."Job Title/Designation" + '*' + Format(recruitmentRequisitionHeader."Date Published") + '*' +
                   Format(recruitmentRequisitionHeader."Employment Type") + '*' + Format(recruitmentRequisitionHeader."Application Closing Date")
-                   + '*' + Format(recruitmentRequisitionHeader."Application Closing Time") + '*' + 
-                   Format(recruitmentRequisitionHeader."No. of Applications") + '*' + recruitmentRequisitionHeader."Work Location Details" 
-                   + '*' + recruitmentRequisitionHeader."Vacancy Announcement ID" + '*' + recruitmentRequisitionHeader."Vacancy No" + '*' + 
+                   + '*' + Format(recruitmentRequisitionHeader."Application Closing Time") + '*' +
+                   Format(recruitmentRequisitionHeader."No. of Applications") + '*' + recruitmentRequisitionHeader."Work Location Details"
+                   + '*' + recruitmentRequisitionHeader."Vacancy Announcement ID" + '*' + recruitmentRequisitionHeader."Vacancy No" + '*' +
                    Format(recruitmentRequisitionHeader."Vacancy Status") + '*' + Format(recruitmentRequisitionHeader."Approval Status") + '*' +
-                    Format(recruitmentRequisitionHeader."Duty Station ID") + '*' + 
+                    Format(recruitmentRequisitionHeader."Duty Station ID") + '*' +
                     Format(recruitmentRequisitionHeader."Hierarchically Reports To") + '*' +
                      Format(recruitmentRequisitionHeader."Target Candidate Source") + '*' +
-                      Format(recruitmentRequisitionHeader."Estimate Annual Salary") + '*' + 
-                      Format(recruitmentRequisitionHeader."No of Openings") + '*' + 
-                      Format(recruitmentRequisitionHeader."Target Candidate Source") + '*' + 
-                      Format(recruitmentRequisitionHeader."Position ID") + '*' + Format(recruitmentRequisitionHeader.Directorate) + '*' + 
-                      Format(recruitmentRequisitionHeader.Department) + '*' + 
-                      Format(recruitmentRequisitionHeader."Default Terms of Service Code") + '*' + 
+                      Format(recruitmentRequisitionHeader."Estimate Annual Salary") + '*' +
+                      Format(recruitmentRequisitionHeader."No of Openings") + '*' +
+                      Format(recruitmentRequisitionHeader."Target Candidate Source") + '*' +
+                      Format(recruitmentRequisitionHeader."Position ID") + '*' + Format(recruitmentRequisitionHeader.Directorate) + '*' +
+                      Format(recruitmentRequisitionHeader.Department) + '*' +
+                      Format(recruitmentRequisitionHeader."Default Terms of Service Code") + '*' +
                       Format(recruitmentRequisitionHeader."Seniority Level") + '::::';
             until recruitmentRequisitionHeader.Next = 0;
         end;
@@ -63,7 +63,7 @@ codeunit 70112 recruitmentQueries
         tbl_dynasoftPortalUser.Reset();
         tbl_applicant.SetRange("E-Mail", email);
         tbl_dynasoftPortalUser.SetRange("Authentication Email", email);
-        // tbl_dynasoftPortalUser.SetRange("Password Value", password);
+        tbl_dynasoftPortalUser.SetRange("Password Value", password);
         tbl_dynasoftPortalUser.SetRange("Record Type", tbl_dynasoftPortalUser."Record Type"::"Job Applicant");
         if tbl_dynasoftPortalUser.FindSet(true) and tbl_applicant.FindSet(true) then begin
             data := 'success*' + tbl_applicant."Full Names" + '*' + tbl_applicant."Mobile Phone No." + '*' + Format(tbl_applicant."Profile Completed") + '*' + tbl_dynasoftPortalUser."Authentication Email" + '*' + tbl_dynasoftPortalUser."Record ID" + '*' + Format(tbl_applicant."Passport No.") + '*' + tbl_applicant."First Name" + '*' + tbl_applicant."Middle Name" + '*' + tbl_applicant."Last Name" + '*' + Format(tbl_dynasoftPortalUser.State) + '*' + Format(tbl_dynasoftPortalUser."Change Password") + '::::';
@@ -219,6 +219,22 @@ codeunit 70112 recruitmentQueries
             repeat
                 data += format(tbl_jobApplications."Application No.") + '*' + Format(tbl_jobApplications."Application Status") + '*' + Format(tbl_jobApplications."Vacancy Id") + '*' + Format(tbl_jobApplications."Professional Summary") + '*' + Format(tbl_jobApplications."Job Title/Designation") + '::::';
             until tbl_jobApplications.Next = 0;
+        end;
+        exit(data);
+    end;
+
+    procedure fnGetEmploymentOfferForApplication(applicationNo: Code[30]) data: Text
+    var
+        tbl_employmentOffer: Record "Employment Offer";
+    begin
+        tbl_employmentOffer.Reset();
+        tbl_employmentOffer.SetRange("Application No.", applicationNo);
+        if tbl_employmentOffer.FindSet(true) then begin
+            repeat
+                data += tbl_employmentOffer."Offer ID" + '*' +
+                        Format(tbl_employmentOffer."Offer Acceptance Status") + '*' +
+                        Format(tbl_employmentOffer."Document Status") + '::::';
+            until tbl_employmentOffer.Next = 0;
         end;
         exit(data);
     end;

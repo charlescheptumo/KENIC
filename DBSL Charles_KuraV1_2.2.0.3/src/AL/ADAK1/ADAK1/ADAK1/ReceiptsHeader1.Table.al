@@ -90,7 +90,7 @@ Table 56007 "Receipts Header1"
         field(14; "Posted Time"; Time)
         {
         }
-        field(15; "Posted By"; Code[30])
+        field(15; "Posted By"; Code[50])
         {
         }
         field(16; "No. Series"; Code[20])

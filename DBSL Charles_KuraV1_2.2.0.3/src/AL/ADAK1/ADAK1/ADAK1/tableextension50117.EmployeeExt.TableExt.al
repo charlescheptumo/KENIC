@@ -412,7 +412,7 @@ TableExtension 50117 "Employee Ext" extends Employee
         {
             //TableRelation = "BracketsX";
         }
-        field(50018; Deduction; Code[10])
+        field(50018; Deduction; Code[20])
         {
             TableRelation = "Assignment Matrix-X";
         }

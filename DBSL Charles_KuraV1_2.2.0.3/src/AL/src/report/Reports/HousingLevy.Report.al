@@ -9,7 +9,7 @@ report 50012 "Housing Levy"
         dataitem("Assignment Matrix-X"; "Assignment Matrix-X")
         {
 #pragma warning disable AL0254
-            DataItemTableView = sorting("Employee No Sort key", Type, Code, "Payroll Period", "Reference No") where(Type = const(Deduction), Code = filter('AHL'));
+            DataItemTableView = sorting("Employee No Sort key", Type, Code, "Payroll Period", "Reference No") where(Type = const(Deduction), Code = filter('D003'));
 #pragma warning restore AL0254
             RequestFilterFields = "Payroll Period", "Code", "Payroll Grouping";
             RequestFilterHeading = 'Housing Levy';

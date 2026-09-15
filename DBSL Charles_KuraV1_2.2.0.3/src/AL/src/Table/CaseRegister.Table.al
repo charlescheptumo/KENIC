@@ -121,7 +121,7 @@ Table 56092 "Case Register"
         {
             DataClassification = ToBeClassified;
         }
-        field(20; "Employee No"; Code[10])
+        field(20; "Employee No"; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = Employee."No.";

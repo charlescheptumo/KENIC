@@ -4,7 +4,7 @@ Table 69243 "HR Medical Claims"
 
     fields
     {
-        field(1; "Member No"; Code[10])
+        field(1; "Member No"; Code[20])
         {
             Editable = true;
             TableRelation = Employee;

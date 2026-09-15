@@ -208,7 +208,7 @@ Page 75012 "Procurement Plan Entry"
                 field("Unit Cost"; Rec."Unit Cost")
                 {
                     ApplicationArea = Basic;
-                    NotBlank = true;
+                    //NotBlank = true;
                     ToolTip = 'Specifies the value of the Unit Cost field.';
                 }
                 field("Line Budget Cost"; Rec."Line Budget Cost")

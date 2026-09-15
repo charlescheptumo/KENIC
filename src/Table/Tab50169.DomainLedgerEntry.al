@@ -181,6 +181,26 @@ table 50169 "Domain Ledger Entry"
         {
             Caption = 'Ledger Login Username';
         }
+        field(35; InvoiceCreated; Boolean)
+        {
+            Caption = 'Invoice Created';
+        }
+        field(36; "Sales Invoice No."; Code[20])
+        {
+            Caption = 'Sales Invoice No.';
+            TableRelation = "Sales Invoice Header"."No.";
+        }
+        field(37; "Credit Memo No."; Code[20])
+        {
+            Caption = 'Credit Memo No.';
+            
+            TableRelation = "Sales Header"."No." where("Document Type" = const("Credit Memo"));
+        }
+        field(38;"External Sales Document No."; Code[30])
+        {
+            Caption = 'External Sales Document No.';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

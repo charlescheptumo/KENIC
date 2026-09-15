@@ -5,7 +5,7 @@ Page 69172 "Approved Overtime List"
     CardPageID = "Overtime Header Page";
     PageType = List;
     SourceTable = "Overtime Header";
-    //SourceTableView = where(Status=const(Approved));
+    SourceTableView = where(Status = filter(Released));
     UsageCategory = Lists;
 
     layout
@@ -48,6 +48,7 @@ Page 69172 "Approved Overtime List"
                 field("Overtime Amount"; Rec."Overtime Amount")
                 {
                     ApplicationArea = Basic;
+                    Visible = false;
                     ToolTip = 'Specifies the value of the Overtime Amount field.';
                 }
                 field("Convert to pay"; Rec."Convert to pay")

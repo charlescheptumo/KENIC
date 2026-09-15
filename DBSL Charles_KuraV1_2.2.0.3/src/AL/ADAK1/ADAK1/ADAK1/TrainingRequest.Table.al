@@ -12,7 +12,7 @@ Table 69039 "Training Request"
         field(2; "Request Date"; Date)
         {
         }
-        field(3; "Employee No"; Code[10])
+        field(3; "Employee No"; Code[20])
         {
             TableRelation = Employee;
         }

@@ -105,11 +105,11 @@ Table 70101 "Procurement Plan Entry"
 
             trigger OnValidate()
             begin
-                "Line Budget Cost" := Quantity * "Unit Cost";
-                if "Line Budget Cost"> "Estimated Cost of Project" then
-                   Error('You have exceeded the allocated budget for this line. Kindly align.');
-                if "Accumulated Total Budget"> "Estimated Cost of Project" then
-                   Error('This budget line has been fully utilised. Contact supply chain department for clarifications.');
+                 "Line Budget Cost" := Quantity * "Unit Cost";
+                // if "Line Budget Cost"> "Estimated Cost of Project" then
+                //    Error('You have exceeded the allocated budget for this line. Kindly align.');
+                // if "Accumulated Total Budget"> "Estimated Cost of Project" then
+                //    Error('This budget line has been fully utilised. Contact supply chain department for clarifications.');
             end;
         }
         field(13; "Unit Cost"; Decimal)

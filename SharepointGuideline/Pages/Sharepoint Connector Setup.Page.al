@@ -461,6 +461,14 @@ page 50199 "Sharepoint Connector Setup"
                 {
                     ToolTip = 'Specifies the value of the Maintenance field.';
                 }
+                field("HR Disciplinary Cases"; Rec."HR disciplinary cases")
+                {
+                    ToolTip = 'Specifies the value of HR disciplinary cases field.';
+                }
+                field("Training Needs Assessment";Rec."Training Needs Assessment")
+                {
+                    ToolTip = 'Specifies the value of Training Needs Assessment field.';
+                }
             }
         }
 

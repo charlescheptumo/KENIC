@@ -986,12 +986,18 @@ Codeunit 50012 "HRPortal"
     //     */
 
     // end;
-    procedure createTrainingNeedsHeader(docNo: Code[20]; empNo: Code[20]; fyCode: Code[10]; typeOfTraining: Integer; description: Text; username: Text) status: Text
+    procedure createTrainingNeedsHeader(docNo: Code[20]; empNo: Code[20]; fyCode: Code[10]; typeOfTraining: Integer; description: Text; username: Text; department: Text; jobtitle: Text; supervisorname: Text; supervisorjobtitle: Text; plandate: Text[10]) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
         Employee: Record Employee;
+        ParsedPlanDate: Date;
     begin
         status := 'danger*Your training needs request could not be captured';
+
+        if not Evaluate(ParsedPlanDate, plandate, 9) then begin
+            status := 'danger*Invalid plan date format. Please use yyyy-mm-dd.';
+            exit(status);
+        end;
 
         if docNo = '' then begin
             TrainingHeader.Init;
@@ -1002,6 +1008,11 @@ Codeunit 50012 "HRPortal"
             TrainingHeader."Created By" := username;
             TrainingHeader."Created On" := CurrentDateTime;
             TrainingHeader.Status := TrainingHeader.Status::Open;
+            TrainingHeader.Department := department;
+            TrainingHeader."Job Title" := jobtitle;
+            TrainingHeader."Supervisor Name" := supervisorname;
+            TrainingHeader."Supervisor Job Title" := supervisorjobtitle;
+            TrainingHeader."Plan Date" := ParsedPlanDate;
 
             if TrainingHeader.Insert(true) then begin
                 TrainingHeader."Employee No" := empNo;
@@ -1033,6 +1044,12 @@ Codeunit 50012 "HRPortal"
 
                 TrainingHeader."FY Code" := fyCode;
                 TrainingHeader.Description := description;
+                TrainingHeader."Type of Training" := typeOfTraining;
+                TrainingHeader.Department := department;
+                TrainingHeader."Job Title" := jobtitle;
+                TrainingHeader."Supervisor Name" := supervisorname;
+                TrainingHeader."Supervisor Job Title" := supervisorjobtitle;
+                TrainingHeader."Plan Date" := ParsedPlanDate;
 
                 if TrainingHeader.Modify(true) then begin
                     status := 'success*Your training needs request was successfully updated*' + TrainingHeader.Code;
@@ -1041,6 +1058,95 @@ Codeunit 50012 "HRPortal"
                 end;
             end else begin
                 status := 'danger*Training needs request not found or not in Open status';
+            end;
+        end;
+    end;
+
+    procedure createSuccessorSelectionJustificationHeader(docNo: Code[20]; empNo: Code[20]; successorname: Text; department: Text; jobtitle: Text; currentposition: Text; plandate: Date) status: Text
+    var
+        SuccessorJustificationHeader: Record "Succ. Sel. Justification Hdr";
+        Employee: Record Employee;
+    begin
+        //status := 'danger*Your training needs request could not be captured';
+
+        if docNo = '' then begin
+            SuccessorJustificationHeader.Init;
+            SuccessorJustificationHeader."Successor Name" := successorname;
+            SuccessorJustificationHeader.Validate("Successor Name");
+            SuccessorJustificationHeader."Date of Evaluation" := plandate;
+
+
+            if SuccessorJustificationHeader.Insert(true) then begin
+
+                status := 'success*Your successor justification request was successfully created*' + SuccessorJustificationHeader."No.";
+            end else begin
+                status := 'danger*Your successor justification request could not be created';
+            end;
+        end else begin
+            SuccessorJustificationHeader.Reset;
+            SuccessorJustificationHeader.SetRange("No.", docNo);
+
+            if SuccessorJustificationHeader.FindFirst() then begin
+                SuccessorJustificationHeader."Successor Name" := successorname;
+                SuccessorJustificationHeader.Validate("Successor Name");
+                SuccessorJustificationHeader."Date of Evaluation" := plandate;
+
+                if SuccessorJustificationHeader.Modify(true) then begin
+                    status := 'success*Your successor justification request was successfully updated*' + SuccessorJustificationHeader."No.";
+                end else begin
+                    status := 'danger*Your successor justification request could not be updated';
+                end;
+            end else begin
+                status := 'danger*successor justifications request not found or not in Open status';
+            end;
+        end;
+    end;
+
+    procedure createSuccessorFormHeader(docNo: Code[20]; empNo: Code[20]; successorname: Text; s_department: Text; s_jobtitle: Text; m_name: Text; m_jobtitle: Text; startdate: Date; enddate: Date) status: Text
+    var
+        SuccessorFormHeader: Record "Successor Form Header";
+        Employee: Record Employee;
+    begin
+        //status := 'danger*Your training needs request could not be captured';
+
+        if docNo = '' then begin
+            SuccessorFormHeader.Init;
+            SuccessorFormHeader."Name" := m_name;
+            //SuccessorFormHeader.Validate("Name");
+            SuccessorFormHeader."Job Title" := m_jobtitle;
+            SuccessorFormHeader."Successor" := successorname;
+            SuccessorFormHeader.Validate("Successor");
+            //SuccessorFormHeader."Successor Job Title" := plandate;
+            SuccessorFormHeader."Start Date" := enddate;
+            SuccessorFormHeader."Completion Date" := enddate;
+
+            if SuccessorFormHeader.Insert(true) then begin
+
+                status := 'success*Your successor form request was successfully created*' + SuccessorFormHeader."No.";
+            end else begin
+                status := 'danger*Your successor form request could not be created';
+            end;
+        end else begin
+            SuccessorFormHeader.Reset;
+            SuccessorFormHeader.SetRange("No.", docNo);
+
+            if SuccessorFormHeader.FindFirst() then begin
+                SuccessorFormHeader."Name" := m_name;
+                SuccessorFormHeader.Validate("Name");
+                //SuccessorFormHeader."Job Title" := plandate;
+                SuccessorFormHeader."Successor" := successorname;
+                SuccessorFormHeader.Validate("Successor");
+                //SuccessorFormHeader."Successor Job Title" := plandate;
+                SuccessorFormHeader."Start Date" := enddate;
+                SuccessorFormHeader."Completion Date" := enddate;
+
+                if SuccessorFormHeader.Modify(true) then begin
+                    status := 'success*Your successor form request was successfully updated*' + SuccessorFormHeader."No.";
+                end else begin
+                    status := 'danger*Your successor form request could not be updated';
+                end;
+            end else begin
+                status := 'danger*successor form request not found or not in Open status';
             end;
         end;
     end;
@@ -1081,6 +1187,140 @@ Codeunit 50012 "HRPortal"
         end;
     end;
 
+    procedure addSuccessorJustificationLines(docNo: Code[20]; criteria: Integer; rating: Integer; comments: Text) status: Text
+    var
+        SuccessorJustificationHeader: Record "Succ. Sel. Justification Hdr";
+        SuccessorLine: Record "Succ. Sel. Justification Line";
+    //CriteriaEnum: Enum "Succ. Sel. Justif. Criteria";
+
+    begin
+        //status := 'danger*Could not add training line';
+
+        SuccessorJustificationHeader.Reset;
+        SuccessorJustificationHeader.SetRange("No.", docNo);
+
+
+        if SuccessorJustificationHeader.FindFirst() then begin
+
+            //if not Evaluate(CriteriaEnum, Format(criteria)) then
+            //Error('Invalid Criteria value: %1', criteria);
+            //status := 'danger*Invalid Criteria value' + criteria;
+
+            SuccessorLine.Init;
+            SuccessorLine."Document No." := docNo;
+            SuccessorLine.Criteria := criteria;
+            SuccessorLine.Rating := rating;
+            SuccessorLine.Comments := comments;
+
+            if SuccessorLine.Insert(true) then begin
+                status := 'success*Line added successfully';
+            end else begin
+                status := 'danger*Could not add  line';
+            end;
+        end else begin
+            status := 'danger*Request not found or not in Open status';
+        end;
+    end;
+
+    procedure addSuccessorFormLines(docNo: Code[20]; ssdevelopmentarea: Text; sstimeframe: Text; sstrainingrequired: Integer; ssprogress: Text) status: Text
+    var
+        SuccessorFormHeader: Record "Successor Form Header";
+        SuccessorFormLine: Record "Successor Form Line";
+    //CriteriaEnum: Enum "Succ. Sel. Justif. Criteria";
+
+    begin
+        //status := 'danger*Could not add training line';
+
+        SuccessorFormHeader.Reset;
+        SuccessorFormHeader.SetRange("No.", docNo);
+
+
+        if SuccessorFormHeader.FindFirst() then begin
+
+            //if not Evaluate(CriteriaEnum, Format(criteria)) then
+            //Error('Invalid Criteria value: %1', criteria);
+            //status := 'danger*Invalid Criteria value' + criteria;
+
+            SuccessorFormLine.Init;
+            SuccessorFormLine."Document No." := docNo;
+            SuccessorFormLine."Development Area/Activity" := ssdevelopmentarea;
+            SuccessorFormLine."Timeframe" := sstimeframe;
+            SuccessorFormLine."Progress/Comment" := ssprogress;
+            SuccessorFormLine."Training Required" := sstrainingrequired;
+
+
+            if SuccessorFormLine.Insert(true) then begin
+                status := 'success*Line added successfully';
+            end else begin
+                status := 'danger*Could not add  line';
+            end;
+        end else begin
+            status := 'danger*Request not found or not in Open status';
+        end;
+    end;
+
+    procedure removeSuccessorFormLine(empNo: Code[20]; docNo: Code[20]; entryNo: Integer) status: Text
+    var
+        SuccessorFormHeader: Record "Successor Form Header";
+        SuccessorLine: Record "Successor Form Line";
+    begin
+        //status := 'danger*Could not remove training line';
+
+        SuccessorFormHeader.Reset;
+        SuccessorFormHeader.SetRange("No.", docNo);
+        //SuccessorJustificationHeader.SetRange("Employee No", empNo);
+        //SuccessorJustificationHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if SuccessorFormHeader.FindFirst() then begin
+            SuccessorLine.Reset;
+            SuccessorLine.SetRange("Document No.", docNo);
+            SuccessorLine.SetRange("Line No.", entryNo);
+
+            if SuccessorLine.FindFirst() then begin
+                if SuccessorLine.Delete(true) then begin
+                    status := 'success*line removed successfully';
+                end else begin
+                    status := 'danger*Could not remove line';
+                end;
+            end else begin
+                status := 'danger*line not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    procedure removeSuccessorJustificationLine(empNo: Code[20]; docNo: Code[20]; entryNo: Integer) status: Text
+    var
+        SuccessorJustificationHeader: Record "Succ. Sel. Justification Hdr";
+        SuccessorLine: Record "Succ. Sel. Justification Line";
+    begin
+        //status := 'danger*Could not remove training line';
+
+        SuccessorJustificationHeader.Reset;
+        SuccessorJustificationHeader.SetRange("No.", docNo);
+        //SuccessorJustificationHeader.SetRange("Employee No", empNo);
+        //SuccessorJustificationHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if SuccessorJustificationHeader.FindFirst() then begin
+            SuccessorLine.Reset;
+            SuccessorLine.SetRange("Document No.", docNo);
+            SuccessorLine.SetRange("Line No.", entryNo);
+
+            if SuccessorLine.FindFirst() then begin
+                if SuccessorLine.Delete(true) then begin
+                    status := 'success*line removed successfully';
+                end else begin
+                    status := 'danger*Could not remove line';
+                end;
+            end else begin
+                status := 'danger*line not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
     procedure removeTrainingNeedsLine(empNo: Code[20]; docNo: Code[20]; entryNo: Integer) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
@@ -1115,7 +1355,8 @@ Codeunit 50012 "HRPortal"
     procedure sendTrainingNeedsForApproval(docNo: Code[20]) status: Text
     var
         TrainingHeader: Record "Training Needs Header";
-        TrainingLine: Record "Training Needs Requests";
+        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+        VarVariant: Variant;
     begin
         status := 'danger*Could not send training needs for approval';
 
@@ -1124,18 +1365,12 @@ Codeunit 50012 "HRPortal"
         TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
 
         if TrainingHeader.FindFirst() then begin
-            TrainingLine.Reset;
-            TrainingLine.SetRange("Training Header No.", docNo);
-            if TrainingLine.IsEmpty then begin
-                status := 'danger*Cannot send for approval. Please add at least one training line';
-                exit(status);
-            end;
-
-            TrainingHeader.Status := TrainingHeader.Status::"Pending Approval";
-            if TrainingHeader.Modify(true) then begin
+            VarVariant := TrainingHeader;
+            if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
+                CustomApprovals.OnSendDocForApproval(VarVariant);
                 status := 'success*Training needs request sent for approval successfully';
             end else begin
-                status := 'danger*Could not update training needs status';
+                status := 'danger*No approval workflow is enabled for training needs. Please contact HR/ICT.';
             end;
         end else begin
             status := 'danger*Training needs request not found or not in Open status';
@@ -15826,7 +16061,7 @@ Codeunit 50012 "HRPortal"
             Recipient := portalusers."email";
             Subject := 'E-BOARD LOGIN - One Time Password';
             Body := 'Dear Sir/Madam, ' + 'Your account was successfully created, your One Time Password is:<b> ' + portalusers.Password + '</b> <br>' +
-                '<br> Kindly use the password for your first Login, thereafter, you will be prompted to change it to your preferred passcode.<br> <br> Warm regards, <br>Anti-Doping Agency of Kenya. <br> [THIS IS AN AUTOMATED' +
+                '<br> Kindly use the password for your first Login, thereafter, you will be prompted to change it to your preferred passcode.<br> <br> Warm regards, <br>Kenya Network Information Centre. <br> [THIS IS AN AUTOMATED' +
             ' MESSAGE, KINDLY DO NOT REPLY TO IT]';
             SMTPMail.Create(Recipient, Subject, Body, true);
             smail1.Send(SMTPMail, Enum::"Email Scenario"::Default);
@@ -19819,5 +20054,341 @@ Codeunit 50012 "HRPortal"
 
         exit(result);
     end;
+
+    // ============================================================================
+    // NEW PROCEDURES TO ADD TO Cod50012.HRPortal.al
+    // Insert these directly after removeTrainingNeedsLine (before sendTrainingNeedsForApproval).
+    // They follow the exact same pattern as addTrainingNeedsLine / removeTrainingNeedsLine
+    // so the portal-side calling code will look and behave the same way.
+    //
+    // After adding these, update the Web Service published page for codeunit "HRPortal"
+    // and refresh the .NET Service Reference (EssCodeunit.cs) in the ESS portal project
+    // so these become callable from TrainingNeeds.aspx.cs.
+    // ============================================================================
+
+    // --------------------------------------------------------------------------
+    // Training Needs Dev Goal ("Development Goals" grid on the TNA form)
+    //   Development Year option values on the wire: 0 = Year 1, 1 = Year 2, 2 = Year 3
+    // --------------------------------------------------------------------------
+
+    procedure addTrainingNeedsDevGoal(docNo: Code[20]; developmentYear: Integer; goal: Text) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevGoal: Record "Training Needs Dev Goal";
+    begin
+        status := 'danger*Could not add development goal';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevGoal.Reset;
+            DevGoal.SetRange("Training Header No", docNo);
+
+            DevGoal.Init;
+            DevGoal."Training Header No" := docNo;
+            DevGoal."Line No" := DevGoal.Count + 1;
+            DevGoal."Development Year" := developmentYear;
+            DevGoal.Goal := CopyStr(goal, 1, MaxStrLen(DevGoal.Goal));
+
+            if DevGoal.Insert(true) then begin
+                status := 'success*Development goal added successfully';
+            end else begin
+                status := 'danger*Could not add development goal';
+            end;
+        end else begin
+            status := 'danger*Training needs request not found or not in Open status';
+        end;
+    end;
+
+    procedure removeTrainingNeedsDevGoal(empNo: Code[20]; docNo: Code[20]; lineNo: Integer) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevGoal: Record "Training Needs Dev Goal";
+    begin
+        status := 'danger*Could not remove development goal';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange("Employee No", empNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevGoal.Reset;
+            DevGoal.SetRange("Training Header No", docNo);
+            DevGoal.SetRange("Line No", lineNo);
+
+            if DevGoal.FindFirst() then begin
+                if DevGoal.Delete(true) then begin
+                    status := 'success*Development goal removed successfully';
+                end else begin
+                    status := 'danger*Could not remove development goal';
+                end;
+            end else begin
+                status := 'danger*Development goal not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    // --------------------------------------------------------------------------
+    // Training Needs Dev Objective ("Developmental Objectives" grid on the TNA form)
+    //   Option values on the wire (all zero-based, in OptionMembers declaration order):
+    //   developmentGoalYear : 0 = 2024, 1 = 2025, 2 = 2026
+    //   purpose             : 0 = Improved Performance, 1 = New Assignment,
+    //                         2 = Meet Future Staffing Needs, 3 = Career Interests,
+    //                         4 = Develop Unavailable Skills, 5 = Mission
+    //   priority            : 0 = Essential, 1 = Needed, 2 = Helpful
+    //   developmentalActivity: 0 = On the Job Training, 1 = Coaching and Mentoring,
+    //                         2 = Short Course Training, 3 = Job Shadowing,
+    //                         4 = University/College, 5 = Conference,
+    //                         6 = Self Development, 7 = Added Responsibilities,
+    //                         8 = Rotation Assignment
+    // --------------------------------------------------------------------------
+
+    procedure addTrainingNeedsDevObjective(docNo: Code[20]; competency: Text; developmentGoalYear: Integer; purpose: Integer; priority: Integer; developmentalActivity: Integer; evidenceOfAccomplishment: Text) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevObjective: Record "Training Needs Dev Objective";
+    begin
+        status := 'danger*Could not add development objective';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevObjective.Reset;
+            DevObjective.SetRange("Training Header No", docNo);
+
+            DevObjective.Init;
+            DevObjective."Training Header No" := docNo;
+            DevObjective."Line No" := DevObjective.Count + 1;
+            DevObjective.Competency := CopyStr(competency, 1, MaxStrLen(DevObjective.Competency));
+            DevObjective."Development Goal Year" := developmentGoalYear;
+            DevObjective.Purpose := purpose;
+            DevObjective.Priority := priority;
+            DevObjective."Developmental Activity" := developmentalActivity;
+            DevObjective."Evidence of Accomplishment" := CopyStr(evidenceOfAccomplishment, 1, MaxStrLen(DevObjective."Evidence of Accomplishment"));
+
+            if DevObjective.Insert(true) then begin
+                status := 'success*Development objective added successfully';
+            end else begin
+                status := 'danger*Could not add development objective';
+            end;
+        end else begin
+            status := 'danger*Training needs request not found or not in Open status';
+        end;
+    end;
+
+    procedure removeTrainingNeedsDevObjective(empNo: Code[20]; docNo: Code[20]; lineNo: Integer) status: Text
+    var
+        TrainingHeader: Record "Training Needs Header";
+        DevObjective: Record "Training Needs Dev Objective";
+    begin
+        status := 'danger*Could not remove development objective';
+
+        TrainingHeader.Reset;
+        TrainingHeader.SetRange(Code, docNo);
+        TrainingHeader.SetRange("Employee No", empNo);
+        TrainingHeader.SetRange(Status, TrainingHeader.Status::Open);
+
+        if TrainingHeader.FindFirst() then begin
+            DevObjective.Reset;
+            DevObjective.SetRange("Training Header No", docNo);
+            DevObjective.SetRange("Line No", lineNo);
+
+            if DevObjective.FindFirst() then begin
+                if DevObjective.Delete(true) then begin
+                    status := 'success*Development objective removed successfully';
+                end else begin
+                    status := 'danger*Could not remove development objective';
+                end;
+            end else begin
+                status := 'danger*Development objective not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    // --------------------------------------------------------------------------
+    // Overtime Header
+    //   NOTE: "Overtime Header".OnInsert forces "EMp No." from the calling BC
+    //   user's User Setup — that's fine for a human using BC directly, but wrong
+    //   for a service-account web service call. We let OnInsert run (it still
+    //   generates the Application Code from the No. Series), then immediately
+    //   correct "EMp No." to the employee the portal actually sent, re-validate,
+    //   and save. This does NOT change OvertimeHeader.Table.al or its approach —
+    //   it just corrects the field afterward, from the codeunit side only.
+    // --------------------------------------------------------------------------
+
+    procedure createOvertimeHeader(docNo: Code[20]; empNo: Code[20]; applicationDate: Text[10]) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+        ParsedDate: Date;
+    begin
+        status := 'danger*Your overtime application could not be captured';
+
+        if docNo = '' then begin
+            OvertimeHeader.Init;
+
+            if OvertimeHeader.Insert(true) then begin
+                // Correct the employee to the one the portal actually submitted
+                // (OnInsert set it from the service account's User Setup, which is wrong here)
+                OvertimeHeader."EMp No." := empNo;
+                OvertimeHeader.Validate("EMp No.");
+
+                if applicationDate <> '' then begin
+                    if Evaluate(ParsedDate, applicationDate, 9) then
+                        OvertimeHeader."Application Date" := ParsedDate;
+                end;
+
+                if OvertimeHeader.Modify(true) then begin
+                    status := 'success*Your overtime application was successfully created*' + OvertimeHeader."Application Code";
+                end else begin
+                    status := 'danger*Your overtime application could not be created';
+                end;
+            end else begin
+                status := 'danger*Your overtime application could not be created';
+            end;
+        end else begin
+            OvertimeHeader.Reset;
+            OvertimeHeader.SetRange("Application Code", docNo);
+            OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+            if OvertimeHeader.FindFirst() then begin
+                if OvertimeHeader."EMp No." <> empNo then begin
+                    status := 'danger*You are not authorized to modify this request';
+                    exit(status);
+                end;
+
+                if applicationDate <> '' then begin
+                    if Evaluate(ParsedDate, applicationDate, 9) then
+                        OvertimeHeader."Application Date" := ParsedDate;
+                end;
+
+                if OvertimeHeader.Modify(true) then begin
+                    status := 'success*Your overtime application was successfully updated*' + OvertimeHeader."Application Code";
+                end else begin
+                    status := 'danger*Your overtime application could not be updated';
+                end;
+            end else begin
+                status := 'danger*Overtime application not found or not in Open status';
+            end;
+        end;
+    end;
+
+    procedure addOvertimeLine(docNo: Code[20]; empNo: Code[20]; day: Text[10]; overtimeType: Code[20]; startTime: Time; endTime: Time; workDone: Text[150]) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+        OvertimeLine: Record "Overtime lines";
+        ParsedDay: Date;
+    begin
+        status := 'danger*Could not add overtime line';
+
+        if not Evaluate(ParsedDay, day, 9) then begin
+            status := 'danger*Invalid day format. Please use yyyy-mm-dd.';
+            exit(status);
+        end;
+
+        OvertimeHeader.Reset;
+        OvertimeHeader.SetRange("Application Code", docNo);
+        OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+        if OvertimeHeader.FindFirst() then begin
+            OvertimeLine.Init;
+            OvertimeLine."Application Code" := docNo;
+            OvertimeLine."EmpNo." := empNo;
+            OvertimeLine.Day := ParsedDay;
+            OvertimeLine."Work Done" := CopyStr(workDone, 1, MaxStrLen(OvertimeLine."Work Done"));
+            OvertimeLine."Overtime Type" := overtimeType;
+            OvertimeLine."Start Time" := startTime;
+            OvertimeLine.Validate("End Time", endTime);
+
+            if OvertimeLine.Insert(true) then begin
+                status := 'success*Overtime line added successfully';
+            end else begin
+                status := 'danger*Could not add overtime line';
+            end;
+        end else begin
+            status := 'danger*Overtime application not found or not in Open status';
+        end;
+    end;
+
+    procedure removeOvertimeLine(empNo: Code[20]; docNo: Code[20]; day: Text[10]; startTime: Time) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+        OvertimeLine: Record "Overtime lines";
+        ParsedDay: Date;
+    begin
+        status := 'danger*Could not remove overtime line';
+
+        if not Evaluate(ParsedDay, day, 9) then begin
+            status := 'danger*Invalid day format.';
+            exit(status);
+        end;
+
+        OvertimeHeader.Reset;
+        OvertimeHeader.SetRange("Application Code", docNo);
+        OvertimeHeader.SetRange("EMp No.", empNo);
+        OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+        if OvertimeHeader.FindFirst() then begin
+            OvertimeLine.Reset;
+            OvertimeLine.SetRange("Application Code", docNo);
+            OvertimeLine.SetRange("EmpNo.", empNo);
+            OvertimeLine.SetRange(Day, ParsedDay);
+            OvertimeLine.SetRange("Start Time", startTime);
+
+            if OvertimeLine.FindFirst() then begin
+                if OvertimeLine.Delete(true) then begin
+                    status := 'success*Overtime line removed successfully';
+                end else begin
+                    status := 'danger*Could not remove overtime line';
+                end;
+            end else begin
+                status := 'danger*Overtime line not found';
+            end;
+        end else begin
+            status := 'danger*You are not authorized to modify this request';
+        end;
+    end;
+
+    procedure sendOvertimeForApproval(docNo: Code[20]) status: Text
+    var
+        OvertimeHeader: Record "Overtime Header";
+        OvertimeLine: Record "Overtime lines";
+        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+        VarVariant: Variant;
+    begin
+        status := 'danger*Could not send overtime application for approval';
+
+        OvertimeHeader.Reset;
+        OvertimeHeader.SetRange("Application Code", docNo);
+        OvertimeHeader.SetRange(Status, OvertimeHeader.Status::Open);
+
+        if OvertimeHeader.FindFirst() then begin
+            OvertimeLine.Reset;
+            OvertimeLine.SetRange("Application Code", docNo);
+            if OvertimeLine.IsEmpty then begin
+                status := 'danger*Cannot send for approval. Please add at least one overtime line';
+                exit(status);
+            end;
+
+            VarVariant := OvertimeHeader;
+            if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then begin
+                CustomApprovals.OnSendDocForApproval(VarVariant);
+                status := 'success*Overtime application sent for approval successfully';
+            end else begin
+                status := 'danger*No approval workflow is enabled for overtime applications. Please contact HR/ICT.';
+            end;
+        end else begin
+            status := 'danger*Overtime application not found or not in Open status';
+        end;
+    end;
+
 
 }

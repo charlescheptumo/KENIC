@@ -5,6 +5,7 @@ Page 69232 "Leave Planner List"
     CardPageID = "Leave Planner Card";
     PageType = List;
     SourceTable = "HR Leave Planner Header";
+    SourceTableView = where("Approval Status" = filter(Open | "Pending Approval"));
     UsageCategory = Lists;
 
     layout

@@ -1,0 +1,46 @@
+namespace KENIC.KENIC;
+
+page 50365 "Successor Form Top Dev Areas"
+{
+    PageType = ListPart;
+    SourceTable = "Successor Form Top Dev Area";
+    ApplicationArea = All;
+    AutoSplitKey = true;
+
+    layout
+    {
+        area(content)
+        {
+            repeater(Lines)
+            {
+                field("DevelopmentArea"; Rec."Development Area")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
+                field("Development Area"; Rec."Development Area")
+                {
+                    ApplicationArea = All;
+                }
+                field("Document No"; Rec."Document No.")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
+            }
+        }
+    }
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        Rec."Document No." := GetHeaderNo();
+    end;
+
+    local procedure GetHeaderNo(): Code[20]
+    var
+        Hdr: Record "Successor Form Header";
+    begin
+        if Hdr.Get(Rec."Document No.") then
+            exit(Hdr."No.");
+    end;
+}

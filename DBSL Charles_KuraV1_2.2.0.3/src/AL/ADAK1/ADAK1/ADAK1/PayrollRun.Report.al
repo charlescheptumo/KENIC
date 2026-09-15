@@ -10,7 +10,7 @@ Report 69004 "Payroll Run"
         dataitem(Employee; Employee)
         {
             DataItemTableView = sorting("No.") where(Status = const(Active));
-            RequestFilterFields = "No.", "Posting Group", "Pay Period Filter";
+            RequestFilterFields = "No.", "Posting Group";
             column(ReportForNavId_7528; 7528)
             {
             }
@@ -494,9 +494,16 @@ Report 69004 "Payroll Run"
             trigger OnPreDataItem()
             begin
                 Window.Open('Calculating Payroll For ##############################1', EmployeeName);
-                PayrollPeriod.SetRange(Closed, false);
-                if PayrollPeriod.Find('-') then
-                    Month := PayrollPeriod."Starting Date";
+
+                if SelectedPayPeriod <> 0D then begin
+                    Employee.SetRange("Pay Period Filter", SelectedPayPeriod);
+                    Month := SelectedPayPeriod;
+                end else begin
+                    PayrollPeriod.SetRange(Closed, false);
+                    if PayrollPeriod.Find('-') then
+                        Month := PayrollPeriod."Starting Date";
+                end;
+
                 LastMonth := CalcDate('-1M', Month);
             end;
         }
@@ -504,9 +511,30 @@ Report 69004 "Payroll Run"
 
     requestpage
     {
-
         layout
         {
+            area(content)
+            {
+                group(Filters)
+                {
+                    Caption = 'Filters';
+                    field(PayPeriodSelection; SelectedPayPeriod)
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Pay Period';
+                        TableRelation = "Payroll PeriodX"."Starting Date";
+                        ToolTip = 'Specifies the pay period to run payroll for.';
+
+                        trigger OnValidate()
+                        begin
+                            if SelectedPayPeriod <> 0D then begin
+                                if not PayPeriod.Get(SelectedPayPeriod) then
+                                    Error('The selected date does not match a valid Pay Period.');
+                            end;
+                        end;
+                    }
+                }
+            }
         }
 
         actions
@@ -572,6 +600,7 @@ Report 69004 "Payroll Run"
         HoursInamonth: Decimal;
         Earnings: Record EarningsX;
         CfMpr: Decimal;
+        SelectedPayPeriod: Date;
         Deductions: Record DeductionsX;
         NormalOvertimeHours: Decimal;
         WeekendOvertime: Decimal;

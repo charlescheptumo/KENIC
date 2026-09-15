@@ -35,18 +35,23 @@ page 57345 EboardPortalUsers
                 {
                     ToolTip = 'Specifies the value of the Email field.', Comment = '%';
                 }
-                field("Employee No"; Rec.EmployeeNo)
-                {
-                    ToolTip = 'Specifies the value of the Employee No.', Comment = '%';
-                }
-                field(Department; Rec.Department)
-                {
-                    ToolTip = 'Specifies the value of the Name field.', Comment = '%';
-                }
+                // field("Employee No"; Rec.EmployeeNo)
+                // {
+                //     ToolTip = 'Specifies the value of the Employee No.', Comment = '%';
+                // }
+                // field(Department; Rec.Department)
+                // {
+                //     ToolTip = 'Specifies the value of the Name field.', Comment = '%';
+                // }
                 field(IDNoorRegNo; Rec.IDNoorRegNo)
                 {
                     ToolTip = 'Specifies the value of the IDNoorRegNo field.', Comment = '%';
                 }
+                field(isFirstlogin; Rec.isFirstlogin)
+                {
+                    ToolTip = 'Specifies the value of the isFirstLogin field.', Comment = '%';
+                }
+
                 field(isAdmin; Rec.isAdmin)
                 {
                     ToolTip = 'Specifies the value of the isAdmin field.', Comment = '%';

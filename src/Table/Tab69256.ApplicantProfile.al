@@ -229,7 +229,7 @@ Table 69256 "Applicant Profile"
             OptionCaption = 'Staff,Non-Staff';
             OptionMembers = Staff,"Non-Staff";
         }
-        field(50117; "Staff No."; Code[10])
+        field(50117; "Staff No."; Code[20])
         {
             Caption = 'Staff No.';
             DataClassification = ToBeClassified;

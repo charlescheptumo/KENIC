@@ -1,4 +1,4 @@
-page 57113 "Resolution Votes Subform"
+page 57113 "Resolution Votes Subformm"
 {
     PageType = ListPart;
     SourceTable = "Circular Resolution lines";

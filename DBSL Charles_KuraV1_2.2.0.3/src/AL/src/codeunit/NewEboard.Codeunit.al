@@ -985,27 +985,52 @@ Codeunit 50032 NewEboard
     end;
 
     // [scope('OnPrem')]
+    // procedure generateDirectorPayslip(director: Code[100]; payperiod: Date; directorNo: Text) status: Text
+    // begin
+    //     if objVendor.Get(director) then begin
+    //         objVendor.Reset;
+    //         objVendor.SetRange("No.", director);
+    //         if objVendor.FindFirst then begin
+    //             //AL
+    //             // objVendor.SetRange("Pay Period Filter", payperiod);
+    //             //   if FILE.Exists(FILESPATH+Format(directorNo)+'.pdf') then begin
+    //             //     FILE.Erase(FILESPATH+Format(directorNo)+'.pdf');
+    //             //     Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
+    //             //     status:='success*Downloads'+directorNo+'.pdf';
+    //             //     end else begin
+    //             //       Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
+    //             //       status:='success*Downloads'+directorNo+'.pdf';
+    //             //             end
+    //         end
+    //     end else begin
+    //         status := 'danger*The director number does not exist';
+    //     end;
+    //     Message(Format(status));
+    // end;
+
     procedure generateDirectorPayslip(director: Code[100]; payperiod: Date; directorNo: Text) status: Text
+    var
+        RecRef: RecordRef;
+        BaseImage: Text;
     begin
         if objVendor.Get(director) then begin
             objVendor.Reset;
             objVendor.SetRange("No.", director);
+            objVendor.SetRange("Pay Period Filter", payperiod);
             if objVendor.FindFirst then begin
-                //AL
-                // objVendor.SetRange("Pay Period Filter", payperiod);
-                //   if FILE.Exists(FILESPATH+Format(directorNo)+'.pdf') then begin
-                //     FILE.Erase(FILESPATH+Format(directorNo)+'.pdf');
-                //     Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
-                //     status:='success*Downloads'+directorNo+'.pdf';
-                //     end else begin
-                //       Report.SaveAsPdf(89033,FILESPATH+directorNo+'.pdf' ,objVendor);
-                //       status:='success*Downloads'+directorNo+'.pdf';
-                //             end
-            end
+                TempBlob_lRec.CreateOutStream(OutStr, TEXTENCODING::UTF8);
+                RecRef.GetTable(objVendor);
+                Report.SaveAs(Report::"1 Director Page Payslip", '', ReportFormat::Pdf, OutStr, RecRef);
+                FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('%1.Pdf', directorNo), true);
+                TempBlob_lRec.CreateInstream(InStr, TEXTENCODING::UTF8);
+                BaseImage := Base64Convert.ToBase64(InStr);
+                status := 'success*' + BaseImage;
+            end else begin
+                status := 'danger*No payslip found for the selected pay period';
+            end;
         end else begin
             status := 'danger*The director number does not exist';
         end;
-        Message(Format(status));
     end;
 
     procedure forgotPass(registrationNo: Code[10]) status: Text
@@ -1102,40 +1127,79 @@ Codeunit 50032 NewEboard
         end;
     end;
 
+    // procedure fnRegisterBoard(idNumber: Code[30]) status: Text
+    // begin
+    //     objVendor.Reset;
+    //     objVendor.SetRange(objVendor.SystemId, idNumber);
+    //     if objVendor.Find('-') then begin
+    //         //user is a director but not in portal users table
+    //         //check user has email
+    //         if objVendor."E-Mail" = '' then begin
+    //             status := 'danger*Your account does not have a valid email address. Please contact the head office to have your details captured in the system';
+    //         end
+    //         else begin
+    //             //create account in portal users
+    //             objPortalUser.Init;
+    //             objPortalUser."customer No" := idNumber;
+    //             objPortalUser.validated := false;
+    //             objPortalUser.changedPassword := 0;
+    //             objPortalUser.usertype := 1;
+    //             if objPortalUser.Insert then begin
+    //                 //send mail with activation link
+    //                 status := 'success*Board';
+    //                 //for Debug testing
+    //                 Message(status);
+    //                 //for Debug testing
+
+    //             end
+    //             else begin
+    //                 status := 'danger*Your account could not be created. Please try again later';
+
+    //                 //for Debug testing
+    //                 Message(status);
+    //                 //for Debug testing
+    //             end
+    //         end
+    //     end;
+    // end;
+
     procedure fnRegisterBoard(idNumber: Code[30]) status: Text
+    var
+        objBoardMember: Record "Board Members";
     begin
-        objVendor.Reset;
-        objVendor.SetRange(objVendor.SystemId, idNumber);
-        if objVendor.Find('-') then begin
-            //user is a director but not in portal users table
-            //check user has email
-            if objVendor."E-Mail" = '' then begin
+        objBoardMember.Reset();
+        objBoardMember.SetRange("ID Number", idNumber);
+        if objBoardMember.FindFirst() then begin
+            if objBoardMember."E-Mail" = '' then begin
                 status := 'danger*Your account does not have a valid email address. Please contact the head office to have your details captured in the system';
-            end
-            else begin
-                //create account in portal users
-                objPortalUser.Init;
-                objPortalUser."customer No" := idNumber;
-                objPortalUser.validated := false;
-                objPortalUser.changedPassword := 0;
-                objPortalUser.usertype := 1;
-                if objPortalUser.Insert then begin
-                    //send mail with activation link
-                    status := 'success*Board';
-                    //for Debug testing
-                    Message(status);
-                    //for Debug testing
+                exit;
+            end;
 
-                end
-                else begin
-                    status := 'danger*Your account could not be created. Please try again later';
+            objPortalUser.Reset();
+            objPortalUser.SetRange("customer No", objBoardMember."Personal No");
+            if objPortalUser.FindFirst() then begin
+                status := 'danger*An account already exists for this ID number. Use Forgot Password if you cannot log in.';
+                exit;
+            end;
 
-                    //for Debug testing
-                    Message(status);
-                    //for Debug testing
-                end
-            end
-        end;
+            objPortalUser.Init();
+            objPortalUser."customer No" := objBoardMember."Personal No";
+            objPortalUser.Email := objBoardMember."E-Mail";
+            objPortalUser.Name := objBoardMember."First Name" + ' ' + objBoardMember."Last Name";
+            objPortalUser."Job Title" := objBoardMember."Designation/Role";
+            objPortalUser.IDNoorRegNo := idNumber;
+            objPortalUser.validated := false;
+            objPortalUser.changedPassword := 0;
+            objPortalUser.usertype := 1;
+            objPortalUser.isFirstlogin := true;
+            objPortalUser.Password := Format(Random(899999) + 100000);
+
+            if objPortalUser.Insert(true) then
+                status := 'success*' + objBoardMember."Personal No" + '*' + objBoardMember."E-Mail"
+            else
+                status := 'danger*Your account could not be created. Please try again later';
+        end else
+            status := 'danger*We could not find a board member record matching that ID number. Please contact the head office.';
     end;
 
     procedure fnMeetingsToday() countMeetings: Integer
@@ -1779,5 +1843,121 @@ Codeunit 50032 NewEboard
         end;
     end;
 
+    procedure fnGetOpenMeetingPlans(directorNo: Code[20]) status: Text
+    var
+        CommitteeMember: Record "Committee Board Members";
+        MeetingPlan: Record "Meeting Plans";
+    begin
+        CommitteeMember.Reset();
+        CommitteeMember.SetRange("Director No", directorNo);
+        if CommitteeMember.FindSet() then
+            repeat
+                MeetingPlan.Reset();
+                MeetingPlan.SetRange("Committee Id", CommitteeMember.Committee);
+                MeetingPlan.SetRange("Voting Status", MeetingPlan."Voting Status"::Open);
+                if MeetingPlan.FindSet() then
+                    repeat
+                        status += MeetingPlan."Id" + '*' + MeetingPlan.Title + '*' + MeetingPlan."Committee Description" + '*' + Format(MeetingPlan.Year) + '*' + Format(MeetingPlan.Quarter) + '::::';
+                    until MeetingPlan.Next() = 0;
+            until CommitteeMember.Next() = 0;
+    end;
+
+    procedure fnGetMeetingDateOptions(meetingPlanId: Code[20]; memberNo: Code[20]) status: Text
+    var
+        DateOption: Record "Meeting Date Options";
+        DatePoll: Record "Meeting Date Polls";
+        hasVoted: Boolean;
+    begin
+        DateOption.Reset();
+        DateOption.SetRange("Meeting Plan Id", meetingPlanId);
+        if DateOption.FindSet() then
+            repeat
+                DateOption.CalcFields("Vote Count");
+                hasVoted := false;
+                DatePoll.Reset();
+                DatePoll.SetRange("Meeting Plan Id", meetingPlanId);
+                DatePoll.SetRange("Meeting Date Option Id", DateOption."Id");
+                DatePoll.SetRange("Member No.", memberNo);
+                if DatePoll.FindFirst() then
+                    hasVoted := DatePoll."Has Voted";
+
+                status += Format(DateOption."Id") + '*' + Format(DateOption."Proposed Date") + '*' + Format(DateOption."Start Time") + '*' + Format(DateOption."End Time") + '*' + DateOption.Venue + '*' + Format(DateOption."Vote Count") + '*' + Format(hasVoted) + '::::';
+            until DateOption.Next() = 0;
+    end;
+
+    procedure fnCastMeetingDateVote(meetingPlanId: Code[20]; optionId: Integer; memberNo: Code[20]) status: Text
+    var
+        MeetingPlan: Record "Meeting Plans";
+        DatePoll: Record "Meeting Date Polls";
+    begin
+        status := 'danger*Could not record your vote';
+
+        if not MeetingPlan.Get(meetingPlanId) then begin
+            status := 'danger*Meeting plan not found';
+            exit(status);
+        end;
+
+        if MeetingPlan."Voting Status" <> MeetingPlan."Voting Status"::Open then begin
+            status := 'danger*Voting is not currently open for this meeting plan';
+            exit(status);
+        end;
+
+        DatePoll.Reset();
+        DatePoll.SetRange("Meeting Plan Id", meetingPlanId);
+        DatePoll.SetRange("Meeting Date Option Id", optionId);
+        DatePoll.SetRange("Member No.", memberNo);
+        if DatePoll.FindFirst() then begin
+            DatePoll.Validate("Has Voted", true);
+            if DatePoll.Modify(true) then begin
+                status := 'success*Your vote has been recorded';
+            end else begin
+                status := 'danger*Could not save your vote';
+            end;
+        end else begin
+            status := 'danger*You are not eligible to vote on this option';
+        end;
+    end;
+
+    procedure fnRemoveMeetingDateVote(meetingPlanId: Code[20]; optionId: Integer; memberNo: Code[20]) status: Text
+    var
+        DatePoll: Record "Meeting Date Polls";
+    begin
+        status := 'danger*Could not remove your vote';
+
+        DatePoll.Reset();
+        DatePoll.SetRange("Meeting Plan Id", meetingPlanId);
+        DatePoll.SetRange("Meeting Date Option Id", optionId);
+        DatePoll.SetRange("Member No.", memberNo);
+        if DatePoll.FindFirst() then begin
+            DatePoll.Validate("Has Voted", false);
+            if DatePoll.Modify(true) then begin
+                status := 'success*Your vote has been removed';
+            end else begin
+                status := 'danger*Could not remove your vote';
+            end;
+        end else begin
+            status := 'danger*Vote record not found';
+        end;
+    end;
+
+    procedure fnGetConfirmedMeetingDate(meetingPlanId: Code[20]) status: Text
+    var
+        MeetingPlan: Record "Meeting Plans";
+    begin
+        if MeetingPlan.Get(meetingPlanId) then begin
+            MeetingPlan.CalcFields("Selected Meeting Date");
+            if MeetingPlan."Voting Status" = MeetingPlan."Voting Status"::Closed then begin
+                if MeetingPlan."Selected Meeting Date Option Id" <> 0 then begin
+                    status := 'success*' + Format(MeetingPlan."Selected Meeting Date") + '*' + MeetingPlan."Meeting Code";
+                end else begin
+                    status := 'warning*Voting closed with a tie - awaiting manual selection';
+                end;
+            end else begin
+                status := 'pending*Voting is still open';
+            end;
+        end else begin
+            status := 'danger*Meeting plan not found';
+        end;
+    end;
 
 }

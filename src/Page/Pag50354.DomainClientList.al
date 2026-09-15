@@ -1,5 +1,7 @@
 namespace KENIC.KENIC;
 
+using Microsoft.Sales.Customer;
+
 page 50354 "Domain Client List"
 {
     ApplicationArea = All;
@@ -293,10 +295,46 @@ page 50354 "Domain Client List"
 
                 trigger OnAction()
                 var
-                    DomainDialog: Page "Get Domain Ledger";
+                    Customer: Record Customer;
+                    CashMgtSetup: Record "Cash Management Setup";
                 begin
-                    // DomainDialog.RunModal();
-                    // CurrPage.Update(false);
+                    if Rec.Clid = '' then
+                        Error('Please select a domain client with a valid CLID before creating a customer.');
+
+                    // Step 1: Prevent duplicate creation
+                    if Customer.Get(Rec.Clid) then begin
+                        Message('A customer already exists for CLID %1 (Customer No. %2). No new record was created.', Rec.Clid, Customer."No.");
+                        exit;
+                    end;
+
+                    // Step 2: Get posting group defaults from Cash Management Setup
+                    CashMgtSetup.Get();
+                    CashMgtSetup.TestField("Domain Cust Posting Group");
+                    CashMgtSetup.TestField("Domain Cust Bus Posting Group");
+                    CashMgtSetup.TestField("Domain Cust VAT Bus Posting Group");
+
+                    // Step 3: Create the Customer record
+                    Customer.Init();
+                    Customer."No." := Rec.Clid;
+                    Customer.Name := Rec.Name;
+                    Customer."E-Mail" := Rec.Email;
+                    Customer."Phone No." := Rec.Phone;
+                    Customer.Address := Rec.Address;
+                    Customer."Country/Region Code" := Rec.Country;
+                    Customer.City := Rec.City;
+                    Customer.County := Rec.State;
+                    Customer."Post Code" := Rec.PostalCode;
+                    Customer."Fax No." := Rec.Fax;
+
+                    // Step 4: Assign posting groups from setup
+                    Customer."Customer Posting Group" := CashMgtSetup."Domain Cust Posting Group";
+                    Customer."Gen. Bus. Posting Group" := CashMgtSetup."Domain Cust Bus Posting Group";
+                    Customer."VAT Bus. Posting Group" := CashMgtSetup."Domain Cust VAT Bus Posting Group";
+
+                    Customer.Insert(true);
+
+                    Message('Customer %1 - %2 created successfully from Domain Client %3.', Customer."No.", Customer.Name, Rec.Clid);
+                    CurrPage.Update(false);
                 end;
             }
         }

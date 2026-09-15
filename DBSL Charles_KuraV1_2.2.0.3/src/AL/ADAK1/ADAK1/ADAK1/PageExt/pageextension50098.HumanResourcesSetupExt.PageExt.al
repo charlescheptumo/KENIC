@@ -308,6 +308,17 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the Board meeting Nos field.', Comment = '%';
             }
+
+            field("Resolution Nos"; Rec."Resolution Nos.")
+
+            {
+                ApplicationArea = All;
+            }
+            field("Meeting Plan Nos"; Rec."Meeting Plan Nos.")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the meeting plan Nos field.', Comment = '%';
+            }
             field("Project Team Nos"; Rec."Project Team Nos")
             {
                 ApplicationArea = All;
@@ -523,10 +534,25 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Recruitment Requsition Nos. field.';
                 }
+                field("Leave Hours per Hour"; Rec."Leave Hours per Hour")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the multiplier used to convert overtime hours into leave hours.';
+                }
                 field("Vacancy Nos."; Rec."Vacancy Nos.")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Vacancy Nos. field.';
+                }
+                field("Successor SelectionJustification Nos."; Rec."Succ. Sel. Justification Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Successor Selection Nos. field.';
+                }
+                field("Successor Form Nos."; Rec."Successor Form Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Successor Form Nos. field.';
                 }
                 field("HQ Responsibility Center"; Rec."HQ Responsibility Center")
                 {
@@ -681,6 +707,11 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Overtime Payroll Code field.';
                 }
+                field("Overtime Req Nos."; Rec."Overtime Req Nos.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Overtime Req Nos. field.';
+                }
             }
             group("HR Setups")
             {
@@ -799,6 +830,15 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                     ToolTip = 'Specifies the value of the Temp NSSF Tier II Code field.';
                 }
                 field("CEO Notification Email"; Rec."CEO Notification Email")
+                {
+                    ApplicationArea = Basic;
+                }
+                field("Induction Signoff Nos."; Rec."Induction Signoff Nos.")
+                {
+                    ApplicationArea = Basic;
+                }//
+
+                field("Probation Assessment Nos."; Rec."Probation Assessment Nos.")
                 {
                     ApplicationArea = Basic;
                 }

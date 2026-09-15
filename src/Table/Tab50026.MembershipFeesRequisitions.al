@@ -16,7 +16,7 @@ table 50026 "Membership Fees Requisitions"
         {
             Caption = 'Description';
         }
-        field(3; "Request-By No."; Code[10])
+        field(3; "Request-By No."; Code[20])
         {
 
             Editable = false;

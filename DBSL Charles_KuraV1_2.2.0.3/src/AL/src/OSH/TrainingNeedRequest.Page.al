@@ -27,24 +27,44 @@ Page 99295 "Training Need Request"
                 field("Employee No"; Rec."Employee No")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the Employee No field.';
                 }
                 field("Employee Name"; Rec."Employee Name")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the Employee Name field.';
                 }
                 field(Department; Rec.Department)
                 {
                     ApplicationArea = Basic;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the Department field.';
                 }
                 field("Job Title"; Rec."Job Title")
                 {
                     ApplicationArea = Basic;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the Job Title field.';
+                }
+                field("Supervisor Name"; Rec."Supervisor Name")
+                {
+                    ApplicationArea = Basic;
+                    Editable = true;
+                    ToolTip = 'Specifies the value of the Supervisor Name field.';
+                }
+                field("Supervisor Job Title"; Rec."Supervisor Job Title")
+                {
+                    ApplicationArea = Basic;
+                    Editable = true;
+                    ToolTip = 'Specifies the value of the Supervisor Job Title field.';
+                }
+                field("Plan Date"; Rec."Plan Date")
+                {
+                    ApplicationArea = Basic;
+                    Editable = true;
+                    ToolTip = 'Specifies the value of the Plan Date field.';
                 }
                 field(Disabled; Rec.Disabled)
                 {
@@ -155,6 +175,17 @@ Page 99295 "Training Need Request"
             part(Control9; "Need Requests")
             {
                 SubPageLink = "Training Header No." = field(Code);
+                Visible = false;
+            }
+            part("Development Goals"; "Training Needs Dev Goals")
+            {
+                SubPageLink = "Training Header No" = field(Code);
+                Caption = 'Development Goals';
+            }
+            part("Development Objectives"; "Training Needs Dev Objectives")
+            {
+                SubPageLink = "Training Header No" = field(Code);
+                Caption = 'Developmental Objectives';
             }
             part("Training Attended Subform"; EmpTrainingAttendedCard)
             {
@@ -165,6 +196,11 @@ Page 99295 "Training Need Request"
         }
         area(factboxes)
         {
+            systempart(Links; Links)
+            {
+                ApplicationArea = RecordLinks;
+                Caption = 'Training Needs Documents';
+            }
             systempart(Control27; Outlook)
             {
             }
@@ -172,9 +208,6 @@ Page 99295 "Training Need Request"
             {
             }
             systempart(Control25; MyNotes)
-            {
-            }
-            systempart(Control21; Links)
             {
             }
         }
@@ -209,6 +242,7 @@ Page 99295 "Training Need Request"
                     Caption = 'Approvals';
                     Image = Approvals;
                     Promoted = true;
+                    PromotedCategory = Category9;
                     PromotedIsBig = false;
                     ToolTip = 'Executes the Approvals action.';
 
@@ -216,9 +250,7 @@ Page 99295 "Training Need Request"
                     var
                         ApprovalEntries: Page "Approval Entries";
                     begin
-                        //ApprovalEntries.Setfilters(DATABASE::"Purchase Header","Document Type","No.");
                         ApprovalsMgmt.OpenApprovalEntriesPage(Rec.RecordId);
-
                     end;
                 }
             }
@@ -237,10 +269,13 @@ Page 99295 "Training Need Request"
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                        VarVariant: Variant;
                     begin
                         Rec.TestField(Status, Rec.Status::Open);
-                        Rec.Status := Rec.Status::"Pending Approval";
-                        Message('Approval Request Sent Successfully');
+                        VarVariant := Rec;
+                        if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                            CustomApprovals.OnSendDocForApproval(VarVariant);
                     end;
                 }
                 action(CancelApprovalRequest)
@@ -256,10 +291,16 @@ Page 99295 "Training Need Request"
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                        VarVariant: Variant;
+                        CustomApprovalEntry: record "Approval Entry";
+                
                     begin
-                        Rec.TestField(Status, Rec.Status::Released);
+                        Rec.TestField(Status, Rec.Status::"Pending Approval");
+                        VarVariant := Rec;
+                        CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
                         Rec.Status := Rec.Status::Open;
-                        Message('Cancelled Successfully');
+                        Rec.Modify();
                     end;
                 }
                 action(Post)
@@ -275,8 +316,6 @@ Page 99295 "Training Need Request"
                     trigger OnAction()
                     begin
                         Rec.TestField(Posted, false);
-                        //Rec.TestField("Training Plan No");
-                       // Rec.TestField("Training Plan No");
                         TrainingNeedsRequests.Reset;
                         TrainingNeedsRequests.SetRange("Training Header No.", Rec.Code);
                         if TrainingNeedsRequests.FindSet then begin
@@ -295,7 +334,6 @@ Page 99295 "Training Need Request"
                                     TrainingPlanLines2.Institution := TrainingNeedsRequests.Institution;
                                     TrainingPlanLines2."Name of Course" := TrainingNeedsRequests."Name of Course";
                                     TrainingPlanLines2."Planned Date" := TrainingNeedsRequests."Planned Date";
-                                    // TrainingPlanLines2.Source:=TrainingNeedsRequests.Source;
                                     TrainingPlanLines2.Insert(true);
                                 end;
                                 TrainingNeedsRegister.Init;
@@ -320,7 +358,32 @@ Page 99295 "Training Need Request"
                     end;
                 }
             }
+        
+            group(Attachments)
+            {
+                Caption = 'Attachments';
+                Image = Administration;
+                action(UploadDocument)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Attach Document';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload supporting documents for this training need request to SharePoint.';
+
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        Rec.TestField(Code);
+                        DMSManagement.UploadTrainingNeedDocuments(Rec.Code, 'Training Needs Assessment', Rec.RecordId);
+                    end;
+                }
+            }
         }
+        
     }
 
     var

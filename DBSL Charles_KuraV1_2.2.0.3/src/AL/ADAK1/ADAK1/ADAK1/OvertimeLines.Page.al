@@ -48,12 +48,14 @@ Page 69174 "Overtime Lines"
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Employee Basic Pay field.';
+                    Visible = false;
                 }
                 field("Overtime Amount"; Rec."Overtime Amount")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Overtime Amount field.';
+                    Visible = false;
                 }
                 field("Work Done"; Rec."Work Done")
                 {

@@ -75,7 +75,7 @@ Table 69028 "Hr Leave"
         field(13; Description; Text[30])
         {
         }
-        field(14; "Request-By No."; Code[10])
+        field(14; "Request-By No."; Code[20])
         {
             TableRelation = Employee."No.";
 

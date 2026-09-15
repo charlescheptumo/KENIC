@@ -477,6 +477,15 @@ table 50086 "Sharepoint Connector Setup"
         {
             DataClassification = ToBeClassified;
         }
+        field(118; "HR disciplinary cases"; Text[2048])
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(119; "Training Needs Assessment"; Text[2048])
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

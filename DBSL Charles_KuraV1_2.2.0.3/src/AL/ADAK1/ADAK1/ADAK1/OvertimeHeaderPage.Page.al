@@ -20,7 +20,7 @@ Page 69173 "Overtime Header Page"
                 field("EMp No."; Rec."EMp No.")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the EMp No. field.';
                 }
                 field(Name; Rec.Name)
@@ -48,7 +48,7 @@ Page 69173 "Overtime Header Page"
                 field("Overtime Amount"; Rec."Overtime Amount")
                 {
                     ApplicationArea = Basic;
-                    Visible = true;
+                    Visible = false;
                     ToolTip = 'Specifies the value of the Overtime Amount field.';
                 }
                 field("Total Hours"; Rec."Total Hours")
@@ -67,6 +67,7 @@ Page 69173 "Overtime Header Page"
                     Caption = 'Region';
                     Editable = false;
                     ToolTip = 'Specifies the value of the Region field.';
+                    Visible = false;
                 }
                 field("Dim Code 2"; Rec."Dim Code 2")
                 {
@@ -74,6 +75,7 @@ Page 69173 "Overtime Header Page"
                     Caption = 'Constituency';
                     Editable = false;
                     ToolTip = 'Specifies the value of the Constituency field.';
+                    Visible = false;
                 }
                 field("Responsibility Center"; Rec."Responsibility Center")
                 {
@@ -131,18 +133,35 @@ Page 69173 "Overtime Header Page"
 
                 trigger OnAction()
                 var
-                    ApprovalEntries: Page "Approval Entries";
+                    WorkflowsEntriesBuffer: Record "Workflows Entries Buffer";
+                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                 begin
-                    /*DocumentType:=DocumentType::Overtime;
-                    ApprovalEntries.Setfilters(DATABASE::Overtime,DocumentType,"Application Code");
-                    */
 
+                    ApprovalsMgmt.OpenApprovalEntriesPage(Rec.RecordId);
+                end;
+            }
+            action(ConvertToLeave)
+            {
+                ApplicationArea = All;
+                Caption = 'Convert Hours to Leave Days';
+                Image = ConvertCurrency;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Enabled = not Rec.Converted;
+                ToolTip = 'Convert the recorded overtime hours into leave days and credit them to the employee leave balance.';
+
+                trigger OnAction()
+                begin
+                    Rec.ConvertHoursToLeave();
+                    CurrPage.Update(false);
                 end;
             }
             action("Send Approval Request")
             {
                 ApplicationArea = Basic;
                 Caption = 'Send A&pproval Request';
+                // Enabled = not OpenApprovalEntriesExist;
                 Image = SendApprovalRequest;
                 Promoted = true;
                 PromotedCategory = Category4;
@@ -152,6 +171,8 @@ Page 69173 "Overtime Header Page"
                 var
                     // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     Text001: label 'This transaction is already pending approval';
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                    VarVariant: Variant;
                 begin
                     Rec.TestField(Status, Rec.Status::Open);
 
@@ -159,23 +180,23 @@ Page 69173 "Overtime Header Page"
                     /*
                     IF "Paying Type"="Paying Type"::" " THEN
                     ERROR('Kindly spceify the paying type')
-                    
+
                     ELSE IF ("Paying Vendor Account"<>'') AND ("Paying Bank Account"<>'') THEN
                     ERROR('You cannot have both paying bank and paying vendor, choose one')
-                    
+
                     ELSE IF ("Paying Type"="Paying Type"::Vendor) AND ("Paying Vendor Account"='') THEN
                     ERROR('Kindly spceify the paying vendor account')
-                    
+
                     ELSE IF ("Paying Type"="Paying Type"::Bank) AND ("Paying Bank Account"='') THEN
                     ERROR('Kindly spceify the paying bank account');
-                    
-                    
+
+
                     IF NOT LinesExists THEN
                        ERROR('There are no Lines created for this Document');
                     //Ensure No Items That should be committed that are not
                     IF LinesCommitmentStatus THEN
                       ERROR('There are some lines that have not been committed');
-                    
+
                     PayLine.RESET;
                     PayLine.SETRANGE(PayLine.No,"No.");
                     PayLine.SETRANGE(PayLine.Type,'MEMBER');
@@ -183,17 +204,17 @@ Page 69173 "Overtime Header Page"
                     IF PayLine."Transaction Type"=PayLine."Transaction Type"::" " THEN
                     ERROR('Transaction Type cannot be blank in payment lines');
                     END;
-                    
+
                     TESTFIELD(Payee);
                     //Release the PV for Approval
-                    
-                    
+
+
                     BankAcc.RESET;
                     BankAcc.SETRANGE(BankAcc."No.","Paying Bank Account");
                     BankAcc.SETRANGE(BankAcc."Bank Type",BankAcc."Bank Type"::Cash);
                     IF BankAcc.FIND('-') THEN BEGIN
                     BankAcc.CALCFIELDS(BankAcc.Balance);
-                    
+
                     IF  BankAcc.Balance<0 THEN
                     ERROR('Kindly ensure that the petty cash float is enough') ;
                     END;
@@ -202,12 +223,17 @@ Page 69173 "Overtime Header Page"
                     // if ApprovalsMgmt.CheckOvertimeApprovalsWorkflowEnabled(Rec) then
                     //   ApprovalsMgmt.OnSendOvertimeForApproval(Rec);
 
+                    VarVariant := Rec;
+                    if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                        CustomApprovals.OnSendDocForApproval(VarVariant);
+
                 end;
             }
-            action("Cancel Approval REquest")
+            action("Cancel Approval Request")
             {
                 ApplicationArea = Basic;
                 Caption = 'Cancel Approval Re&quest';
+                Enabled = true;
                 Image = Cancel;
                 Promoted = true;
                 PromotedCategory = Category4;
@@ -215,9 +241,15 @@ Page 69173 "Overtime Header Page"
 
                 trigger OnAction()
                 var
-                //  ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
+                    VarVariant: Variant;
                 begin
-                    //  ApprovalsMgmt.OnCancelOvertimeApprovalRequest(Rec);
+                    // ApprovalsMgmt.OnCancelOvertimeApprovalRequest(Rec);
+
+                    Rec.TestField(Status, Rec.Status::"Pending Approval");
+                    VarVariant := Rec;
+                    CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
                 end;
             }
             action("Fill Overtime Details")

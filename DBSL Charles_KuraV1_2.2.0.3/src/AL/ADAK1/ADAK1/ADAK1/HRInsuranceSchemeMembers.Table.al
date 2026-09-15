@@ -21,7 +21,7 @@ Table 69242 "HR Insurance Scheme Members"
                 end;
             end;
         }
-        field(2; "Employee No"; Code[10])
+        field(2; "Employee No"; Code[20])
         {
             TableRelation = Employee."No.";
 

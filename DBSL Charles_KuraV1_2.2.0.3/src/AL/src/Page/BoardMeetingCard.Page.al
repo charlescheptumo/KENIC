@@ -16,6 +16,7 @@ Page 55003 "Board Meeting Card"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the No field.';
+                    Editable = false;
                 }
                 field(Title; Rec.Title)
                 {
@@ -127,7 +128,7 @@ Page 55003 "Board Meeting Card"
                     ToolTip = 'Specifies the value of the Access requirement field.';
                 }
             }
-                group(AttendeesGroup)
+            group(AttendeesGroup)
             {
                 Caption = 'Attendees';
 
@@ -138,7 +139,28 @@ Page 55003 "Board Meeting Card"
                     UpdatePropagation = Both;
                 }
             }
-    
+
+            group(VirtualMeetingGroup)
+            {
+                Caption = 'Virtual Meeting';
+
+                field("Date Confirmed"; Rec."Date Confirmed")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies whether the meeting date and time have been confirmed.';
+                }
+                field("Online Meeting Provider"; Rec."Online Meeting Provider")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the platform used for virtual attendance.';
+                }
+                field("Online Meeting Link"; Rec."Online Meeting Link")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the join link for members attending virtually. Only available once the meeting date is confirmed.';
+                }
+            }
+
             // group(AgendaGroup)
             // {
             //     Caption = 'Meeting Agenda Items';
@@ -164,10 +186,10 @@ Page 55003 "Board Meeting Card"
 
         area(factboxes)
         {
-            part(Attachments; "Doc. Attachment List Factbox")
+            systempart(BoardMeetingLinks; Links)
             {
-                ApplicationArea = Basic;
-                SubPageLink = "Table ID" = const(55002), "No." = field(No);
+               ApplicationArea = RecordLinks;
+                 Caption = 'Board Pack Links';
             }
             systempart(Control22; Notes) { }
         }
@@ -176,7 +198,32 @@ Page 55003 "Board Meeting Card"
     actions
     {
         area(navigation)
+
         {
+            group("Functions")
+            {
+                Caption = 'F&unctions';
+                Image = "Action";
+
+                action(UploadDocument)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Upload Board Pack';
+                    Image = Attach;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ToolTip = 'Upload board pack documents (papers, agenda items) for this meeting to SharePoint.';
+
+                    trigger OnAction()
+                    var
+                        DMSManagement: Codeunit "DMS Management";
+                    begin
+                        Rec.TestField(No);
+                        DMSManagement.UploadBoardMeetingDocuments(Rec.No, 'Board Meetings', Rec.RecordId);
+                    end;
+                }
+            }
             group(ActionGroup24)
             {
                 action("Board Meeting Attendance")
@@ -203,6 +250,21 @@ Page 55003 "Board Meeting Card"
                     RunObject = Page "Meeting Agenda";
                     RunPageLink = "Meeting Code" = field(No);
                     ToolTip = 'Executes the Meeting Agenda action.';
+                }
+                action("Confirm Meeting Date")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Confirm Meeting Date';
+                    Image = Approve;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    Visible = not Rec."Date Confirmed";
+
+                    trigger OnAction()
+                    begin
+                        Rec.ConfirmMeetingDate();
+                        CurrPage.Update(false);
+                    end;
                 }
 
                 action("Publish to Portal")

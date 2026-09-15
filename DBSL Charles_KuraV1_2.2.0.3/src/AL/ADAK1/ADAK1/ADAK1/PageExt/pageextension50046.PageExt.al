@@ -122,14 +122,67 @@ PageExtension 50046 "pageextension50046" extends "Bank Acc. Reconciliation"
                 Promoted = true;
                 PromotedCategory = Category4;
                 PromotedIsBig = true;
-                RunObject = Page "Config. Packages";
-                RunPageLink = Code = const('001');
                 ToolTip = 'Executes the Import Bank Statement action.';
+
+                trigger OnAction()
+                begin
+                    ImportFromIMTransactions(Rec);
+                end;
             }
         }
     }
 
+    local procedure ImportFromIMTransactions(var BankAccRecon: Record "Bank Acc. Reconciliation")
+    var
+        IMTransaction: Record "I&M Transaction";
+        BankAccReconLine: Record "Bank Acc. Reconciliation Line";
+        UpperDate: Date;
+        NextLineNo: Integer;
+        ImportedCount: Integer;
+    begin
+        BankAccRecon.TestField("Statement Date");
+        UpperDate := CalcDate('-1D', BankAccRecon."Statement Date");
+
+        BankAccReconLine.Reset();
+        BankAccReconLine.SetRange("Bank Account No.", BankAccRecon."Bank Account No.");
+        BankAccReconLine.SetRange("Statement No.", BankAccRecon."Statement No.");
+        if BankAccReconLine.FindLast() then
+            NextLineNo := BankAccReconLine."Statement Line No." + 10000
+        else
+            NextLineNo := 10000;
+
+        IMTransaction.Reset();
+        IMTransaction.SetFilter(TransactionDate, '<=%1', CreateDateTime(UpperDate, 235959T));
+        IMTransaction.SetFilter(Status, '<>%1', 'IMPORTED');
+        if IMTransaction.FindSet() then
+            repeat
+                BankAccReconLine.Init();
+                BankAccReconLine."Bank Account No." := BankAccRecon."Bank Account No.";
+                BankAccReconLine."Statement No." := BankAccRecon."Statement No.";
+                BankAccReconLine."Statement Line No." := NextLineNo;
+                BankAccReconLine."Transaction Date" := DT2Date(IMTransaction.TransactionDate);
+                BankAccReconLine.Validate("Transaction Date");
+                BankAccReconLine."Document No." := IMTransaction.TransactionReference;
+                if IMTransaction.PayerName <> '' then
+                    BankAccReconLine.Description := CopyStr(IMTransaction.PayerName, 1, MaxStrLen(BankAccReconLine.Description))
+                else
+                    BankAccReconLine.Description := CopyStr(IMTransaction.Narration, 1, MaxStrLen(BankAccReconLine.Description));
+                BankAccReconLine."Statement Amount" := IMTransaction.Amount;
+                BankAccReconLine.Insert(true);
+
+                NextLineNo += 10000;
+                ImportedCount += 1;
+
+                IMTransaction.Status := 'IMPORTED';
+                IMTransaction.Modify();
+            until IMTransaction.Next() = 0;
+
+        if ImportedCount = 0 then
+            Message('No I&M Transactions found dated before %1.', BankAccRecon."Statement Date")
+        else
+            Message('%1 transaction(s) imported into the bank statement lines.', ImportedCount);
+    end;
+
     var
     // ApprovalsMgmt: Codeunit "Approvals Mgmt.";
 }
-

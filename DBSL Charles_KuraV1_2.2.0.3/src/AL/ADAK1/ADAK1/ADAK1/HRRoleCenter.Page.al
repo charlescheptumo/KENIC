@@ -65,7 +65,7 @@ page 60002 "HR Role Center"
                     group("Work Structure")
                     {
                         Caption = 'Work Structure';
-                        
+
                         action("Job Grades")
                         {
                             ApplicationArea = BasicHR;
@@ -111,7 +111,7 @@ page 60002 "HR Role Center"
                     group("Manpower")
                     {
                         Caption = 'Manpower';
-                        
+
                         action("Global Staff Establishment")
                         {
                             ApplicationArea = BasicHR;
@@ -977,7 +977,22 @@ page 60002 "HR Role Center"
                         Caption = 'Employment Offers';
                         RunObject = page "Employment Offers";
                         ToolTip = 'Executes the Employment Offers action.';
+                    } //page 58173 "Induction Signoff List"
+                    action("Induction Signoff List")
+                    {
+                        ApplicationArea = BasicHR;
+                        Caption = 'Induction Signoff';
+                        RunObject = page "Induction Signoff List";
+                        ToolTip = 'Executes the Induction Signoffs action.';
                     }
+                    action("Probation Assessment List") //page 58175 "Probation Assessment List"
+                    {
+                        ApplicationArea = BasicHR;
+                        Caption = 'Probation Assessment';
+                        RunObject = page "Probation Assessment List";
+                        ToolTip = 'Executes the Probation assessment action.';
+                    }
+
                     action("Terminated Employee Contracts")
                     {
                         ApplicationArea = BasicHR;
@@ -1010,7 +1025,7 @@ page 60002 "HR Role Center"
             }
 
             //  PILLAR 3: RETENTION (M3, M4, M5) 
- //  PILLAR 3: RETENTION
+            //  PILLAR 3: RETENTION
             group("Retention")
             {
                 Caption = 'Retention';
@@ -1170,6 +1185,16 @@ page 60002 "HR Role Center"
                                 Caption = 'Closed Training Applications';
                                 RunObject = page 69282;
                                 ToolTip = 'Executes the Closed Training Applications action.';
+                            }
+                        }
+                        group("Training Evaluation")
+                        {
+                            action("TrainingEvaluation")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Evaluation';
+                                RunObject = page "Training Evaluation List";
+                                ToolTip = 'Executes the Training Evaluation action.';
                             }
                         }
                         group("Reports")
@@ -1504,6 +1529,14 @@ page 60002 "HR Role Center"
                                 Caption = 'Leave Planner List';
                                 RunObject = page "Leave Planner List";
                                 ToolTip = 'Executes the Leave Planner List action.';
+                            }
+
+                            action("Approved Leave Planner")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Approved Leave Planner List';
+                                RunObject = page "Approved Leave Planner List";
+                                ToolTip = 'Executes the Approved Leave Planner List action.';
                             }
                             action("Employee Leave Balances")
                             {
@@ -2018,7 +2051,7 @@ page 60002 "HR Role Center"
                         }
                         group("360 Degree-Appraisal")
                         {
-                            Visible = false;
+                            Visible = true;
                             action("360 Degree Appraisals")
                             {
                                 ApplicationArea = BasicHR;
@@ -2133,6 +2166,33 @@ page 60002 "HR Role Center"
                         ToolTip = 'Executes the Staff Clearance Setup action.';
                     }
                 }
+            }
+            group("Successor Selection Justification")
+            {
+                Caption = 'Successor Selection Justification';
+                action("Succ. Sel. Justification")
+                {
+                    ApplicationArea = BasicHR;
+                    Caption = 'Successor Selection Justification';
+                    RunObject = Page "Succ. Sel. Justification List";
+                    ToolTip = 'Executes the Successor Selection Justification action.';
+                }
+                action("Successor Form")
+                {
+                    ApplicationArea = BasicHR;
+                    Caption = 'Successor Form';
+                    RunObject = Page "Successor Form List";
+                    ToolTip = 'Executes the Successor Form action.';
+                }
+                // action("Individual Development Plan")
+                // {
+                //     Visible = False;
+                //     ApplicationArea = BasicHR;
+                //     Visible=false;
+                //     Caption = 'Individual Development Plan';
+                //     RunObject = Page "Training Need Requests";
+                //     ToolTip = 'Executes the Individual Development Plan action.';
+                // }
             }
 
             // ===== TOP-LEVEL GROUPS (RETAINED AS PER YOUR ORIGINAL STRUCTURE) =====

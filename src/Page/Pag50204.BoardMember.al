@@ -254,13 +254,19 @@ page 50204 "Board Member"
                     IF portalusers.FINDSET THEN BEGIN
                         ERROR('The user is already created as a portal user!');
                     END ELSE BEGIN
-                        MESSAGE(Rec."Company E-Mail");
+                       // MESSAGE(Rec."Company E-Mail");
                         MESSAGE(Rec."Company E-Mail");
                         portalusers.INIT;
                         portalusers."customer No" := Rec."Personal No";
                         portalusers.Password := FORMAT(hrportal.fnRandomPass);
                         portalusers.usertype := 1; //1 for directors
                         portalusers.Email := Rec."E-Mail";
+
+                        portalusers.Name := CopyStr(Rec.FullName(), 1, MaxStrLen(portalusers.Name));
+                        portalusers."Job Title" := CopyStr(Rec."Designation/Role", 1, MaxStrLen(portalusers."Job Title"));
+                        portalusers.IDNoorRegNo := Rec."ID Number";
+                        portalusers.EmployeeNo := Rec."Personal No";
+
                         IF portalusers.INSERT(TRUE) THEN BEGIN
                             hrportal.fnSendRegistrationEmail(portalusers.Email);
                             MESSAGE('Portal user created successfully');

@@ -84,7 +84,7 @@ Table 56064 "ICT Issuance Entries"
                 //    END;
             end;
         }
-        field(12; "Issued To No."; Code[10])
+        field(12; "Issued To No."; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = Employee."No.";

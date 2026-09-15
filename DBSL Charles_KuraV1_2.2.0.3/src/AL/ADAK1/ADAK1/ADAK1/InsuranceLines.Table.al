@@ -50,7 +50,7 @@ Table 69740 "Insurance Lines"
             AutoIncrement = true;
             DataClassification = ToBeClassified;
         }
-        field(10; "Employee No."; Code[10])
+        field(10; "Employee No."; Code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = "Insurance Header"."Employee No." where("Document No." = field("Document No."));
