@@ -2260,4 +2260,166 @@ Codeunit 50032 NewEboard
         end;
     end;
 
+    procedure fnRaiseResolution(directorNo: Code[50]; committeeId: Code[20]; title: Text[250]; description: Text[2048]; resolutionType: Integer; majorityType: Integer; specialMajorityPct: Decimal) status: Text
+    var
+        Resolution: Record "Meeting Resolutions";
+    begin
+        status := 'danger*Could not raise resolution';
+
+        Resolution.Init();
+        Resolution."Committee Id" := committeeId;
+        Resolution.Title := title;
+        Resolution.Description := description;
+        Resolution."Resolution Type" := resolutionType;
+        Resolution.Insert(true);
+
+        Resolution."Majority Type" := majorityType;
+        if majorityType = Resolution."Majority Type"::"Special Majority" then
+            Resolution."Special Majority Percentage" := specialMajorityPct;
+        Resolution.Modify(true);
+
+        status := 'success*' + Resolution."No." + '*Resolution raised successfully';
+    end;
+
+    procedure fnGetCommitteeResolutions(committeeId: Code[20]) status: Text
+    var
+        Resolution: Record "Meeting Resolutions";
+    begin
+        Resolution.Reset();
+        Resolution.SetRange("Committee Id", committeeId);
+        if Resolution.FindSet() then
+            repeat
+                status += Resolution."No." + '*' + Resolution.Title + '*' + Format(Resolution."Resolution Type") + '*' +
+                          Format(Resolution."Resolution Status") + '*' + Format(Resolution."Voting Status") + '::::';
+            until Resolution.Next() = 0;
+    end;
+
+    procedure fnGetResolutionDetail(resolutionNo: Code[20]) status: Text
+    var
+        Resolution: Record "Meeting Resolutions";
+    begin
+        if not Resolution.Get(resolutionNo) then begin
+            status := 'danger*Resolution not found';
+            exit(status);
+        end;
+
+        Resolution.CalcFields("For Votes", "Against Votes", "Abstain Votes", "Eligible Voters");
+
+        status := 'success*' + Resolution.Title + '*' + Resolution.Description + '*' + Format(Resolution."Resolution Type") + '*' +
+                   Format(Resolution."Resolution Status") + '*' + Format(Resolution."Voting Status") + '*' +
+                   Format(Resolution."Majority Type") + '*' + Format(Resolution."For Votes") + '*' +
+                   Format(Resolution."Against Votes") + '*' + Format(Resolution."Abstain Votes") + '*' +
+                   Format(Resolution."Eligible Voters") + '*' + Format(Resolution.Outcome) + '*' + Resolution."Created By";
+    end;
+
+    procedure fnGetMyResolutionVote(resolutionNo: Code[20]; directorNo: Code[50]) status: Text
+    var
+        ResolutionVote: Record "Resolution Votes";
+    begin
+        if ResolutionVote.Get(resolutionNo, directorNo) then begin
+            status := 'success*' + Format(ResolutionVote.Vote);
+        end else begin
+            status := 'danger*You are not eligible to vote on this resolution';
+        end;
+    end;
+
+    procedure fnCastResolutionVote(resolutionNo: Code[20]; directorNo: Code[50]; vote: Integer) status: Text
+    var
+        ResolutionVote: Record "Resolution Votes";
+    begin
+        status := 'danger*Could not record your vote';
+
+        if not ResolutionVote.Get(resolutionNo, directorNo) then begin
+            status := 'danger*You are not eligible to vote on this resolution';
+            exit(status);
+        end;
+
+        ResolutionVote.Validate(Vote, vote);
+        if ResolutionVote.Modify(true) then begin
+            status := 'success*Your vote has been recorded';
+        end else begin
+            status := 'danger*Could not save your vote';
+        end;
+    end;
+
+    procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]; fullBoardMeetingCode: Code[20]) status: Text
+    var
+        Resolution: Record "Meeting Resolutions";
+    begin
+        status := 'danger*Could not escalate resolution';
+
+        if not Resolution.Get(resolutionNo) then begin
+            status := 'danger*Resolution not found';
+            exit(status);
+        end;
+
+        if Resolution."Created By" <> directorNo then begin
+            status := 'danger*Only the member who raised this resolution can escalate it';
+            exit(status);
+        end;
+
+        Resolution.EscalateToBoard(fullBoardMeetingCode);
+        status := 'success*Resolution escalated to the Full Board for voting';
+    end;
+
+    procedure fnCloseResolutionVoting(resolutionNo: Code[20]; directorNo: Code[50]) status: Text
+    var
+        Resolution: Record "Meeting Resolutions";
+    begin
+        status := 'danger*Could not close voting';
+
+        if not Resolution.Get(resolutionNo) then begin
+            status := 'danger*Resolution not found';
+            exit(status);
+        end;
+
+        if Resolution."Created By" <> directorNo then begin
+            status := 'danger*Only the member who raised this resolution can close voting';
+            exit(status);
+        end;
+
+        Resolution.CloseVoting();
+        status := 'success*Voting closed and outcome recorded';
+    end;
+
+    procedure fnWithdrawResolution(resolutionNo: Code[20]; directorNo: Code[50]) status: Text
+    var
+        Resolution: Record "Meeting Resolutions";
+    begin
+        status := 'danger*Could not withdraw resolution';
+
+        if not Resolution.Get(resolutionNo) then begin
+            status := 'danger*Resolution not found';
+            exit(status);
+        end;
+
+        if Resolution."Created By" <> directorNo then begin
+            status := 'danger*Only the member who raised this resolution can withdraw it';
+            exit(status);
+        end;
+
+        Resolution.Withdraw();
+        status := 'success*Resolution withdrawn';
+    end;
+
+    procedure fnMarkResolutionNoted(resolutionNo: Code[20]; directorNo: Code[50]) status: Text
+    var
+        Resolution: Record "Meeting Resolutions";
+    begin
+        status := 'danger*Could not mark resolution as noted';
+
+        if not Resolution.Get(resolutionNo) then begin
+            status := 'danger*Resolution not found';
+            exit(status);
+        end;
+
+        if Resolution."Created By" <> directorNo then begin
+            status := 'danger*Only the member who raised this resolution can mark it as noted';
+            exit(status);
+        end;
+
+        Resolution.MarkNoted();
+        status := 'success*Resolution marked as noted';
+    end;
+
 }
