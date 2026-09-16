@@ -1040,6 +1040,20 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
             ToolTip = 'Specifies the multiplier used to convert overtime hours into leave hours (e.g. 1 = hour-for-hour, 1.5 = time-and-a-half in leave hours).';
             DataClassification = CustomerContent;
         }
+
+        field(50101; "Induction Signoff Nos."; Code[20])
+        {
+            Caption = 'Induction Signoff Nos.';
+            DataClassification = ToBeClassified;
+            TableRelation = "No. Series";
+        }
+
+        field(50102; "Probation Assessment Nos."; Code[20])
+        {
+            Caption = 'Probation Assessment Nos.';
+            DataClassification = ToBeClassified;
+            TableRelation = "No. Series";
+        }
     }
 
     var
