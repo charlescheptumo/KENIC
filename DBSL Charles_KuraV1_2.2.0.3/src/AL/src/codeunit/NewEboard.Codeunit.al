@@ -2049,4 +2049,34 @@ Codeunit 50032 NewEboard
             until BoardAttendance.Next() = 0;
     end;
 
+    procedure fnHasGivenDataConsent(directorNo: Code[50]) status: Boolean
+    var
+        BoardMember: Record "Board Members";
+    begin
+        if BoardMember.Get(directorNo) then
+            exit(BoardMember."Data Consent Given");
+        exit(false);
+    end;
+
+    procedure fnRecordDataConsent(directorNo: Code[50]) status: Text
+    var
+        BoardMember: Record "Board Members";
+    begin
+        status := 'danger*Could not record your consent';
+
+        if not BoardMember.Get(directorNo) then begin
+            status := 'danger*Member record not found';
+            exit(status);
+        end;
+
+        BoardMember."Data Consent Given" := true;
+        BoardMember."Data Consent Date" := Today;
+
+        if BoardMember.Modify(true) then begin
+            status := 'success*Consent recorded successfully';
+        end else begin
+            status := 'danger*Could not save your consent';
+        end;
+    end;
+
 }
