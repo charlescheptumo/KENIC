@@ -2184,4 +2184,80 @@ Codeunit 50032 NewEboard
             until FacilitationReq.Next() = 0;
     end;
 
+    procedure fnAddBoardPackDocument(meetingCode: Code[200]; directorNo: Code[50]; fileName: Text[250]; sharepointLink: Text[500]) status: Text
+    var
+        BoardMeeting: Record "Board Meetings";
+        BoardPackDoc: Record "Board Pack Document";
+    begin
+        status := 'danger*Could not upload document';
+
+        if not BoardMeeting.Get(meetingCode) then begin
+            status := 'danger*Meeting not found';
+            exit(status);
+        end;
+
+        if BoardMeeting."Convener No." <> directorNo then begin
+            status := 'danger*Only the meeting convener can upload board pack documents';
+            exit(status);
+        end;
+
+        BoardPackDoc.Init();
+        BoardPackDoc."Meeting Code" := meetingCode;
+        BoardPackDoc."File Name" := fileName;
+        BoardPackDoc."SharePoint Link" := sharepointLink;
+        BoardPackDoc."Uploaded By" := directorNo;
+        BoardPackDoc."Date Uploaded" := Today;
+
+        if BoardPackDoc.Insert(true) then begin
+            status := 'success*Document uploaded successfully';
+        end else begin
+            status := 'danger*Could not save document record';
+        end;
+    end;
+
+    procedure fnGetBoardPackDocuments(meetingCode: Code[200]) status: Text
+    var
+        BoardPackDoc: Record "Board Pack Document";
+    begin
+        BoardPackDoc.Reset();
+        BoardPackDoc.SetRange("Meeting Code", meetingCode);
+        if BoardPackDoc.FindSet() then
+            repeat
+                status += Format(BoardPackDoc."Entry No.") + '*' + BoardPackDoc."File Name" + '*' +
+                          BoardPackDoc."SharePoint Link" + '*' + Format(BoardPackDoc."Date Uploaded") +
+                          '::::';
+            until BoardPackDoc.Next() = 0;
+    end;
+
+    procedure fnRemoveBoardPackDocument(meetingCode: Code[200]; directorNo: Code[50]; entryNo: Integer) status: Text
+    var
+        BoardMeeting: Record "Board Meetings";
+        BoardPackDoc: Record "Board Pack Document";
+    begin
+        status := 'danger*Could not remove document';
+
+        if not BoardMeeting.Get(meetingCode) then begin
+            status := 'danger*Meeting not found';
+            exit(status);
+        end;
+
+        if BoardMeeting."Convener No." <> directorNo then begin
+            status := 'danger*Only the meeting convener can remove board pack documents';
+            exit(status);
+        end;
+
+        BoardPackDoc.Reset();
+        BoardPackDoc.SetRange("Meeting Code", meetingCode);
+        BoardPackDoc.SetRange("Entry No.", entryNo);
+        if BoardPackDoc.FindFirst() then begin
+            if BoardPackDoc.Delete(true) then begin
+                status := 'success*Document removed successfully';
+            end else begin
+                status := 'danger*Could not remove document';
+            end;
+        end else begin
+            status := 'danger*Document not found';
+        end;
+    end;
+
 }
