@@ -1960,4 +1960,93 @@ Codeunit 50032 NewEboard
         end;
     end;
 
+    procedure fnIsMeetingConvener(meetingCode: Code[200]; directorNo: Code[50]) status: Boolean
+    var
+        BoardMeeting: Record "Board Meetings";
+    begin
+        if BoardMeeting.Get(meetingCode) then
+            exit(BoardMeeting."Convener No." = directorNo);
+        exit(false);
+    end;
+
+    procedure fnSetMeetingOnlineLink(meetingCode: Code[200]; directorNo: Code[50]; provider: Integer; link: Text[500]) status: Text
+    var
+        BoardMeeting: Record "Board Meetings";
+    begin
+        status := 'danger*Could not set the meeting link';
+
+        if not BoardMeeting.Get(meetingCode) then begin
+            status := 'danger*Meeting not found';
+            exit(status);
+        end;
+
+        if BoardMeeting."Convener No." <> directorNo then begin
+            status := 'danger*Only the meeting convener can attach a meeting link';
+            exit(status);
+        end;
+
+        if not BoardMeeting."Date Confirmed" then begin
+            status := 'danger*The meeting date must be confirmed before a link can be attached';
+            exit(status);
+        end;
+
+        BoardMeeting."Online Meeting Provider" := provider;
+        BoardMeeting.Validate("Online Meeting Link", link);
+
+        if BoardMeeting.Modify(true) then begin
+            status := 'success*Online meeting link saved successfully';
+        end else begin
+            status := 'danger*Could not save the meeting link';
+        end;
+    end;
+
+    procedure fnRecordMeetingAttendance(meetingCode: Code[200]; directorNo: Code[50]; memberNo: Code[50]; attendance: Integer; attendanceMode: Integer) status: Text
+    var
+        BoardMeeting: Record "Board Meetings";
+        BoardAttendance: Record "Board Meeting Attendance";
+    begin
+        status := 'danger*Could not record attendance';
+
+        if not BoardMeeting.Get(meetingCode) then begin
+            status := 'danger*Meeting not found';
+            exit(status);
+        end;
+
+        if BoardMeeting."Convener No." <> directorNo then begin
+            status := 'danger*Only the meeting convener can record attendance';
+            exit(status);
+        end;
+
+        BoardAttendance.Reset();
+        BoardAttendance.SetRange("Meeting Code", meetingCode);
+        BoardAttendance.SetRange("Member No", memberNo);
+        if BoardAttendance.FindFirst() then begin
+            BoardAttendance.Validate(Attendance, attendance);
+            BoardAttendance."Attendance Mode" := attendanceMode;
+
+            if BoardAttendance.Modify(true) then begin
+                status := 'success*Attendance recorded successfully';
+            end else begin
+                status := 'danger*Could not save attendance record';
+            end;
+        end else begin
+            status := 'danger*This member is not on the attendance list for this meeting';
+        end;
+    end;
+
+    procedure fnGetMeetingAttendanceReport(meetingCode: Code[200]) status: Text
+    var
+        BoardAttendance: Record "Board Meeting Attendance";
+    begin
+        BoardAttendance.Reset();
+        BoardAttendance.SetRange("Meeting Code", meetingCode);
+        if BoardAttendance.FindSet() then
+            repeat
+                status += BoardAttendance."Member No" + '*' + BoardAttendance."Member Name" + '*' +
+                          Format(BoardAttendance.Attendance) + '*' + Format(BoardAttendance."Attendance Mode") + '*' +
+                          Format(BoardAttendance."Has Attended") + '*' + Format(BoardAttendance."Attendance Confirmation") +
+                          '::::';
+            until BoardAttendance.Next() = 0;
+    end;
+
 }
