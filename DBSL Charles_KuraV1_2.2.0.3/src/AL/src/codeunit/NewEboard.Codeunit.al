@@ -2079,4 +2079,109 @@ Codeunit 50032 NewEboard
         end;
     end;
 
+    procedure fnCreateBoardTrainingNeed(directorNo: Code[50]; memberName: Text[300]; trainingTitle: Text[250]; justification: Text[500]) status: Text
+    var
+        TrainingNeed: Record "Board Training Needs";
+        NoSeriesMgt: Codeunit "No. Series";
+        HRSetup: Record "Human Resources Setup";
+    begin
+        status := 'danger*Could not submit training need';
+
+        TrainingNeed.Init();
+        HRSetup.Get();
+        if HRSetup."Training Application Nos." <> '' then
+            TrainingNeed."Application No." := NoSeriesMgt.GetNextNo(HRSetup."Training Application Nos.", WorkDate(), true)
+        else
+            TrainingNeed."Application No." := 'BTN' + Format(Random(999999));
+
+        TrainingNeed."Member No." := directorNo;
+        TrainingNeed."Member Name" := memberName;
+        TrainingNeed."Training Title" := trainingTitle;
+        TrainingNeed.Justification := justification;
+        TrainingNeed."Date Submitted" := Today;
+        TrainingNeed.Status := TrainingNeed.Status::"Pending Approval";
+
+        if TrainingNeed.Insert(true) then begin
+            status := 'success*' + TrainingNeed."Application No." + '*Training need submitted successfully';
+        end else begin
+            status := 'danger*Could not save training need';
+        end;
+    end;
+
+    procedure fnGetMyBoardTrainingNeeds(directorNo: Code[50]) status: Text
+    var
+        TrainingNeed: Record "Board Training Needs";
+    begin
+        TrainingNeed.Reset();
+        TrainingNeed.SetRange("Member No.", directorNo);
+        if TrainingNeed.FindSet() then
+            repeat
+                status += TrainingNeed."Application No." + '*' + TrainingNeed."Training Title" + '*' +
+                          Format(TrainingNeed."Date Submitted") + '*' + Format(TrainingNeed.Status) + '*' +
+                          TrainingNeed."Approver Comments" + '::::';
+            until TrainingNeed.Next() = 0;
+    end;
+
+    procedure fnCreateBoardFacilitationRequest(directorNo: Code[50]; memberName: Text[300]; trainingNeedNo: Code[20]; requestType: Integer; amount: Decimal; description: Text[250]) status: Text
+    var
+        TrainingNeed: Record "Board Training Needs";
+        FacilitationReq: Record "Board Facilitation Request";
+        NoSeriesMgt: Codeunit "No. Series";
+        HRSetup: Record "Human Resources Setup";
+    begin
+        status := 'danger*Could not submit facilitation request';
+
+        if not TrainingNeed.Get(trainingNeedNo) then begin
+            status := 'danger*Training need not found';
+            exit(status);
+        end;
+
+        if TrainingNeed."Member No." <> directorNo then begin
+            status := 'danger*This training need does not belong to you';
+            exit(status);
+        end;
+
+        if TrainingNeed.Status <> TrainingNeed.Status::Approved then begin
+            status := 'danger*This training need has not been approved yet';
+            exit(status);
+        end;
+
+        FacilitationReq.Init();
+        HRSetup.Get();
+        if HRSetup."Training Application Nos." <> '' then
+            FacilitationReq."Request No." := NoSeriesMgt.GetNextNo(HRSetup."Training Application Nos.", WorkDate(), true)
+        else
+            FacilitationReq."Request No." := 'BFR' + Format(Random(999999));
+
+        FacilitationReq."Training Need No." := trainingNeedNo;
+        FacilitationReq."Member No." := directorNo;
+        FacilitationReq."Member Name" := memberName;
+        FacilitationReq."Request Type" := requestType;
+        FacilitationReq."Amount Requested" := amount;
+        FacilitationReq.Description := description;
+        FacilitationReq."Date Submitted" := Today;
+        FacilitationReq.Status := FacilitationReq.Status::"Pending Approval";
+
+        if FacilitationReq.Insert(true) then begin
+            status := 'success*' + FacilitationReq."Request No." + '*Facilitation request submitted successfully';
+        end else begin
+            status := 'danger*Could not save facilitation request';
+        end;
+    end;
+
+    procedure fnGetMyBoardFacilitationRequests(directorNo: Code[50]) status: Text
+    var
+        FacilitationReq: Record "Board Facilitation Request";
+    begin
+        FacilitationReq.Reset();
+        FacilitationReq.SetRange("Member No.", directorNo);
+        if FacilitationReq.FindSet() then
+            repeat
+                status += FacilitationReq."Request No." + '*' + FacilitationReq."Training Need No." + '*' +
+                          Format(FacilitationReq."Request Type") + '*' + Format(FacilitationReq."Amount Requested") + '*' +
+                          Format(FacilitationReq."Date Submitted") + '*' + Format(FacilitationReq.Status) + '*' +
+                          FacilitationReq."Approver Comments" + '::::';
+            until FacilitationReq.Next() = 0;
+    end;
+
 }
