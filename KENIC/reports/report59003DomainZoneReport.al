@@ -58,7 +58,8 @@ report 59003 "Domain Zone Report"
                     {
                         Caption = 'Zone Filter';
                         ApplicationArea = All;
-                        TableRelation = "Domain Zone Statistics"; 
+                       // TableRelation = "Domain Zone Statistics"; 
+                       TableRelation = "Domain Zone Statistics"."Zone Code";
                         ToolTip = 'Specifies an optional zone code to filter the report.';
                     }
                     field(HideZeroZones; HideZeroZones)
