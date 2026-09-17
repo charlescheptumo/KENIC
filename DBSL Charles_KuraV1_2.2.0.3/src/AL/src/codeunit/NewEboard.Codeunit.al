@@ -2426,4 +2426,17 @@ Codeunit 50032 NewEboard
         status := 'success*Resolution marked as noted';
     end;
 
+    procedure fnGetMyConvenedMeetings(directorNo: Code[50]) status: Text
+    var
+        BoardMeeting: Record "Board Meetings";
+    begin
+        BoardMeeting.Reset();
+        BoardMeeting.SetRange("Convener No.", directorNo);
+        if BoardMeeting.FindSet() then
+            repeat
+                status += BoardMeeting.No + '*' + BoardMeeting.Title + '*' + Format(BoardMeeting."Start date") + '*' +
+                          Format(BoardMeeting."Start time") + '*' + Format(BoardMeeting.Status) + '::::';
+            until BoardMeeting.Next() = 0;
+    end;
+
 }
