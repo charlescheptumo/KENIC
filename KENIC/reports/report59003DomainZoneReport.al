@@ -10,7 +10,7 @@ report 59003 "Domain Zone Report"
     {
         dataitem(ZoneBuffer; "Domain Zone Count Buffer")
         {
-            DataItemTableView = sorting("Line No.");
+            DataItemTableView = sorting("Line No.", "Month No.");
 
             column(CompanyInfo_Name; CompanyInfo.Name) { }
             column(CompanyInfo_Picture; CompanyInfo.Picture) { }
@@ -20,39 +20,15 @@ report 59003 "Domain Zone Report"
             column(CompanyInfo_Phone; CompanyInfo."Phone No.") { }
             column(CompanyInfo_Email; CompanyInfo."E-Mail") { }
 
-            column(Report_Year; YearFilter) { }
+            column(Start_Date; StartDate) { }
+            column(End_Date; EndDate) { }
 
             column(Zone_Code; "Zone Code") { }
             column(Zone_Description; "Zone Description") { }
-
-            column(Jan; Jan) { }
-            column(Feb; Feb) { }
-            column(Mar; Mar) { }
-            column(Apr; Apr) { }
-            column(May; May) { }
-            column(Jun; Jun) { }
-            column(Jul; Jul) { }
-            column(Aug; Aug) { }
-            column(Sep; Sep) { }
-            column(Oct; Oct) { }
-            column(Nov; Nov) { }
-            column(Dec; Dec) { }
-
-            column(Jan_Pct; "Jan %") { }
-            column(Feb_Pct; "Feb %") { }
-            column(Mar_Pct; "Mar %") { }
-            column(Apr_Pct; "Apr %") { }
-            column(May_Pct; "May %") { }
-            column(Jun_Pct; "Jun %") { }
-            column(Jul_Pct; "Jul %") { }
-            column(Aug_Pct; "Aug %") { }
-            column(Sep_Pct; "Sep %") { }
-            column(Oct_Pct; "Oct %") { }
-            column(Nov_Pct; "Nov %") { }
-            column(Dec_Pct; "Dec %") { }
-
-            column(Total; Total) { }
-            column(Total_Pct; "Total %") { }
+            column(Month_No; "Month No.") { }
+            column(Month_Name; "Month Name") { }
+            column(Count; Count) { }
+            column(Percentage; Percentage) { }
         }
     }
 
@@ -66,17 +42,30 @@ report 59003 "Domain Zone Report"
                 {
                     Caption = 'Options';
 
-                    field(YearFilter; YearFilter)
+                    field(StartDate; StartDate)
                     {
-                        Caption = 'Year';
+                        Caption = 'Start Date';
                         ApplicationArea = All;
-                        ToolTip = 'Specifies the year to report domain registrations by zone for.';
+                        ToolTip = 'Specifies the start date for the domain registration period.';
+                    }
+                    field(EndDate; EndDate)
+                    {
+                        Caption = 'End Date';
+                        ApplicationArea = All;
+                        ToolTip = 'Specifies the end date for the domain registration period.';
+                    }
+                    field(ZoneFilter; ZoneFilter)
+                    {
+                        Caption = 'Zone Filter';
+                        ApplicationArea = All;
+                        TableRelation = "Domain Zone Statistics"; 
+                        ToolTip = 'Specifies an optional zone code to filter the report.';
                     }
                     field(HideZeroZones; HideZeroZones)
                     {
                         Caption = 'Hide Zones With No Activity';
                         ApplicationArea = All;
-                        ToolTip = 'Specifies whether zones with zero registrations for the selected year should be excluded from the report.';
+                        ToolTip = 'Specifies whether zones with zero registrations for the selected period should be excluded from the report.';
                     }
                 }
             }
@@ -84,13 +73,22 @@ report 59003 "Domain Zone Report"
 
         trigger OnOpenPage()
         begin
-            if YearFilter = 0 then
-                YearFilter := Date2DMY(Today, 3);
+            if StartDate = 0D then
+                StartDate := DMY2Date(1, 1, Date2DMY(Today, 3));
+            if EndDate = 0D then
+                EndDate := DMY2Date(31, 12, Date2DMY(Today, 3));
         end;
     }
 
     trigger OnPreReport()
     begin
+        if StartDate = 0D then
+            Error('Please specify a Start Date.');
+        if EndDate = 0D then
+            Error('Please specify an End Date.');
+        if StartDate > EndDate then
+            Error('Start Date cannot be greater than End Date.');
+
         CompanyInfo.Get();
         CompanyInfo.CalcFields(Picture);
         BuildBuffer();
@@ -100,7 +98,9 @@ report 59003 "Domain Zone Report"
         CompanyInfo: Record "Company Information";
         DomainLedgerEntry: Record "Domain Ledger Entry";
         ClassificationMgt: Codeunit "Domain Zone Classification Mgt";
-        YearFilter: Integer;
+        StartDate: Date;
+        EndDate: Date;
+        ZoneFilter: Code[20];
         HideZeroZones: Boolean;
 
     local procedure BuildBuffer()
@@ -111,44 +111,71 @@ report 59003 "Domain Zone Report"
         FromDateTime: DateTime;
         ToDateTime: DateTime;
         EntryDate: Date;
+        StartMonth: Integer;
+        EndMonth: Integer;
         MonthNo: Integer;
         MonthTotals: array[12] of Integer;
         GrandTotal: Integer;
-        PercentValue: Decimal;
+        MonthNames: array[12] of Text[20];
     begin
         ZoneBuffer.Reset();
         ZoneBuffer.DeleteAll();
 
-        // Seed every known zone, in the fixed display order, so a zone with
-        // zero registrations still shows as a 0 row instead of disappearing.
+        MonthNames[1] := 'Jan';
+        MonthNames[2] := 'Feb';
+        MonthNames[3] := 'Mar';
+        MonthNames[4] := 'Apr';
+        MonthNames[5] := 'May';
+        MonthNames[6] := 'Jun';
+        MonthNames[7] := 'Jul';
+        MonthNames[8] := 'Aug';
+        MonthNames[9] := 'Sep';
+        MonthNames[10] := 'Oct';
+        MonthNames[11] := 'Nov';
+        MonthNames[12] := 'Dec';
+
+        // Extract exact month bounds from user-selected date range
+        StartMonth := Date2DMY(StartDate, 2);
+        EndMonth := Date2DMY(EndDate, 2);
+
+        // 1. Seed base zones (ONLY for months inside the selected range)
         ClassificationMgt.GetOrderedZoneCodes(ZoneCodes);
         LineNo := 0;
+
         foreach ZoneCode in ZoneCodes do begin
-            LineNo += 10;
-            ZoneBuffer.Init();
-            ZoneBuffer."Zone Code" := ZoneCode;
-            ZoneBuffer."Line No." := LineNo;
-            ZoneBuffer."Zone Description" := ClassificationMgt.GetZoneDescription(ZoneCode);
-            ZoneBuffer.Insert();
+            if (ZoneFilter = '') or (ZoneCode = ZoneFilter) then begin
+                LineNo += 10;
+                for MonthNo := StartMonth to EndMonth do begin
+                    ZoneBuffer.Init();
+                    ZoneBuffer."Zone Code" := ZoneCode;
+                    ZoneBuffer."Month No." := MonthNo;
+                    ZoneBuffer."Line No." := LineNo;
+                    ZoneBuffer."Zone Description" := ClassificationMgt.GetZoneDescription(ZoneCode);
+                    ZoneBuffer."Month Name" := MonthNames[MonthNo];
+                    ZoneBuffer.Count := 0;
+                    ZoneBuffer.Percentage := 0;
+                    ZoneBuffer.Insert();
+                end;
+            end;
         end;
 
-        // Catch-all bucket for anything that doesn't end in .KE at all (data-quality safety net).
-        ZoneBuffer.Init();
-        ZoneBuffer."Zone Code" := 'OTHER';
-        ZoneBuffer."Line No." := 105;
-        ZoneBuffer."Zone Description" := ClassificationMgt.GetZoneDescription('OTHER');
-        ZoneBuffer.Insert();
+        // Catch-all bucket for 'OTHER'
+        if (ZoneFilter = '') or (ZoneFilter = 'OTHER') then
+            for MonthNo := StartMonth to EndMonth do begin
+                ZoneBuffer.Init();
+                ZoneBuffer."Zone Code" := 'OTHER';
+                ZoneBuffer."Month No." := MonthNo;
+                ZoneBuffer."Line No." := 105;
+                ZoneBuffer."Zone Description" := ClassificationMgt.GetZoneDescription('OTHER');
+                ZoneBuffer."Month Name" := MonthNames[MonthNo];
+                ZoneBuffer.Count := 0;
+                ZoneBuffer.Percentage := 0;
+                ZoneBuffer.Insert();
+            end;
 
-        // Grand total row, shown last.
-        ZoneBuffer.Init();
-        ZoneBuffer."Zone Code" := 'TOTAL';
-        ZoneBuffer."Line No." := 999;
-        ZoneBuffer."Zone Description" := 'Total';
-        ZoneBuffer.Insert();
-
-        // Single pass over Domain Ledger Entry: Registration transactions for the selected year.
-        FromDateTime := CreateDateTime(DMY2Date(1, 1, YearFilter), 0T);
-        ToDateTime := CreateDateTime(DMY2Date(31, 12, YearFilter), 235959T);
+        // 2. Fetch and aggregate records within the requested date range
+        FromDateTime := CreateDateTime(StartDate, 0T);
+        ToDateTime := CreateDateTime(EndDate, 235959T);
 
         DomainLedgerEntry.Reset();
         DomainLedgerEntry.SetRange(Created, FromDateTime, ToDateTime);
@@ -157,129 +184,51 @@ report 59003 "Domain Zone Report"
         if DomainLedgerEntry.FindSet() then
             repeat
                 ZoneCode := ClassificationMgt.GetZoneCode(DomainLedgerEntry.DomainName);
-                if not ZoneBuffer.Get(ZoneCode) then begin
-                    ZoneBuffer.Init();
-                    ZoneBuffer."Zone Code" := ZoneCode;
-                    ZoneBuffer."Line No." := 106;
-                    ZoneBuffer."Zone Description" := ClassificationMgt.GetZoneDescription(ZoneCode);
-                    ZoneBuffer.Insert();
+
+                if (ZoneFilter = '') or (ZoneCode = ZoneFilter) then begin
+                    EntryDate := DT2Date(DomainLedgerEntry.Created);
+                    MonthNo := Date2DMY(EntryDate, 2);
+
+                    // Ensure record exists in buffer (fallback for dynamic zones)
+                    if not ZoneBuffer.Get(ZoneCode, MonthNo) then begin
+                        ZoneBuffer.Init();
+                        ZoneBuffer."Zone Code" := ZoneCode;
+                        ZoneBuffer."Month No." := MonthNo;
+                        ZoneBuffer."Line No." := 106;
+                        ZoneBuffer."Zone Description" := ClassificationMgt.GetZoneDescription(ZoneCode);
+                        ZoneBuffer."Month Name" := MonthNames[MonthNo];
+                        ZoneBuffer.Count := 0;
+                        ZoneBuffer.Percentage := 0;
+                        ZoneBuffer.Insert();
+                    end;
+
+                    ZoneBuffer.Count += 1;
+                    ZoneBuffer.Modify();
+
+                    MonthTotals[MonthNo] += 1;
+                    GrandTotal += 1;
                 end;
-
-                EntryDate := DT2Date(DomainLedgerEntry.Created);
-                MonthNo := Date2DMY(EntryDate, 2);
-                IncrementZoneMonth(MonthNo);
-                ZoneBuffer.Total += 1;
-                ZoneBuffer.Modify();
-
-                MonthTotals[MonthNo] += 1;
-                GrandTotal += 1;
             until DomainLedgerEntry.Next() = 0;
 
-        // Fill in the grand total row's monthly figures.
-        if ZoneBuffer.Get('TOTAL') then begin
-            for MonthNo := 1 to 12 do
-                SetZoneMonth(MonthNo, MonthTotals[MonthNo]);
-            ZoneBuffer.Total := GrandTotal;
-            ZoneBuffer.Modify();
-        end;
-
-        // Second pass: each row's % of that month's total, and its % of the year total.
+        // 3. Compute Monthly Percentages for requested active months
         ZoneBuffer.Reset();
-        ZoneBuffer.SetCurrentKey("Line No.");
+        ZoneBuffer.SetCurrentKey("Line No.", "Month No.");
         if ZoneBuffer.FindSet(true) then
             repeat
-                for MonthNo := 1 to 12 do begin
-                    if MonthTotals[MonthNo] <> 0 then
-                        PercentValue := Round(GetZoneMonth(MonthNo) / MonthTotals[MonthNo] * 100, 0.1)
-                    else
-                        PercentValue := 0;
-                    SetZoneMonthPercent(MonthNo, PercentValue);
-                end;
-
-                if GrandTotal <> 0 then
-                    ZoneBuffer."Total %" := Round(ZoneBuffer.Total / GrandTotal * 100, 0.1)
+                MonthNo := ZoneBuffer."Month No.";
+                if MonthTotals[MonthNo] <> 0 then
+                    ZoneBuffer.Percentage := Round(ZoneBuffer.Count / MonthTotals[MonthNo] * 100, 0.1)
                 else
-                    ZoneBuffer."Total %" := 0;
+                    ZoneBuffer.Percentage := 0;
+
                 ZoneBuffer.Modify();
             until ZoneBuffer.Next() = 0;
 
+        // 4. Remove Zero-Count Zones if requested
         if HideZeroZones then begin
             ZoneBuffer.Reset();
-            ZoneBuffer.SetRange(Total, 0);
-            ZoneBuffer.SetFilter("Zone Code", '<>%1', 'TOTAL');
+            ZoneBuffer.SetRange(Count, 0);
             ZoneBuffer.DeleteAll();
-        end;
-    end;
-
-    local procedure IncrementZoneMonth(MonthNo: Integer)
-    begin
-        case MonthNo of
-            1: ZoneBuffer.Jan += 1;
-            2: ZoneBuffer.Feb += 1;
-            3: ZoneBuffer.Mar += 1;
-            4: ZoneBuffer.Apr += 1;
-            5: ZoneBuffer.May += 1;
-            6: ZoneBuffer.Jun += 1;
-            7: ZoneBuffer.Jul += 1;
-            8: ZoneBuffer.Aug += 1;
-            9: ZoneBuffer.Sep += 1;
-            10: ZoneBuffer.Oct += 1;
-            11: ZoneBuffer.Nov += 1;
-            12: ZoneBuffer.Dec += 1;
-        end;
-    end;
-
-    local procedure SetZoneMonth(MonthNo: Integer; Value: Integer)
-    begin
-        case MonthNo of
-            1: ZoneBuffer.Jan := Value;
-            2: ZoneBuffer.Feb := Value;
-            3: ZoneBuffer.Mar := Value;
-            4: ZoneBuffer.Apr := Value;
-            5: ZoneBuffer.May := Value;
-            6: ZoneBuffer.Jun := Value;
-            7: ZoneBuffer.Jul := Value;
-            8: ZoneBuffer.Aug := Value;
-            9: ZoneBuffer.Sep := Value;
-            10: ZoneBuffer.Oct := Value;
-            11: ZoneBuffer.Nov := Value;
-            12: ZoneBuffer.Dec := Value;
-        end;
-    end;
-
-    local procedure GetZoneMonth(MonthNo: Integer): Integer
-    begin
-        case MonthNo of
-            1: exit(ZoneBuffer.Jan);
-            2: exit(ZoneBuffer.Feb);
-            3: exit(ZoneBuffer.Mar);
-            4: exit(ZoneBuffer.Apr);
-            5: exit(ZoneBuffer.May);
-            6: exit(ZoneBuffer.Jun);
-            7: exit(ZoneBuffer.Jul);
-            8: exit(ZoneBuffer.Aug);
-            9: exit(ZoneBuffer.Sep);
-            10: exit(ZoneBuffer.Oct);
-            11: exit(ZoneBuffer.Nov);
-            12: exit(ZoneBuffer.Dec);
-        end;
-    end;
-
-    local procedure SetZoneMonthPercent(MonthNo: Integer; Value: Decimal)
-    begin
-        case MonthNo of
-            1: ZoneBuffer."Jan %" := Value;
-            2: ZoneBuffer."Feb %" := Value;
-            3: ZoneBuffer."Mar %" := Value;
-            4: ZoneBuffer."Apr %" := Value;
-            5: ZoneBuffer."May %" := Value;
-            6: ZoneBuffer."Jun %" := Value;
-            7: ZoneBuffer."Jul %" := Value;
-            8: ZoneBuffer."Aug %" := Value;
-            9: ZoneBuffer."Sep %" := Value;
-            10: ZoneBuffer."Oct %" := Value;
-            11: ZoneBuffer."Nov %" := Value;
-            12: ZoneBuffer."Dec %" := Value;
         end;
     end;
 }
