@@ -82,24 +82,23 @@ page 58177 "Domain Zone Statistics List"
         CurrentYear := Date2DMY(Today, 3);
         CurrentMonth := Date2DMY(Today, 2);
 
-
         DomainZoneClassificationMgt.RefreshStatistics(CurrentYear);
 
+      
         Rec.Reset();
+        Rec.ClearMarks();
 
-
+     
         Rec.SetFilter(Year, '<=%1', CurrentYear);
 
+       
         if Rec.FindSet() then
             repeat
-
                 if (Rec.Year < CurrentYear) or ((Rec.Year = CurrentYear) and (Rec."Month No." <= CurrentMonth)) then
                     Rec.Mark(true);
             until Rec.Next() = 0;
 
-        Rec.SetRange(Year);
-
-
+       
         Rec.MarkedOnly(true);
     end;
 }
