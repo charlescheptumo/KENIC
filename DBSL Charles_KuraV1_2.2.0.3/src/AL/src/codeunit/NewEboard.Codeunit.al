@@ -1008,7 +1008,7 @@ Codeunit 50032 NewEboard
     //     Message(Format(status));
     // end;
 
-    procedure generateDirectorPayslip(director: Code[100]; payperiod: Date; directorNo: Text) status: Text
+    procedure generateDirectorPayslip(director: Code[100]; payperiod: DateTime; directorNo: Text) status: Text
     var
         RecRef: RecordRef;
         BaseImage: Text;
@@ -1016,7 +1016,7 @@ Codeunit 50032 NewEboard
         if objVendor.Get(director) then begin
             objVendor.Reset;
             objVendor.SetRange("No.", director);
-            objVendor.SetRange("Pay Period Filter", payperiod);
+            objVendor.SetRange("Pay Period Filter", DT2Date(payperiod));
             if objVendor.FindFirst then begin
                 TempBlob_lRec.CreateOutStream(OutStr, TEXTENCODING::UTF8);
                 RecRef.GetTable(objVendor);
