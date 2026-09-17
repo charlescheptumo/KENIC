@@ -2439,4 +2439,18 @@ Codeunit 50032 NewEboard
             until BoardMeeting.Next() = 0;
     end;
 
+    procedure fnGetMyCommittees(directorNo: Code[50]) status: Text
+    var
+        CommitteeMember: Record "Committee Board Members";
+        BoardCommittee: Record "Board Committees";
+    begin
+        CommitteeMember.Reset();
+        CommitteeMember.SetRange("Director No", directorNo);
+        if CommitteeMember.FindSet() then
+            repeat
+                if BoardCommittee.Get(CommitteeMember.Committee) then
+                    status += BoardCommittee.Code + '*' + BoardCommittee.Description + '::::';
+            until CommitteeMember.Next() = 0;
+    end;
+
 }
