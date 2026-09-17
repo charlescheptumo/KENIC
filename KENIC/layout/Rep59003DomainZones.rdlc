@@ -10,6 +10,64 @@
       <rd:DataSourceID>18af4cb4-fdfc-4b1e-a0b1-e8a8f8b3fdaa</rd:DataSourceID>
     </DataSource>
   </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+      <Fields>
+        <Field Name="CompanyInfo_Name">
+          <DataField>CompanyInfo_Name</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Picture">
+          <DataField>CompanyInfo_Picture</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Address">
+          <DataField>CompanyInfo_Address</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Address2">
+          <DataField>CompanyInfo_Address2</DataField>
+        </Field>
+        <Field Name="CompanyInfo_City">
+          <DataField>CompanyInfo_City</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Phone">
+          <DataField>CompanyInfo_Phone</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Email">
+          <DataField>CompanyInfo_Email</DataField>
+        </Field>
+        <Field Name="Start_Date">
+          <DataField>Start_Date</DataField>
+        </Field>
+        <Field Name="End_Date">
+          <DataField>End_Date</DataField>
+        </Field>
+        <Field Name="Zone_Code">
+          <DataField>Zone_Code</DataField>
+        </Field>
+        <Field Name="Zone_Description">
+          <DataField>Zone_Description</DataField>
+        </Field>
+        <Field Name="Month_No">
+          <DataField>Month_No</DataField>
+        </Field>
+        <Field Name="Month_Name">
+          <DataField>Month_Name</DataField>
+        </Field>
+        <Field Name="Count">
+          <DataField>Count</DataField>
+        </Field>
+        <Field Name="Percentage">
+          <DataField>Percentage</DataField>
+        </Field>
+        <Field Name="PercentageFormat">
+          <DataField>PercentageFormat</DataField>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -146,7 +204,7 @@
                   <Width>1.3in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.55556in</Width>
+                  <Width>2.45139in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.85in</Width>
@@ -446,7 +504,7 @@
             <Top>1.4in</Top>
             <Left>0.1in</Left>
             <Height>0.57in</Height>
-            <Width>5.45556in</Width>
+            <Width>5.35139in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
@@ -463,7 +521,7 @@
       <Width>15.5in</Width>
       <Page>
         <PageFooter>
-          <Height>0.37in</Height>
+          <Height>2.50194in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -530,6 +588,12 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <Code>
     Public Function BlankZero(ByVal Value As Decimal)
         if Value = 0 then
@@ -570,62 +634,4 @@
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Fields>
-        <Field Name="CompanyInfo_Name">
-          <DataField>CompanyInfo_Name</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Picture">
-          <DataField>CompanyInfo_Picture</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Address">
-          <DataField>CompanyInfo_Address</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Address2">
-          <DataField>CompanyInfo_Address2</DataField>
-        </Field>
-        <Field Name="CompanyInfo_City">
-          <DataField>CompanyInfo_City</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Phone">
-          <DataField>CompanyInfo_Phone</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Email">
-          <DataField>CompanyInfo_Email</DataField>
-        </Field>
-        <Field Name="Start_Date">
-          <DataField>Start_Date</DataField>
-        </Field>
-        <Field Name="End_Date">
-          <DataField>End_Date</DataField>
-        </Field>
-        <Field Name="Zone_Code">
-          <DataField>Zone_Code</DataField>
-        </Field>
-        <Field Name="Zone_Description">
-          <DataField>Zone_Description</DataField>
-        </Field>
-        <Field Name="Month_No">
-          <DataField>Month_No</DataField>
-        </Field>
-        <Field Name="Month_Name">
-          <DataField>Month_Name</DataField>
-        </Field>
-        <Field Name="Count">
-          <DataField>Count</DataField>
-        </Field>
-        <Field Name="Percentage">
-          <DataField>Percentage</DataField>
-        </Field>
-        <Field Name="PercentageFormat">
-          <DataField>PercentageFormat</DataField>
-        </Field>
-      </Fields>
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-    </DataSet>
-  </DataSets>
 </Report>
