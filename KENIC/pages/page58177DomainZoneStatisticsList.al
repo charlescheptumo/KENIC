@@ -76,8 +76,15 @@ page 58177 "Domain Zone Statistics List"
     trigger OnOpenPage()
     var
         DomainZoneClassificationMgt: Codeunit "Domain Zone Classification Mgt";
+        CurrentYear: Integer;
+        CurrentMonth: Integer;
     begin
+        CurrentYear := Date2DMY(Today, 3);
+        CurrentMonth := Date2DMY(Today, 2);
         
         DomainZoneClassificationMgt.RefreshStatistics(Date2DMY(Today, 3));
+
+         Rec.SetRange(Year, CurrentYear);
+            Rec.SetFilter("Month No.", '<=%1', CurrentMonth);
     end;
 }

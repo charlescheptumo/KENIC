@@ -7,7 +7,6 @@
         <DataProvider>SQL</DataProvider>
         <ConnectString />
       </ConnectionProperties>
-      <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>18af4cb4-fdfc-4b1e-a0b1-e8a8f8b3fdaa</rd:DataSourceID>
     </DataSource>
   </DataSources>
@@ -205,7 +204,7 @@
                   <Width>1.3in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3.0in</Width>
+                  <Width>2.55556in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.85in</Width>
@@ -363,9 +362,9 @@
                               <Width>0.5pt</Width>
                             </Border>
                             <TextAlign>Left</TextAlign>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>4pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <VerticalAlign>Middle</VerticalAlign>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -393,9 +392,9 @@
                               <Width>0.5pt</Width>
                             </Border>
                             <TextAlign>Left</TextAlign>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>4pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <VerticalAlign>Middle</VerticalAlign>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -424,8 +423,8 @@
                               <Width>0.5pt</Width>
                             </Border>
                             <TextAlign>Right</TextAlign>
-                            <PaddingRight>4pt</PaddingRight>
                             <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingRight>4pt</PaddingRight>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -455,8 +454,8 @@
                               <Width>0.5pt</Width>
                             </Border>
                             <TextAlign>Right</TextAlign>
-                            <PaddingRight>4pt</PaddingRight>
                             <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingRight>4pt</PaddingRight>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -505,7 +504,7 @@
             <Top>1.4in</Top>
             <Left>0.1in</Left>
             <Height>0.57in</Height>
-            <Width>5.9in</Width>
+            <Width>5.45556in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
@@ -589,6 +588,12 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <Code>
     Public Function BlankZero(ByVal Value As Decimal)
         if Value = 0 then
