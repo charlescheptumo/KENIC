@@ -2053,7 +2053,9 @@ Codeunit 50032 NewEboard
     var
         BoardMember: Record "Board Members";
     begin
-        if BoardMember.Get(directorNo) then
+        BoardMember.Reset();
+        BoardMember.SetRange("Personal No", directorNo);
+        if BoardMember.FindFirst() then
             exit(BoardMember."Data Consent Given");
         exit(false);
     end;
@@ -2064,7 +2066,9 @@ Codeunit 50032 NewEboard
     begin
         status := 'danger*Could not record your consent';
 
-        if not BoardMember.Get(directorNo) then begin
+        BoardMember.Reset();
+        BoardMember.SetRange("Personal No", directorNo);
+        if not BoardMember.FindFirst() then begin
             status := 'danger*Member record not found';
             exit(status);
         end;
