@@ -62,6 +62,15 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     Image = "Report";
                     RunObject = report "Domain Renewals Report";
                 }
+
+                action("Zones")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Zones';
+                    ToolTip = 'View domain zone statistics breakdown.';
+                    Image = List;
+                    RunObject = page "Domain Zone Statistics List";
+                }
             }
 
         }
