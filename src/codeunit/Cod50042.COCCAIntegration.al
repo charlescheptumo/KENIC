@@ -762,16 +762,10 @@ codeunit 50042 COCCAIntegration
     begin
         if ZoneName = '' then
             Error('Zone Name must be provided.');
-
         RequestObject.Add('zoneName', ZoneName);
         RequestObject.WriteTo(JsonBody);
-
-        exit(
-            GetRegistrants(
-                'Transactions/registrant/by-zonename',
-                JsonBody));
+        exit(GetRegistrants('Transactions/registrant/by-zonename', JsonBody));
     end;
-
 
     procedure GetRegistrantsByClientId(ClientClid: Text): Text
     var
@@ -780,455 +774,189 @@ codeunit 50042 COCCAIntegration
     begin
         if ClientClid = '' then
             Error('Client ID must be provided.');
-
         RequestObject.Add('clientClid', ClientClid);
         RequestObject.WriteTo(JsonBody);
-
-        exit(
-            GetRegistrants(
-                'Transactions/registrant/by-clientid',
-                JsonBody));
+        exit(GetRegistrants('Transactions/registrant/by-clientid', JsonBody));
     end;
 
+    procedure GetRegistrantsByDateRange(StartDate: Date; EndDate: Date): Text
+    var
+        RequestObject: JsonObject;
+        JsonBody: Text;
+    begin
+        if StartDate = 0D then
+            Error('Start Date must be provided.');
+        if EndDate = 0D then
+            Error('End Date must be provided.');
+        if StartDate > EndDate then
+            Error('Start Date cannot be later than End Date.');
 
-    procedure GetRegistrants(Endpoint: Text; JsonBody: Text): Text
+        RequestObject.Add('startDate', FormatUtcDate(StartDate, false));
+        RequestObject.Add('endDate', FormatUtcDate(EndDate, true));
+        RequestObject.WriteTo(JsonBody);
+        exit(GetRegistrants('Transactions/registrant/by-daterange', JsonBody));
+    end;
+
+    local procedure FormatUtcDate(Value: Date; EndOfDay: Boolean): Text
+    var
+        TimeText: Text;
+    begin
+        if EndOfDay then
+            TimeText := '23:59:59.000Z'
+        else
+            TimeText := '00:00:00.000Z';
+
+        exit(
+            StrSubstNo(
+                '%1-%2-%3T%4',
+                Format(Date2DMY(Value, 3), 0, '<Integer,4><Filler Character,0>'),
+                Format(Date2DMY(Value, 2), 0, '<Integer,2><Filler Character,0>'),
+                Format(Date2DMY(Value, 1), 0, '<Integer,2><Filler Character,0>'),
+                TimeText));
+    end;
+
+    local procedure GetRegistrants(Endpoint: Text; JsonBody: Text): Text
     var
         ResponseTxt: Text;
         ErrTxt: Text;
         HttpStatus: Integer;
+        InsertedCount: Integer;
         UpdatedCount: Integer;
     begin
-        Clear(ResponseTxt);
-        Clear(ErrTxt);
-        Clear(HttpStatus);
-
-        SendPostRequest2(
-            Endpoint,
-            JsonBody,
-            HttpStatus,
-            ResponseTxt,
-            ErrTxt);
+        SendPostRequest2(Endpoint, JsonBody, HttpStatus, ResponseTxt, ErrTxt);
 
         if ErrTxt <> '' then
-            exit(
-                StrSubstNo(
-                    'Registrant retrieval failed. %1',
-                    ErrTxt));
-
+            Error('Registrar retrieval failed. %1', ErrTxt);
         if (HttpStatus < 200) or (HttpStatus > 299) then
-            exit(
-                StrSubstNo(
-                    'Registrant retrieval failed. HTTP Status=%1. Response=%2',
-                    HttpStatus,
-                    ResponseTxt));
+            Error('Registrar retrieval failed. HTTP Status=%1. Response=%2', HttpStatus, ResponseTxt);
 
-        UpdatedCount := ImportRegistrants(ResponseTxt);
-
-        exit(
-            StrSubstNo(
-                'Registrant update successful. Updated=%1',
-                UpdatedCount));
+        ImportRegistrants(ResponseTxt, InsertedCount, UpdatedCount);
+        exit(StrSubstNo('Registrar retrieval successful. Inserted=%1, Updated=%2.', InsertedCount, UpdatedCount));
     end;
 
-    procedure ImportRegistrants(JsonText: Text): Integer
+    local procedure ImportRegistrants(JsonText: Text; var InsertedCount: Integer; var UpdatedCount: Integer)
     var
         RootObj: JsonObject;
         DataArray: JsonArray;
         Token: JsonToken;
         DataToken: JsonToken;
         Obj: JsonObject;
-        RegistrantRec: Record Registrants;
-        IsNew: Boolean;
-        CountUpdated: Integer;
-        RoidValue: Text;
-        RawRecordJson: Text;
-        OutStream: OutStream;
     begin
+        Clear(InsertedCount);
+        Clear(UpdatedCount);
         if JsonText = '' then
-            exit(0);
-
+            exit;
         if not RootObj.ReadFrom(JsonText) then
-            Error('The registrant API returned invalid JSON.');
-
+            Error('The registrar API returned invalid JSON.');
         if RootObj.Get('success', Token) then
             if not Token.AsValue().IsNull() then
                 if not Token.AsValue().AsBoolean() then
-                    Error('The registrant API returned success as false.');
-
+                    Error('The registrar API returned success as false.');
         if not RootObj.Get('data', Token) then
-            exit(0);
-
+            exit;
         if not Token.IsArray() then
-            Error('The data property in the registrant response is not an array.');
+            Error('The data property in the registrar response is not an array.');
 
         DataArray := Token.AsArray();
-
-        foreach DataToken in DataArray do begin
+        foreach DataToken in DataArray do
             if DataToken.IsObject() then begin
                 Obj := DataToken.AsObject();
-
-                RoidValue := _HelperFunctions.GetAsText(Obj, 'roid');
-
-                if RoidValue <> '' then begin
-                    RegistrantRec.Reset();
-                    RegistrantRec.SetRange(
-                        Roid,
-                        CopyStr(
-                            RoidValue,
-                            1,
-                            MaxStrLen(RegistrantRec.Roid)));
-
-                    if RegistrantRec.FindFirst() then
-                        IsNew := false
-                    else begin
-                        IsNew := true;
-                        RegistrantRec.Init();
-                        RegistrantRec.Roid :=
-                            CopyStr(
-                                RoidValue,
-                                1,
-                                MaxStrLen(RegistrantRec.Roid));
-                    end;
-
-                    RegistrantRec.Name :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'name'),
-                            MaxStrLen(RegistrantRec.Name));
-
-                    RegistrantRec.ExpiryDate :=
-                        _HelperFunctions.GetAsDateTimeISO(Obj, 'exdate');
-
-                    RegistrantRec.StClDeleteProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stClDeleteProhibited'),
-                            MaxStrLen(RegistrantRec.StClDeleteProhibited));
-
-                    RegistrantRec.StClHold :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'stClHold'),
-                            MaxStrLen(RegistrantRec.StClHold));
-
-                    RegistrantRec.StClRenewProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stClRenewProhibited'),
-                            MaxStrLen(RegistrantRec.StClRenewProhibited));
-
-                    RegistrantRec.StClTransferProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stClTransferProhibited'),
-                            MaxStrLen(RegistrantRec.StClTransferProhibited));
-
-                    RegistrantRec.StClUpdateProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stClUpdateProhibited'),
-                            MaxStrLen(RegistrantRec.StClUpdateProhibited));
-
-                    RegistrantRec.StInactive :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'stInactive'),
-                            MaxStrLen(RegistrantRec.StInactive));
-
-                    RegistrantRec.StOk :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'stOk'),
-                            MaxStrLen(RegistrantRec.StOk));
-
-                    RegistrantRec.StPendingCreate :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stPendingCreate'),
-                            MaxStrLen(RegistrantRec.StPendingCreate));
-
-                    RegistrantRec.StPendingDelete :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stPendingDelete'),
-                            MaxStrLen(RegistrantRec.StPendingDelete));
-
-                    RegistrantRec.StPendingRenew :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stPendingRenew'),
-                            MaxStrLen(RegistrantRec.StPendingRenew));
-
-                    RegistrantRec.StPendingTransfer :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stPendingTransfer'),
-                            MaxStrLen(RegistrantRec.StPendingTransfer));
-
-                    RegistrantRec.StPendingUpdate :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stPendingUpdate'),
-                            MaxStrLen(RegistrantRec.StPendingUpdate));
-
-                    RegistrantRec.StSvDeleteProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stSvDeleteProhibited'),
-                            MaxStrLen(RegistrantRec.StSvDeleteProhibited));
-
-                    RegistrantRec.StSvHold :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'stSvHold'),
-                            MaxStrLen(RegistrantRec.StSvHold));
-
-                    RegistrantRec.StSvRenewProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stSvRenewProhibited'),
-                            MaxStrLen(RegistrantRec.StSvRenewProhibited));
-
-                    RegistrantRec.StSvTransferProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stSvTransferProhibited'),
-                            MaxStrLen(RegistrantRec.StSvTransferProhibited));
-
-                    RegistrantRec.StSvUpdateProhibited :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stSvUpdateProhibited'),
-                            MaxStrLen(RegistrantRec.StSvUpdateProhibited));
-
-                    RegistrantRec.Registrant :=
-                        CopyStr(
-                            _HelperFunctions.GetAsText(Obj, 'registrant'),
-                            1,
-                            MaxStrLen(RegistrantRec.Registrant));
-
-                    RegistrantRec.AuthInfoPw :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'authInfoPw'),
-                            MaxStrLen(RegistrantRec.AuthInfoPw));
-
-                    RegistrantRec.ClientId :=
-                        CopyStr(
-                            _HelperFunctions.GetAsText(Obj, 'clid'),
-                            1,
-                            MaxStrLen(RegistrantRec.ClientId));
-
-                    RegistrantRec.CreatedById :=
-                        CopyStr(
-                            _HelperFunctions.GetAsText(Obj, 'crid'),
-                            1,
-                            MaxStrLen(RegistrantRec.CreatedById));
-
-                    RegistrantRec.CreateDate :=
-                        _HelperFunctions.GetAsDateTimeISO(Obj, 'createDate');
-
-                    RegistrantRec.UpdatedById :=
-                        CopyStr(
-                            _HelperFunctions.GetAsText(Obj, 'upid'),
-                            1,
-                            MaxStrLen(RegistrantRec.UpdatedById));
-
-                    RegistrantRec.UpdateDate :=
-                        _HelperFunctions.GetAsDateTimeISO(Obj, 'updateDate');
-
-                    RegistrantRec.TransferDate :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'transferDate');
-
-                    RegistrantRec.Zone :=
-                        CopyStr(
-                            _HelperFunctions.GetAsText(Obj, 'zone'),
-                            1,
-                            MaxStrLen(RegistrantRec.Zone));
-
-                    RegistrantRec.ClientSpecificData :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'clientSpecificData'),
-                            MaxStrLen(RegistrantRec.ClientSpecificData));
-
-                    RegistrantRec.DeleteDate :=
-                        _HelperFunctions.GetAsDateTimeISO(Obj, 'deleteDate');
-
-                    RegistrantRec.StPendingRestore :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stPendingRestore'),
-                            MaxStrLen(RegistrantRec.StPendingRestore));
-
-                    RegistrantRec.RedemptionExpiryDate :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'redemptionExpiryDate');
-
-                    RegistrantRec.DeleteRequestedDate :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'deleteRequestedDate');
-
-                    RegistrantRec.RestoreRequestedDate :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'restoreRequestedDate');
-
-                    RegistrantRec.RenewalDate :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'renewalDate');
-
-                    RegistrantRec.UnicodeName :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'unicodeName'),
-                            MaxStrLen(RegistrantRec.UnicodeName));
-
-                    RegistrantRec.ApplicationExpiryDate :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'applicationExpiryDate');
-
-                    RegistrantRec.ApprovalTimeout :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'approvalTimeout');
-
-                    RegistrantRec.SuperLockId :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'superLockId'),
-                            MaxStrLen(RegistrantRec.SuperLockId));
-
-                    RegistrantRec.UpdateLoginUsername :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'updateLoginUsername'),
-                            MaxStrLen(RegistrantRec.UpdateLoginUsername));
-
-                    RegistrantRec.CreateUsername :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'createUsername'),
-                            MaxStrLen(RegistrantRec.CreateUsername));
-
-                    RegistrantRec.UpdateUsername :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'updateUsername'),
-                            MaxStrLen(RegistrantRec.UpdateUsername));
-
-                    RegistrantRec.MaxSigLife :=
-                        _HelperFunctions.GetAsInteger(Obj, 'maxSigLife');
-
-                    RegistrantRec.FailedLogins :=
-                        _HelperFunctions.GetAsInteger(Obj, 'failedLogins');
-
-                    RegistrantRec.LockedUntil :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'lockedUntil');
-
-                    RegistrantRec.PendingRegistrant :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'pendingRegistrant'),
-                            MaxStrLen(RegistrantRec.PendingRegistrant));
-
-                    RegistrantRec.PendingReregLength :=
-                        _HelperFunctions.GetAsInteger(
-                            Obj, 'pendingReregLength');
-
-                    RegistrantRec.PendingRegistrantExpiry :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'pendingRegistrantExpiry');
-
-                    RegistrantRec.Signed :=
-                        _HelperFunctions.GetAsBoolean(Obj, 'signed');
-
-                    RegistrantRec.ExpiryEmailSent :=
-                        _HelperFunctions.GetAsBoolean(
-                            Obj, 'expiryEmailSent');
-
-                    RegistrantRec.RequestedDeleteUsername :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'requestedDeleteUsername'),
-                            MaxStrLen(RegistrantRec.RequestedDeleteUsername));
-
-                    RegistrantRec.RequestedDeleteClid :=
-                        CopyStr(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'requestedDeleteClid'),
-                            1,
-                            MaxStrLen(RegistrantRec.RequestedDeleteClid));
-
-                    RegistrantRec.RequestedDeleteDate :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'requestedDeleteDate');
-
-                    RegistrantRec.RestoreRegRenLength :=
-                        _HelperFunctions.GetAsInteger(
-                            Obj, 'restoreRegRenLength');
-
-                    RegistrantRec.RestoreReregLength :=
-                        _HelperFunctions.GetAsInteger(
-                            Obj, 'restoreReregLength');
-
-                    RegistrantRec.AuthInfoSalt :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'authInfoSalt'),
-                            MaxStrLen(RegistrantRec.AuthInfoSalt));
-
-                    RegistrantRec.AuthInfoHashIteration :=
-                        _HelperFunctions.GetAsInteger(
-                            Obj, 'authInfoHashIteration');
-
-                    RegistrantRec.AbuseEmail :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'abuseEmail'),
-                            MaxStrLen(RegistrantRec.AbuseEmail));
-
-                    RegistrantRec.TechnicalEmail :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'technicalEmail'),
-                            MaxStrLen(RegistrantRec.TechnicalEmail));
-
-                    RegistrantRec.StAddPeriod :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(Obj, 'stAddPeriod'),
-                            MaxStrLen(RegistrantRec.StAddPeriod));
-
-                    RegistrantRec.StRedemptionPeriod :=
-                        _HelperFunctions.SafeAssignText(
-                            _HelperFunctions.GetAsText(
-                                Obj, 'stRedemptionPeriod'),
-                            MaxStrLen(RegistrantRec.StRedemptionPeriod));
-
-                    RegistrantRec.PostExpiryEmailSent :=
-                        _HelperFunctions.GetAsBoolean(
-                            Obj, 'postExpiryEmailSent');
-
-                    RegistrantRec.AuthInfoPwUpdateTime :=
-                        _HelperFunctions.GetAsDateTimeISO(
-                            Obj, 'authInfoPwUpdateTime');
-
-                    RegistrantRec.LastUpdatedAt := CurrentDateTime();
-                    RegistrantRec.LastUpdatedBy :=
-                        CopyStr(
-                            UserId(),
-                            1,
-                            MaxStrLen(RegistrantRec.LastUpdatedBy));
-
-                    Clear(RegistrantRec.RawJsonPayload);
-                    RegistrantRec.RawJsonPayload.CreateOutStream(
-                        OutStream,
-                        TextEncoding::UTF8);
-
-                    Clear(RawRecordJson);
-                    Obj.WriteTo(RawRecordJson);
-                    OutStream.WriteText(RawRecordJson);
-
-                    if IsNew then
-                        RegistrantRec.Insert(true)
-                    else
-                        RegistrantRec.Modify(true);
-
-                    CountUpdated += 1;
-                end;
+                ImportOneRegistrant(Obj, InsertedCount, UpdatedCount);
             end;
+    end;
+
+    local procedure ImportOneRegistrant(Obj: JsonObject; var InsertedCount: Integer; var UpdatedCount: Integer)
+    var
+        Registrar: Record Registrants;
+        RoidValue: Text;
+        IsNew: Boolean;
+        RawRecordJson: Text;
+        OutStream: OutStream;
+    begin
+        RoidValue := _HelperFunctions.GetAsText(Obj, 'roid');
+        if RoidValue = '' then
+            exit;
+
+        RoidValue := CopyStr(RoidValue, 1, MaxStrLen(Registrar.Roid));
+        IsNew := not Registrar.Get(RoidValue);
+        if IsNew then begin
+            Registrar.Init();
+            Registrar.Roid := RoidValue;
         end;
 
-        exit(CountUpdated);
+        Registrar.ClientId := CopyStr(_HelperFunctions.GetAsText(Obj, 'clid'), 1, MaxStrLen(Registrar.ClientId));
+        Registrar.Name := CopyStr(_HelperFunctions.GetAsText(Obj, 'name'), 1, MaxStrLen(Registrar.Name));
+        Registrar.Email := CopyStr(_HelperFunctions.GetAsText(Obj, 'email'), 1, MaxStrLen(Registrar.Email));
+        Registrar.Address := CopyStr(_HelperFunctions.GetAsText(Obj, 'address'), 1, MaxStrLen(Registrar.Address));
+        Registrar.Country := CopyStr(_HelperFunctions.GetAsText(Obj, 'country'), 1, MaxStrLen(Registrar.Country));
+        Registrar.Phone := CopyStr(_HelperFunctions.GetAsText(Obj, 'phone'), 1, MaxStrLen(Registrar.Phone));
+        Registrar.Fax := CopyStr(_HelperFunctions.GetAsText(Obj, 'fax'), 1, MaxStrLen(Registrar.Fax));
+        Registrar.AdminContact := CopyStr(_HelperFunctions.GetAsText(Obj, 'adminContact'), 1, MaxStrLen(Registrar.AdminContact));
+        Registrar.AdminEmail := CopyStr(_HelperFunctions.GetAsText(Obj, 'adminEmail'), 1, MaxStrLen(Registrar.AdminEmail));
+        Registrar.BillingContact := CopyStr(_HelperFunctions.GetAsText(Obj, 'billingContact'), 1, MaxStrLen(Registrar.BillingContact));
+        Registrar.BillingEmail := CopyStr(_HelperFunctions.GetAsText(Obj, 'billingEmail'), 1, MaxStrLen(Registrar.BillingEmail));
+        Registrar.TechContact := CopyStr(_HelperFunctions.GetAsText(Obj, 'techContact'), 1, MaxStrLen(Registrar.TechContact));
+        Registrar.TechEmail := CopyStr(_HelperFunctions.GetAsText(Obj, 'techEmail'), 1, MaxStrLen(Registrar.TechEmail));
+        Registrar.ServiceContact := CopyStr(_HelperFunctions.GetAsText(Obj, 'serviceContact'), 1, MaxStrLen(Registrar.ServiceContact));
+        Registrar.ServiceEmail := CopyStr(_HelperFunctions.GetAsText(Obj, 'serviceEmail'), 1, MaxStrLen(Registrar.ServiceEmail));
+        Registrar.DomainsContact := CopyStr(_HelperFunctions.GetAsText(Obj, 'domainsContact'), 1, MaxStrLen(Registrar.DomainsContact));
+        Registrar.DomainsEmail := CopyStr(_HelperFunctions.GetAsText(Obj, 'domainsEmail'), 1, MaxStrLen(Registrar.DomainsEmail));
+        Registrar.AbuseEmail := CopyStr(_HelperFunctions.GetAsText(Obj, 'abuseEmail'), 1, MaxStrLen(Registrar.AbuseEmail));
+        Registrar.AbusePhone := CopyStr(_HelperFunctions.GetAsText(Obj, 'abusePhone'), 1, MaxStrLen(Registrar.AbusePhone));
+        Registrar.RegistrationUrl := CopyStr(_HelperFunctions.GetAsText(Obj, 'registrationUrl'), 1, MaxStrLen(Registrar.RegistrationUrl));
+        Registrar.PrimaryFocus := CopyStr(_HelperFunctions.GetAsText(Obj, 'primaryFocus'), 1, MaxStrLen(Registrar.PrimaryFocus));
+        Registrar.CreateDate := _HelperFunctions.GetAsDateTimeISO(Obj, 'createDate');
+        Registrar.UpdateDate := _HelperFunctions.GetAsDateTimeISO(Obj, 'updateDate');
+        Registrar.BillingDate := _HelperFunctions.GetAsDateTimeISO(Obj, 'billingDate');
+        Registrar.CreateUsername := CopyStr(_HelperFunctions.GetAsText(Obj, 'createUsername'), 1, MaxStrLen(Registrar.CreateUsername));
+        Registrar.UpdateUsername := CopyStr(_HelperFunctions.GetAsText(Obj, 'updateUsername'), 1, MaxStrLen(Registrar.UpdateUsername));
+        Registrar.AllowEpp := _HelperFunctions.GetAsBoolean(Obj, 'allowEpp');
+        Registrar.RestrictIps := _HelperFunctions.GetAsBoolean(Obj, 'restrictIps');
+        Registrar.AllowRegistryNs := _HelperFunctions.GetAsBoolean(Obj, 'allowRegistryNs');
+        Registrar.FailedEppLogins := _HelperFunctions.GetAsInteger(Obj, 'failedEppLogins');
+        Registrar.EppLockedUntil := _HelperFunctions.GetAsDateTimeISO(Obj, 'eppLockedUntil');
+        Registrar.OldStatus := CopyStr(_HelperFunctions.GetAsText(Obj, 'oldStatus'), 1, MaxStrLen(Registrar.OldStatus));
+        Registrar.IsPicked := _HelperFunctions.GetAsBoolean(Obj, 'isPicked');
+        Registrar.AllowRestrictIps := _HelperFunctions.GetAsBoolean(Obj, 'allowRestrictIps');
+        Registrar.DedicatedEppConnections := _HelperFunctions.GetAsInteger(Obj, 'dedicatedEppConnections');
+        Registrar.Emailed := _HelperFunctions.GetAsBoolean(Obj, 'emailed');
+        Registrar.LegacySystemId := CopyStr(_HelperFunctions.GetAsText(Obj, 'legacySystemId'), 1, MaxStrLen(Registrar.LegacySystemId));
+        Registrar.EmailOptOut := _HelperFunctions.GetAsBoolean(Obj, 'emailOptOut');
+        Registrar.SystemAccount := _HelperFunctions.GetAsBoolean(Obj, 'systemAccount');
+        Registrar.AdminOptOut := _HelperFunctions.GetAsBoolean(Obj, 'adminOptOut');
+        Registrar.BillingOptOut := _HelperFunctions.GetAsBoolean(Obj, 'billingOptOut');
+        Registrar.TechOptOut := _HelperFunctions.GetAsBoolean(Obj, 'techOptOut');
+        Registrar.ServiceOptOut := _HelperFunctions.GetAsBoolean(Obj, 'serviceOptOut');
+        Registrar.AutoDiscount := _HelperFunctions.GetAsBoolean(Obj, 'autoDiscount');
+        Registrar.DefaultWhoisProxyId := CopyStr(_HelperFunctions.GetAsText(Obj, 'defaultWhoisProxyId'), 1, MaxStrLen(Registrar.DefaultWhoisProxyId));
+        Registrar.IanaNumber := CopyStr(_HelperFunctions.GetAsText(Obj, 'ianaNumber'), 1, MaxStrLen(Registrar.IanaNumber));
+        Registrar.UseSecureAuthInfoPw := _HelperFunctions.GetAsBoolean(Obj, 'useSecureAuthInfoPw');
+        Registrar.TmpActivateVariants := _HelperFunctions.GetAsBoolean(Obj, 'tmpActivateVariants');
+        Registrar.EppHashIteration := _HelperFunctions.GetAsInteger(Obj, 'eppHashIteration');
+        Registrar.ClientWhois := CopyStr(_HelperFunctions.GetAsText(Obj, 'clientWhois'), 1, MaxStrLen(Registrar.ClientWhois));
+        Registrar.ClientRdap := CopyStr(_HelperFunctions.GetAsText(Obj, 'clientRdap'), 1, MaxStrLen(Registrar.ClientRdap));
+        Registrar.ContactCounter := _HelperFunctions.GetAsInteger(Obj, 'contactCounter');
+        Registrar.PaymentGatewayId := CopyStr(_HelperFunctions.GetAsText(Obj, 'paymentGatewayId'), 1, MaxStrLen(Registrar.PaymentGatewayId));
+        Registrar.City := CopyStr(_HelperFunctions.GetAsText(Obj, 'city'), 1, MaxStrLen(Registrar.City));
+        Registrar.State := CopyStr(_HelperFunctions.GetAsText(Obj, 'state'), 1, MaxStrLen(Registrar.State));
+        Registrar.PostalCode := CopyStr(_HelperFunctions.GetAsText(Obj, 'postalCode'), 1, MaxStrLen(Registrar.PostalCode));
+        Registrar.EppEnforceClientCert := _HelperFunctions.GetAsBoolean(Obj, 'eppEnforceClientCert');
+        Registrar.EppPassword := CopyStr(_HelperFunctions.GetAsText(Obj, 'eppPassword'), 1, MaxStrLen(Registrar.EppPassword));
+        Registrar.EppSalt := CopyStr(_HelperFunctions.GetAsText(Obj, 'eppSalt'), 1, MaxStrLen(Registrar.EppSalt));
+        Registrar.LastUpdatedAt := CurrentDateTime();
+        Registrar.LastUpdatedBy := CopyStr(UserId(), 1, MaxStrLen(Registrar.LastUpdatedBy));
+
+        Clear(Registrar.RawJsonPayload);
+        Registrar.RawJsonPayload.CreateOutStream(OutStream, TextEncoding::UTF8);
+        Obj.WriteTo(RawRecordJson);
+        OutStream.WriteText(RawRecordJson);
+
+        if IsNew then begin
+            Registrar.Insert(true);
+            InsertedCount += 1;
+        end else begin
+            Registrar.Modify(true);
+            UpdatedCount += 1;
+        end;
     end;
 }
