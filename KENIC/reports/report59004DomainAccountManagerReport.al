@@ -32,6 +32,10 @@ report 59004 "Domain Account Manager Report"
             column(Target_Qty; "Target Qty") { }
             column(Actual_Qty; "Actual Qty") { }
             column(Pct_Achieved; "% Achieved") { }
+
+            column(Line_Type; "Line Type") { }
+            column(Qty; Qty) { }
+            column(Qty_Format; "Qty Format") { }
         }
     }
 
@@ -123,8 +127,6 @@ report 59004 "Domain Account Manager Report"
         AcctMgrBuffer.Reset();
         AcctMgrBuffer.DeleteAll();
 
-        // Rebuild the persisted statistics for exactly this period, then copy into the
-        // temp buffer for the RDLC - one source of truth for the tally logic.
         ReportMgt.RefreshStatistics(BudgetNameFilter, StartDate, EndDate);
 
         ReportMgt.GetOrderedSectionCodes(SectionCodes);
@@ -142,6 +144,8 @@ report 59004 "Domain Account Manager Report"
         if DomainAcctMgrStatistics.FindSet() then
             repeat
                 if IsWithinPeriod(DomainAcctMgrStatistics.Year, DomainAcctMgrStatistics."Month No.") then begin
+
+                    // Row 1 - Targets
                     AcctMgrBuffer.Init();
                     AcctMgrBuffer."Salesperson Code" := DomainAcctMgrStatistics."Salesperson Code";
                     AcctMgrBuffer."Section Code" := DomainAcctMgrStatistics."Section Code";
@@ -156,7 +160,52 @@ report 59004 "Domain Account Manager Report"
                     AcctMgrBuffer."Target Qty" := DomainAcctMgrStatistics."Target Qty";
                     AcctMgrBuffer."Actual Qty" := DomainAcctMgrStatistics."Actual Qty";
                     AcctMgrBuffer."% Achieved" := DomainAcctMgrStatistics."% Achieved";
+                    AcctMgrBuffer."Line Type" := 1;
+                    AcctMgrBuffer.Qty := DomainAcctMgrStatistics."Target Qty";
+                    AcctMgrBuffer."Qty Format" := Format(DomainAcctMgrStatistics."Target Qty", 0, '<Precision,0:0>');
                     AcctMgrBuffer.Insert();
+
+                    // Row 2 - Actual
+                    AcctMgrBuffer.Init();
+                    AcctMgrBuffer."Salesperson Code" := DomainAcctMgrStatistics."Salesperson Code";
+                    AcctMgrBuffer."Section Code" := DomainAcctMgrStatistics."Section Code";
+                    AcctMgrBuffer.Year := DomainAcctMgrStatistics.Year;
+                    AcctMgrBuffer."Month No." := DomainAcctMgrStatistics."Month No.";
+                    if SectionLineNo.ContainsKey(DomainAcctMgrStatistics."Section Code") then
+                        AcctMgrBuffer."Line No." := SectionLineNo.Get(DomainAcctMgrStatistics."Section Code")
+                    else
+                        AcctMgrBuffer."Line No." := 999;
+                    AcctMgrBuffer."Section Description" := DomainAcctMgrStatistics."Section Description";
+                    AcctMgrBuffer."Month Name" := DomainAcctMgrStatistics."Month Name";
+                    AcctMgrBuffer."Target Qty" := DomainAcctMgrStatistics."Target Qty";
+                    AcctMgrBuffer."Actual Qty" := DomainAcctMgrStatistics."Actual Qty";
+                    AcctMgrBuffer."% Achieved" := DomainAcctMgrStatistics."% Achieved";
+                    AcctMgrBuffer."Line Type" := 2;
+                    AcctMgrBuffer.Qty := DomainAcctMgrStatistics."Actual Qty";
+                    AcctMgrBuffer."Qty Format" := Format(DomainAcctMgrStatistics."Actual Qty", 0, '<Precision,0:0>');
+                    AcctMgrBuffer.Insert();
+
+                    // Row 3 - % Achieved
+                    AcctMgrBuffer.Init();
+                    AcctMgrBuffer."Salesperson Code" := DomainAcctMgrStatistics."Salesperson Code";
+                    AcctMgrBuffer."Section Code" := DomainAcctMgrStatistics."Section Code";
+                    AcctMgrBuffer.Year := DomainAcctMgrStatistics.Year;
+                    AcctMgrBuffer."Month No." := DomainAcctMgrStatistics."Month No.";
+                    if SectionLineNo.ContainsKey(DomainAcctMgrStatistics."Section Code") then
+                        AcctMgrBuffer."Line No." := SectionLineNo.Get(DomainAcctMgrStatistics."Section Code")
+                    else
+                        AcctMgrBuffer."Line No." := 999;
+                    AcctMgrBuffer."Section Description" := DomainAcctMgrStatistics."Section Description";
+                    AcctMgrBuffer."Month Name" := DomainAcctMgrStatistics."Month Name";
+                    AcctMgrBuffer."Target Qty" := DomainAcctMgrStatistics."Target Qty";
+                    AcctMgrBuffer."Actual Qty" := DomainAcctMgrStatistics."Actual Qty";
+                    AcctMgrBuffer."% Achieved" := DomainAcctMgrStatistics."% Achieved";
+                    AcctMgrBuffer."Line Type" := 3;
+                    AcctMgrBuffer.Qty := DomainAcctMgrStatistics."% Achieved";
+                   // AcctMgrBuffer."Qty Format" := Format(DomainAcctMgrStatistics."% Achieved", 0, '<Precision,0:0.00>') + '%';
+                   AcctMgrBuffer."Qty Format" := Format(DomainAcctMgrStatistics."% Achieved", 0, '<Precision,2:2>') + '%';
+                    AcctMgrBuffer.Insert();
+
                 end;
             until DomainAcctMgrStatistics.Next() = 0;
 
@@ -173,6 +222,6 @@ report 59004 "Domain Account Manager Report"
         PeriodDate: Date;
     begin
         PeriodDate := DMY2Date(1, MonthNo, YearValue);
-        exit(PeriodDate <= EndDate);
+        exit((PeriodDate >= StartDate) and (PeriodDate <= EndDate));
     end;
 }

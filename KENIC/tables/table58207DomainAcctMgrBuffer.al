@@ -16,11 +16,15 @@ table 58207 "Domain Acct Mgr Buffer"
         field(8; "Target Qty"; Decimal) { Caption = 'Target Qty'; }
         field(9; "Actual Qty"; Decimal) { Caption = 'Actual Qty'; }
         field(10; "% Achieved"; Decimal) { Caption = '% Achieved'; DecimalPlaces = 2 : 2; }
+        field(11; "Line Type"; Integer) { Caption = 'Line Type'; }
+        field(12; Qty; Decimal) { Caption = 'Qty'; }
+        field(13; "Qty Format"; Text[20]) { Caption = 'Qty Format'; }
     }
 
     keys
     {
-        key(PK; "Salesperson Code", "Section Code", Year, "Month No.") { Clustered = true; }
+       // key(PK; "Salesperson Code", "Section Code", Year, "Month No.") { Clustered = true; }
+       key(PK; "Salesperson Code", "Section Code", Year, "Month No.", "Line Type") { Clustered = true; }
         key(Sorting; "Line No.", Year, "Month No.") { }
     }
 }

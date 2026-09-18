@@ -2,6 +2,18 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
 {
     actions
     {
+      
+        addafter("Domain Customers")
+        {
+            action("Registrants")
+            {
+                ApplicationArea = All;
+                Caption = 'Registrants';
+                ToolTip = 'View and manage domain registrants.';
+                Image = Users;
+                RunObject = page "Registrants List";
+            }
+        }
 
         addafter("Registry Data Integration")
         {
