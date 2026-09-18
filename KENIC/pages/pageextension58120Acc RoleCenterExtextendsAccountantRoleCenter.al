@@ -70,6 +70,14 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     ToolTip = 'View domain zone statistics breakdown.';
                     Image = List;
                     RunObject = page "Domain Zone Statistics List";
+                }//page 58178 "Domain Acct Statistics List"
+                action("Account Manager Statistics")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Account Manager Statistics';
+                    ToolTip = 'View domain account manager statistics breakdown.';
+                    Image = List;
+                    RunObject = page "Domain Acct Statistics List";
                 }
             }
 
