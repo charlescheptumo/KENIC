@@ -135,41 +135,106 @@ codeunit 58173 "Domain Acct Mgr Report Mgt"
                     TargetDict.Add(DictKey, ItemBudgetEntry.Quantity);
             until ItemBudgetEntry.Next() = 0;
     end;
-local procedure TallyActual(SectionCode: Code[20]; StartDate: Date; EndDate: Date; var ActualDict: Dictionary of [Text, Decimal]; var SalespersonCodes: List of [Code[20]])
-var
-    SalesInvoiceLine: Record "Sales Invoice Line";
-    SalesInvoiceHeader: Record "Sales Invoice Header";
-    ItemFilter: Text;
-    DictKey: Text;
-    SalespersonCode: Code[20];
-begin
-    ItemFilter := GetSectionItemFilter(SectionCode);
-    if ItemFilter = '' then
-        exit;
+    local procedure GetSectionTransType(SectionCode: Code[20]): Text
+    begin
+        case SectionCode of
+            'REGISTRATION':
+                exit('Registration');
+            'RENEWAL':
+                exit('Renewal');
+            else
+                exit(''); 
+        end;
+    end;
 
-    SalesInvoiceLine.Reset();
-    SalesInvoiceLine.SetRange(Type, SalesInvoiceLine.Type::Item);
-    SalesInvoiceLine.SetFilter("No.", ItemFilter);
+    local procedure TallyActual(SectionCode: Code[20]; StartDate: Date; EndDate: Date; var ActualDict: Dictionary of [Text, Decimal]; var SalespersonCodes: List of [Code[20]])
+    var
+        DomainLedgerEntry: Record "Domain Ledger Entry";
+        Customer: Record Customer;
+        TransTypeFilter: Text;
+        FromDateTime: DateTime;
+        ToDateTime: DateTime;
+        EntryDate: Date;
+        DictKey: Text;
+        SalespersonCode: Code[20];
+        RoidToSalesperson: Dictionary of [Code[50], Code[20]];
+    begin
+        TransTypeFilter := GetSectionTransType(SectionCode);
+        if TransTypeFilter = '' then begin
+            TallyActualFromSalesInvoice(SectionCode, StartDate, EndDate, ActualDict, SalespersonCodes);
+            exit;
+        end;
 
-    if SalesInvoiceLine.FindSet() then
-        repeat
-            if SalesInvoiceHeader.Get(SalesInvoiceLine."Document No.") then
-                if (SalesInvoiceHeader."Posting Date" >= StartDate) and (SalesInvoiceHeader."Posting Date" <= EndDate) then begin
-                    SalespersonCode := SalesInvoiceHeader."Salesperson Code";
-                    if SalespersonCode = '' then
-                        SalespersonCode := '(UNASSIGNED)';
+        FromDateTime := CreateDateTime(StartDate, 0T);
+        ToDateTime := CreateDateTime(EndDate, 235959T);
 
-                    if not SalespersonCodes.Contains(SalespersonCode) then
-                        SalespersonCodes.Add(SalespersonCode);
+        DomainLedgerEntry.Reset();
+        DomainLedgerEntry.SetRange(Created, FromDateTime, ToDateTime);
+        DomainLedgerEntry.SetRange(TransType, TransTypeFilter);
 
-                    DictKey := BuildKey(SalespersonCode, SectionCode, Date2DMY(SalesInvoiceHeader."Posting Date", 3), Date2DMY(SalesInvoiceHeader."Posting Date", 2));
-                    if ActualDict.ContainsKey(DictKey) then
-                        ActualDict.Set(DictKey, ActualDict.Get(DictKey) + SalesInvoiceLine.Quantity)
+        if DomainLedgerEntry.FindSet() then
+            repeat
+                // Cache the Roid -> Salesperson lookup so we don't hit Customer.Get()
+                // once per ledger entry - only once per distinct registrar.
+                if not RoidToSalesperson.ContainsKey(DomainLedgerEntry.ClientRoid) then
+                    if Customer.Get(DomainLedgerEntry.ClientRoid) then
+                        RoidToSalesperson.Add(DomainLedgerEntry.ClientRoid, Customer."Salesperson Code")
                     else
-                        ActualDict.Add(DictKey, SalesInvoiceLine.Quantity);
-                end;
-        until SalesInvoiceLine.Next() = 0;
-end;    local procedure BuildKey(SalespersonCode: Code[20]; SectionCode: Code[20]; YearValue: Integer; MonthNo: Integer): Text
+                        RoidToSalesperson.Add(DomainLedgerEntry.ClientRoid, '');
+
+                SalespersonCode := RoidToSalesperson.Get(DomainLedgerEntry.ClientRoid);
+                if SalespersonCode = '' then
+                    SalespersonCode := '(UNASSIGNED)';
+
+                if not SalespersonCodes.Contains(SalespersonCode) then
+                    SalespersonCodes.Add(SalespersonCode);
+
+                EntryDate := DT2Date(DomainLedgerEntry.Created);
+                DictKey := BuildKey(SalespersonCode, SectionCode, Date2DMY(EntryDate, 3), Date2DMY(EntryDate, 2));
+                if ActualDict.ContainsKey(DictKey) then
+                    ActualDict.Set(DictKey, ActualDict.Get(DictKey) + 1)
+                else
+                    ActualDict.Add(DictKey, 1);
+            until DomainLedgerEntry.Next() = 0;
+    end;
+
+    local procedure TallyActualFromSalesInvoice(SectionCode: Code[20]; StartDate: Date; EndDate: Date; var ActualDict: Dictionary of [Text, Decimal]; var SalespersonCodes: List of [Code[20]])
+    var
+        SalesInvoiceLine: Record "Sales Invoice Line";
+        SalesInvoiceHeader: Record "Sales Invoice Header";
+        ItemFilter: Text;
+        DictKey: Text;
+        SalespersonCode: Code[20];
+    begin
+        ItemFilter := GetSectionItemFilter(SectionCode);
+        if ItemFilter = '' then
+            exit;
+
+        SalesInvoiceLine.Reset();
+        SalesInvoiceLine.SetRange(Type, SalesInvoiceLine.Type::Item);
+        SalesInvoiceLine.SetFilter("No.", ItemFilter);
+
+        if SalesInvoiceLine.FindSet() then
+            repeat
+                if SalesInvoiceHeader.Get(SalesInvoiceLine."Document No.") then
+                    if (SalesInvoiceHeader."Posting Date" >= StartDate) and (SalesInvoiceHeader."Posting Date" <= EndDate) then begin
+                        SalespersonCode := SalesInvoiceHeader."Salesperson Code";
+                        if SalespersonCode = '' then
+                            SalespersonCode := '(UNASSIGNED)';
+
+                        if not SalespersonCodes.Contains(SalespersonCode) then
+                            SalespersonCodes.Add(SalespersonCode);
+
+                        DictKey := BuildKey(SalespersonCode, SectionCode, Date2DMY(SalesInvoiceHeader."Posting Date", 3), Date2DMY(SalesInvoiceHeader."Posting Date", 2));
+                        if ActualDict.ContainsKey(DictKey) then
+                            ActualDict.Set(DictKey, ActualDict.Get(DictKey) + SalesInvoiceLine.Quantity)
+                        else
+                            ActualDict.Add(DictKey, SalesInvoiceLine.Quantity);
+                    end;
+            until SalesInvoiceLine.Next() = 0;
+    end;
+    
+        local procedure BuildKey(SalespersonCode: Code[20]; SectionCode: Code[20]; YearValue: Integer; MonthNo: Integer): Text
     begin
         exit(SalespersonCode + '|' + SectionCode + '|' + Format(YearValue) + '|' + Format(MonthNo));
     end;
