@@ -44,17 +44,26 @@ Table 69220 "Training Requests"
                     "Planned Budget" := PlanningLineEntry."Planned Budget";
                     "Planned No. to be Trained" := PlanningLineEntry."Planned No. to be Trained";
                     "Training Type" := PlanningLineEntry."Training Type";
-
+                    CalcDuration;
                 end;
             end;
         }
         field(3; "Start DateTime"; Date)
         {
             Editable = false;
+            trigger OnValidate()
+            begin
+                CalcDuration;
+            end;
         }
         field(4; "End DateTime"; Date)
         {
             Editable = false;
+
+            trigger OnValidate()
+            begin
+                CalcDuration;
+            end;
         }
         field(5; "Duration Units"; Option)
         {
@@ -64,7 +73,7 @@ Table 69220 "Training Requests"
         }
         field(6; Duration; Decimal)
         {
-            Editable = true;
+            Editable = false;
         }
         field(7; Cost; Decimal)
         {
@@ -360,6 +369,13 @@ Table 69220 "Training Requests"
     fieldgroups
     {
     }
+    local procedure CalcDuration()
+    begin
+        if ("Start DateTime" <> 0D) and ("End DateTime" <> 0D) then
+            Duration := "End DateTime" - "Start DateTime" + 1
+        else
+            Duration := 0;
+    end;
 
     trigger OnDelete()
     begin

@@ -94,6 +94,7 @@ Table 69221 "Training Participants"
         field(12; "No. of Days"; Integer)
         {
             DataClassification = ToBeClassified;
+            Editable = false;
 
             trigger OnValidate()
             begin
@@ -169,10 +170,18 @@ Table 69221 "Training Participants"
         field(18; "Start Date"; Date)
         {
             DataClassification = ToBeClassified;
+            trigger OnValidate()
+            begin
+                CalcNoOfDays;
+            end;
         }
         field(19; "End Date"; Date)
         {
             DataClassification = ToBeClassified;
+            trigger OnValidate()
+            begin
+                CalcNoOfDays;
+            end;
         }
         field(20; "Memo Id"; Code[30])
         {
@@ -211,6 +220,54 @@ Table 69221 "Training Participants"
     fieldgroups
     {
     }
+    local procedure CalcNoOfDays()
+begin
+    if ("Start Date" <> 0D) and ("End Date" <> 0D) then
+        "No. of Days" := "End Date" - "Start Date" + 1
+    else
+        "No. of Days" := 0;
+
+    CalcCostAmounts;
+end;
+
+local procedure CalcCostAmounts()
+begin
+    TrainingRequests.Reset;
+    TrainingRequests.SetRange(Code, "Training Code");
+    if TrainingRequests.FindSet then begin
+        if TrainingRequests."Training Venue Region Code" <> '' then begin
+            if Destination <> TrainingRequests."Training Venue Region Code" then
+                Error(TXT002, TrainingRequests."Training Venue Region Code");
+
+            if "No. of Days" > TrainingRequests.Duration then
+                Error('The number of days %1 should not be greater than the duration', "No. of Days");
+        end;
+    end;
+    HumanResourcesSetup.Get;
+    if ResourceRec.Get("Employee Code") then begin
+        ResourceRec.Reset;
+        ResourceRec.SetRange("No.", "Employee Code");
+        if ResourceRec.FindSet then begin
+            ResourceCost.SetRange(Code, ResourceRec."Resource Group No.");
+            ResourceCost.SetRange("Work Type Code", Destination);
+            if ResourceCost.FindSet then
+                "Unit Amount" := ResourceCost."Direct Unit Cost";
+
+            if ("Global Dimension 1 Code" = HumanResourcesSetup."HQ Responsibility Center") and
+               ("Training Responsibility Code" = HumanResourcesSetup."HQ Region RC")
+            then
+                "Total Amount" := 0
+            else
+                if ("Global Dimension 1 Code" = HumanResourcesSetup."HQ Region RC") and
+                   ("Training Responsibility Code" = HumanResourcesSetup."HQ Responsibility Center")
+                then
+                    "Total Amount" := 0
+                else
+                    if "Training Responsibility Code" <> "Global Dimension 1 Code" then
+                        "Total Amount" := "Unit Amount" * "No. of Days";
+        end;
+    end;
+end;
 
     var
         HRemp: Record Employee;
