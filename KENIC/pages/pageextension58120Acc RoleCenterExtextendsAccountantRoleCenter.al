@@ -2,7 +2,7 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
 {
     actions
     {
-      
+
         addafter("Domain Customers")
         {
             action("Registrants")
@@ -73,6 +73,14 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     ToolTip = 'View domain renewal counts by registrar for a selected year.';
                     Image = "Report";
                     RunObject = report "Domain Renewals Report";
+                }
+                action("Domain Deletion")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Domain Deletion Report';
+                    ToolTip = 'View domain deletion counts by registrar for a selected year.';
+                    Image = Report;
+                    RunObject = report "Domain Deletion Report";
                 }
 
                 action("Zones")
