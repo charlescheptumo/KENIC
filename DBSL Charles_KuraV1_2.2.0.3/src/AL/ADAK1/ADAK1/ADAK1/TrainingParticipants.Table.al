@@ -8,6 +8,51 @@ Table 69221 "Training Participants"
         {
             AutoIncrement = true;
         }
+        // field(2; "Employee Code"; Code[30])
+        // {
+        //     TableRelation = Employee."No.";
+
+        //     trigger OnValidate()
+        //     var
+        //         TrainingNeed: Record "Advertisement Channels";
+        //     begin
+        //         HRemp.Reset;
+        //         if HRemp.Get("Employee Code") then begin
+        //             "Employee Name" := HRemp."First Name" + ' ' + HRemp."Middle Name" + ' ' + HRemp."Last Name";
+        //             "Job Title" := HRemp."Job Title";
+        //             "Job Description" := HRemp.Position;
+        //             "Global Dimension 1 Code" := HRemp."Global Dimension 1 Code";
+        //             "Global Dimension 2 Code" := HRemp."Global Dimension 2 Code";
+        //             ResourceRec.Reset;
+        //             ResourceRec.SetRange("No.", HRemp."No.");
+        //             if ResourceRec.FindSet then begin
+        //                 //***********Added to validate job group
+
+        //                 TrainingRequests.Reset;
+        //                 TrainingRequests.SetRange(Code, "Training Code");
+        //                 if TrainingRequests.FindSet then begin
+        //                     PlanningLineEntry.Reset;
+        //                     PlanningLineEntry.SetRange("Training Plan Code", TrainingRequests.Code);
+        //                     PlanningLineEntry.SetRange("Course Title", TrainingRequests."Course Title");
+        //                     if PlanningLineEntry.FindSet then begin
+        //                         repeat
+        //                             if PlanningLineEntry."Target Group Code" <> '' then begin
+        //                                 if PlanningLineEntry."Target Group Code" <> ResourceRec."Resource Group No." then
+        //                                     Error(TXT001, TrainingRequests."Course Title", PlanningLineEntry."Target Group Code");
+        //                             end;
+        //                         until PlanningLineEntry.Next = 0
+        //                     end;
+        //                 end;
+        //                 //CHECK THE RC
+        //                 "Training Responsibility Code" := TrainingRequests."Training Responsibility Code";
+        //                 Destination := TrainingRequests."Training Venue Region Code";
+        //                 if "Training Responsibility Code" <> "Global Dimension 1 Code" then
+        //                     "Pay Per Diem" := true;
+        //             end;
+
+        //         end
+        //     end;
+        // }
         field(2; "Employee Code"; Code[30])
         {
             TableRelation = Employee."No.";
@@ -23,13 +68,24 @@ Table 69221 "Training Participants"
                     "Job Description" := HRemp.Position;
                     "Global Dimension 1 Code" := HRemp."Global Dimension 1 Code";
                     "Global Dimension 2 Code" := HRemp."Global Dimension 2 Code";
+
+                    TrainingRequests.Reset;
+                    TrainingRequests.SetRange(Code, "Training Code");
+                    if TrainingRequests.FindSet then begin
+                        //CHECK THE RC
+                        "Training Responsibility Code" := TrainingRequests."Training Responsibility Code";
+                        Destination := TrainingRequests."Training Venue Region Code";
+                        "Start Date" := TrainingRequests."Start DateTime";
+                        "End Date" := TrainingRequests."End DateTime";
+                        CalcNoOfDays;
+                        if "Training Responsibility Code" <> "Global Dimension 1 Code" then
+                            "Pay Per Diem" := true;
+                    end;
+
                     ResourceRec.Reset;
                     ResourceRec.SetRange("No.", HRemp."No.");
                     if ResourceRec.FindSet then begin
                         //***********Added to validate job group
-
-                        TrainingRequests.Reset;
-                        TrainingRequests.SetRange(Code, "Training Code");
                         if TrainingRequests.FindSet then begin
                             PlanningLineEntry.Reset;
                             PlanningLineEntry.SetRange("Training Plan Code", TrainingRequests.Code);
@@ -43,14 +99,8 @@ Table 69221 "Training Participants"
                                 until PlanningLineEntry.Next = 0
                             end;
                         end;
-                        //CHECK THE RC
-                        "Training Responsibility Code" := TrainingRequests."Training Responsibility Code";
-                        Destination := TrainingRequests."Training Venue Region Code";
-                        if "Training Responsibility Code" <> "Global Dimension 1 Code" then
-                            "Pay Per Diem" := true;
-                    end;
-
-                end
+                    end
+                end;
             end;
         }
         field(3; "Employee Name"; Text[60])
@@ -94,6 +144,7 @@ Table 69221 "Training Participants"
         field(12; "No. of Days"; Integer)
         {
             DataClassification = ToBeClassified;
+            Editable = false;
 
             trigger OnValidate()
             begin
@@ -169,10 +220,18 @@ Table 69221 "Training Participants"
         field(18; "Start Date"; Date)
         {
             DataClassification = ToBeClassified;
+            trigger OnValidate()
+            begin
+                CalcNoOfDays;
+            end;
         }
         field(19; "End Date"; Date)
         {
             DataClassification = ToBeClassified;
+            trigger OnValidate()
+            begin
+                CalcNoOfDays;
+            end;
         }
         field(20; "Memo Id"; Code[30])
         {
@@ -211,6 +270,54 @@ Table 69221 "Training Participants"
     fieldgroups
     {
     }
+    local procedure CalcNoOfDays()
+    begin
+        if ("Start Date" <> 0D) and ("End Date" <> 0D) then
+            "No. of Days" := "End Date" - "Start Date" + 1
+        else
+            "No. of Days" := 0;
+
+        CalcCostAmounts;
+    end;
+
+    local procedure CalcCostAmounts()
+    begin
+        TrainingRequests.Reset;
+        TrainingRequests.SetRange(Code, "Training Code");
+        if TrainingRequests.FindSet then begin
+            if TrainingRequests."Training Venue Region Code" <> '' then begin
+                if Destination <> TrainingRequests."Training Venue Region Code" then
+                    Error(TXT002, TrainingRequests."Training Venue Region Code");
+
+                if "No. of Days" > TrainingRequests.Duration then
+                    Error('The number of days %1 should not be greater than the duration', "No. of Days");
+            end;
+        end;
+        HumanResourcesSetup.Get;
+        if ResourceRec.Get("Employee Code") then begin
+            ResourceRec.Reset;
+            ResourceRec.SetRange("No.", "Employee Code");
+            if ResourceRec.FindSet then begin
+                ResourceCost.SetRange(Code, ResourceRec."Resource Group No.");
+                ResourceCost.SetRange("Work Type Code", Destination);
+                if ResourceCost.FindSet then
+                    "Unit Amount" := ResourceCost."Direct Unit Cost";
+
+                if ("Global Dimension 1 Code" = HumanResourcesSetup."HQ Responsibility Center") and
+                   ("Training Responsibility Code" = HumanResourcesSetup."HQ Region RC")
+                then
+                    "Total Amount" := 0
+                else
+                    if ("Global Dimension 1 Code" = HumanResourcesSetup."HQ Region RC") and
+                       ("Training Responsibility Code" = HumanResourcesSetup."HQ Responsibility Center")
+                    then
+                        "Total Amount" := 0
+                    else
+                        if "Training Responsibility Code" <> "Global Dimension 1 Code" then
+                            "Total Amount" := "Unit Amount" * "No. of Days";
+            end;
+        end;
+    end;
 
     var
         HRemp: Record Employee;
