@@ -81,6 +81,15 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     ToolTip = 'View the list of deleted domains and their details.';
                     Image = List;
                     RunObject = page "Domain Deletion List";
+                }//page 58180 "Domain DUM Statistics List"
+
+                action("Domains Under Management Report")
+                {
+                    ApplicationArea = All;
+                    Caption = 'DUM';
+                    ToolTip = 'View the list of domains under management and their statistics by registrar.';
+                    Image = List;
+                    RunObject = page "Domain DUM Statistics List";
                 }
 
                 action("Zones")

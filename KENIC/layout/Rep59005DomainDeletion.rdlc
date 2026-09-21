@@ -10,67 +10,6 @@
       <rd:DataSourceID>18af4cb4-fdfc-4b1e-a0b1-e8a8f8b3fdaa</rd:DataSourceID>
     </DataSource>
   </DataSources>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-      <Fields>
-        <Field Name="CompanyInfo_Name">
-          <DataField>CompanyInfo_Name</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Picture">
-          <DataField>CompanyInfo_Picture</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Address">
-          <DataField>CompanyInfo_Address</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Address2">
-          <DataField>CompanyInfo_Address2</DataField>
-        </Field>
-        <Field Name="CompanyInfo_City">
-          <DataField>CompanyInfo_City</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Phone">
-          <DataField>CompanyInfo_Phone</DataField>
-        </Field>
-        <Field Name="CompanyInfo_Email">
-          <DataField>CompanyInfo_Email</DataField>
-        </Field>
-        <Field Name="Start_Date">
-          <DataField>Start_Date</DataField>
-        </Field>
-        <Field Name="End_Date">
-          <DataField>End_Date</DataField>
-        </Field>
-        <Field Name="Registrar_Roid">
-          <DataField>Registrar_Roid</DataField>
-        </Field>
-        <Field Name="Registrar_Name">
-          <DataField>Registrar_Name</DataField>
-        </Field>
-        <Field Name="Year">
-          <DataField>Year</DataField>
-        </Field>
-        <Field Name="Month_No">
-          <DataField>Month_No</DataField>
-        </Field>
-        <Field Name="Month_Name">
-          <DataField>Month_Name</DataField>
-        </Field>
-        <Field Name="Registration_Count">
-          <DataField>Registration_Count</DataField>
-        </Field>
-        <Field Name="Renewal_Count">
-          <DataField>Renewal_Count</DataField>
-        </Field>
-        <Field Name="Deleted_Count">
-          <DataField>Deleted_Count</DataField>
-        </Field>
-      </Fields>
-    </DataSet>
-  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -772,12 +711,6 @@
       </Page>
     </ReportSection>
   </ReportSections>
-  <ReportParametersLayout>
-    <GridLayoutDefinition>
-      <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
-    </GridLayoutDefinition>
-  </ReportParametersLayout>
   <Code>
     Public Function BlankZero(ByVal Value As Decimal)
         if Value = 0 then
@@ -818,4 +751,65 @@
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="CompanyInfo_Name">
+          <DataField>CompanyInfo_Name</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Picture">
+          <DataField>CompanyInfo_Picture</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Address">
+          <DataField>CompanyInfo_Address</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Address2">
+          <DataField>CompanyInfo_Address2</DataField>
+        </Field>
+        <Field Name="CompanyInfo_City">
+          <DataField>CompanyInfo_City</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Phone">
+          <DataField>CompanyInfo_Phone</DataField>
+        </Field>
+        <Field Name="CompanyInfo_Email">
+          <DataField>CompanyInfo_Email</DataField>
+        </Field>
+        <Field Name="Start_Date">
+          <DataField>Start_Date</DataField>
+        </Field>
+        <Field Name="End_Date">
+          <DataField>End_Date</DataField>
+        </Field>
+        <Field Name="Registrar_Roid">
+          <DataField>Registrar_Roid</DataField>
+        </Field>
+        <Field Name="Registrar_Name">
+          <DataField>Registrar_Name</DataField>
+        </Field>
+        <Field Name="Year">
+          <DataField>Year</DataField>
+        </Field>
+        <Field Name="Month_No">
+          <DataField>Month_No</DataField>
+        </Field>
+        <Field Name="Month_Name">
+          <DataField>Month_Name</DataField>
+        </Field>
+        <Field Name="Registration_Count">
+          <DataField>Registration_Count</DataField>
+        </Field>
+        <Field Name="Renewal_Count">
+          <DataField>Renewal_Count</DataField>
+        </Field>
+        <Field Name="Deleted_Count">
+          <DataField>Deleted_Count</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
 </Report>
