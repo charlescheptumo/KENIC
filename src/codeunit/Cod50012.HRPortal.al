@@ -1472,6 +1472,21 @@ Codeunit 50012 "HRPortal"
         exit(status);
     end;
 
+    local procedure SyncParticipantsWithRequisition(TrainingReq: Record "Training Requests")
+    var
+        TrainingParticipant: Record "Training Participants";
+    begin
+        TrainingParticipant.Reset();
+        TrainingParticipant.SetRange("Training Code", TrainingReq.Code);
+        if TrainingParticipant.FindSet(true) then
+            repeat
+                TrainingParticipant."No. of Days" := Round(TrainingReq.Duration, 1);
+                TrainingParticipant.Destination := TrainingReq."Training Venue Region Code";
+                TrainingParticipant."Training Responsibility Code" := TrainingReq."Training Responsibility Code";
+                TrainingParticipant.Modify();
+            until TrainingParticipant.Next() = 0;
+    end;
+
     procedure addTrainingParticipant(docNo: Code[20]; empCode: Code[30]; glAccount: Code[30]) status: Text
     var
         TrainingReq: Record "Training Requests";
