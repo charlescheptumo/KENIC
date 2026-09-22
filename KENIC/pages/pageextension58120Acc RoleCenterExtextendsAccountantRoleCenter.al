@@ -60,12 +60,11 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                 action("Domain Registration")
                 {
                     ApplicationArea = All;
-                    Caption = 'Domain Registrations Report';
-                    ToolTip = 'View domain registration counts by registrar for a selected year.';
-                    Image = "Report";
-                    RunObject = report "Domain Registrations Report";
+                    Caption = 'Domain Registration';
+                    ToolTip = 'View domain registration statistics by registrar.';
+                    Image = List;
+                    RunObject = page "Domain Registration Stat List";
                 }
-
                 action("Domain Renewal")
                 {
                     ApplicationArea = All;
