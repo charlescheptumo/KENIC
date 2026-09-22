@@ -1054,6 +1054,9 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
             DataClassification = ToBeClassified;
             TableRelation = "No. Series";
         }
+         field(50103; "CEO Email"; Text[250])
+        {
+        }
     }
 
     var

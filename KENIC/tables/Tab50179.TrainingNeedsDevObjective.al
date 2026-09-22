@@ -54,5 +54,12 @@ table 50179 "Training Needs Dev Objective"
         {
             Clustered = true;
         }
+
+    }
+    fieldgroups
+    {
+        fieldgroup(Dropdown; "Training Header No", Competency, "Development Goal Year", Purpose, Priority, "Developmental Activity", "Evidence of Accomplishment")
+        {
+        }
     }
 }
