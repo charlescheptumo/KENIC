@@ -27,6 +27,23 @@ page 58181 "Domain Registration Stat List"
 
     actions
     {
+        area(processing)
+        {
+            action(RefreshNow)
+            {
+                Caption = 'Refresh Now';
+                ApplicationArea = All;
+                Image = Refresh;
+
+                trigger OnAction()
+                var
+                    ReportMgt: Codeunit "Domain Registration Report Mgt";
+                begin
+                    ReportMgt.RefreshStatistics(DMY2Date(1, 1, Date2DMY(Today, 3)), Today);
+                    CurrPage.Update(false);
+                end;
+            }
+        }
         area(reporting)
         {
             action(DomainRegistrationsReport)
@@ -42,13 +59,11 @@ page 58181 "Domain Registration Stat List"
 
     trigger OnOpenPage()
     var
-        ReportMgt: Codeunit "Domain Registration Report Mgt";
         CurrentYear: Integer;
         CurrentMonth: Integer;
     begin
         CurrentYear := Date2DMY(Today, 3);
         CurrentMonth := Date2DMY(Today, 2);
-        ReportMgt.RefreshStatistics(DMY2Date(1, 1, CurrentYear), Today);
 
         Rec.Reset();
         if Rec.FindSet() then
