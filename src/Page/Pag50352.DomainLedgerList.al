@@ -14,6 +14,8 @@ page 50352 "Domain Ledger List"
     InsertAllowed = false;
     DeleteAllowed = true;
     Editable = true;
+    Permissions = tabledata "Sales Invoice Header" = m,
+              tabledata "Sales Cr.Memo Header" = m;
 
     layout
     {
@@ -427,8 +429,9 @@ page 50352 "Domain Ledger List"
                     SalesHeader."Posting No. Series" := '';
                     SalesHeader.Insert(false);
                     SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
-                    // SalesHeader.Validate("Posting Date", Today);
-                    // SalesHeader.Validate("Document Date", Today);
+                  //  Message('Rec.Created = %1, DT2Date = %2', Rec.Created, DT2Date(Rec.Created));
+                    SalesHeader.Validate("Posting Date", DT2Date(Rec.Created));
+                    SalesHeader.Validate("Document Date", DT2Date(Rec.Created));
 
                     SalesHeader.Modify(true);
 

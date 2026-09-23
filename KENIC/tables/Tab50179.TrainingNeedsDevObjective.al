@@ -1,4 +1,3 @@
-
 table 50179 "Training Needs Dev Objective"
 {
     DataClassification = ToBeClassified;
@@ -54,11 +53,14 @@ table 50179 "Training Needs Dev Objective"
         {
             Clustered = true;
         }
-
     }
+
     fieldgroups
     {
         fieldgroup(Dropdown; "Training Header No", Competency, "Development Goal Year", Purpose, Priority, "Developmental Activity", "Evidence of Accomplishment")
+        {
+        }
+        fieldgroup(Lookup; "Training Header No", Competency, "Development Goal Year", Purpose, Priority, "Developmental Activity", "Evidence of Accomplishment")
         {
         }
     }
