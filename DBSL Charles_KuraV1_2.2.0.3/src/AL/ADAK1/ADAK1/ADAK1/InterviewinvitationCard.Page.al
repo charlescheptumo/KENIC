@@ -49,16 +49,16 @@ Page 69722 "Interview invitation Card"
                     Editable = false;
                     ToolTip = 'Specifies the value of the Description field.';
                 }
-                field("Appointed Selection Comm ID"; Rec."Appointed Selection Comm ID")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Appointed Selection Comm ID field.';
-                }
-                field("Selection Committee Chair"; Rec."Selection Committee Chair")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Selection Committee Chair field.';
-                }
+                // field("Appointed Selection Comm ID"; Rec."Appointed Selection Comm ID")
+                // {
+                //     ApplicationArea = Basic;
+                //     ToolTip = 'Specifies the value of the Appointed Selection Comm ID field.';
+                // }
+                // field("Selection Committee Chair"; Rec."Selection Committee Chair")
+                // {
+                //     ApplicationArea = Basic;
+                //     ToolTip = 'Specifies the value of the Selection Committee Chair field.';
+                // }
                 field("Lead HR Officer"; Rec."Lead HR Officer")
                 {
                     ApplicationArea = Basic;
