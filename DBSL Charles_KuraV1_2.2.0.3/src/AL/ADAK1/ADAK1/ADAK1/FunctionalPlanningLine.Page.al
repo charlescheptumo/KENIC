@@ -32,6 +32,11 @@ Page 69742 "Functional Planning Line"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Job Title/Designation field.';
                 }
+                field("Contract Duration"; Rec."Contract Duration")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Job Title/Designation field.';
+                }
                 field("Primary Recruitment Reason"; Rec."Primary Recruitment Reason")
                 {
                     ApplicationArea = Basic;

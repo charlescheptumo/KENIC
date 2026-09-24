@@ -68,8 +68,8 @@ Table 69600 "Company Positions"
         field(11; "Employment Type"; Option)
         {
             DataClassification = ToBeClassified;
-            OptionCaption = 'Permanent,Contract,Casual,Secondment,Internship,Attachment,Volunteer';
-            OptionMembers = Permanent,Contract,Casual,Secondment,Internship,Attachment,Volunteer;
+            OptionCaption = 'Open Ended,Fixed-term Contract,Casual,Secondment,Internship,Attachment,Volunteer';
+            OptionMembers = "Open Ended","Fixed-term Contract",Casual,Secondment,Internship,Attachment,Volunteer;
         }
         field(12; Directorate; Code[30])
         {
@@ -209,6 +209,10 @@ Table 69600 "Company Positions"
             OptionMembers = Employee,Resource,Intern,"Management Trainee";
         }
         field(37; "Maximum Monthly Salary (LCY)"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(38; "Contract Duration"; DateFormula)
         {
             DataClassification = ToBeClassified;
         }

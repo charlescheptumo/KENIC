@@ -31,6 +31,7 @@ Page 69614 "Establishment Position"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Directorate Code field.';
+                    Visible = false;
                 }
                 field("Department Code"; Rec."Department Code")
                 {

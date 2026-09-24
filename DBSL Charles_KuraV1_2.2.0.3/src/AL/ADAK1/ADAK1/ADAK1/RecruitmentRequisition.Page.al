@@ -68,6 +68,7 @@ Page 69627 "Recruitment Requisition"
                     ApplicationArea = Basic;
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Directorate field.';
+                    Visible = false;
                 }
                 field(Department; Rec.Department)
                 {
@@ -80,6 +81,7 @@ Page 69627 "Recruitment Requisition"
                     ApplicationArea = Basic;
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Region field.';
+                    Visible = false;
                 }
                 field("Primary Recruitment Reason"; Rec."Primary Recruitment Reason")
                 {
@@ -160,6 +162,11 @@ Page 69627 "Recruitment Requisition"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Planned Employment End Date field.';
+                }
+                field("Contract Duration"; Rec."Contract Duration")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Contract Duration field.';
                 }
             }
             group("Recruitment Budget")

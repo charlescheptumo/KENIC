@@ -117,7 +117,7 @@ Table 69616 "Recruitment Planning Line"
             TableRelation = if ("Position Category" = const(Employee)) "Company Positions"."Position ID" where(Department = field(Department), Blocked = const(false))
 
             else
-            if ("Position Category" = const(Resource)) "Company Positions"."Position ID" where("Position Category" = const(Resource));
+            if ("Position Category" = const(Intern)) "Company Positions"."Position ID" where("Position Category" = const(Intern));
 
             trigger OnValidate()
             var
@@ -145,6 +145,7 @@ Table 69616 "Recruitment Planning Line"
                             "Staff Establishment" := CompanyPositions."Approved Establishment";
                             "Hierarchically Reports To" := CompanyPositions."Directly Reports To";
                             "Functionally  Reports To" := CompanyPositions."Indirectly Reports To";
+                            "Contract Duration" := CompanyPositions."Contract Duration";
                         end;
                     end;
                     if RecruitmentPlan."Recruitment Plan Type" = RecruitmentPlan."recruitment plan type"::"Functional Plan"
@@ -477,8 +478,12 @@ Table 69616 "Recruitment Planning Line"
         field(45; "Position Category"; Option)
         {
             DataClassification = ToBeClassified;
-            OptionCaption = 'Employee,Resource';
-            OptionMembers = Employee,Resource;
+            OptionCaption = 'Employee,Intern';
+            OptionMembers = Employee,Intern;
+        }
+        field(46; "Contract Duration"; dateformula)
+        {
+            DataClassification = ToBeClassified;
         }
     }
 

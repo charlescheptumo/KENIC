@@ -28,6 +28,7 @@ Table 69615 "Recruitment Plan Position"
                             "Job Title/Designation" := CompanyPositions."Job Title";
                             "Current Headcount" := CompanyPositions."No of Active Contracts";
                             "Staff Establishment" := CompanyPositions."Approved Establishment";
+                            "Contract Duration" := CompanyPositions."Contract Duration";
                         end;
                     end else begin
                         EstablishmentPlanPosition.Reset;
@@ -42,6 +43,7 @@ Table 69615 "Recruitment Plan Position"
                             "Current Headcount" := EstablishmentPlanPosition."Actual Active";
                             Department := EstablishmentPlanPosition."Department Code";
                             Directorate := EstablishmentPlanPosition."Directorate Code";
+                            "Contract Duration" := CompanyPositions."Contract Duration";
                         end;
                     end;
                 end;
@@ -95,6 +97,10 @@ Table 69615 "Recruitment Plan Position"
             DataClassification = ToBeClassified;
             OptionCaption = 'Open,Limited-Internal Staff,Limited-External Candidates';
             OptionMembers = Open,"Limited-Internal Staff","Limited-External Candidates";
+        }
+        field(14; "Contract Duration"; dateformula)
+        {
+            DataClassification = ToBeClassified;
         }
     }
 

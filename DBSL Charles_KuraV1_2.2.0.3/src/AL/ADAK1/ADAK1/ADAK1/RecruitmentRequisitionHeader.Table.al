@@ -53,6 +53,7 @@ Table 69619 "Recruitment Requisition Header"
                     "Default Terms of Service Code" := CompanyPositions."Default Terms of Service";
                     "Current Headcount" := CompanyPositions."No of Active Contracts";
                     "Staff Establishment" := CompanyPositions."Approved Establishment";
+                    "Contract Duration" := CompanyPositions."Contract Duration";
                 end;
                 PlanningLine.Reset;
                 PlanningLine.SetRange("Position ID", "Position ID");
@@ -391,6 +392,10 @@ Table 69619 "Recruitment Requisition Header"
             TableRelation = "Recruitment Requisition Header" where("Document Type" = filter("Recruitment Requisition"));
         }
         field(60; "Directly reports to"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(61; "Contract Duration"; dateformula)
         {
             DataClassification = ToBeClassified;
         }
