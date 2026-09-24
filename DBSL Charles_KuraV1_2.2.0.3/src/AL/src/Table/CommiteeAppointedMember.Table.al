@@ -97,6 +97,8 @@ Table 69639 "Commitee Appointed Member"
                     "ID/Passport No" := Employee."ID Number";
                     "Member Name" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
                     "Member Email" := Employee."E-Mail";
+                    "ID/Passport No" := Employee."ID Number";
+                    "Tax Registration (PIN) No." := Employee."PIN Number";
                 end
             end;
         }
