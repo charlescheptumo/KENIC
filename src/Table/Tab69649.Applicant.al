@@ -333,6 +333,10 @@ Table 69649 "Applicant"
         {
             DataClassification = ToBeClassified;
         }
+        field(57; "Expected Salary"; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

@@ -76,6 +76,11 @@ Page 69673 "Job Applicant Qualification"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Expiration Date field.';
                 }
+                field("Terms of Service"; Rec."Terms of Service")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Terms of service field.';
+                }
             }
         }
         area(factboxes)

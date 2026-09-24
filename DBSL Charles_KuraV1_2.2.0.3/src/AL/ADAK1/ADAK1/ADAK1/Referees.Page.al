@@ -71,6 +71,11 @@ Page 69676 "Referees"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Years Known field.';
                 }
+                field("Other referee specification"; Rec."Other referee specification")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Other referee specification field.';
+                }
             }
         }
         area(factboxes)
