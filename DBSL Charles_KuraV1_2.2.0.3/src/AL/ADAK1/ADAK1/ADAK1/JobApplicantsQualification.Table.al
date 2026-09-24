@@ -121,8 +121,8 @@ Table 69647 "Job Applicants Qualification"
         field(26; "Terms of Service"; Option)
         {
             DataClassification = ToBeClassified;
-            OptionCaption = ' ,Permanent and Pensionable,Contract,Casual,Internship';
-            OptionMembers = " ","Permanent and Pensionable",Contract,Casual,Internship;
+            OptionCaption = ' ,Permanent and Pensionable,Contract,Casual,Internship,Volunteer';
+            OptionMembers = " ","Permanent and Pensionable",Contract,Casual,Internship,Volunteer;
         }
         field(27; "Experience Years"; Text[30])
         {

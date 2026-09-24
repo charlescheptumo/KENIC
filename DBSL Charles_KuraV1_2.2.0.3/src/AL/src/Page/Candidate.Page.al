@@ -202,6 +202,11 @@ Page 69677 "Candidate"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Management Experience (Years) field.';
                 }
+                field("Expected Salary"; Rec."Expected Salary")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Expected salary field.';
+                }
                 group(Administration)
                 {
                     field("Employee No"; Rec."Employee No")
