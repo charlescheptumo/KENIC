@@ -93,6 +93,7 @@ Table 69715 "Candidate Interview Line"
         field(13; "Assigned Panel ID"; Code[30])
         {
             DataClassification = ToBeClassified;
+             TableRelation = "Commitee Appointment Voucher";
         }
         field(14; "Interview Venue"; Text[300])
         {
