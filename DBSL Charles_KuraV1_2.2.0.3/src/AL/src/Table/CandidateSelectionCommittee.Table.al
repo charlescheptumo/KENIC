@@ -85,11 +85,21 @@ Table 69676 "Candidate Selection Committee"
     }
 
 
+    // keys
+    // {
+    //     key(Key1; "Document No.", "Member No.")
+    //     {
+    //         Clustered = true;
+    //     }
+    // }
     keys
     {
-        key(Key1; "Document No.", "Member No.")
+        key(Key1; "Appointed Committee ID", "Candidate No.", "Member No.")
         {
             Clustered = true;
+        }
+        key(Key2; "Appointed Committee ID", "Candidate No.", "Line No.")
+        {
         }
     }
 
