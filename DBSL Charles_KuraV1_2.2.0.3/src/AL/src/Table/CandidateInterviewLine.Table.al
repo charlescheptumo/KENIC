@@ -120,19 +120,16 @@ Table 69715 "Candidate Interview Line"
         {
             Caption = 'Final Interview Panel Outcome';
             DataClassification = ToBeClassified;
+          
             OptionCaption = ' ,Unsuccesful,Succesful';
             OptionMembers = " ",Unsuccesful,Succesful;
         }
         field(20; "Interview Panel Score %"; Decimal)
         {
             Caption = 'Final Interview Panel Score %';
- 
-            CalcFormula = average("Candidate Interview Record"."Panel Interview Score %" where(
-                                        "Interview Invitation No." = field("Document No."),
-                                        "Application No." = field("Application No."),
-                                        "Assigned Panel ID" = field("Assigned Panel ID")));
+  
+            DataClassification = ToBeClassified;
             Editable = false;
-            FieldClass = FlowField;
         }
         field(21; "Interview Panel Remarks"; Text[350])
         {
@@ -272,6 +269,36 @@ Table 69715 "Candidate Interview Line"
     fieldgroups
     {
     }
+
+   
+    procedure UpdateInterviewPanelScore()
+    var
+        CandidateInterviewRecord: Record "Candidate Interview Record";
+        TotalScore: Decimal;
+        RecordCount: Integer;
+        NewScore: Decimal;
+    begin
+        CandidateInterviewRecord.Reset();
+        CandidateInterviewRecord.SetRange("Interview Invitation No.", "Document No.");
+        CandidateInterviewRecord.SetRange("Application No.", "Application No.");
+        CandidateInterviewRecord.SetRange("Assigned Panel ID", "Assigned Panel ID");
+        if CandidateInterviewRecord.FindSet() then
+            repeat
+                CandidateInterviewRecord.CalcFields("Panel Interview Score %");
+                TotalScore += CandidateInterviewRecord."Panel Interview Score %";
+                RecordCount += 1;
+            until CandidateInterviewRecord.Next() = 0;
+
+        if RecordCount > 0 then
+            NewScore := TotalScore / RecordCount
+        else
+            NewScore := 0;
+
+        if NewScore <> "Interview Panel Score %" then begin
+            "Interview Panel Score %" := NewScore;
+            Modify();
+        end;
+    end;
 
     var
         JobApplications: Record "Job Applications";

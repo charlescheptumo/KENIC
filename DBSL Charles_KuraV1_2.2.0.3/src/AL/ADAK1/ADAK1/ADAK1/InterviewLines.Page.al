@@ -337,4 +337,14 @@ Page 69723 "Interview Lines"
             }
         }
     }
+
+    trigger OnAfterGetRecord()
+    begin
+        Rec.UpdateInterviewPanelScore();
+    end;
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        Rec.UpdateInterviewPanelScore();
+    end;
 }
