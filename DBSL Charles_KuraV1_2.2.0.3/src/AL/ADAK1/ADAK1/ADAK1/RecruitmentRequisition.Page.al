@@ -161,6 +161,11 @@ Page 69627 "Recruitment Requisition"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Planned Employment End Date field.';
                 }
+                field("Contract Duration"; Rec."Contract Duration")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Contract Duration field.';
+                }
             }
             group("Recruitment Budget")
             {
