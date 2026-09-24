@@ -75,12 +75,24 @@ Page 69723 "Interview Lines"
                 field("Interview Panel Score %"; Rec."Interview Panel Score %")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Final Interview Panel Score % field.';
+                    Editable = false;
+                    ToolTip = 'Specifies the average score given by the interview panel members. Choose the value to see the individual panel members'' scoresheets for this candidate.';
+
+                    trigger OnDrillDown()
+                    var
+                        CandidateInterviewRecord: Record "Candidate Interview Record";
+                    begin
+                        CandidateInterviewRecord.Reset();
+                        CandidateInterviewRecord.SetRange("Interview Invitation No.", Rec."Document No.");
+                        CandidateInterviewRecord.SetRange("Application No.", Rec."Application No.");
+                        CandidateInterviewRecord.SetRange("Assigned Panel ID", Rec."Assigned Panel ID");
+                        Page.RunModal(Page::"Candidate Interview Records", CandidateInterviewRecord);
+                    end;
                 }
                 field("Interview Panel Outcome"; Rec."Interview Panel Outcome")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Final Interview Panel Outcome field.';
+                    ToolTip = 'Specifies whether HR has marked this candidate successful or unsuccessful, based on the panel score.';
                 }
                 field("Interview Panel Remarks"; Rec."Interview Panel Remarks")
                 {
@@ -248,7 +260,6 @@ Page 69723 "Interview Lines"
                     LineNo: Integer;
                     MaxLineNo: Integer;
                 begin
-                   
                     CandidateSelectionCommittee.Reset();
                     CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
                     CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
@@ -259,13 +270,11 @@ Page 69723 "Interview Lines"
 
                     LineNo := MaxLineNo;
 
-            
                     CommiteeAppointedMember.Reset();
                     CommiteeAppointedMember.SetRange("Document No.", Rec."Assigned Panel ID");
 
                     if CommiteeAppointedMember.FindSet() then begin
                         repeat
-                          
                             CandidateSelectionCommittee.Reset();
                             CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
                             CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
@@ -285,7 +294,6 @@ Page 69723 "Interview Lines"
                         until CommiteeAppointedMember.Next() = 0;
                     end;
 
-             
                     CandidateSelectionCommittee.Reset();
                     CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
                     CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");

@@ -126,7 +126,13 @@ Table 69715 "Candidate Interview Line"
         field(20; "Interview Panel Score %"; Decimal)
         {
             Caption = 'Final Interview Panel Score %';
-            DataClassification = ToBeClassified;
+ 
+            CalcFormula = average("Candidate Interview Record"."Panel Interview Score %" where(
+                                        "Interview Invitation No." = field("Document No."),
+                                        "Application No." = field("Application No."),
+                                        "Assigned Panel ID" = field("Assigned Panel ID")));
+            Editable = false;
+            FieldClass = FlowField;
         }
         field(21; "Interview Panel Remarks"; Text[350])
         {
@@ -270,4 +276,3 @@ Table 69715 "Candidate Interview Line"
     var
         JobApplications: Record "Job Applications";
 }
-
