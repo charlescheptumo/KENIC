@@ -5,6 +5,7 @@ Page 69723 "Interview Lines"
     SourceTable = "Candidate Interview Line";
     ApplicationArea = All;
 
+
     layout
     {
         area(content)
@@ -229,6 +230,70 @@ Page 69723 "Interview Lines"
     {
         area(processing)
         {
+            action("Interview Panels")
+            {
+                ApplicationArea = Basic;
+                Image = SelectEntries;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                ToolTip = 'Opens the interview panel members assigned to score this candidate.';
+                RunObject = Page "Candidate Shortlist Committee";
+
+                trigger OnAction()
+                var
+                    CandidateSelectionCommittee: Record "Candidate Selection Committee";
+                    CommiteeAppointedMember: Record "Commitee Appointed Member";
+                    CandidateShortlistPage: Page "Candidate Shortlist Committee";
+                    LineNo: Integer;
+                    MaxLineNo: Integer;
+                begin
+                   
+                    CandidateSelectionCommittee.Reset();
+                    CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
+                    CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
+                    if CandidateSelectionCommittee.FindLast() then
+                        MaxLineNo := CandidateSelectionCommittee."Line No."
+                    else
+                        MaxLineNo := 0;
+
+                    LineNo := MaxLineNo;
+
+            
+                    CommiteeAppointedMember.Reset();
+                    CommiteeAppointedMember.SetRange("Document No.", Rec."Assigned Panel ID");
+
+                    if CommiteeAppointedMember.FindSet() then begin
+                        repeat
+                          
+                            CandidateSelectionCommittee.Reset();
+                            CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
+                            CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
+                            CandidateSelectionCommittee.SetRange("Member No.", CommiteeAppointedMember."Member No.");
+
+                            // Only insert if the member doesn't exist yet
+                            if not CandidateSelectionCommittee.FindFirst() then begin
+                                LineNo += 10000;
+                                CandidateSelectionCommittee.Init();
+                                CandidateSelectionCommittee."Appointed Committee ID" := Rec."Assigned Panel ID";
+                                CandidateSelectionCommittee."Candidate No." := Rec."Candidate No.";
+                                CandidateSelectionCommittee."Line No." := LineNo;
+                                CandidateSelectionCommittee."Member No." := CommiteeAppointedMember."Member No.";
+                                CandidateSelectionCommittee.Validate(CandidateSelectionCommittee."Member No.");
+                                CandidateSelectionCommittee.Insert();
+                            end;
+                        until CommiteeAppointedMember.Next() = 0;
+                    end;
+
+             
+                    CandidateSelectionCommittee.Reset();
+                    CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
+                    CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
+                    CandidateShortlistPage.SetTableView(CandidateSelectionCommittee);
+                    CandidateShortlistPage.Run();
+                end;
+            }
+
             group(Details)
             {
                 action("Ability Test History")
@@ -265,4 +330,3 @@ Page 69723 "Interview Lines"
         }
     }
 }
-

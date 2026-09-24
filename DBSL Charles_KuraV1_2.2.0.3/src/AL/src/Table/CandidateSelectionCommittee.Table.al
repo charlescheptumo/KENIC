@@ -66,6 +66,15 @@ Table 69676 "Candidate Selection Committee"
         {
             DataClassification = ToBeClassified;
         }
+         field(11; "Candidate No."; Code[50])
+        {
+            DataClassification = ToBeClassified;
+        }
+          field(12; "Line No."; Integer)
+        {
+            DataClassification = ToBeClassified;
+            AutoIncrement = true;
+        }
     }
 
     keys
