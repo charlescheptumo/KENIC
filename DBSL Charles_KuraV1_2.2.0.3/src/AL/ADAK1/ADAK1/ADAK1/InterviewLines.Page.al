@@ -251,7 +251,6 @@ Page 69723 "Interview Lines"
                 PromotedIsBig = true;
                 ToolTip = 'Opens the interview panel members assigned to score this candidate.';
                 RunObject = Page "Candidate Shortlist Committee";
-
                 trigger OnAction()
                 var
                     CandidateSelectionCommittee: Record "Candidate Selection Committee";
@@ -260,6 +259,9 @@ Page 69723 "Interview Lines"
                     LineNo: Integer;
                     MaxLineNo: Integer;
                 begin
+                    if (Rec."Assigned Panel ID" = '') or (Rec."Candidate No." = '') then
+                        Error('Select an interview line with an assigned panel and candidate before opening the interview panel.');
+
                     CandidateSelectionCommittee.Reset();
                     CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
                     CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
@@ -280,7 +282,6 @@ Page 69723 "Interview Lines"
                             CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
                             CandidateSelectionCommittee.SetRange("Member No.", CommiteeAppointedMember."Member No.");
 
-                            // Only insert if the member doesn't exist yet
                             if not CandidateSelectionCommittee.FindFirst() then begin
                                 LineNo += 10000;
                                 CandidateSelectionCommittee.Init();
@@ -295,11 +296,14 @@ Page 69723 "Interview Lines"
                     end;
 
                     CandidateSelectionCommittee.Reset();
+                    CandidateSelectionCommittee.FilterGroup(2);
                     CandidateSelectionCommittee.SetRange("Appointed Committee ID", Rec."Assigned Panel ID");
                     CandidateSelectionCommittee.SetRange("Candidate No.", Rec."Candidate No.");
+                    CandidateSelectionCommittee.FilterGroup(0);
                     CandidateShortlistPage.SetTableView(CandidateSelectionCommittee);
                     CandidateShortlistPage.Run();
                 end;
+
             }
 
             group(Details)
