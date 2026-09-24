@@ -68,6 +68,11 @@ Page 69601 "Position Card"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Default Terms of Service field.';
                 }
+                field("Position Category"; Rec."Position Category")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Position Category field.';
+                }
                 field("Employment Type"; Rec."Employment Type")
                 {
                     ApplicationArea = Basic;
