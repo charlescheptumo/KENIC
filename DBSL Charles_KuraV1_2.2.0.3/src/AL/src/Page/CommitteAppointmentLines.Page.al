@@ -16,6 +16,12 @@ Page 69659 "Committe Appointment Lines"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Member No. field.';
                 }
+                field("Staff No."; Rec."Staff No.")
+                {
+                    ApplicationArea = Basic;
+                    Editable = true;
+                    ToolTip = 'Specifies the value of the Staff No. field.';
+                }
                 field("Member Type"; Rec."Member Type")
                 {
                     ApplicationArea = All;
@@ -50,12 +56,7 @@ Page 69659 "Committe Appointment Lines"
                     Editable = false;
                     ToolTip = 'Specifies the value of the Designation field.';
                 }
-                field("Staff No."; Rec."Staff No.")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Staff No. field.';
-                }
+                
                 field("ID/Passport No"; Rec."ID/Passport No")
                 {
                     ApplicationArea = Basic;
