@@ -145,6 +145,7 @@ Table 69616 "Recruitment Planning Line"
                             "Staff Establishment" := CompanyPositions."Approved Establishment";
                             "Hierarchically Reports To" := CompanyPositions."Directly Reports To";
                             "Functionally  Reports To" := CompanyPositions."Indirectly Reports To";
+                            "Contract Duration" := CompanyPositions."Contract Duration";
                         end;
                     end;
                     if RecruitmentPlan."Recruitment Plan Type" = RecruitmentPlan."recruitment plan type"::"Functional Plan"
@@ -479,6 +480,10 @@ Table 69616 "Recruitment Planning Line"
             DataClassification = ToBeClassified;
             OptionCaption = 'Employee,Resource';
             OptionMembers = Employee,Resource;
+        }
+        field(46; "Contract Duration"; dateformula)
+        {
+            DataClassification = ToBeClassified;
         }
     }
 
