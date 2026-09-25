@@ -58,11 +58,13 @@ Page 80035 "Strategy Workplan Lines"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the perfomance Indicator field.';
+                    Visible = false;
                 }
                 field(Outcome; Rec.Outcome)
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Outcome field.';
+                    Visible = false;
                 }
                 field("Key Performance Indicator"; Rec."Key Performance Indicator")
                 {
@@ -94,13 +96,13 @@ Page 80035 "Strategy Workplan Lines"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Imported Annual Target Qty field.';
-                    visible = false;
+                    visible = true;
                 }
                 field("Imported Annual Budget Est."; Rec."Imported Annual Budget Est.")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Imported Annual Budget Est. field.';
-                    visible = false;
+                    visible = true;
                 }
                 field("Primary Directorate"; Rec."Primary Directorate")
                 {
@@ -119,14 +121,14 @@ Page 80035 "Strategy Workplan Lines"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Department field.';
-                    visible = false;
+                    visible = true;
                 }
                 field("Primary Department Name"; Rec."Primary Department Name")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Primary Department Name field.';
-                    visible = false;
+                    visible = true;
                 }
                 field("Year Reporting Code"; Rec."Year Reporting Code")
                 {
