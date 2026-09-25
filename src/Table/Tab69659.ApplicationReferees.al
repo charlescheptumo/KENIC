@@ -114,6 +114,10 @@ Table 69659 "Application Referees"
         {
             DataClassification = ToBeClassified;
         }
+        field(17; "Other referee specification"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
