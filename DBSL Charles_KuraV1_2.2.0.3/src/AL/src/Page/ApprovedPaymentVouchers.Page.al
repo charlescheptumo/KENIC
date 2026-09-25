@@ -269,7 +269,66 @@ Page 57002 "Approved Payment Vouchers"
                 end;
 
             }
+ action("Batch EFT")
+            {
+                ApplicationArea = Basic;
+                Image = SendTo;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+              //  Visible = not SelectionMode;
+                ToolTip = 'Executes the Batch EFT action.';
 
+                trigger OnAction()
+                var
+                    DocNo: Code[100];
+                    PVLines: Record "PV Lines";
+                    Payments: Record Payments;
+                    CashMgt: Record "Cash Management Setup";
+                    BatchEFTHeader: Record "Batch EFT Voucher";
+                    BatchEFTLines: Record "Batch EFT Lines";
+                    NoSeriesManagement: Codeunit "No. Series";
+                    LineNo: Integer;
+                begin
+                    CashMgt.Get();
+                    Payments.CopyFilters(Rec);
+                    Payments.SetRange(Select, true);
+                   // Payments.SetRange("Pay Mode", 'BANK');
+                    if Payments.IsEmpty() then
+                        Error('No EFT Payment Voucher has been selected.');
+
+                    BatchEFTHeader.Init();
+                    BatchEFTHeader."No." := NoSeriesManagement.GetNextNo(CashMgt."Batch EFT Voucher Nos", WorkDate(), true);
+                    BatchEFTHeader."Created By" := UserId;
+                    BatchEFTHeader.Date := Today;
+                    //BatchEFTHeader."Pay Mode" := 'BANK';
+                    BatchEFTHeader.Insert(true);
+                    DocNo := BatchEFTHeader."No.";
+                    LineNo := 10000;
+
+                    if Payments.FindSet() then
+                        repeat
+                            Payments.CalcFields("Total Net Amount");
+                            PVLines.Reset();
+                            PVLines.SetRange(No, Payments."No.");
+                            if not PVLines.FindFirst() then
+                                Error('Payment Voucher %1 has no lines.', Payments."No.");
+
+                            BatchEFTLines.Init();
+                            BatchEFTLines."Document No" := DocNo;
+                            BatchEFTLines."Line No" := LineNo;
+                            BatchEFTLines."Vendor No" := PVLines."Account No";
+                            BatchEFTLines.Validate("Vendor No");
+                            BatchEFTLines."PV No" := Payments."No.";
+                            BatchEFTLines."Net Amount" := Payments."Total Net Amount";
+                            BatchEFTLines.Insert();
+                            LineNo += 10000;
+                        until Payments.Next() = 0;
+
+                    Payments.ModifyAll(Select, false);
+                    Page.Run(Page::"Batch EFT Voucher", BatchEFTHeader);
+                end;
+            }
             action("Archive Document")
             {
                 ApplicationArea = Basic;
