@@ -72,7 +72,7 @@ Page 80417 "Functional AWP Card"
                     ApplicationArea = Basic;
                     Caption = 'AWP Consolidation Template';
                     ToolTip = 'Specifies the value of the AWP Consolidation Template field.';
-                    Visible = false;
+                    Visible = true;
                 }
                 // field("Functional Procurment Plan No"; Rec."Functional Procurment Plan No")
                 // {
