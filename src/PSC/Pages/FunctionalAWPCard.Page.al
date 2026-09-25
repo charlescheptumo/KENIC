@@ -30,7 +30,7 @@ Page 80417 "Functional AWP Card"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Strategy Plan ID field.';
-                    visible = false;
+                    visible = true;
                 }
                 field("Year Reporting Code"; Rec."Year Reporting Code")
                 {
@@ -213,7 +213,7 @@ Page 80417 "Functional AWP Card"
                 Image = Suggest;
                 Promoted = true;
                 PromotedCategory = Process;
-                Visible = false;
+                Visible = true;
                 ToolTip = 'Executes the Suggest Functional lines action.';
 
                 trigger OnAction()
