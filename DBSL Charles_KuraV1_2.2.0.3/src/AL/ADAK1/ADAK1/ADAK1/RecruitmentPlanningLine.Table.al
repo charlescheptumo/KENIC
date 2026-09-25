@@ -192,6 +192,7 @@ Table 69616 "Recruitment Planning Line"
                                 "Staff Establishment" := CompanyPositions."Approved Establishment";
                                 "Hierarchically Reports To" := CompanyPositions."Directly Reports To";
                                 "Functionally  Reports To" := CompanyPositions."Indirectly Reports To";
+                                "Contract Duration" := CompanyPositions."Contract Duration";
                             end;
                             PlanningLine.CalcFields("No. of Active Employees");
                             "Job Title/Designation" := PlanningLine."Job Title/Designation";
