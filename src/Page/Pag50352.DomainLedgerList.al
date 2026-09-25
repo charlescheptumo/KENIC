@@ -258,7 +258,7 @@ page 50352 "Domain Ledger List"
                     PostedSalesInvHeader: Record "Sales Invoice Header";
                     PostedSalesCrMemoHeader: Record "Sales Cr.Memo Header";
                 begin
-                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund']) then
+                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund', 'Membership']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
 
                     if Rec.InvoiceCreated then
@@ -282,7 +282,7 @@ page 50352 "Domain Ledger List"
 
                         CMSetup.Get();
                         RefundDeferralCode := '';
-                        if OrigLedgerEntry.TransType in ['Renewal', 'AutoRenewal', 'Registration'] then begin
+                        if OrigLedgerEntry.TransType in ['Renewal', 'AutoRenewal', 'Registration', 'Membership'] then begin
                             RefundDomainLengthYears := GetDomainLengthYears(OrigLedgerEntry.Created, OrigLedgerEntry.ExDate);
                             if RefundDomainLengthYears > 0 then
                                 RefundDeferralCode := GetDeferralCode(OrigLedgerEntry.TransType, RefundDomainLengthYears, CMSetup);
@@ -417,6 +417,11 @@ page 50352 "Domain Ledger List"
                                 CMSetup.TestField(Transfer);
                                 ItemNo := CMSetup.Transfer;
                             end;
+                        'Membership':
+                            begin
+                                CMSetup.TestField(Membership);
+                                ItemNo := CMSetup.Membership;
+                            end;
                     end;
 
                     InvoiceNo := CopyStr(Format(Rec.ID), 1, 20);
@@ -429,7 +434,7 @@ page 50352 "Domain Ledger List"
                     SalesHeader."Posting No. Series" := '';
                     SalesHeader.Insert(false);
                     SalesHeader.Validate("Sell-to Customer No.", Customer."No.");
-                  //  Message('Rec.Created = %1, DT2Date = %2', Rec.Created, DT2Date(Rec.Created));
+                    //  Message('Rec.Created = %1, DT2Date = %2', Rec.Created, DT2Date(Rec.Created));
                     SalesHeader.Validate("Posting Date", DT2Date(Rec.Created));
                     SalesHeader.Validate("Document Date", DT2Date(Rec.Created));
 
@@ -449,7 +454,7 @@ page 50352 "Domain Ledger List"
 
                     SalesLine.Insert(true);
 
-                    if Rec.TransType in ['Renewal', 'AutoRenewal', 'Registration'] then begin
+                    if Rec.TransType in ['Renewal', 'AutoRenewal', 'Registration', 'Membership'] then begin
                         DomainLengthYears := GetDomainLengthYears(Rec.Created, Rec.ExDate);
                         if DomainLengthYears > 0 then begin
                             DeferralCode := GetDeferralCode(Rec.TransType, DomainLengthYears, CMSetup);
@@ -545,6 +550,19 @@ page 50352 "Domain Ledger List"
                     DeferralCode := CMSetup."4Y Defer code Register";
                 5:
                     DeferralCode := CMSetup."5Y Defer code Register";
+            end;
+        end else if TransType = 'Membership' then begin
+            case Years of
+                1:
+                    DeferralCode := CMSetup."1Y Membership Deferral";
+                2:
+                    DeferralCode := CMSetup."2Y Membership Deferral";
+                3:
+                    DeferralCode := CMSetup."3Y Membership Deferral";
+                4:
+                    DeferralCode := CMSetup."4Y Membership Deferral";
+                5:
+                    DeferralCode := CMSetup."5Y Membership Deferral";
             end;
         end;
 

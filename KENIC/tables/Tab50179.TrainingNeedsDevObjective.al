@@ -49,7 +49,7 @@ table 50179 "Training Needs Dev Objective"
 
     keys
     {
-        key(Key1; "Training Header No", "Line No")
+        key(Key1; "Training Header No",Competency, "Line No")
         {
             Clustered = true;
         }

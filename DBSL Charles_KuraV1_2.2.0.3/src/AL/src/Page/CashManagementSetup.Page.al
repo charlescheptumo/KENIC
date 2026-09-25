@@ -505,6 +505,35 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the 5Y Defer code Renew field.';
                 }
+                field("1Y Membership Deferral"; Rec."1Y Membership Deferral")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 1Y Membership Deferral field.';
+                }
+
+                field("2Y Membership Deferral"; Rec."2Y Membership Deferral")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 2Y Membership Deferral field.';
+                }
+
+                field("3Y Membership Deferral"; Rec."3Y Membership Deferral")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 3Y Membership Deferral field.';
+                }
+
+                field("4Y Membership Deferral"; Rec."4Y Membership Deferral")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 4Y Membership Deferral field.';
+                }
+
+                field("5Y Membership Deferral"; Rec."5Y Membership Deferral")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the 5Y Membership Deferral field.';
+                }
                 field("1Y Defer code Register"; Rec."1Y Defer code Register")
                 {
                     ApplicationArea = Basic;

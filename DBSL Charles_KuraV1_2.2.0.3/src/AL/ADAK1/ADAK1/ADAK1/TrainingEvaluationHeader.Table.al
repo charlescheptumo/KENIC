@@ -97,9 +97,12 @@ Table 69224 "Training Evaluation Header"
         }
     }
 
-    fieldgroups
+   fieldgroups
+{
+    fieldgroup(Lookup; "Course Methodology","Course Justification", "Comment on Relevance of Course","Start DateTime", "End DateTime")
     {
     }
+}
 
     trigger OnInsert()
     begin
