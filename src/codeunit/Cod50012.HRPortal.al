@@ -1484,6 +1484,7 @@ Codeunit 50012 "HRPortal"
                 TrainingParticipant.Destination := TrainingReq."Training Venue Region Code";
                 TrainingParticipant."Training Responsibility Code" := TrainingReq."Training Responsibility Code";
                 TrainingParticipant.Modify();
+                
             until TrainingParticipant.Next() = 0;
     end;
 
