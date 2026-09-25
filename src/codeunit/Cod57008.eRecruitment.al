@@ -994,6 +994,7 @@ Codeunit 57008 "eRecruitment"
                             ApplicationReferees1."Phone No." := Employee_ApplicantReferees."Phone No.";
                             ApplicationReferees1."E-Mail" := Employee_ApplicantReferees."E-Mail";
                             ApplicationReferees1."Years Known" := Employee_ApplicantReferees."Years Known";
+                            ApplicationReferees1."Other referee specification" := Employee_ApplicantReferees."Other referee specification";
                             if ApplicationReferees1.Insert(true) then begin
                                 status := 'success*The Applicant Details was succesffully Populated';
                             end else begin
@@ -1022,6 +1023,7 @@ Codeunit 57008 "eRecruitment"
                                 ApplicationReferees1."Phone No." := Employee_ApplicantReferees."Phone No.";
                                 ApplicationReferees1."E-Mail" := Employee_ApplicantReferees."E-Mail";
                                 ApplicationReferees1."Years Known" := Employee_ApplicantReferees."Years Known";
+                                ApplicationReferees1."Other referee specification" := Employee_ApplicantReferees."Other referee specification";
                                 if ApplicationReferees1.Modify(true) then begin
                                     status := 'success*The Applicant Details was succesffully Populated';
                                 end else begin
@@ -1953,6 +1955,75 @@ Codeunit 57008 "eRecruitment"
                 status := 'error*An error occured during the process of creating link';
             end
         end;
+    end;
+
+    procedure fnGetVacancyContractDurations() data: Text
+    var
+        RecruitmentRequisitionHeader: Record "Recruitment Requisition Header";
+        DurationText: Text;
+    begin
+        RecruitmentRequisitionHeader.Reset();
+        RecruitmentRequisitionHeader.SetRange("Document Type", RecruitmentRequisitionHeader."Document Type"::"Job Vacancy");
+        RecruitmentRequisitionHeader.SetRange("Vacancy Status", RecruitmentRequisitionHeader."Vacancy Status"::Published);
+        if RecruitmentRequisitionHeader.FindSet() then
+            repeat
+                DurationText := Format(RecruitmentRequisitionHeader."Contract Duration");
+                if DurationText <> '' then
+                    data += RecruitmentRequisitionHeader."Document No." + '*' + DurationText + '::::';
+            until RecruitmentRequisitionHeader.Next() = 0;
+    end;
+
+    procedure FnSetRefereeSpecification(applicantNumber: Text; lineNo: Integer; specification: Text) status: Text
+    var
+        EmployeeApplicantReferees: Record "Employee_Applicant Referees";
+    begin
+        EmployeeApplicantReferees.Reset();
+        EmployeeApplicantReferees.SetRange("Document Type", EmployeeApplicantReferees."Document Type"::"Job Applicant");
+        EmployeeApplicantReferees.SetRange("No.", applicantNumber);
+        if lineNo <> 0 then
+            EmployeeApplicantReferees.SetRange("Line No.", lineNo);
+        if not EmployeeApplicantReferees.FindLast() then
+            exit('danger*Referee record was not found');
+        EmployeeApplicantReferees."Other referee specification" := CopyStr(specification, 1, MaxStrLen(EmployeeApplicantReferees."Other referee specification"));
+        if EmployeeApplicantReferees.Modify(true) then
+            exit('success*Referee description saved');
+        exit('danger*Referee description could not be saved');
+    end;
+
+    procedure FnGetRefereeSpecification(applicantNumber: Text; lineNo: Integer) data: Text
+    var
+        EmployeeApplicantReferees: Record "Employee_Applicant Referees";
+    begin
+        EmployeeApplicantReferees.Reset();
+        EmployeeApplicantReferees.SetRange("Document Type", EmployeeApplicantReferees."Document Type"::"Job Applicant");
+        EmployeeApplicantReferees.SetRange("No.", applicantNumber);
+        EmployeeApplicantReferees.SetRange("Line No.", lineNo);
+        if EmployeeApplicantReferees.FindFirst() then
+            data := EmployeeApplicantReferees."Other referee specification";
+    end;
+
+    procedure FnSetExpectedSalary(applicantNumber: Text; expectedSalary: Integer) status: Text
+    var
+        Applicant: Record Applicant;
+    begin
+        Applicant.Reset();
+        Applicant.SetRange("Candidate No.", applicantNumber);
+        if not Applicant.FindFirst() then
+            exit('danger*Applicant was not found');
+        Applicant."Expected Salary" := expectedSalary;
+        if Applicant.Modify(true) then
+            exit('success*Salary expectation saved');
+        exit('danger*Salary expectation could not be saved');
+    end;
+
+    procedure FnGetExpectedSalary(applicantNumber: Text) data: Text
+    var
+        Applicant: Record Applicant;
+    begin
+        Applicant.Reset();
+        Applicant.SetRange("Candidate No.", applicantNumber);
+        if Applicant.FindFirst() then
+            data := Format(Applicant."Expected Salary", 0, 9);
     end;
 
 }

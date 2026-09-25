@@ -155,8 +155,8 @@ Table 69656 "Application Qualification"
         field(32; "Terms of Service"; Option)
         {
             DataClassification = ToBeClassified;
-            OptionCaption = ' ,Permanent and Pensionable,Contract,Casual,Internship';
-            OptionMembers = " ","Permanent and Pensionable",Contract,Casual,Internship;
+            OptionCaption = ' ,Permanent and Pensionable,Contract,Casual,Internship,Volunteer';
+            OptionMembers = " ","Permanent and Pensionable",Contract,Casual,Internship,Volunteer;
             TableRelation = "Terms of Service";
         }
         field(33; "Experience Years"; Text[30])
