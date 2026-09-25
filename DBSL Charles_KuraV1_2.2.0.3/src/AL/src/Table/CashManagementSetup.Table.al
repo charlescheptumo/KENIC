@@ -598,12 +598,12 @@ Table 57004 "Cash Management Setup"
             Caption = 'Application';
             TableRelation = Item;
         }
-         field(57078; Restoration; Code[50])
+        field(57078; Restoration; Code[50])
         {
             Caption = 'Restoration';
             TableRelation = Item;
         }
-         field(57079; Transfer; Code[50])
+        field(57079; Transfer; Code[50])
         {
             Caption = 'Transfer';
             TableRelation = Item;
@@ -648,27 +648,27 @@ Table 57004 "Cash Management Setup"
             Caption = '5Y Defer code Renew';
             TableRelation = "Deferral Template";
         }
-        field(57088; "1Y Defer code Register";Code[30])
+        field(57088; "1Y Defer code Register"; Code[30])
         {
             Caption = '1Y Defer code Register';
             TableRelation = "Deferral Template";
         }
-        field(57089; "2Y Defer code Register";Code[30])
+        field(57089; "2Y Defer code Register"; Code[30])
         {
             Caption = '2Y Defer code Register';
             TableRelation = "Deferral Template";
         }
-        field(57090; "3Y Defer code Register";Code[30])
+        field(57090; "3Y Defer code Register"; Code[30])
         {
             Caption = '3Y Defer code Register';
             TableRelation = "Deferral Template";
         }
-        field(57091; "4Y Defer code Register";Code[30])
+        field(57091; "4Y Defer code Register"; Code[30])
         {
             Caption = '4Y Defer code Register';
             TableRelation = "Deferral Template";
         }
-        field(57092; "5Y Defer code Register";Code[30])
+        field(57092; "5Y Defer code Register"; Code[30])
         {
             Caption = '5Y Defer code Register';
             TableRelation = "Deferral Template";
@@ -688,6 +688,36 @@ Table 57004 "Cash Management Setup"
         {
             TableRelation = Item;
             Caption = 'Domain L2 Autorenewal';
+        }
+        field(57096; "1Y Membership Deferral"; Code[50])
+        {
+            Caption = '1Y Membership Deferral';
+            TableRelation = "Deferral Template";
+        }
+        field(57097; "2Y Membership Deferral"; Code[50])
+        {
+            Caption = '2Y Membership Deferral';
+            TableRelation = "Deferral Template";
+        }
+        field(57098; "3Y Membership Deferral"; Code[50])
+        {
+            Caption = '3Y Membership Deferral';
+            TableRelation = "Deferral Template";
+        }
+        field(57099; "4Y Membership Deferral"; Code[50])
+        {
+            Caption = '4Y Membership Deferral';
+            TableRelation = "Deferral Template";
+        }
+        field(57100; "5Y Membership Deferral"; Code[50])
+        {
+            Caption = '5Y Membership Deferral';
+            TableRelation = "Deferral Template";
+        }
+         field(57101; Membership; Code[50])
+        {
+            Caption = 'Membership';
+            TableRelation = "Deferral Template";
         }
 
     }

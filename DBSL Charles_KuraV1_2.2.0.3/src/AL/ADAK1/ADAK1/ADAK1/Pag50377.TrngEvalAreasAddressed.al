@@ -18,6 +18,37 @@ Page 50377 "Trng Eval Areas Addressed"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Comment on Relevance of Course field.';
+
+                    trigger OnLookup(var Text: Text): Boolean
+                    var
+                        TrainingNeedsHeader: Record "Training Needs Header";
+                        TrainingNeedsDevObjective: Record "Training Needs Dev Objective";
+                        DevObjLookup: Page "Training Needs Dev Obj Lookup";
+                        HeaderFilter: Text;
+                    begin
+                        TrainingNeedsHeader.SetRange("Created By", UserId);
+                        TrainingNeedsHeader.SetRange(Status, TrainingNeedsHeader.Status::Released);
+                        if not TrainingNeedsHeader.FindSet() then
+                            Error('No Released Training Needs documents found for your user.');
+
+                        repeat
+                            if HeaderFilter <> '' then
+                                HeaderFilter += '|';
+                            HeaderFilter += TrainingNeedsHeader.Code;
+                        until TrainingNeedsHeader.Next() = 0;
+
+                        TrainingNeedsDevObjective.SetFilter("Training Header No", HeaderFilter);
+
+                        DevObjLookup.SetTableView(TrainingNeedsDevObjective);
+                        DevObjLookup.LookupMode(true);
+                        if DevObjLookup.RunModal() = Action::LookupOK then begin
+                            DevObjLookup.GetRecord(TrainingNeedsDevObjective);
+                            Rec."Comment on Relevance of Course" := TrainingNeedsDevObjective.Competency;
+                            CurrPage.Update();
+                        end;
+
+                        exit(false);
+                    end;
                 }
             }
         }
