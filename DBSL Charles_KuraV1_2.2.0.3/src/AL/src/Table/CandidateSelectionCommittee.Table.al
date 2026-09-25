@@ -66,19 +66,66 @@ Table 69676 "Candidate Selection Committee"
         {
             DataClassification = ToBeClassified;
         }
+        field(11; "Candidate No."; Code[50])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(12; "Line No."; Integer)
+        {
+            DataClassification = ToBeClassified;
+            AutoIncrement = true;
+        }
+        field(13; Score; Decimal)
+        {
+            Caption = 'Score';
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+
     }
 
+
+    // keys
+    // {
+    //     key(Key1; "Document No.", "Member No.")
+    //     {
+    //         Clustered = true;
+    //     }
+    // }
     keys
     {
-        key(Key1; "Document No.", "Member No.")
+        key(Key1; "Appointed Committee ID", "Candidate No.", "Member No.")
         {
             Clustered = true;
+        }
+        key(Key2; "Appointed Committee ID", "Candidate No.", "Line No.")
+        {
         }
     }
 
     fieldgroups
     {
     }
+    procedure UpdatePanelistScore()
+    var
+        CandidateInterviewRecord: Record "Candidate Interview Record";
+        NewScore: Decimal;
+    begin
+        CandidateInterviewRecord.Reset();
+        CandidateInterviewRecord.SetRange("Assigned Panel ID", "Appointed Committee ID");
+        CandidateInterviewRecord.SetRange("Candidate No.", "Candidate No.");
+        CandidateInterviewRecord.SetRange("Panel Member No.", "Member No.");
+        if CandidateInterviewRecord.FindFirst() then begin
+            CandidateInterviewRecord.CalcFields("Panel Interview Score %");
+            NewScore := CandidateInterviewRecord."Panel Interview Score %";
+        end else
+            NewScore := 0;
+
+        if NewScore <> Score then begin
+            Score := NewScore;
+            Modify();
+        end;
+    end;
 
     var
         CommiteeMember: Record "Commitee Appointed Member";

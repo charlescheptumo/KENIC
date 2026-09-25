@@ -25,6 +25,23 @@ page 58180 "Domain DUM Statistics List"
 
     actions
     {
+        area(processing)
+        {
+            action(RefreshNow)
+            {
+                Caption = 'Refresh Now';
+                ApplicationArea = All;
+                Image = Refresh;
+
+                trigger OnAction()
+                var
+                    ReportMgt: Codeunit "Domain DUM Report Mgt";
+                begin
+                    ReportMgt.RefreshStatistics(Today, '');
+                    CurrPage.Update(false);
+                end;
+            }
+        }
         area(reporting)
         {
             action(DomainDUMReport)
@@ -39,12 +56,7 @@ page 58180 "Domain DUM Statistics List"
     }
 
     trigger OnOpenPage()
-    var
-        ReportMgt: Codeunit "Domain DUM Report Mgt";
     begin
-        // Only today's snapshot is recomputed on open - past "As Of Date" snapshots
-        // are left untouched, so historical DUM figures stay comparable over time.
-        ReportMgt.RefreshStatistics(Today, '');
         Rec.SetRange("As Of Date", Today);
     end;
 }

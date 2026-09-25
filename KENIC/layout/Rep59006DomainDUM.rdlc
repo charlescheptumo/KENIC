@@ -7,7 +7,6 @@
         <DataProvider>SQL</DataProvider>
         <ConnectString />
       </ConnectionProperties>
-      <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>18af4cb4-fdfc-4b1e-a0b1-e8a8f8b3fdaa</rd:DataSourceID>
     </DataSource>
   </DataSources>
@@ -121,7 +120,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="Domains Under Management (DUM) as of " &amp; Format(Fields!As_Of_Date.Value, "dd-MMM-yyyy")</Value>
+                    <Value>="Domains Under Management (DUM) - " &amp; Format(Fields!As_Of_Date.Value, "dd-MMM-yyyy")</Value>
                     <Style>
                       <FontSize>13pt</FontSize>
                       <FontWeight>Bold</FontWeight>
@@ -163,7 +162,6 @@
                                 <TextRun>
                                   <Value>Registrar Name</Value>
                                   <Style>
-                                    <FontSize>10pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Color>White</Color>
                                   </Style>
@@ -175,8 +173,8 @@
                           <Style>
                             <BackgroundColor>#1a3c6e</BackgroundColor>
                             <TextAlign>Left</TextAlign>
-                            <PaddingLeft>6pt</PaddingLeft>
                             <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>6pt</PaddingLeft>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -190,7 +188,6 @@
                                 <TextRun>
                                   <Value>DUM</Value>
                                   <Style>
-                                    <FontSize>10pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Color>White</Color>
                                   </Style>
@@ -237,8 +234,8 @@
                             </Border>
                             <BackgroundColor>=IIF(Fields!Registrar_Roid.Value = "TOTAL", "#e8f0fe", "Transparent")</BackgroundColor>
                             <TextAlign>Left</TextAlign>
-                            <PaddingLeft>6pt</PaddingLeft>
                             <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>6pt</PaddingLeft>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -288,7 +285,18 @@
             <TablixRowHierarchy>
               <TablixMembers>
                 <TablixMember />
-                <TablixMember />
+                <TablixMember>
+                  <Group Name="DetailGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!Registrar_Roid.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!Registrar_Name.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet_Result</DataSetName>
@@ -306,10 +314,10 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>2.1in</Height>
+        <Height>1.92in</Height>
         <Style />
       </Body>
-      <Width>6.5in</Width>
+      <Width>6.4in</Width>
       <Page>
         <PageFooter>
           <Height>0.37in</Height>

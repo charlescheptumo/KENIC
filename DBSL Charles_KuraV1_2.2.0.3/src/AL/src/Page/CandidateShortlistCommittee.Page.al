@@ -51,6 +51,12 @@ Page 69707 "Candidate Shortlist Committee"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Staff No. field.';
                 }
+                field(Score; Rec.Score)
+                {
+                    ApplicationArea = Basic;
+                    Editable = false;
+                    ToolTip = 'Specifies the panelist''s interview score for this candidate.';
+                }
             }
         }
         area(factboxes)
@@ -72,6 +78,65 @@ Page 69707 "Candidate Shortlist Committee"
 
     actions
     {
-    }
-}
+        area(processing)
+        {
+            action("Scoresheet")
+            {
+                ApplicationArea = Basic;
+                Caption = 'Scoresheet';
+                Image = ChecklistItem;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                ToolTip = 'Opens the interview scoresheet for this panelist to enter their score for this candidate.';
 
+                trigger OnAction()
+                var
+                    CandidateInterviewLine: Record "Candidate Interview Line";
+                    CandidateInterviewRecord: Record "Candidate Interview Record";
+                    CandidateInterviewRecordPage: Page "Candidate Interview Record";
+                begin
+                    if Rec."Candidate No." = '' then
+                        Error('Candidate No. is blank on this committee line, so the related interview cannot be located. Re-add this panelist via the ''Interview Panels'' action on the Interview Lines page.');
+
+                    CandidateInterviewLine.Reset();
+                    CandidateInterviewLine.SetRange("Document Type", CandidateInterviewLine."Document Type"::"Interview Invitation");
+                    CandidateInterviewLine.SetRange("Assigned Panel ID", Rec."Appointed Committee ID");
+                    CandidateInterviewLine.SetRange("Candidate No.", Rec."Candidate No.");
+                    if not CandidateInterviewLine.FindFirst() then
+                        Error('Could not find an interview invitation line for Panel %1 / Candidate %2.', Rec."Appointed Committee ID", Rec."Candidate No.");
+
+                    CandidateInterviewRecord.Reset();
+                    CandidateInterviewRecord.SetRange("Assigned Panel ID", Rec."Appointed Committee ID");
+                    CandidateInterviewRecord.SetRange("Candidate No.", Rec."Candidate No.");
+                    CandidateInterviewRecord.SetRange("Panel Member No.", Rec."Member No.");
+                    if not CandidateInterviewRecord.FindFirst() then begin
+                        CandidateInterviewRecord.Init();
+                        CandidateInterviewRecord.Insert(true);
+                        CandidateInterviewRecord.Validate("Interview Invitation No.", CandidateInterviewLine."Document No.");
+                        CandidateInterviewRecord.Validate("Application No.", CandidateInterviewLine."Application No.");
+                        CandidateInterviewRecord.Validate("Panel Member No.", Rec."Member No.");
+                        CandidateInterviewRecord.Modify(true);
+                        Commit();
+                    end;
+
+                    CandidateInterviewRecordPage.SetRecord(CandidateInterviewRecord);
+                    CandidateInterviewRecordPage.RunModal();
+
+                    Rec.UpdatePanelistScore();
+                    CurrPage.Update(false);
+                end;
+            }
+        }
+    }
+
+    trigger OnAfterGetRecord()
+    begin
+        Rec.UpdatePanelistScore();
+    end;
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        Rec.UpdatePanelistScore();
+    end;
+}

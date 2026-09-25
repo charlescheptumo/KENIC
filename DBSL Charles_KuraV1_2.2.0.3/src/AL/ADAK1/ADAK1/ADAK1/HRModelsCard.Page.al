@@ -109,6 +109,13 @@ Page 69202 "HR Models Card"
                     ToolTip = 'Specifies the value of the Last Date Modified field.';
                 }
             }
+            part(OffenseDetails; "Offense Details")
+            {
+                ApplicationArea = All;
+                Caption = 'Offense Details';
+                SubPageLink = "HR Models Code" = field(Code);
+                UpdatePropagation = Both;
+            }
         }
     }
 
@@ -119,4 +126,3 @@ Page 69202 "HR Models Card"
     var
         Text19024457: label 'Months';
 }
-

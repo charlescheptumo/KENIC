@@ -1,11 +1,11 @@
-page 58178 "Domain Acct Statistics List"
+page 58182 "Domain Renewal Stat List"
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Lists;
-    SourceTable = "Domain Acct Mgr Statistics";
-    SourceTableView = sorting(Year, "Month No.", "Section Code", "Salesperson Code") order(descending);
-    Caption = 'Domain Account Manager Statistics';
+    SourceTable = "Domain Renewal Statistics";
+    SourceTableView = sorting(Year, "Month No.", "Registrar Name") order(descending);
+    Caption = 'Domain Renewal Statistics';
     Editable = false;
 
     layout
@@ -14,15 +14,12 @@ page 58178 "Domain Acct Statistics List"
         {
             repeater(Group)
             {
-                field("Salesperson Code"; Rec."Salesperson Code") { ApplicationArea = All; ToolTip = 'Specifies the account manager code.'; }
+                field("Registrar Roid"; Rec."Registrar Roid") { ApplicationArea = All; ToolTip = 'Specifies the registrar ROID.'; }
+                field("Registrar Name"; Rec."Registrar Name") { ApplicationArea = All; ToolTip = 'Specifies the registrar name.'; }
                 field(Year; Rec.Year) { ApplicationArea = All; ToolTip = 'Specifies the year.'; }
                 field("Month No."; Rec."Month No.") { ApplicationArea = All; ToolTip = 'Specifies the numerical month.'; }
                 field("Month Name"; Rec."Month Name") { ApplicationArea = All; ToolTip = 'Specifies the name of the month.'; }
-                field("Section Code"; Rec."Section Code") { ApplicationArea = All; ToolTip = 'Specifies Registration, Renewal or Membership.'; }
-                field("Section Description"; Rec."Section Description") { ApplicationArea = All; ToolTip = 'Specifies the section description.'; }
-                field("Target Qty"; Rec."Target Qty") { ApplicationArea = All; ToolTip = 'Specifies the budgeted target quantity.'; }
-                field("Actual Qty"; Rec."Actual Qty") { ApplicationArea = All; ToolTip = 'Specifies the actual quantity achieved.'; }
-                field("% Achieved"; Rec."% Achieved") { ApplicationArea = All; ToolTip = 'Specifies Actual as a percentage of Target.'; }
+                field("Renewal Count"; Rec."Renewal Count") { ApplicationArea = All; ToolTip = 'Specifies the number of domains renewed.'; }
                 field("Last Updated"; Rec."Last Updated") { ApplicationArea = All; ToolTip = 'Specifies the last refresh timestamp.'; }
             }
         }
@@ -40,22 +37,22 @@ page 58178 "Domain Acct Statistics List"
 
                 trigger OnAction()
                 var
-                    ReportMgt: Codeunit "Domain Acct Mgr Report Mgt";
+                    ReportMgt: Codeunit "Domain Renewal Report Mgt";
                 begin
-                    ReportMgt.RefreshStatistics('', DMY2Date(1, 1, Date2DMY(Today, 3)), Today);
+                    ReportMgt.RefreshStatistics(DMY2Date(1, 1, Date2DMY(Today, 3)), Today);
                     CurrPage.Update(false);
                 end;
             }
         }
         area(reporting)
         {
-            action(DomainAcctMgrReport)
+            action(DomainRenewalsReport)
             {
-                Caption = 'Domain Account Manager Report';
+                Caption = 'Domain Renewals Report';
                 ApplicationArea = All;
                 Image = Report;
-                RunObject = report "Domain Account Manager Report";
-                ToolTip = 'Opens the domain account manager performance report.';
+                RunObject = report "Domain Renewals Report";
+                ToolTip = 'Opens the domain renewals by registrar report.';
             }
         }
     }

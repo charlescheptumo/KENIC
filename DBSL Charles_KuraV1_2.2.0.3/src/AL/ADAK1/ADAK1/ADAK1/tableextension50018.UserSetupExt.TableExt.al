@@ -482,6 +482,9 @@ TableExtension 50018 "User Setup Ext" extends "User Setup"
         {
             DataClassification = ToBeClassified;
         }
+         field(70054; "Can Create Disciplinary Case"; Boolean)
+        {
+        }
     }
 
 

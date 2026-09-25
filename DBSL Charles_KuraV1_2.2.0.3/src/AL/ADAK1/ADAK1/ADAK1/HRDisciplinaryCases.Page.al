@@ -1,9 +1,11 @@
-#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006 // ForNAV settings
+#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006
 Page 69200 "HR Disciplinary Cases"
 {
     PageType = Card;
     SourceTable = Employee;
     ApplicationArea = All;
+    usagecategory = Lists;
+    
 
     layout
     {
@@ -81,6 +83,21 @@ Page 69200 "HR Disciplinary Cases"
                     ToolTip = 'Specifies the value of the No of Disciplinary Cases field.';
                 }
             }
+            part("HOD Case File"; "HOD Disciplinary Cases SF")
+            {
+                Caption = 'HOD Case File';
+                SubPageLink = "Employee No" = field("No.");
+            }
+            part("Employee Accused Sect"; "Emp Disciplinary Cases SF")
+            {
+                Caption = 'Employee Case File';
+                SubPageLink = "Employee No" = field("No.");
+            }
+            part("DG's Response"; "DG Disciplinary Cases SF")
+            {
+                Caption = 'CEO Case File';
+                SubPageLink = "Employee No" = field("No.");
+            }
             part("Case Details"; "HR Disciplinary Cases SF")
             {
                 Caption = 'Case Details';
@@ -122,14 +139,10 @@ Page 69200 "HR Disciplinary Cases"
                         HRDisciplinary.SetRange(HRDisciplinary.Selected, true);
                         HRDisciplinary.SetRange(HRDisciplinary."Employee No", Rec."No.");
                         if HRDisciplinary.Find('-') then begin
-
-                            //ENSURE SELECTED RECORDS DO NOT EXCEED ONE
                             Number := 0;
                             Number := HRDisciplinary.Count;
                             if Number > 1 then begin
                                 Error('You cannot have more than one application selected');
-                                // ERROR(FORMAT(Number)+' applications selected');
-
                             end;
                             if HRDisciplinary.Status = HRDisciplinary.Status::Open then begin
                                 HRDisciplinary.Status := HRDisciplinary.Status::Ongoing;
@@ -140,7 +153,6 @@ Page 69200 "HR Disciplinary Cases"
                                 HRDisciplinary.Modify;
                                 HRDisciplinary."Closed By" := UserId;
                             end;
-
                         end else begin
                             Error('No disciplinary case selected');
                         end;
@@ -169,6 +181,13 @@ Page 69200 "HR Disciplinary Cases"
         end else begin
             EmpNames := '';
         end;
+        UserSetup.Reset();
+        UserSetup.SetRange("User ID", UserId);
+        if UserSetup.FindFirst() then begin
+            if UserSetup."Can Create Disciplinary Case" = false then begin
+                Error('You are not authorised to raise a case! Kindly Contact HOD');
+            end;
+        end;
     end;
 
     var
@@ -176,5 +195,5 @@ Page 69200 "HR Disciplinary Cases"
         EmpNames: Text[40];
         HRDisciplinary: Record "HR Disciplinary Cases";
         Number: Integer;
+        UserSetup: Record "User Setup";
 }
-

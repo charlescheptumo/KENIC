@@ -60,24 +60,23 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                 action("Domain Registration")
                 {
                     ApplicationArea = All;
-                    Caption = 'Domain Registrations Report';
-                    ToolTip = 'View domain registration counts by registrar for a selected year.';
-                    Image = "Report";
-                    RunObject = report "Domain Registrations Report";
+                    Caption = 'Domain Registration';
+                    ToolTip = 'View domain registration statistics by registrar.';
+                    Image = List;
+                    RunObject = page "Domain Registration Stat List";
                 }
-
                 action("Domain Renewal")
                 {
                     ApplicationArea = All;
-                    Caption = 'Domain Renewals Report';
-                    ToolTip = 'View domain renewal counts by registrar for a selected year.';
-                    Image = "Report";
-                    RunObject = report "Domain Renewals Report";
+                    Caption = 'Domain Renewal';
+                    ToolTip = 'View domain renewal statistics by registrar.';
+                    Image = List;
+                    RunObject = page "Domain Renewal Stat List";
                 }
                 action("Domain Deletion List")
                 {
                     ApplicationArea = All;
-                    Caption = 'Domain Deletion List';
+                    Caption = 'Domain Deletion';
                     ToolTip = 'View the list of deleted domains and their details.';
                     Image = List;
                     RunObject = page "Domain Deletion List";

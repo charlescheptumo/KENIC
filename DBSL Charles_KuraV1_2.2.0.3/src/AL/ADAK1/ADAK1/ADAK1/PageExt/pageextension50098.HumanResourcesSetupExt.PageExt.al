@@ -257,6 +257,11 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 ApplicationArea = Basic;
                 ToolTip = 'Specifies the value of the HR E-mail Address field.';
             }
+            field("CEO Email";Rec."CEO Email")
+            {
+                ApplicationArea = Basic;
+                ToolTip = 'Specifies the value of the CEO Email field.';
+            }
             field("Legal Case Nos"; Rec."Legal Case Nos")
             {
                 ApplicationArea = Basic;

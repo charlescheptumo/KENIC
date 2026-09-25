@@ -1,4 +1,4 @@
-#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006 // ForNAV settings
+#pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006
 Page 69225 "Training Evaluation Page"
 {
     DeleteAllowed = false;
@@ -66,11 +66,6 @@ Page 69225 "Training Evaluation Page"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Facilitators field.';
                 }
-                field("Comment on Relevance of Course"; Rec."Comment on Relevance of Course")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Comment on Relevance of Course field.';
-                }
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = Basic;
@@ -89,6 +84,18 @@ Page 69225 "Training Evaluation Page"
                     Editable = false;
                     ToolTip = 'Specifies the value of the Created On field.';
                 }
+            }
+            part("Areas Addressed by Training"; "Trng Eval Areas Addressed")
+            {
+                Caption = 'Areas Addressed by Training';
+                ApplicationArea = All;
+                SubPageLink = "Training Header No" = field(No);
+            }
+            part("Others Areas"; "Trng Eval Other Areas")
+            {
+                Caption = 'Others Areas';
+                ApplicationArea = All;
+                SubPageLink = "Training Header No" = field(No);
             }
         }
         area(factboxes)
@@ -150,4 +157,3 @@ Page 69225 "Training Evaluation Page"
         EvaluationAreas: Record "HR Models";
         EvaluationLines: Record "Training Evaluation Lines";
 }
-

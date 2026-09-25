@@ -35,7 +35,7 @@ Page 69203 "HR Disciplinary Cases SF"
                     trigger OnValidate()
                     var
                     begin
-                        Rec."Financial Year" := GetCurrentYear(Rec."Date of Complaint");
+                        Rec."Financial Year" := Format(GetCurrentYear(Rec."Date of Complaint"));
                     end;
                 }
                 field("Type of Disciplinary Case"; Rec."Type of Disciplinary Case")
@@ -46,7 +46,7 @@ Page 69203 "HR Disciplinary Cases SF"
                 field("Case Description"; Rec."Case Description")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Case Description field.';
+                    ToolTip = 'Specifies the value of the Case Description field.       ';
                 }
                 field("Case Discussion"; Rec."Case Discussion")
                 {

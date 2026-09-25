@@ -60,6 +60,23 @@ page 58177 "Domain Zone Statistics List"
 
     actions
     {
+        area(processing)
+        {
+            action(RefreshNow)
+            {
+                Caption = 'Refresh Now';
+                ApplicationArea = All;
+                Image = Refresh;
+
+                trigger OnAction()
+                var
+                    DomainZoneClassificationMgt: Codeunit "Domain Zone Classification Mgt";
+                begin
+                    DomainZoneClassificationMgt.RefreshStatistics(Date2DMY(Today, 3));
+                    CurrPage.Update(false);
+                end;
+            }
+        }
         area(reporting)
         {
             action(DomainZoneReport)
@@ -75,13 +92,12 @@ page 58177 "Domain Zone Statistics List"
 
     trigger OnOpenPage()
     var
-        DomainZoneClassificationMgt: Codeunit "Domain Zone Classification Mgt";
         CurrentYear: Integer;
         CurrentMonth: Integer;
     begin
         CurrentYear := Date2DMY(Today, 3);
         CurrentMonth := Date2DMY(Today, 2);
-        DomainZoneClassificationMgt.RefreshStatistics(CurrentYear);
+
         Rec.Reset();
         if Rec.FindSet() then
             repeat

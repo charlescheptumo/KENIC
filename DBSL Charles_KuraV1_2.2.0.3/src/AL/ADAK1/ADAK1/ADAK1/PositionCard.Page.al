@@ -68,10 +68,20 @@ Page 69601 "Position Card"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Default Terms of Service field.';
                 }
+                field("Position Category"; Rec."Position Category")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Position Category field.';
+                }
                 field("Employment Type"; Rec."Employment Type")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Employment Type field.';
+                }
+                field("Contract Duration"; Rec."Contract Duration")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Contract Duration field.';
                 }
                 field(Directorate; Rec.Directorate)
                 {
@@ -79,11 +89,12 @@ Page 69601 "Position Card"
                     Caption = 'Chief Executive Officer';
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Chief Executive Officer field.';
+                    Visible = false;
                 }
                 field(Department; Rec.Department)
                 {
                     ApplicationArea = Basic;
-                    Caption = 'Divison/Unit';
+                    Caption = 'Department';
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Divison/Unit field.';
                 }

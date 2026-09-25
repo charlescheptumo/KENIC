@@ -28,7 +28,11 @@ pageextension 50131 "User Setup Exts" extends "User Setup"
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the Payroll Contract User ID field.';
             }
-
+            field("Can Create Disciplinary Case"; Rec."Can Create Disciplinary Case")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the Can Create Disciplinary Case field.';
+            }
 
         }
 

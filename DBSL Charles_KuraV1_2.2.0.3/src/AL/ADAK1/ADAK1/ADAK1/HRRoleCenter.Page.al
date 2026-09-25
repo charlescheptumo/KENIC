@@ -686,6 +686,22 @@ page 60002 "HR Role Center"
                             RunObject = page "Pre-Screening Templates";
                             ToolTip = 'Executes the Pre-Screening Templates action.';
                         }
+                        
+                        action("Interview Questions")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Interview Questions';
+                            RunObject = page "Question Categories";
+                            ToolTip = 'Executes the Interview Questions action.';
+                        }
+
+                        // action("Interview Scoresheet Questions")
+                        // {
+                        //     ApplicationArea = BasicHR;
+                        //     Caption = 'Interview Scoresheet Questions';
+                        //     RunObject = page "Interview Scoresheet Questions";
+                        //     ToolTip = 'Executes the Interview Scoresheet Questions action.';
+                        // }
                         action("Job Grades11")
                         {
                             ApplicationArea = BasicHR;
