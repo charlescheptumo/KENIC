@@ -352,7 +352,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Switch(Fields!Line_Type.Value = 1, "Targets", Fields!Line_Type.Value = 2, "Actual", Fields!Line_Type.Value = 3, "% Achieved", "")</Value>
+                                  <Value>=Switch(Fields!Line_Type.Value = 1, "Targets", Fields!Line_Type.Value = 2, "Actual", Fields!Line_Type.Value = 3, "% Achieved", True, "")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -382,7 +382,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Qty_Format.Value</Value>
+                                  <Value>=IIf(Fields!Line_Type.Value = 3, Format(Fields!Qty.Value, "0.00") &amp; "%", Format(Fields!Qty.Value, "#,##0"))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <TextAlign>Right</TextAlign>
