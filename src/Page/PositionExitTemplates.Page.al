@@ -20,12 +20,14 @@ Page 50155 "Position Exit Templates"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Directorate field.';
+                    Visible = false;
                 }
                 field("Primary Directorate Name"; Rec."Primary Directorate Name")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Primary Directorate Name field.';
+                    Visible = false;
                 }
                 field("Primary Department"; Rec."Primary Department")
                 {
