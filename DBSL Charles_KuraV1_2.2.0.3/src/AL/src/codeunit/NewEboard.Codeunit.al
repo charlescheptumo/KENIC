@@ -2345,7 +2345,8 @@ Codeunit 50032 NewEboard
         end;
     end;
 
-    procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]; fullBoardMeetingCode: Code[20]) status: Text
+   
+   procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]; fullBoardMeetingCode: Code[20]) status: Text
     var
         Resolution: Record "Meeting Resolutions";
     begin
@@ -2361,7 +2362,7 @@ Codeunit 50032 NewEboard
             exit(status);
         end;
 
-        Resolution.EscalateToBoard(fullBoardMeetingCode);
+        Resolution.EscalateToBoard();
         status := 'success*Resolution escalated to the Full Board for voting';
     end;
 

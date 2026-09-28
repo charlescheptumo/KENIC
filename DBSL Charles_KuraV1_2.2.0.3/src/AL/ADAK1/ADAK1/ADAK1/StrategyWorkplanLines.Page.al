@@ -90,7 +90,7 @@ Page 80035 "Strategy Workplan Lines"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Summation of Subactivity Weight(%) field.';
-                    visible = false;
+                    visible = true;
                 }
                 field("Imported Annual Target Qty"; Rec."Imported Annual Target Qty")
                 {

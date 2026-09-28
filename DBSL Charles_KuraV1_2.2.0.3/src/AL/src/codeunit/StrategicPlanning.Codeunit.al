@@ -288,9 +288,9 @@ Codeunit 57007 "Strategic Planning"
 
         AnnualStrategyWorkplan.TESTFIELD("Annual Workplan");
         AnnualStrategyWorkplan.TESTFIELD(Posted, FALSE);
-        AnnualStrategyWorkplan.CALCFIELDS("Total Assigned Weight(%)");
-        IF AnnualStrategyWorkplan."Total Assigned Weight(%)" <> 100 THEN
-            ERROR('Assigned Weight should be equals to 100%');
+       // AnnualStrategyWorkplan.CALCFIELDS("Total Assigned Weight(%)");
+        //IF AnnualStrategyWorkplan."Total Assigned Weight(%)" <> 100 THEN
+          //  ERROR('Assigned Weight should be equals to 100%');
 
         IF NOT CONFIRM('Are you sure you want to update the Selected Annual Workplan?', TRUE) THEN BEGIN
             ERROR('Annual Workplan not Updated');
