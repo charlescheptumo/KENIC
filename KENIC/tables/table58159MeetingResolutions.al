@@ -21,12 +21,10 @@ table 58159 "Meeting Resolutions"
             Caption = 'Description';
             DataClassification = ToBeClassified;
         }
-        field(4; "Resolution Type"; Option)
+        field(4; "Resolution Type"; Enum "Resolution Typess")
         {
             Caption = 'Resolution Type';
-            DataClassification = ToBeClassified;
-            OptionCaption = 'Election,Selection,Information,Approval';
-            OptionMembers = Election,Selection,Information,Approval;
+            DataClassification = CustomerContent;
 
             trigger OnValidate()
             begin
@@ -254,7 +252,7 @@ table 58159 "Meeting Resolutions"
         CommitteeMember: Record "Committee Board Members";
         ResolutionVote: Record "Resolution Votes";
     begin
-        
+
         ResolutionVote.Reset();
         ResolutionVote.SetRange("Resolution No.", Rec."No.");
         if not ResolutionVote.IsEmpty() then
@@ -307,41 +305,41 @@ table 58159 "Meeting Resolutions"
     //     LogAction(ActionBuffer."Action Taken"::"Voting Opened", FullBoardMeetingCode, '');
     // end;
 
-procedure EscalateToBoard()
-var
-    ResolutionVote: Record "Resolution Votes";
-    MeetingCode: Code[20];
-begin
-    if Rec."Resolution Type" = Rec."Resolution Type"::Information then
-        Error(InformationCannotEscalateErr);
+    procedure EscalateToBoard()
+    var
+        ResolutionVote: Record "Resolution Votes";
+        MeetingCode: Code[20];
+    begin
+        if Rec."Resolution Type" = Rec."Resolution Type"::Information then
+            Error(InformationCannotEscalateErr);
 
-    if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
-        Error(CannotEscalateFromStatusErr);
+        if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
+            Error(CannotEscalateFromStatusErr);
 
-    Rec.TestField("Committee Id");
+        Rec.TestField("Committee Id");
 
-    if Rec."Majority Type" = Rec."Majority Type"::"Special Majority" then
-        Rec.TestField("Special Majority Percentage");
+        if Rec."Majority Type" = Rec."Majority Type"::"Special Majority" then
+            Rec.TestField("Special Majority Percentage");
 
-   
-    ResolutionVote.SetRange("Resolution No.", Rec."No.");
-    if ResolutionVote.IsEmpty() then
-        Error(NoVotersErr);
 
-   
-    MeetingCode := GetLastKnownMeetingCode();
+        ResolutionVote.SetRange("Resolution No.", Rec."No.");
+        if ResolutionVote.IsEmpty() then
+            Error(NoVotersErr);
 
-    Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
-    Rec."Posted" := true;
-    Rec.Modify(true);
-    LogAction(ActionBuffer."Action Taken"::"Escalated to Board", MeetingCode, '');
 
-    Rec."Voting Status" := Rec."Voting Status"::Open;
-    Rec."Voting Opened At" := CurrentDateTime();
-    Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
-    Rec.Modify(true);
-    LogAction(ActionBuffer."Action Taken"::"Voting Opened", MeetingCode, '');
-end;
+        MeetingCode := GetLastKnownMeetingCode();
+
+        Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
+        Rec."Posted" := true;
+        Rec.Modify(true);
+        LogAction(ActionBuffer."Action Taken"::"Escalated to Board", MeetingCode, '');
+
+        Rec."Voting Status" := Rec."Voting Status"::Open;
+        Rec."Voting Opened At" := CurrentDateTime();
+        Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
+        Rec.Modify(true);
+        LogAction(ActionBuffer."Action Taken"::"Voting Opened", MeetingCode, '');
+    end;
 
     procedure CloseVoting()
     var
