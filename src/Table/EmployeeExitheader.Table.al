@@ -53,7 +53,8 @@ Table 69743 "Employee Exit Header"
                 if Employee.FindFirst then begin
                     "Employee Names" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
                     "Date of Join" := Employee."Employment Date";
-                    "Position Id" := Employee."Current Position ID";
+                    "Position Id" := Employee."Job ID";
+                    "Job Title" := Employee."Job Title";
                     Validate("Position Id");
                 end;
             end;
@@ -213,6 +214,10 @@ Table 69743 "Employee Exit Header"
 
         }
         field(36; "No of Leave Days to Use"; Decimal)
+        {
+
+        }
+        field(37; "Job Title"; Text[40])
         {
 
         }

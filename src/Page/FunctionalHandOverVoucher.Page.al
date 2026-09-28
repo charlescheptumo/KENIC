@@ -45,6 +45,11 @@ Page 69837 "Functional Hand Over Voucher"
                     Editable = false;
                     ToolTip = 'Specifies the value of the Position Id field.';
                 }
+                field("Job Title"; Rec."Job Title")
+                {
+                    ApplicationArea = Basic;
+                    Editable = false;
+                }
                 field("Reasons Code"; Rec."Reasons Code")
                 {
                     ApplicationArea = Basic;
