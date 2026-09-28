@@ -282,30 +282,66 @@ table 58159 "Meeting Resolutions"
             until CommitteeMember.Next() = 0;
     end;
 
-    procedure EscalateToBoard(FullBoardMeetingCode: Code[20])
-    begin
-        if Rec."Resolution Type" = Rec."Resolution Type"::Information then
-            Error(InformationCannotEscalateErr);
+    // procedure EscalateToBoard(FullBoardMeetingCode: Code[20])
+    // begin
+    //     if Rec."Resolution Type" = Rec."Resolution Type"::Information then
+    //         Error(InformationCannotEscalateErr);
 
-        if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
-            Error(CannotEscalateFromStatusErr);
+    //     if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
+    //         Error(CannotEscalateFromStatusErr);
 
-        if Rec."Majority Type" = Rec."Majority Type"::"Special Majority" then
-            Rec.TestField("Special Majority Percentage");
+    //     if Rec."Majority Type" = Rec."Majority Type"::"Special Majority" then
+    //         Rec.TestField("Special Majority Percentage");
 
-        GenerateBoardBallots();
+    //     GenerateBoardBallots();
 
-        Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
-        Rec."Posted" := true;
-        Rec.Modify(true);
-        LogAction(ActionBuffer."Action Taken"::"Escalated to Board", FullBoardMeetingCode, '');
+    //     Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
+    //     Rec."Posted" := true;
+    //     Rec.Modify(true);
+    //     LogAction(ActionBuffer."Action Taken"::"Escalated to Board", FullBoardMeetingCode, '');
 
-        Rec."Voting Status" := Rec."Voting Status"::Open;
-        Rec."Voting Opened At" := CurrentDateTime();
-        Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
-        Rec.Modify(true);
-        LogAction(ActionBuffer."Action Taken"::"Voting Opened", FullBoardMeetingCode, '');
-    end;
+    //     Rec."Voting Status" := Rec."Voting Status"::Open;
+    //     Rec."Voting Opened At" := CurrentDateTime();
+    //     Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
+    //     Rec.Modify(true);
+    //     LogAction(ActionBuffer."Action Taken"::"Voting Opened", FullBoardMeetingCode, '');
+    // end;
+
+procedure EscalateToBoard()
+var
+    ResolutionVote: Record "Resolution Votes";
+    MeetingCode: Code[20];
+begin
+    if Rec."Resolution Type" = Rec."Resolution Type"::Information then
+        Error(InformationCannotEscalateErr);
+
+    if not (Rec."Resolution Status" in [Rec."Resolution Status"::Raised, Rec."Resolution Status"::"Under Discussion"]) then
+        Error(CannotEscalateFromStatusErr);
+
+    Rec.TestField("Committee Id");
+
+    if Rec."Majority Type" = Rec."Majority Type"::"Special Majority" then
+        Rec.TestField("Special Majority Percentage");
+
+   
+    ResolutionVote.SetRange("Resolution No.", Rec."No.");
+    if ResolutionVote.IsEmpty() then
+        Error(NoVotersErr);
+
+   
+    MeetingCode := GetLastKnownMeetingCode();
+
+    Rec."Resolution Status" := Rec."Resolution Status"::Escalated;
+    Rec."Posted" := true;
+    Rec.Modify(true);
+    LogAction(ActionBuffer."Action Taken"::"Escalated to Board", MeetingCode, '');
+
+    Rec."Voting Status" := Rec."Voting Status"::Open;
+    Rec."Voting Opened At" := CurrentDateTime();
+    Rec."Resolution Status" := Rec."Resolution Status"::"Voting Open";
+    Rec.Modify(true);
+    LogAction(ActionBuffer."Action Taken"::"Voting Opened", MeetingCode, '');
+end;
 
     procedure CloseVoting()
     var
@@ -378,29 +414,29 @@ table 58159 "Meeting Resolutions"
         exit(false);
     end;
 
-    local procedure GenerateBoardBallots()
-    var
-        CommitteeMember: Record "Committee Board Members";
-        ResolutionVote: Record "Resolution Votes";
-    begin
-        CommitteeMember.Reset();
-        CommitteeMember.SetRange(Type, CommitteeMember.Type::Board);
-        if CommitteeMember.FindSet() then
-            repeat
-                if CommitteeMember."Director No" <> '' then begin
-                    ResolutionVote.Reset();
-                    ResolutionVote.SetRange("Resolution No.", Rec."No.");
-                    ResolutionVote.SetRange("Member No.", CommitteeMember."Director No");
-                    if ResolutionVote.IsEmpty() then begin
-                        Clear(ResolutionVote);
-                        ResolutionVote."Resolution No." := Rec."No.";
-                        ResolutionVote."Member No." := CommitteeMember."Director No";
-                        ResolutionVote."Member Name" := CommitteeMember.Names;
-                        ResolutionVote.Insert(false);
-                    end;
-                end;
-            until CommitteeMember.Next() = 0;
-    end;
+    // local procedure GenerateBoardBallots()
+    // var
+    //     CommitteeMember: Record "Committee Board Members";
+    //     ResolutionVote: Record "Resolution Votes";
+    // begin
+    //     CommitteeMember.Reset();
+    //     CommitteeMember.SetRange(Type, CommitteeMember.Type::Board);
+    //     if CommitteeMember.FindSet() then
+    //         repeat
+    //             if CommitteeMember."Director No" <> '' then begin
+    //                 ResolutionVote.Reset();
+    //                 ResolutionVote.SetRange("Resolution No.", Rec."No.");
+    //                 ResolutionVote.SetRange("Member No.", CommitteeMember."Director No");
+    //                 if ResolutionVote.IsEmpty() then begin
+    //                     Clear(ResolutionVote);
+    //                     ResolutionVote."Resolution No." := Rec."No.";
+    //                     ResolutionVote."Member No." := CommitteeMember."Director No";
+    //                     ResolutionVote."Member Name" := CommitteeMember.Names;
+    //                     ResolutionVote.Insert(false);
+    //                 end;
+    //             end;
+    //         until CommitteeMember.Next() = 0;
+    // end;
 
 
     local procedure GetLastKnownMeetingCode(): Code[20]
@@ -441,4 +477,5 @@ table 58159 "Meeting Resolutions"
         AlreadyFinalizedErr: Label 'This resolution has already reached a final status.';
         CannotChangeAfterVotingStartedErr: Label 'You cannot change this once voting has started or closed.';
         VoteTallyTxt: Label 'For: %1, Against: %2, Abstain: %3', Comment = '%1 = For votes, %2 = Against votes, %3 = Abstain votes';
+        NoVotersErr: Label 'This resolution has no voters. Select a Committee Id first so its members are added.';
 }

@@ -171,6 +171,28 @@ page 58167 "Meeting Resolution Card"
                     end;
                 }
             }
+            // action(EscalateToBoard)
+            // {
+            //     Caption = 'Escalate to Board';
+            //     ApplicationArea = All;
+            //     Image = Approve;
+            //     ToolTip = 'Escalates this resolution to the Full Board and opens voting in one step. This also posts the resolution and locks its type, committee, and majority settings.';
+            //     Enabled = CanEscalate;
+
+            //     trigger OnAction()
+            //     var
+            //         BoardMeeting: Record "Board Meetings";
+            //         FullBoardMeetingCode: Code[20];
+            //     begin
+            //         BoardMeeting.SetRange("Meeting Type", BoardMeeting."Meeting Type"::Board);
+            //         if Page.RunModal(Page::"Board Meetings List", BoardMeeting) = Action::LookupOK then
+            //             FullBoardMeetingCode := BoardMeeting.No;
+
+            //         Rec.EscalateToBoard(FullBoardMeetingCode);
+            //         SetControlStates();
+            //         CurrPage.Update(false);
+            //     end;
+            // }
             action(EscalateToBoard)
             {
                 Caption = 'Escalate to Board';
@@ -180,15 +202,8 @@ page 58167 "Meeting Resolution Card"
                 Enabled = CanEscalate;
 
                 trigger OnAction()
-                var
-                    BoardMeeting: Record "Board Meetings";
-                    FullBoardMeetingCode: Code[20];
                 begin
-                    BoardMeeting.SetRange("Meeting Type", BoardMeeting."Meeting Type"::Board);
-                    if Page.RunModal(Page::"Board Meetings List", BoardMeeting) = Action::LookupOK then
-                        FullBoardMeetingCode := BoardMeeting.No;
-
-                    Rec.EscalateToBoard(FullBoardMeetingCode);
+                    Rec.EscalateToBoard();
                     SetControlStates();
                     CurrPage.Update(false);
                 end;
