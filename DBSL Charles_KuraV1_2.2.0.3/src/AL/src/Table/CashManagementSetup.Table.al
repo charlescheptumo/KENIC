@@ -717,9 +717,13 @@ Table 57004 "Cash Management Setup"
          field(57101; Membership; Code[50])
         {
             Caption = 'Membership';
-            TableRelation = "Deferral Template";
+            TableRelation = Item;
         }
+ field(57102; "Batch EFT Voucher Nos"; Code[20])
+        {
 
+            TableRelation = "No. Series";
+        }
     }
 
     keys

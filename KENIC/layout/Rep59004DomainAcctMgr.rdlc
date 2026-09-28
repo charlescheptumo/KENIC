@@ -151,15 +151,6 @@
                 <TablixColumn>
                   <Width>0.9in</Width>
                 </TablixColumn>
-                <TablixColumn>
-                  <Width>0.9in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.9in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.9in</Width>
-                </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
@@ -249,66 +240,6 @@
                         </Textbox>
                       </CellContents>
                     </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="H_Spacer1">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="H_Spacer2">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="H_Spacer3">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <BackgroundColor>#1a3c6e</BackgroundColor>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
@@ -352,7 +283,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Switch(Fields!Line_Type.Value = 1, "Targets", Fields!Line_Type.Value = 2, "Actual", Fields!Line_Type.Value = 3, "% Achieved", "")</Value>
+                                  <Value>=Switch(Fields!Line_Type.Value = 1, "Targets", Fields!Line_Type.Value = 2, "Actual", Fields!Line_Type.Value = 3, "% Achieved", True, "")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -382,7 +313,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Qty_Format.Value</Value>
+                                  <Value>=IIf(Fields!Line_Type.Value = 3, Format(Fields!Qty.Value, "0.00") &amp; "%", Format(Fields!Qty.Value, "#,##0"))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <TextAlign>Right</TextAlign>
@@ -401,78 +332,6 @@
                             <TextAlign>Right</TextAlign>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingRight>4pt</PaddingRight>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="SpacerCell1">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="SpacerCell2">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="SpacerCell3">
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <Style>
-                            <Border>
-                              <Color>#cccccc</Color>
-                              <Style>Solid</Style>
-                              <Width>0.5pt</Width>
-                            </Border>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -497,9 +356,6 @@
                     </SortExpression>
                   </SortExpressions>
                 </TablixMember>
-                <TablixMember />
-                <TablixMember />
-                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
@@ -551,7 +407,7 @@
             <Top>1.4in</Top>
             <Left>0.1in</Left>
             <Height>0.57in</Height>
-            <Width>5.8in</Width>
+            <Width>3.1in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>

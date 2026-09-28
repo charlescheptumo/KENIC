@@ -1,6 +1,6 @@
-table 50162 "Batch Check Voucher"
+table 50188 "Batch EFT Voucher"
 {
-    Caption = 'Batch Check Voucher';
+    Caption = 'Batch EFT Voucher';
     DataClassification = ToBeClassified;
 
     fields
@@ -17,11 +17,12 @@ table 50162 "Batch Check Voucher"
         {
             Caption = 'Paying Bank Account';
             TableRelation = "Bank Account";
+
             trigger OnValidate()
             var
                 BankAccount: Record "Bank Account";
             begin
-                If BankAccount.Get("Paying Bank Account") then
+                if BankAccount.Get("Paying Bank Account") then
                     "Paying Bank Account Name" := BankAccount.Name;
             end;
         }
@@ -31,40 +32,39 @@ table 50162 "Batch Check Voucher"
         }
         field(5; "Pay Mode"; Code[20])
         {
-            Caption = 'Pay Mode ';
+            Caption = 'Pay Mode';
             TableRelation = "Pay Mode";
         }
-        field(6; "Cheque No"; Code[50])
+        field(6; Payee; Text[100])
         {
-            Caption = 'Cheque No';
+            DataClassification = ToBeClassified;
         }
         field(7; "Created By"; Code[50])
         {
             Caption = 'Created By';
         }
-        field(8; "Check Printed"; Boolean)
-        {
-            Caption = 'Check Printed';
-        }
-        field(9; Posted; Boolean)
+        field(8; Posted; Boolean)
         {
             Caption = 'Posted';
         }
-        field(10; Amount; Decimal)
+        field(9; Amount; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = Sum("Batch Check Lines"."Net Amount" where("Document No" = field("No.")));
-
+            CalcFormula = sum("Batch EFT Lines"."Net Amount" where("Document No" = field("No.")));
         }
-        field(11; "Posting Date"; Date)
+        field(10; "Posting Date"; Date)
         {
             DataClassification = ToBeClassified;
         }
-        field(12; "Check Date"; Date)
+        field(11; "EFT Reference No."; Code[35])
         {
             DataClassification = ToBeClassified;
         }
-        field(13; Payee; Text[100])
+        field(12; "Value Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(13; "Bank File Generated"; Boolean)
         {
             DataClassification = ToBeClassified;
         }
@@ -73,27 +73,14 @@ table 50162 "Batch Check Voucher"
             CaptionClass = '1,2,1';
             TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1),
                                                           Blocked = const(false));
-
-            trigger OnValidate()
-            begin
-                //ValidateShortcutDimCode(1, "Shortcut Dimension 1 Code");
-            end;
         }
         field(15; "Shortcut Dimension 2 Code"; Code[50])
         {
             CaptionClass = '1,2,2';
             TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2),
                                                           Blocked = const(false));
-            trigger OnValidate()
-            begin
-                // ValidateShortcutDimCode(2, "Shortcut Dimension 2 Code");
-            end;
         }
-        field(16; "Check No"; Code[20])
-        {
-            Caption = 'Check No.';
-        }
-        field(17; "Dimension Set ID"; Integer)
+        field(16; "Dimension Set ID"; Integer)
         {
             Caption = 'Dimension Set ID';
             Editable = false;
@@ -109,18 +96,13 @@ table 50162 "Batch Check Voucher"
                 DimMgt.UpdateGlobalDimFromDimSetID("Dimension Set ID", "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
             end;
         }
-        field(18; "Physical Check No"; Code[20])
+        field(17;"Posted By"; Code[20])
         {
-            Caption = 'Physical Check No.';
+            Caption = 'Posted By';
         }
-        field(19; "Posted By"; Code[50])
-        {
-
-        }
-
-
-
     }
+  
+
     keys
     {
         key(PK; "No.")
@@ -128,35 +110,36 @@ table 50162 "Batch Check Voucher"
             Clustered = true;
         }
     }
+
     fieldgroups
     {
-        fieldgroup(DropDown; "No.", "Date", "Paying Bank Account", "Paying Bank Account Name", "Payee")
+        fieldgroup(DropDown; "No.", "Date", "Paying Bank Account", "Paying Bank Account Name", Payee)
         {
         }
     }
+
     procedure ShowDocDim()
     var
         OldDimSetID: Integer;
     begin
         OldDimSetID := "Dimension Set ID";
         "Dimension Set ID" :=
-  DimMgt.EditDimensionSet(
-    "Dimension Set ID", STRSUBSTNO('%1 %2', "No.", "Date"),
-    "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
-        IF OldDimSetID <> "Dimension Set ID" THEN BEGIN
-            MODIFY;
-
-
-
-        END;
-
+            DimMgt.EditDimensionSet(
+                "Dimension Set ID", StrSubstNo('%1 %2', "No.", "Date"),
+                "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
+        if OldDimSetID <> "Dimension Set ID" then
+            Modify;
     end;
 
-
-
+    // trigger OnInsert()
+    // var 
+    // Noser: Record "No. Series";
+    // begin
+    //     Noser.
+        
+    //     "Created By" := USERID;
+    // end;
 
     var
         DimMgt: Codeunit DimensionManagement;
-
-
 }

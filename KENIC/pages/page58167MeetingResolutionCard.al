@@ -36,10 +36,20 @@ page 58167 "Meeting Resolution Card"
                         SetControlStates();
                     end;
                 }
+                // field(ControlCommitteeId; Rec."Committee Id")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = not Rec."Posted";
+                // }
                 field(ControlCommitteeId; Rec."Committee Id")
                 {
                     ApplicationArea = All;
                     Editable = not Rec."Posted";
+
+                    trigger OnValidate()
+                    begin
+                        CurrPage.Update(false);
+                    end;
                 }
                 field(ControlCommitteeDescription; Rec."Committee Description")
                 {
@@ -109,9 +119,9 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                 }
-              
+
             }
-            
+
             part(History; "Resolution Actions Subform")
             {
                 Caption = 'History';
@@ -246,7 +256,7 @@ page 58167 "Meeting Resolution Card"
         SetControlStates();
     end;
 
-  
+
     local procedure SetControlStates()
     begin
         CanEscalate := (Rec."Resolution Type" <> Rec."Resolution Type"::Information) and

@@ -24,127 +24,6 @@
       <rd:DataSourceID>6af50b5b-b2e5-4764-a270-22cdc867bbb3</rd:DataSourceID>
     </DataSource>
   </DataSources>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-      <Fields>
-        <Field Name="CompanyName">
-          <DataField>CompanyName</DataField>
-        </Field>
-        <Field Name="CompanyAddress">
-          <DataField>CompanyAddress</DataField>
-        </Field>
-        <Field Name="CompanyAddress2">
-          <DataField>CompanyAddress2</DataField>
-        </Field>
-        <Field Name="CompanyCity">
-          <DataField>CompanyCity</DataField>
-        </Field>
-        <Field Name="CompanyPostCode">
-          <DataField>CompanyPostCode</DataField>
-        </Field>
-        <Field Name="CompanyCountyCode">
-          <DataField>CompanyCountyCode</DataField>
-        </Field>
-        <Field Name="CompanyPhoneNo">
-          <DataField>CompanyPhoneNo</DataField>
-        </Field>
-        <Field Name="CompanyEmail">
-          <DataField>CompanyEmail</DataField>
-        </Field>
-        <Field Name="CompanyVATRegNo">
-          <DataField>CompanyVATRegNo</DataField>
-        </Field>
-        <Field Name="CompanyPicture">
-          <DataField>CompanyPicture</DataField>
-        </Field>
-        <Field Name="EvalNo">
-          <DataField>EvalNo</DataField>
-        </Field>
-        <Field Name="ApplicationCode">
-          <DataField>ApplicationCode</DataField>
-        </Field>
-        <Field Name="EmployeeNo">
-          <DataField>EmployeeNo</DataField>
-        </Field>
-        <Field Name="EmployeeName">
-          <DataField>EmployeeName</DataField>
-        </Field>
-        <Field Name="EmployeeDepartment">
-          <DataField>EmployeeDepartment</DataField>
-        </Field>
-        <Field Name="EmployeeJobTitle">
-          <DataField>EmployeeJobTitle</DataField>
-        </Field>
-        <Field Name="CourseTitle">
-          <DataField>CourseTitle</DataField>
-        </Field>
-        <Field Name="CourseMethodology">
-          <DataField>CourseMethodology</DataField>
-        </Field>
-        <Field Name="StartDateTime">
-          <DataField>StartDateTime</DataField>
-        </Field>
-        <Field Name="EndDateTime">
-          <DataField>EndDateTime</DataField>
-        </Field>
-        <Field Name="Venue">
-          <DataField>Venue</DataField>
-        </Field>
-        <Field Name="CourseJustification">
-          <DataField>CourseJustification</DataField>
-        </Field>
-        <Field Name="NoOfParticipants">
-          <DataField>NoOfParticipants</DataField>
-        </Field>
-        <Field Name="Facilitators">
-          <DataField>Facilitators</DataField>
-        </Field>
-        <Field Name="CommentOnRelevanceOfCourse">
-          <DataField>CommentOnRelevanceOfCourse</DataField>
-        </Field>
-        <Field Name="Status_">
-          <DataField>Status_</DataField>
-        </Field>
-        <Field Name="StatusText">
-          <DataField>StatusText</DataField>
-        </Field>
-        <Field Name="CreatedBy">
-          <DataField>CreatedBy</DataField>
-        </Field>
-        <Field Name="CreatedOn">
-          <DataField>CreatedOn</DataField>
-        </Field>
-        <Field Name="AreasAddressedText">
-          <DataField>AreasAddressedText</DataField>
-        </Field>
-        <Field Name="OtherAreasText">
-          <DataField>OtherAreasText</DataField>
-        </Field>
-        <Field Name="AreaLineNo">
-          <DataField>AreaLineNo</DataField>
-        </Field>
-        <Field Name="AreaComment">
-          <DataField>AreaComment</DataField>
-        </Field>
-        <Field Name="AreaCourseTitle">
-          <DataField>AreaCourseTitle</DataField>
-        </Field>
-        <Field Name="AreaCourseMethodology">
-          <DataField>AreaCourseMethodology</DataField>
-        </Field>
-        <Field Name="OtherAreaLineNo">
-          <DataField>OtherAreaLineNo</DataField>
-        </Field>
-        <Field Name="OtherAreaComment">
-          <DataField>OtherAreaComment</DataField>
-        </Field>
-      </Fields>
-    </DataSet>
-  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -607,12 +486,6 @@
       </Page>
     </ReportSection>
   </ReportSections>
-  <ReportParametersLayout>
-    <GridLayoutDefinition>
-      <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
-    </GridLayoutDefinition>
-  </ReportParametersLayout>
   <Code>Public Function BlankZero(ByVal Value As Decimal)
     if Value = 0 then
         Return ""
@@ -650,4 +523,125 @@ End Function
 </Code>
   <Language>=User!Language</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="CompanyName">
+          <DataField>CompanyName</DataField>
+        </Field>
+        <Field Name="CompanyAddress">
+          <DataField>CompanyAddress</DataField>
+        </Field>
+        <Field Name="CompanyAddress2">
+          <DataField>CompanyAddress2</DataField>
+        </Field>
+        <Field Name="CompanyCity">
+          <DataField>CompanyCity</DataField>
+        </Field>
+        <Field Name="CompanyPostCode">
+          <DataField>CompanyPostCode</DataField>
+        </Field>
+        <Field Name="CompanyCountyCode">
+          <DataField>CompanyCountyCode</DataField>
+        </Field>
+        <Field Name="CompanyPhoneNo">
+          <DataField>CompanyPhoneNo</DataField>
+        </Field>
+        <Field Name="CompanyEmail">
+          <DataField>CompanyEmail</DataField>
+        </Field>
+        <Field Name="CompanyVATRegNo">
+          <DataField>CompanyVATRegNo</DataField>
+        </Field>
+        <Field Name="CompanyPicture">
+          <DataField>CompanyPicture</DataField>
+        </Field>
+        <Field Name="EvalNo">
+          <DataField>EvalNo</DataField>
+        </Field>
+        <Field Name="ApplicationCode">
+          <DataField>ApplicationCode</DataField>
+        </Field>
+        <Field Name="EmployeeNo">
+          <DataField>EmployeeNo</DataField>
+        </Field>
+        <Field Name="EmployeeName">
+          <DataField>EmployeeName</DataField>
+        </Field>
+        <Field Name="EmployeeDepartment">
+          <DataField>EmployeeDepartment</DataField>
+        </Field>
+        <Field Name="EmployeeJobTitle">
+          <DataField>EmployeeJobTitle</DataField>
+        </Field>
+        <Field Name="CourseTitle">
+          <DataField>CourseTitle</DataField>
+        </Field>
+        <Field Name="CourseMethodology">
+          <DataField>CourseMethodology</DataField>
+        </Field>
+        <Field Name="StartDateTime">
+          <DataField>StartDateTime</DataField>
+        </Field>
+        <Field Name="EndDateTime">
+          <DataField>EndDateTime</DataField>
+        </Field>
+        <Field Name="Venue">
+          <DataField>Venue</DataField>
+        </Field>
+        <Field Name="CourseJustification">
+          <DataField>CourseJustification</DataField>
+        </Field>
+        <Field Name="NoOfParticipants">
+          <DataField>NoOfParticipants</DataField>
+        </Field>
+        <Field Name="Facilitators">
+          <DataField>Facilitators</DataField>
+        </Field>
+        <Field Name="CommentOnRelevanceOfCourse">
+          <DataField>CommentOnRelevanceOfCourse</DataField>
+        </Field>
+        <Field Name="Status_">
+          <DataField>Status_</DataField>
+        </Field>
+        <Field Name="StatusText">
+          <DataField>StatusText</DataField>
+        </Field>
+        <Field Name="CreatedBy">
+          <DataField>CreatedBy</DataField>
+        </Field>
+        <Field Name="CreatedOn">
+          <DataField>CreatedOn</DataField>
+        </Field>
+        <Field Name="AreasAddressedText">
+          <DataField>AreasAddressedText</DataField>
+        </Field>
+        <Field Name="OtherAreasText">
+          <DataField>OtherAreasText</DataField>
+        </Field>
+        <Field Name="AreaLineNo">
+          <DataField>AreaLineNo</DataField>
+        </Field>
+        <Field Name="AreaComment">
+          <DataField>AreaComment</DataField>
+        </Field>
+        <Field Name="AreaCourseTitle">
+          <DataField>AreaCourseTitle</DataField>
+        </Field>
+        <Field Name="AreaCourseMethodology">
+          <DataField>AreaCourseMethodology</DataField>
+        </Field>
+        <Field Name="OtherAreaLineNo">
+          <DataField>OtherAreaLineNo</DataField>
+        </Field>
+        <Field Name="OtherAreaComment">
+          <DataField>OtherAreaComment</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
 </Report>

@@ -126,7 +126,7 @@ Page 69225 "Training Evaluation Page"
                 trigger OnAction()
                 begin
                     Rec.SetRange(No, Rec.No);
-                    Report.Run(69104, true, false, Rec);
+                    Report.Run(50136, true, false, Rec);
                 end;
             }
             action(Submit)

@@ -384,6 +384,11 @@ Page 57008 "Cash Management Setup"
                 field("Batch Check Voucher Nos"; Rec."Batch Check Voucher Nos")
                 {
                     ToolTip = 'Specifies the value of the Batch Check Voucher Nos field.', Comment = '%';
+                    ApplicationArea = All;
+                }
+                field("Batch EFT Voucher Nos"; Rec."Batch EFT Voucher Nos")
+                {
+                    ApplicationArea = all;
                 }
 
             }

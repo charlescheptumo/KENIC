@@ -3796,6 +3796,7 @@ codeunit 50018 "Custom Function"
         DomainLedgerEntry.InvoiceCreated := true;
         DomainLedgerEntry."Sales Invoice No." := SalesInvHeader."No.";
         DomainLedgerEntry."External Sales Document No." := SalesInvHeader."No.";
+        DomainLedgerEntry."IsManual Entry" := true;
         DomainLedgerEntry.Insert(true);
 
         SalesInvHeader."Domain Ledger Synced" := true;
@@ -3850,6 +3851,7 @@ codeunit 50018 "Custom Function"
             if OrigLedgerEntry.FindFirst() then
                 DomainLedgerEntry.RefundForId := OrigLedgerEntry.ID;
         end;
+        DomainLedgerEntry."IsManual Entry" := true;
 
         DomainLedgerEntry.Insert(true);
 

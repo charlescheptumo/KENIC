@@ -139,6 +139,10 @@ page 50352 "Domain Ledger List"
                 {
                     ApplicationArea = All;
                 }
+                field("IsManual Entry"; Rec."IsManual Entry")
+                {
+                    ApplicationArea = All;
+                }
                 field("Sales Invoice No."; Rec."Sales Invoice No.")
                 {
                     ApplicationArea = All;
@@ -258,7 +262,7 @@ page 50352 "Domain Ledger List"
                     PostedSalesInvHeader: Record "Sales Invoice Header";
                     PostedSalesCrMemoHeader: Record "Sales Cr.Memo Header";
                 begin
-                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Access fee', 'Application', 'Restoration', 'Transfer', 'Refund', 'Membership']) then
+                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Application', 'Restoration', 'Transfer', 'Refund', 'AccessFee']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
 
                     if Rec.InvoiceCreated then
@@ -282,7 +286,7 @@ page 50352 "Domain Ledger List"
 
                         CMSetup.Get();
                         RefundDeferralCode := '';
-                        if OrigLedgerEntry.TransType in ['Renewal', 'AutoRenewal', 'Registration', 'Membership'] then begin
+                        if OrigLedgerEntry.TransType in ['Renewal', 'AutoRenewal', 'Registration', 'AccessFee'] then begin
                             RefundDomainLengthYears := GetDomainLengthYears(OrigLedgerEntry.Created, OrigLedgerEntry.ExDate);
                             if RefundDomainLengthYears > 0 then
                                 RefundDeferralCode := GetDeferralCode(OrigLedgerEntry.TransType, RefundDomainLengthYears, CMSetup);
@@ -397,11 +401,7 @@ page 50352 "Domain Ledger List"
                                     ItemNo := CMSetup."Domain AutoRenewal";
                                 end;
                             end;
-                        'Access fee':
-                            begin
-                                CMSetup.TestField("Access fee");
-                                ItemNo := CMSetup."Access fee";
-                            end;
+
                         'Application':
                             begin
                                 CMSetup.TestField(Application);
@@ -417,7 +417,7 @@ page 50352 "Domain Ledger List"
                                 CMSetup.TestField(Transfer);
                                 ItemNo := CMSetup.Transfer;
                             end;
-                        'Membership':
+                        'AccessFee':
                             begin
                                 CMSetup.TestField(Membership);
                                 ItemNo := CMSetup.Membership;
@@ -454,7 +454,7 @@ page 50352 "Domain Ledger List"
 
                     SalesLine.Insert(true);
 
-                    if Rec.TransType in ['Renewal', 'AutoRenewal', 'Registration', 'Membership'] then begin
+                    if Rec.TransType in ['Renewal', 'AutoRenewal', 'Registration', 'AccessFee'] then begin
                         DomainLengthYears := GetDomainLengthYears(Rec.Created, Rec.ExDate);
                         if DomainLengthYears > 0 then begin
                             DeferralCode := GetDeferralCode(Rec.TransType, DomainLengthYears, CMSetup);
@@ -551,7 +551,7 @@ page 50352 "Domain Ledger List"
                 5:
                     DeferralCode := CMSetup."5Y Defer code Register";
             end;
-        end else if TransType = 'Membership' then begin
+        end else if TransType = 'AccessFee' then begin
             case Years of
                 1:
                     DeferralCode := CMSetup."1Y Membership Deferral";
