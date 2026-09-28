@@ -188,8 +188,8 @@ Page 55003 "Board Meeting Card"
         {
             systempart(BoardMeetingLinks; Links)
             {
-               ApplicationArea = RecordLinks;
-                 Caption = 'Board Pack Links';
+                ApplicationArea = RecordLinks;
+                Caption = 'Board Pack Links';
             }
             systempart(Control22; Notes) { }
         }
@@ -272,13 +272,19 @@ Page 55003 "Board Meeting Card"
                     ApplicationArea = Basic;
                     Image = Action;
                     Promoted = true;
+                    Enabled = not Rec.Published;
                     PromotedCategory = Process;
 
                     trigger OnAction()
                     begin
-                        if Confirm('Do you want to publish this?', false, true) then begin
+                        
+                        if Rec.Published then
+                            Error('This meeting has already been published to the portal.');
+
+                        if Confirm('Do you want to publish this to the portal?', false) then begin
                             Rec.Published := true;
                             Rec.Modify(true);
+                            CurrPage.Update(false);
                         end;
                     end;
                 }

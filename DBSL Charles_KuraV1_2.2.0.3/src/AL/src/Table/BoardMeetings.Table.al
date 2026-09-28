@@ -105,6 +105,7 @@ Table 55002 "Board Meetings"
             DataClassification = ToBeClassified;
             OptionCaption = ' ,Microsoft Teams,Zoom,Google Meet,Webex,Other';
             OptionMembers = " ","Microsoft Teams",Zoom,"Google Meet",Webex,Other;
+            InitValue = "Microsoft Teams";
         }
 
         field(25; "Online Meeting Link"; Text[500])

@@ -62,6 +62,7 @@ Page 55009 "Board Meeting Attendance"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies whether the member was actually present, sent apologies, or was absent.';
+                    Visible = false;
                 }
                 field("Attendance Mode"; Rec."Attendance Mode")
                 {
