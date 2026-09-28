@@ -105,7 +105,7 @@ report 55010 "Board Meeting Attendance Rpt"
 
     local procedure WriteCell(CellValue: Text; Bold: Boolean)
     begin
-        ExcelBuffer.AddColumn(CellValue, Bold, '', false, false, false, '', ExcelBuffer."Cell Type"::Text);
+        ExcelBuffer.AddColumn(CellValue, false, '', Bold, false, false, '', ExcelBuffer."Cell Type"::Text);
     end;
 
     local procedure Tally(var AttendanceLine: Record "Board Meeting Attendance")
