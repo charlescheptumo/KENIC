@@ -34,11 +34,32 @@ table 58159 "Meeting Resolutions"
                     Error(InformationCannotEscalateErr);
             end;
         }
+        // field(5; "Committee Id"; Code[20])
+        // {
+        //     Caption = 'Committee Id';
+        //     DataClassification = ToBeClassified;
+        //     TableRelation = "Board Committees".Code;
+        // }
         field(5; "Committee Id"; Code[20])
         {
             Caption = 'Committee Id';
             DataClassification = ToBeClassified;
             TableRelation = "Board Committees".Code;
+
+            trigger OnValidate()
+            begin
+                if Rec."Committee Id" = xRec."Committee Id" then
+                    exit;
+
+                if Rec."Voting Status" <> Rec."Voting Status"::"Not Started" then
+                    Error(CannotChangeAfterVotingStartedErr);
+
+
+                if Rec."No." = '' then
+                    Rec.Insert(true);
+
+                GenerateCommitteeBallots();
+            end;
         }
         field(6; "Committee Description"; Text[200])
         {
@@ -47,7 +68,7 @@ table 58159 "Meeting Resolutions"
             CalcFormula = lookup("Board Committees".Description where(Code = field("Committee Id")));
             Editable = false;
         }
-     
+
         field(8; "Resolution Status"; Option)
         {
             Caption = 'Resolution Status';
@@ -84,7 +105,7 @@ table 58159 "Meeting Resolutions"
                     Error(CannotChangeAfterVotingStartedErr);
             end;
         }
-        
+
         field(12; "Voting Status"; Option)
         {
             Caption = 'Voting Status';
@@ -107,7 +128,7 @@ table 58159 "Meeting Resolutions"
         }
         field(24; "Voting Deadline"; DateTime)
         {
-           
+
             Caption = 'Voting Deadline';
             DataClassification = ToBeClassified;
 
@@ -180,7 +201,7 @@ table 58159 "Meeting Resolutions"
             Caption = 'Posted';
             DataClassification = ToBeClassified;
             Editable = false;
-           
+
         }
     }
 
@@ -228,7 +249,39 @@ table 58159 "Meeting Resolutions"
             ResolutionVote.DeleteAll(true);
     end;
 
-  
+    local procedure GenerateCommitteeBallots()
+    var
+        CommitteeMember: Record "Committee Board Members";
+        ResolutionVote: Record "Resolution Votes";
+    begin
+        
+        ResolutionVote.Reset();
+        ResolutionVote.SetRange("Resolution No.", Rec."No.");
+        if not ResolutionVote.IsEmpty() then
+            ResolutionVote.DeleteAll(true);
+
+        if Rec."Committee Id" = '' then
+            exit;
+
+        CommitteeMember.Reset();
+        CommitteeMember.SetRange(Committee, Rec."Committee Id");
+        if CommitteeMember.FindSet() then
+            repeat
+                if CommitteeMember."Director No" <> '' then begin
+                    ResolutionVote.Reset();
+                    ResolutionVote.SetRange("Resolution No.", Rec."No.");
+                    ResolutionVote.SetRange("Member No.", CommitteeMember."Director No");
+                    if ResolutionVote.IsEmpty() then begin
+                        Clear(ResolutionVote);
+                        ResolutionVote."Resolution No." := Rec."No.";
+                        ResolutionVote."Member No." := CommitteeMember."Director No";
+                        ResolutionVote."Member Name" := CommitteeMember.Names;
+                        ResolutionVote.Insert(true);
+                    end;
+                end;
+            until CommitteeMember.Next() = 0;
+    end;
+
     procedure EscalateToBoard(FullBoardMeetingCode: Code[20])
     begin
         if Rec."Resolution Type" = Rec."Resolution Type"::Information then
@@ -349,7 +402,7 @@ table 58159 "Meeting Resolutions"
             until CommitteeMember.Next() = 0;
     end;
 
-   
+
     local procedure GetLastKnownMeetingCode(): Code[20]
     var
         ResolutionAction: Record "Resolution Actions";
