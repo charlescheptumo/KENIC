@@ -139,6 +139,10 @@ page 50352 "Domain Ledger List"
                 {
                     ApplicationArea = All;
                 }
+                field("IsManual Entry"; Rec."IsManual Entry")
+                {
+                    ApplicationArea = All;
+                }
                 field("Sales Invoice No."; Rec."Sales Invoice No.")
                 {
                     ApplicationArea = All;
@@ -397,7 +401,7 @@ page 50352 "Domain Ledger List"
                                     ItemNo := CMSetup."Domain AutoRenewal";
                                 end;
                             end;
-                        
+
                         'Application':
                             begin
                                 CMSetup.TestField(Application);

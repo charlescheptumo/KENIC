@@ -193,13 +193,17 @@ table 50169 "Domain Ledger Entry"
         field(37; "Credit Memo No."; Code[20])
         {
             Caption = 'Credit Memo No.';
-            
+
             TableRelation = "Sales Header"."No." where("Document Type" = const("Credit Memo"));
         }
-        field(38;"External Sales Document No."; Code[30])
+        field(38; "External Sales Document No."; Code[30])
         {
             Caption = 'External Sales Document No.';
             DataClassification = ToBeClassified;
+        }
+        field(39; "IsManual Entry"; Boolean)
+        {
+            Caption = 'Manual Entry';
         }
     }
 

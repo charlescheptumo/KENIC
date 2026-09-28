@@ -113,6 +113,10 @@ table 50162 "Batch Check Voucher"
         {
             Caption = 'Physical Check No.';
         }
+        field(19; "Posted By"; Code[50])
+        {
+
+        }
 
 
 

@@ -4994,6 +4994,12 @@ Codeunit 57000 "Payments-Post"
         GenJnlTemplate: Record "Gen. Journal Template";
         VendLedgEntry: Record "Vendor Ledger Entry";
         Vendor: Record Vendor;
+        Payments: Record Payments;
+        ActualPVLines: Record "PV Lines";
+        PVHeader: Record Payments;
+        Tariffs: Record "Tariff Codes1";
+        ObjJob: Record Job;
+        JobPostingGroup: Record "Job Posting Group";
     begin
         if Confirm('Are you sure you want to post Batch Check Voucher No. ' + PV."No." + ' ?') = false then
             exit;
@@ -5006,7 +5012,8 @@ Codeunit 57000 "Payments-Post"
         PV.TestField("Paying Bank Account");
         PV.TestField("Pay Mode");
         PV.TestField("Physical Check No");
-
+        PV.TestField("Shortcut Dimension 1 Code");
+        PV.TestField("Shortcut Dimension 2 Code");
 
         if PV."Pay Mode" = 'CHEQUE' then
             if not PV."Check Printed" then
@@ -5062,17 +5069,551 @@ Codeunit 57000 "Payments-Post"
                 GenJnLine.Validate(Amount);
                 GenJnLine.Description := CopyStr(PV.Payee, 1, 100);
 
-                // FIXED: Validate shortcut dims directly — do not manually assign Dimension Set ID after
-                GenJnLine.Validate("Shortcut Dimension 1 Code", PV."Shortcut Dimension 1 Code");
-                GenJnLine.Validate("Shortcut Dimension 2 Code", PV."Shortcut Dimension 2 Code");
-
                 GenJnLine."Bal. Account Type" := GenJnLine."Bal. Account Type"::"Bank Account";
                 GenJnLine."Bal. Account No." := '';
                 GenJnLine.Validate("Bal. Account No.");
                 GenJnLine.Validate("Currency Code");
+
+                GenJnLine.Validate("Shortcut Dimension 1 Code", PV."Shortcut Dimension 1 Code");
+                GenJnLine.Validate("Shortcut Dimension 2 Code", PV."Shortcut Dimension 2 Code");
+
                 if GenJnLine.Amount <> 0 then
                     GenJnLine.Insert();
                 TotalAmount += PVLines."Net Amount";
+
+                if PVHeader.Get(PVLines."PV No") then begin
+                    ActualPVLines.Reset();
+                    ActualPVLines.SetRange(No, PVLines."PV No");
+                    if ActualPVLines.FindSet() then begin
+                        repeat
+                            if ActualPVLines."VAT Withheld Amount" > 0 then begin
+                                Tariffs.Get(ActualPVLines."VAT Withheld Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + '-VAT Withheld', 1, 100);
+                                GenJnLine.Amount := -ActualPVLines."VAT Withheld Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."VAT Withheld Code PV" := ActualPVLines."VAT Withheld Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + '-VAT Withheld', 1, 100);
+                                GenJnLine.Amount := ActualPVLines."VAT Withheld Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."VAT Withheld Code PV" := ActualPVLines."VAT Withheld Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."W/Tax Amount" > 0 then begin
+                                Tariffs.Get(ActualPVLines."W/Tax Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + '-WholdingTax', 1, 100);
+                                GenJnLine.Amount := -ActualPVLines."W/Tax Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."WHT Code" := ActualPVLines."W/Tax Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + '-WholdingTax', 1, 100);
+                                GenJnLine.Amount := ActualPVLines."W/Tax Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."WHT Code" := ActualPVLines."W/Tax Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."PAYE Amount" > 0 then begin
+                                Tariffs.Get(ActualPVLines."PAYE Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' ' + 'PAYE', 1, 100);
+                                GenJnLine.Amount := -ActualPVLines."PAYE Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."PAYE Code PV" := ActualPVLines."PAYE Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' ' + 'PAYE', 1, 100);
+                                GenJnLine.Amount := ActualPVLines."PAYE Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."PAYE Code PV" := ActualPVLines."PAYE Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."Retention  Amount" > 0 then begin
+                                Tariffs.Get(ActualPVLines."Retention Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + '-Amount Retained', 1, 100);
+                                PVHeader.CalcFields("Total Retention Amount");
+                                GenJnLine.Amount := -PVHeader."Total Retention Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."Retention Code PV" := ActualPVLines."Retention Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(ActualPVLines."Project No" + ' AMOUNT RETAINED:', 1, 100);
+                                GenJnLine.Amount := PVHeader."Total Retention Amount";
+                                GenJnLine.Validate("Currency Code");
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."Retention Code PV" := ActualPVLines."Retention Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."PCBL Charge" > 0 then begin
+                                Tariffs.Get(ActualPVLines."PPRA Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' PCBL Charge', 1, 100);
+                                GenJnLine.Amount := -ActualPVLines."PCBL Charge";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."PPRA Code PV" := ActualPVLines."PPRA Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' PCBL Charge', 1, 100);
+                                GenJnLine.Amount := ActualPVLines."PCBL Charge";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."PPRA Code PV" := ActualPVLines."PPRA Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."Obligation WHT" > 0 then begin
+                                Tariffs.Get(ActualPVLines."W/Tax Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' Obligation WHT', 1, 100);
+                                GenJnLine.Amount := ActualPVLines."Obligation WHT";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Shortcut Dimension 1 Code" := ActualPVLines."Shortcut Dimension 1 Code";
+                                GenJnLine.Validate("Shortcut Dimension 1 Code");
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."WHT Code" := ActualPVLines."W/Tax Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' Obligation WHT', 1, 100);
+                                GenJnLine.Amount := -ActualPVLines."Obligation WHT";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Shortcut Dimension 1 Code" := ActualPVLines."Shortcut Dimension 1 Code";
+                                GenJnLine.Validate("Shortcut Dimension 1 Code");
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."WHT Code" := ActualPVLines."W/Tax Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."Obligation Income Tax" > 0 then begin
+                                Tariffs.Get(ActualPVLines."W/Tax Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' Obligation Income Tax', 1, 100);
+                                GenJnLine.Amount := ActualPVLines."Obligation Income Tax";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Shortcut Dimension 1 Code" := ActualPVLines."Shortcut Dimension 1 Code";
+                                GenJnLine.Validate("Shortcut Dimension 1 Code");
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."WHT Code" := ActualPVLines."W/Tax Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' Obligation Income Tax', 1, 100);
+                                GenJnLine.Amount := -ActualPVLines."Obligation Income Tax";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Shortcut Dimension 1 Code" := ActualPVLines."Shortcut Dimension 1 Code";
+                                GenJnLine.Validate("Shortcut Dimension 1 Code");
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."WHT Code" := ActualPVLines."W/Tax Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."Obligation VAT" > 0 then begin
+                                Tariffs.Get(ActualPVLines."W/Tax Code");
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' Obligation VAT', 1, 100);
+                                GenJnLine.Amount := ActualPVLines."Obligation VAT";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Shortcut Dimension 1 Code" := ActualPVLines."Shortcut Dimension 1 Code";
+                                GenJnLine.Validate("Shortcut Dimension 1 Code");
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."VAT Withheld Code PV" := ActualPVLines."VAT Withheld Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := Tariffs."Account Type";
+                                GenJnLine."Account No." := Tariffs."Account No.";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + ' Obligation VAT', 1, 100);
+                                GenJnLine.Amount := -ActualPVLines."Obligation VAT";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Shortcut Dimension 1 Code" := ActualPVLines."Shortcut Dimension 1 Code";
+                                GenJnLine.Validate("Shortcut Dimension 1 Code");
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                GenJnLine."VAT Withheld Code PV" := ActualPVLines."VAT Withheld Code";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if ActualPVLines."Liquidated Damages" > 0 then begin
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := GenJnLine."Account Type"::"G/L Account";
+                                ObjJob.Reset();
+                                ObjJob.SetRange("No.", ActualPVLines."Project No");
+                                if ObjJob.FindSet() then begin
+                                    JobPostingGroup.Reset();
+                                    JobPostingGroup.SetRange(Code, ObjJob."Job Posting Group");
+                                    if JobPostingGroup.FindSet() then
+                                        GenJnLine."Account No." := JobPostingGroup."G/L Expense Acc. (Contract)";
+                                end;
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + '-Liquidated Damages', 1, 100);
+                                PVHeader.CalcFields("Total Liquidated Damages");
+                                GenJnLine.Amount := -PVHeader."Total Liquidated Damages";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := 'Liquidated Damages:';
+                                GenJnLine.Amount := PVHeader."Total Liquidated Damages";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+
+                            if PVHeader."Advance Recovery" <> 0 then begin
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := PVHeader."Account Type";
+                                Vendor.Reset();
+                                Vendor.SetRange(Vendor."No.", ActualPVLines."Account No");
+                                if Vendor.FindSet() then begin
+                                    Vendor.TestField("Advance Customer No");
+                                    GenJnLine."Account No." := Vendor."Advance Customer No";
+                                end;
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := CopyStr(PVHeader.Payee + '-AdA', 1, 100);
+                                GenJnLine.Amount := -PVHeader."Advance Recovery";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+
+                                LineNo += 10000;
+                                GenJnLine.Init();
+                                GenJnLine."Journal Template Name" := CMSetup."PV Journal Template";
+                                GenJnLine."Journal Batch Name" := CMSetup."PV Journal Batch Name";
+                                GenJnLine."Line No." := LineNo;
+                                GenJnLine."Account Type" := ActualPVLines."Account Type";
+                                GenJnLine."Account No." := ActualPVLines."Account No";
+                                GenJnLine.Validate("Account No.");
+                                GenJnLine."Posting Date" := PV."Posting Date";
+                                GenJnLine."Document No." := PV."No.";
+                                GenJnLine."External Document No." := PVLines."PV No";
+                                GenJnLine."Payment Method Code" := PV."Pay Mode";
+                                GenJnLine.Description := 'Advance Recovery Amount:';
+                                GenJnLine.Amount := PVHeader."Advance Recovery";
+                                GenJnLine.Validate(Amount);
+                                GenJnLine."Project No" := ActualPVLines."Project No";
+                                GenJnLine."Contractor No" := ActualPVLines."Contractor No";
+                                GenJnLine."Dimension Set ID" := PVHeader."Dimension Set ID";
+                                GenJnLine.Validate("Dimension Set ID");
+                                GenJnLine."Paying Bank Code" := PV."Paying Bank Account";
+                                if GenJnLine.Amount <> 0 then
+                                    GenJnLine.Insert();
+                            end;
+                        until ActualPVLines.Next() = 0;
+                    end;
+                end;
             until PVLines.Next() = 0;
         end;
 
@@ -5092,20 +5633,18 @@ Codeunit 57000 "Payments-Post"
         GenJnLine.Amount := -TotalAmount;
         GenJnLine.Validate(Amount);
         GenJnLine.Description := CopyStr(PV.Payee, 1, 100);
-
-        // FIXED: Validate shortcut dims directly — do not manually assign Dimension Set ID after
-        GenJnLine.Validate("Shortcut Dimension 1 Code", PV."Shortcut Dimension 1 Code");
-        GenJnLine.Validate("Shortcut Dimension 2 Code", PV."Shortcut Dimension 2 Code");
-
         GenJnLine."Paying Bank Account" := PV."Paying Bank Account";
+
         GenJnLine."Bal. Account Type" := GenJnLine."Bal. Account Type"::"G/L Account";
         GenJnLine."Bal. Account No." := '';
         if PV."Pay Mode" = 'CHEQUE' then begin
-            GenJnLine."Bank Payment Type" := GenJnLine."Bank Payment Type"::"Computer Check";
-            GenJnLine."Check Printed" := PV."Check Printed";
             GenJnLine."Check No" := PV."Check No";
         end;
         GenJnLine.Validate("Currency Code");
+
+        GenJnLine.Validate("Shortcut Dimension 1 Code", PV."Shortcut Dimension 1 Code");
+        GenJnLine.Validate("Shortcut Dimension 2 Code", PV."Shortcut Dimension 2 Code");
+
         GenJnLine.Insert();
 
         Codeunit.Run(Codeunit::"Gen. Jnl.-Post Batch", GenJnLine);
@@ -5124,10 +5663,20 @@ Codeunit 57000 "Payments-Post"
                     VendLedgEntry."Check No" := PV."Check No";
                     VendLedgEntry.Modify();
                 end;
+
+                Payments.Reset();
+                if Payments.Get(PVLines."PV No") then begin
+                    Payments.Posted := true;
+                    Payments."Posted By" := UserId;
+                    Payments."Posted Date" := PV."Posting Date";
+                    Payments."Time Posted" := Time;
+                    Payments.Modify();
+                end;
             until PVLines.Next() = 0;
         end;
 
         PV.Posted := true;
+        PV."Posted By" := UserId;
         PV.Modify();
     end;
 

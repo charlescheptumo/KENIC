@@ -77,7 +77,7 @@ Page 57002 "Approved Payment Vouchers"
                     ApplicationArea = ALL;
                     ToolTip = 'Specifies the value of the Paying Bank Account field.';
                 }
-                 field("Bank Name"; Rec."Bank Name")
+                field("Bank Name"; Rec."Bank Name")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Bank Name field.';
@@ -269,14 +269,14 @@ Page 57002 "Approved Payment Vouchers"
                 end;
 
             }
- action("Batch EFT")
+            action("Batch EFT")
             {
                 ApplicationArea = Basic;
                 Image = SendTo;
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-              //  Visible = not SelectionMode;
+                Visible = not SelectionMode;
                 ToolTip = 'Executes the Batch EFT action.';
 
                 trigger OnAction()
@@ -293,7 +293,7 @@ Page 57002 "Approved Payment Vouchers"
                     CashMgt.Get();
                     Payments.CopyFilters(Rec);
                     Payments.SetRange(Select, true);
-                   // Payments.SetRange("Pay Mode", 'BANK');
+                    // Payments.SetRange("Pay Mode", 'BANK');
                     if Payments.IsEmpty() then
                         Error('No EFT Payment Voucher has been selected.');
 
@@ -386,7 +386,10 @@ Page 57002 "Approved Payment Vouchers"
     var
         UserSetup: Record "User Setup";
         Payments: Record payments;
+        SelectionMode: Boolean;
+
         PaymentVoucher: Page "Payment Voucher";
+
 }
 
 #pragma implicitwith restore
