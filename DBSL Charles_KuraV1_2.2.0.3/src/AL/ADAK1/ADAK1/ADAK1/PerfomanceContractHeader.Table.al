@@ -30,7 +30,8 @@ Table 80055 "Perfomance Contract Header"
                 if "Document Type" = "document type"::"CEO/Corporate PC" then begin
                     if No <> xRec.No then begin
                         SPMSetup.Get;
-                        NoSeriesMgt.TestManual(SPMSetup."Corporate PC No. Series");
+                     //   NoSeriesMgt.TestManual(SPMSetup."Corporate PC No. Series");
+                     NoSeriesMgt.TestManual(SPMSetup."PWork Plans");
                         "No. Series" := '';
                     end;
                 end;
@@ -227,7 +228,7 @@ Table 80055 "Perfomance Contract Header"
         {
 
         }
-        field(22; "No. Series"; Code[10])
+        field(22; "No. Series"; Code[22])
         {
 
         }
@@ -690,58 +691,96 @@ Table 80055 "Perfomance Contract Header"
         }
     }
 
-    trigger OnInsert()
-    begin
-        if "Document Type" = "document type"::"Board/Executive PC" then begin
-            if No = '' then begin
-                SPMSetup.Get;
-                SPMSetup.TestField("PWork Plans");
-                "No" := NoSeriesMgt.GetNextNo(SPMSetup."PWork Plans", WorkDate(), true);
-            end;
+    // trigger OnInsert()
+    // begin
+    //     if "Document Type" = "document type"::"Board/Executive PC" then begin
+    //         if No = '' then begin
+    //             SPMSetup.Get;
+    //             SPMSetup.TestField("PWork Plans");
+    //             "No" := NoSeriesMgt.GetNextNo(SPMSetup."PWork Plans", WorkDate(), true);
+    //         end;
+    //     end;
+
+    //     if "Document Type" = "document type"::"CEO/Corporate PC" then begin
+    //         if No = '' then begin
+    //             SPMSetup.Get;
+    //             SPMSetup.TestField("PWork Plans");
+    //             "No" := NoSeriesMgt.GetNextNo(SPMSetup."PWork Plans", WorkDate(), true);
+    //         end;
+    //     end;
+
+    //     if "Document Type" = "document type"::"Functional/Operational PC" then begin
+    //         if No = '' then begin
+    //             SPMSetup.Get;
+    //             SPMSetup.TestField("PWork Plans");
+
+    //             "No" := NoSeriesMgt.GetNextNo(SPMSetup."Functional PC No. Series", WorkDate(), true);
+    //         end;
+    //     end;
+
+    //     if "Document Type" = "document type"::"Individual Scorecard" then begin
+    //         if No = '' then begin
+    //             SPMSetup.Get;
+    //             SPMSetup.TestField("PWork Plans");
+    //             "No" := NoSeriesMgt.GetNextNo(SPMSetup."Individual Scorecard Nos", WorkDate(), true);
+    //         end;
+    //     end;
+
+    //     if "Document Type" = "document type"::"Individual Scorecard PC" then begin
+    //         if No = '' then begin
+    //             SPMSetup.Get;
+    //             SPMSetup.TestField("PWork Plans");
+    //             "No" := NoSeriesMgt.GetNextNo(SPMSetup."Individual Scorecard Nos", WorkDate(), true);
+    //         end;
+    //     end;
+
+    //     "Created By" := UserId;
+    //     "Created On" := Today;
+    //     "Document Date" := Today;
+
+    //     companyinfo.get();
+    //     "Vision Statement" := companyinfo.Vision;
+    //     "Mission Statement" := companyinfo.Mission;
+    // end;
+
+trigger OnInsert()
+begin
+    SPMSetup.Get;
+
+    if No = '' then
+        case "Document Type" of
+            "Document Type"::"Board/Executive PC",
+            "Document Type"::"CEO/Corporate PC":
+                begin
+                    SPMSetup.TestField("PWork Plans");
+                    "No. Series" := SPMSetup."PWork Plans";
+                end;
+            "Document Type"::"Functional/Operational PC":
+                begin
+                    SPMSetup.TestField("Functional PC No. Series");
+                    "No. Series" := SPMSetup."Functional PC No. Series";
+                end;
+            "Document Type"::"Individual Scorecard",
+            "Document Type"::"Individual Scorecard PC":
+                begin
+                    SPMSetup.TestField("Individual Scorecard Nos");
+                    "No. Series" := SPMSetup."Individual Scorecard Nos";
+                end;
         end;
 
-        if "Document Type" = "document type"::"CEO/Corporate PC" then begin
-            if No = '' then begin
-                SPMSetup.Get;
-                SPMSetup.TestField("PWork Plans");
-                "No" := NoSeriesMgt.GetNextNo(SPMSetup."PWork Plans", WorkDate(), true);
-            end;
-        end;
+    if ("No" = '') and ("No. Series" <> '') then
+        "No" := NoSeriesMgt.GetNextNo("No. Series", WorkDate(), true);
 
-        if "Document Type" = "document type"::"Functional/Operational PC" then begin
-            if No = '' then begin
-                SPMSetup.Get;
-                SPMSetup.TestField("PWork Plans");
+    TestField("No");
 
-                "No" := NoSeriesMgt.GetNextNo(SPMSetup."Functional PC No. Series", WorkDate(), true);
-            end;
-        end;
+    "Created By" := UserId;
+    "Created On" := Today;
+    "Document Date" := Today;
 
-        if "Document Type" = "document type"::"Individual Scorecard" then begin
-            if No = '' then begin
-                SPMSetup.Get;
-                SPMSetup.TestField("PWork Plans");
-                "No" := NoSeriesMgt.GetNextNo(SPMSetup."Individual Scorecard Nos", WorkDate(), true);
-            end;
-        end;
-
-        if "Document Type" = "document type"::"Individual Scorecard PC" then begin
-            if No = '' then begin
-                SPMSetup.Get;
-                SPMSetup.TestField("PWork Plans");
-                "No" := NoSeriesMgt.GetNextNo(SPMSetup."Individual Scorecard Nos", WorkDate(), true);
-            end;
-        end;
-
-        "Created By" := UserId;
-        "Created On" := Today;
-        "Document Date" := Today;
-
-        companyinfo.get();
-        "Vision Statement" := companyinfo.Vision;
-        "Mission Statement" := companyinfo.Mission;
-    end;
-
+    companyinfo.Get();
+    "Vision Statement" := companyinfo.Vision;
+    "Mission Statement" := companyinfo.Mission;
+end;
 
     var
         SPMSetup: Record "SPM General Setup";
