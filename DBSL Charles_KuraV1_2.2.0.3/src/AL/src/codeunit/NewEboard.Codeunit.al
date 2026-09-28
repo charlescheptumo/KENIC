@@ -1021,7 +1021,6 @@ Codeunit 50032 NewEboard
                 TempBlob_lRec.CreateOutStream(OutStr, TEXTENCODING::UTF8);
                 RecRef.GetTable(objVendor);
                 Report.SaveAs(Report::"1 Director Page Payslip", '', ReportFormat::Pdf, OutStr, RecRef);
-                FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('%1.Pdf', directorNo), true);
                 TempBlob_lRec.CreateInstream(InStr, TEXTENCODING::UTF8);
                 BaseImage := Base64Convert.ToBase64(InStr);
                 status := 'success*' + BaseImage;
