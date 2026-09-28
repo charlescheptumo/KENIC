@@ -2346,7 +2346,8 @@ Codeunit 50032 NewEboard
         end;
     end;
 
-    procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]) status: Text
+   
+   procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]; fullBoardMeetingCode: Code[20]) status: Text
     var
         Resolution: Record "Meeting Resolutions";
     begin
