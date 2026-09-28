@@ -131,6 +131,29 @@ page 58118 "Head of E-Board"
                     Caption = 'Deductions';
                     RunObject = Page "Director Deduction";
                     ToolTip = 'Manage director deductions.';
+                }//Page 69104 "Directors Pay Periods"
+                action("Directors Pay Periods")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Directors Pay Periods';
+                    RunObject = Page "Directors Pay Periods";
+                    ToolTip = 'Manage Directors Pay Periods';
+                }//Page 69104 "Directors Pay Periods"
+                action("Directors Payroll Run")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Directors Payroll Run';
+                    Image = Calculate;
+                    RunObject = Report "Directors Payroll Run";
+                    ToolTip = 'Calculates PAYE and NSSF for directors for a selected pay period.';
+                }
+                action("Director Payslip")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Director Payslip';
+                    Image = Print;
+                    RunObject = Report "1 Director Page Payslip";
+                    ToolTip = 'Prints the director payslip for a pay period.';
                 }
             }
 
