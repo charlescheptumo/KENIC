@@ -308,7 +308,7 @@ Page 80417 "Functional AWP Card"
                 Image = PostBatch;
                 Promoted = true;
                 PromotedCategory = Process;
-                Visible = false;
+                Visible = True;
                 ToolTip = 'Executes the Consolidate Annual Workplan action.';
 
                 trigger OnAction()
