@@ -2,9 +2,10 @@
 report 55010 "Board Meeting Attendance Rpt"
 {
     Caption = 'Board Meeting Attendance Report';
-    ProcessingOnly = true;
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
+    DefaultLayout = RDLC;
+    RDLCLayout = './KENIC/layout/Rep55010BoardMeetingAttendance.rdlc';
 
     dataset
     {
@@ -12,27 +13,53 @@ report 55010 "Board Meeting Attendance Rpt"
         {
             RequestFilterFields = "Meeting Code", "Meeting Date", "Commitee No";
 
+            column(CompanyInfo_Name; CompanyInfo.Name) { }
+            column(CompanyInfo_Picture; CompanyInfo.Picture) { }
+            column(CompanyInfo_Address; CompanyInfo.Address) { }
+            column(CompanyInfo_Address2; CompanyInfo."Address 2") { }
+            column(CompanyInfo_City; CompanyInfo.City) { }
+            column(CompanyInfo_Phone; CompanyInfo."Phone No.") { }
+            column(CompanyInfo_Email; CompanyInfo."E-Mail") { }
+
+            column(MeetingCode; "Meeting Code") { }
+            column(MeetingName; "Meeting Name") { }
+            column(MeetingDate; "Meeting Date") { }
+            column(CommiteeNo; "Commitee No") { }
+            column(CommitteeName; "Committee  Name") { }
+            column(MemberNo; "Member No") { }
+            column(MemberName; "Member Name") { }
+            column(AttendanceConfirmation; "Attendance Confirmation") { }
+            column(Attendance; Attendance) { }
+            column(AttendanceMode; "Attendance Mode") { }
+            column(HasAttended; "Has Attended") { }
+
             trigger OnPreDataItem()
             begin
-                ExcelBuffer.Reset();
-                ExcelBuffer.DeleteAll();
-                WriteHeaderRow();
-
                 PresentCount := 0;
                 ApologyCount := 0;
                 AbsentCount := 0;
                 InPersonCount := 0;
                 VirtualCount := 0;
+
+                if ExportToExcel then begin
+                    ExcelBuffer.Reset();
+                    ExcelBuffer.DeleteAll();
+                    WriteHeaderRow();
+                end;
             end;
 
             trigger OnAfterGetRecord()
             begin
-                WriteDataRow(BoardMeetingAttendance);
+                if ExportToExcel then
+                    WriteDataRow(BoardMeetingAttendance);
                 Tally(BoardMeetingAttendance);
             end;
 
             trigger OnPostDataItem()
             begin
+                if not ExportToExcel then
+                    exit;
+
                 WriteBlankRow();
                 WriteSummaryRow(TotalPresentLbl, PresentCount);
                 WriteSummaryRow(TotalApologyLbl, ApologyCount);
@@ -44,7 +71,20 @@ report 55010 "Board Meeting Attendance Rpt"
                 ExcelBuffer.WriteSheet(SheetNameLbl, CompanyName(), UserId());
                 ExcelBuffer.CloseBook();
                 ExcelBuffer.OpenExcel();
+
+                CurrReport.Quit();
             end;
+        }
+
+        dataitem(Summary; Integer)
+        {
+            DataItemTableView = sorting(Number) where(Number = const(1));
+
+            column(PresentCount; PresentCount) { }
+            column(ApologyCount; ApologyCount) { }
+            column(AbsentCount; AbsentCount) { }
+            column(InPersonCount; InPersonCount) { }
+            column(VirtualCount; VirtualCount) { }
         }
     }
 
@@ -54,10 +94,31 @@ report 55010 "Board Meeting Attendance Rpt"
         {
             area(Content)
             {
+                group(Options)
+                {
+                    Caption = 'Options';
 
+                    field(ExportToExcelCtrl; ExportToExcel)
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Export to Excel';
+                        ToolTip = 'Tick to export to Excel. Leave unticked to preview, print or save as PDF.';
+                    }
+                }
             }
         }
+
+        trigger OnOpenPage()
+        begin
+            ExportToExcel := false;
+        end;
     }
+
+    trigger OnPreReport()
+    begin
+        CompanyInfo.Get();
+        CompanyInfo.CalcFields(Picture);
+    end;
 
     local procedure WriteHeaderRow()
     begin
@@ -128,7 +189,9 @@ report 55010 "Board Meeting Attendance Rpt"
     end;
 
     var
+        CompanyInfo: Record "Company Information";
         ExcelBuffer: Record "Excel Buffer" temporary;
+        ExportToExcel: Boolean;
         PresentCount: Integer;
         ApologyCount: Integer;
         AbsentCount: Integer;
