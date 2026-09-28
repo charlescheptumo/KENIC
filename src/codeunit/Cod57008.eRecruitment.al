@@ -1917,6 +1917,7 @@ Codeunit 57008 "eRecruitment"
 
         Applicant.Reset;
         Applicant.SetRange("Candidate No.", candidateno);
+        
         if Applicant.FindFirst then begin
             RecordLink."Record ID" := Applicant.RecordId;
             if RecordLink.Insert(true) then begin
