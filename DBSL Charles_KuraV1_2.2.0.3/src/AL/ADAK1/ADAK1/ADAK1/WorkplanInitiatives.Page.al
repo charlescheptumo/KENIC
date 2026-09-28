@@ -39,13 +39,13 @@ Page 80054 "Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Department field.';
-                    visible = false;
+                    visible = true;
                 }
                 field("Objective/Initiative"; Rec."Objective/Initiative")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Objective/Initiative field.';
-                    Visible = false;
+                    Visible = true;
                 }
                 field("Departmental Objective"; Rec."Departmental Objective")
                 {
