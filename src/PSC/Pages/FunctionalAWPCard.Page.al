@@ -41,7 +41,7 @@ Page 80417 "Functional AWP Card"
                 {
                     ApplicationArea = basic;
                     ToolTip = 'Specifies the value of the Primary Directorate field.';
-                    Visible = false;
+                    Visible = true;
                 }
                 field("Start Date"; Rec."Start Date")
                 {
