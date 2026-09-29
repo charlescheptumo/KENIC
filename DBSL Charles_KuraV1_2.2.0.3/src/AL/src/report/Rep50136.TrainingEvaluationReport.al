@@ -9,10 +9,9 @@ report 50136 "Training Evaluation Report"
 
     dataset
     {
-        dataitem(CompanyInfoLoop; "Integer")
+        dataitem("Training Evaluation Header"; "Training Evaluation Header")
         {
-            DataItemTableView = sorting(Number);
-            MaxIteration = 1;
+            RequestFilterFields = "No", Status;
 
             column(CompanyName; CompanyInfo.Name)
             {
@@ -44,25 +43,13 @@ report 50136 "Training Evaluation Report"
             column(CompanyPicture; CompanyInfo.Picture)
             {
             }
-
-            trigger OnAfterGetRecord()
-            begin
-                CompanyInfo.Get();
-                CompanyInfo.CalcFields(Picture);
-            end;
-        }
-
-        dataitem("Training Evaluation Header"; "Training Evaluation Header")
-        {
-            RequestFilterFields = "No", Status;
-
             column(EvalNo; "No")
             {
             }
             column(ApplicationCode; "Application Code")
             {
             }
-            column(EmployeeNo; "No")
+            column(EmployeeNo; EmployeeNo)
             {
             }
             column(EmployeeName; EmployeeName)
@@ -77,7 +64,7 @@ report 50136 "Training Evaluation Report"
             column(CourseTitle; "Course Title")
             {
             }
-            column(CourseMethodology; "Course Methodology")
+            column(CourseMethodology; CourseMethodologyText)
             {
             }
             column(StartDateTime; "Start DateTime")
@@ -113,8 +100,6 @@ report 50136 "Training Evaluation Report"
             column(CreatedOn; "Created On")
             {
             }
-            // Aggregated text, one line per child record, for use in the flat
-            // "Areas Addressed by Training" / "Other Areas" cells.
             column(AreasAddressedText; AreasAddressedText)
             {
             }
@@ -122,50 +107,31 @@ report 50136 "Training Evaluation Report"
             {
             }
 
-            dataitem("Trng Eval Areas Addressed"; "Trng Eval Areas Addressed")
-            {
-                DataItemLink = "Training Header No" = field("No");
-                DataItemTableView = sorting("Training Header No", "Line No");
-
-                column(AreaLineNo; "Line No")
-                {
-                }
-                column(AreaComment; "Comment on Relevance of Course")
-                {
-                }
-                column(AreaCourseTitle; "Course Title")
-                {
-                }
-                column(AreaCourseMethodology; "Course Methodology")
-                {
-                }
-            }
-
-            dataitem("Trng Eval Other Areas"; "Trng Eval Other Areas")
-            {
-                DataItemLink = "Training Header No" = field("No");
-                DataItemTableView = sorting("Training Header No", "Line No");
-
-                column(OtherAreaLineNo; "Line No")
-                {
-                }
-                column(OtherAreaComment; "Comment on Relevance of Course")
-                {
-                }
-            }
-
             trigger OnAfterGetRecord()
             begin
+                Clear(TrainingRequests);
+                Clear(Employee);
+                Clear(EmployeeNo);
                 Clear(EmployeeName);
                 Clear(EmployeeDepartment);
                 Clear(EmployeeJobTitle);
+                Clear(CourseMethodologyText);
 
-                if Employee.Get("No") then begin
-                    EmployeeName := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
-                    Employee.CalcFields("Department Name");
-                    EmployeeDepartment := Employee."Department Name";
-                    EmployeeJobTitle := Employee."Job Title";
+                if TrainingRequests.Get("Application Code") then begin
+                    EmployeeNo := TrainingRequests."Employee No.";
+                    EmployeeName := TrainingRequests."Employee Name";
+
+                    if Employee.Get(TrainingRequests."Employee No.") then begin
+                        EmployeeName := Employee.FullName();
+                        Employee.CalcFields("Department Name");
+                        EmployeeDepartment := Employee."Department Name";
+                        EmployeeJobTitle := Employee."Job Title";
+                    end;
                 end;
+
+                CourseMethodologyText := "Course Methodology";
+                if (CourseMethodologyText = '') and (TrainingRequests.Code <> '') then
+                    CourseMethodologyText := Format(TrainingRequests."Training Type");
 
                 AreasAddressedText := BuildAreasAddressedText("No");
                 OtherAreasText := BuildOtherAreasText("No");
@@ -187,16 +153,29 @@ report 50136 "Training Evaluation Report"
         }
     }
 
+    trigger OnPreReport()
+    begin
+        CompanyInfo.Get();
+        CompanyInfo.CalcFields(Picture);
+
+        CRLF[1] := 13;
+        CRLF[2] := 10;
+    end;
+
     var
         CompanyInfo: Record "Company Information";
         Employee: Record Employee;
+        TrainingRequests: Record "Training Requests";
+        EmployeeNo: Code[20];
         EmployeeName: Text[100];
         EmployeeDepartment: Text[100];
         EmployeeJobTitle: Text[100];
+        CourseMethodologyText: Text[100];
         AreasAddressedText: Text;
         OtherAreasText: Text;
+        CRLF: Text[2];
 
-    local procedure BuildAreasAddressedText(TrainingHeaderNo: Code[30]): Text
+    local procedure BuildAreasAddressedText(TrainingHeaderNo: Code[20]): Text
     var
         AreasAddressed: Record "Trng Eval Areas Addressed";
         ResultText: Text;
@@ -206,14 +185,14 @@ report 50136 "Training Evaluation Report"
             repeat
                 if AreasAddressed."Comment on Relevance of Course" <> '' then begin
                     if ResultText <> '' then
-                        ResultText += '\';
+                        ResultText += CRLF;
                     ResultText += AreasAddressed."Comment on Relevance of Course";
                 end;
             until AreasAddressed.Next() = 0;
         exit(ResultText);
     end;
 
-    local procedure BuildOtherAreasText(TrainingHeaderNo: Code[30]): Text
+    local procedure BuildOtherAreasText(TrainingHeaderNo: Code[20]): Text
     var
         OtherAreas: Record "Trng Eval Other Areas";
         ResultText: Text;
@@ -223,7 +202,7 @@ report 50136 "Training Evaluation Report"
             repeat
                 if OtherAreas."Comment on Relevance of Course" <> '' then begin
                     if ResultText <> '' then
-                        ResultText += '\';
+                        ResultText += CRLF;
                     ResultText += OtherAreas."Comment on Relevance of Course";
                 end;
             until OtherAreas.Next() = 0;

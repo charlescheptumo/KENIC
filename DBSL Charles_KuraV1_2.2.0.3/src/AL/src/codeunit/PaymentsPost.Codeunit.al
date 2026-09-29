@@ -4263,11 +4263,33 @@ Codeunit 57000 "Payments-Post"
         CheckReport.RunModal();
     end;
 
+    // procedure GenerateBatchEFTFile(PV: Record "Batch EFT Voucher")
+    // var
+    //     BankFile: XmlPort "Batch EFT Bank File";
+    //     TempBlob: Codeunit "Temp Blob";
+    //     OutStr: OutStream;
+    //     InStr: InStream;
+    //     FileName: Text;
+    // begin
+    //     //  PV.TestField(Posted, true);
+
+    //     TempBlob.CreateOutStream(OutStr);
+    //     BankFile.SetBatch(PV);
+    //     BankFile.SetDestination(OutStr);
+    //     BankFile.Export();
+
+    //     FileName := BankFile.GetFileName();
+    //     TempBlob.CreateInStream(InStr);
+    //     DownloadFromStream(InStr, 'Save Batch EFT File', '', 'CSV Files (*.csv)|*.csv', FileName);
+    // end;
     procedure GenerateBatchEFTFile(PV: Record "Batch EFT Voucher")
+    var
+        BatchEFTExcelExport: Codeunit "Batch EFT Excel Export";
     begin
-        PV.TestField(Posted, true);
-        Message('Hook your bank file export logic (CSV/XML/etc.) here for Batch EFT Voucher %1.', PV."No.");
+        BatchEFTExcelExport.Export(PV);
     end;
+
+
 
     procedure PostBatchEFT(PV: Record "Batch EFT Voucher")
     var
@@ -6791,6 +6813,7 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt."Posted Time" := ReceiptRec."Posted Time";
         DomainReceipt."Source Receipt No." := ReceiptRec."No.";
         DomainReceipt."External Receipt No." := ReceiptRec."No.";
+        DomainReceipt."IsManual Entry" := true;
 
         DomainReceipt.Insert(true);
     end;

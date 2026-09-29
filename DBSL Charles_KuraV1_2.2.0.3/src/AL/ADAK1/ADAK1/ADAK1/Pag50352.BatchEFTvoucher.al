@@ -133,7 +133,7 @@ page 50384 "Batch EFT Voucher"
                 Image = ExportFile;
                 Promoted = true;
                 PromotedCategory = Process;
-                Enabled = Rec.Posted;
+                //Enabled = Rec.Posted;
                 ToolTip = 'Generate the electronic payment file for the bank.';
 
                 trigger OnAction()
