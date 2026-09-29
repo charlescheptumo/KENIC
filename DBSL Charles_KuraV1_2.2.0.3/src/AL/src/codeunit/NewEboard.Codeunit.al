@@ -2059,27 +2059,72 @@ Codeunit 50032 NewEboard
         exit(false);
     end;
 
-    procedure fnRecordDataConsent(directorNo: Code[50]) status: Text
+    procedure fnRecordDataConsent(directorNo: Code[50]; consentVersion: Text; portalUser: Text; ipAddress: Text; userAgent: Text) status: Text
     var
         BoardMember: Record "Board Members";
+        ConsentTime: DateTime;
     begin
-        status := 'danger*Could not record your consent';
-
         BoardMember.Reset();
         BoardMember.SetRange("Personal No", directorNo);
-        if not BoardMember.FindFirst() then begin
-            status := 'danger*Member record not found';
-            exit(status);
-        end;
+        if not BoardMember.FindFirst() then
+            exit('danger*Member record not found');
+
+        ConsentTime := CurrentDateTime;
+        InsertConsentLog(directorNo, ConsentFullName(BoardMember), 0, ConsentTime, consentVersion, portalUser, ipAddress, userAgent);
 
         BoardMember."Data Consent Given" := true;
-        BoardMember."Data Consent Date" := Today;
+        BoardMember."Data Consent Date" := DT2Date(ConsentTime);
+        BoardMember."Data Consent Date Time" := ConsentTime;
+        BoardMember."Data Consent Version" := CopyStr(consentVersion, 1, MaxStrLen(BoardMember."Data Consent Version"));
 
-        if BoardMember.Modify(true) then begin
-            status := 'success*Consent recorded successfully';
-        end else begin
-            status := 'danger*Could not save your consent';
-        end;
+        if BoardMember.Modify(true) then
+            exit('success*Consent recorded successfully');
+        exit('danger*Could not save your consent');
+    end;
+
+    procedure fnRecordDataConsentDeclined(directorNo: Code[50]; consentVersion: Text; portalUser: Text; ipAddress: Text; userAgent: Text) status: Text
+    var
+        BoardMember: Record "Board Members";
+        FullName: Text;
+    begin
+        BoardMember.Reset();
+        BoardMember.SetRange("Personal No", directorNo);
+        if BoardMember.FindFirst() then
+            FullName := ConsentFullName(BoardMember);
+
+        InsertConsentLog(directorNo, FullName, 1, CurrentDateTime, consentVersion, portalUser, ipAddress, userAgent);
+        exit('success*Decline recorded');
+    end;
+
+    // consentAction: 0 = Accepted, 1 = Declined
+    local procedure InsertConsentLog(directorNo: Code[50]; fullName: Text; consentAction: Integer; consentTime: DateTime; consentVersion: Text; portalUser: Text; ipAddress: Text; userAgent: Text)
+    var
+        ConsentLog: Record "Board Data Consent Log";
+    begin
+        ConsentLog.Init();
+        ConsentLog."Personal No" := directorNo;
+        ConsentLog."Full Name" := CopyStr(fullName, 1, MaxStrLen(ConsentLog."Full Name"));
+        ConsentLog."Action" := consentAction;
+        ConsentLog."Consent Date Time" := consentTime;
+        ConsentLog."Consent Date" := DT2Date(consentTime);
+        ConsentLog."Consent Version" := CopyStr(consentVersion, 1, MaxStrLen(ConsentLog."Consent Version"));
+        ConsentLog."Portal User" := CopyStr(portalUser, 1, MaxStrLen(ConsentLog."Portal User"));
+        ConsentLog."IP Address" := CopyStr(ipAddress, 1, MaxStrLen(ConsentLog."IP Address"));
+        ConsentLog."User Agent" := CopyStr(userAgent, 1, MaxStrLen(ConsentLog."User Agent"));
+        ConsentLog."Recorded By" := CopyStr(UserId, 1, MaxStrLen(ConsentLog."Recorded By"));
+        ConsentLog.Insert();
+    end;
+
+    local procedure ConsentFullName(BoardMember: Record "Board Members"): Text
+    var
+        FullName: Text;
+    begin
+        FullName := BoardMember."First Name";
+        if BoardMember."Middle Name" <> '' then
+            FullName += ' ' + BoardMember."Middle Name";
+        if BoardMember."Last Name" <> '' then
+            FullName += ' ' + BoardMember."Last Name";
+        exit(DelChr(FullName, '<>', ' '));
     end;
 
     procedure fnCreateBoardTrainingNeed(directorNo: Code[50]; memberName: Text[300]; trainingTitle: Text[250]; justification: Text[500]) status: Text
@@ -2345,8 +2390,8 @@ Codeunit 50032 NewEboard
         end;
     end;
 
-   
-   procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]; fullBoardMeetingCode: Code[20]) status: Text
+
+    procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]; fullBoardMeetingCode: Code[20]) status: Text
     var
         Resolution: Record "Meeting Resolutions";
     begin

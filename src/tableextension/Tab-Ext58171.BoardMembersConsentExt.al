@@ -14,5 +14,17 @@ tableextension 58171 "Board Members Consent Ext" extends "Board Members"
             DataClassification = ToBeClassified;
             Editable = false;
         }
+        field(50102; "Data Consent Date Time"; DateTime)
+        {
+            Caption = 'Data Consent Date/Time';
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(50103; "Data Consent Version"; Text[50])
+        {
+            Caption = 'Data Consent Version';
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
     }
 }
