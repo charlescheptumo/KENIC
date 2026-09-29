@@ -267,6 +267,23 @@ Table 80020 "Strategy Workplan Lines"
     fieldgroups
     {
     }
+    trigger OnInsert()
+    var
+        AnnualWorkplan: Record "Annual Strategy Workplan";
+    begin
+        if AnnualWorkplan.Get(No) then begin
+            if "Primary Directorate" = '' then
+                Validate("Primary Directorate", AnnualWorkplan."Primary Directorate");
+
+            if ("Primary Department" = '') and (AnnualWorkplan.Department <> '') then
+                Validate("Primary Department", AnnualWorkplan.Department);
+
+            if "Year Reporting Code" = '' then
+                "Year Reporting Code" := AnnualWorkplan."Year Reporting Code";
+        end;
+
+        TestField("Primary Directorate");
+    end;
 
     var
         StrategicInt: Record "Strategic Initiative";
