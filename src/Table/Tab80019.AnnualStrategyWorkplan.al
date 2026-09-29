@@ -118,12 +118,39 @@ Table 80019 "Annual Strategy Workplan"
             OptionMembers = Organizational,Functional,"Functional PC","Organizational PC";
             DataClassification = ToBeClassified;
         }
+        // field(43; "Annual Workplan"; Code[30])
+        // {
+
+        //     TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter(Organizational));
+        //     // TableRelation = "Annual Strategy Workplan".No;
+        //     //TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter(Functional));
+        //     trigger OnValidate()
+        //     begin
+        //         if "Annual Workplan" = No then
+        //             Error('AWP Consolidation Template cannot be the same workplan (%1).', No);
+        //     end;
+        // }
         field(43; "Annual Workplan"; Code[30])
         {
+            TableRelation = "Annual Strategy Workplan".No
+        where("Approval Status" = const(Released),
+              "Annual Strategy Type" = const(Organizational));
 
-            TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter(Organizational));
-            // TableRelation = "Annual Strategy Workplan".No;
-            //TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter(Functional));
+            trigger OnLookup()
+            var
+                AwpRec: Record "Annual Strategy Workplan";
+                ApprovedAWPs: Page "ApAnnual Strategy Workplans";
+            begin
+                AwpRec.SetRange("Approval Status", AwpRec."Approval Status"::Released);
+                AwpRec.SetRange("Annual Strategy Type", AwpRec."Annual Strategy Type"::Organizational);
+                ApprovedAWPs.SetTableView(AwpRec);
+                ApprovedAWPs.LookupMode(true);
+                if ApprovedAWPs.RunModal() = Action::LookupOK then begin
+                    ApprovedAWPs.GetRecord(AwpRec);
+                    Validate("Annual Workplan", AwpRec.No);
+                end;
+            end;
+
             trigger OnValidate()
             begin
                 if "Annual Workplan" = No then
