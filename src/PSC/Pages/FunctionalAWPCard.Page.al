@@ -79,7 +79,7 @@ Page 80417 "Functional AWP Card"
                     ApplicationArea = Basic;
                     Caption = 'Annual Strategy Type';
                     ToolTip = 'Specifies the value of the Annual Strategy Type field.';
-                    Visible = true;
+                    Visible = false;
                 }
                 // field("Functional Procurment Plan No"; Rec."Functional Procurment Plan No")
                 // {
