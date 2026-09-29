@@ -24,8 +24,8 @@ Table 80020 "Strategy Workplan Lines"
             //else if ("Cross Cutting"=const(true)) "Cross Cutting Activity"."Entry No";
 
             trigger OnValidate()
-            var 
-            AnnualStrategyWorkplan: Record "Annual Strategy Workplan";
+            var
+                AnnualStrategyWorkplan: Record "Annual Strategy Workplan";
             begin
                 // StrategicInt.Reset;
                 // StrategicInt.SetRange(Code, "Activity ID");
@@ -34,11 +34,11 @@ Table 80020 "Strategy Workplan Lines"
                 //     Outcome := StrategicInt.Outcomes;
                 //     "Objective ID" := StrategicInt."Objective ID";
                 AnnualStrategyWorkplan.Reset;
-                AnnualStrategyWorkplan.SetRange(No,No);
+                AnnualStrategyWorkplan.SetRange(No, No);
                 if AnnualStrategyWorkplan.findfirst then
-                  Rec."Year Reporting Code" := AnnualStrategyWorkplan."Year Reporting Code";
-                end;
-           
+                    Rec."Year Reporting Code" := AnnualStrategyWorkplan."Year Reporting Code";
+            end;
+
         }
         field(4; Description; Text[255])
         {
@@ -183,7 +183,7 @@ Table 80020 "Strategy Workplan Lines"
         }
         field(25; "AnnualWorkplan Achieved Target"; Decimal)
         {
-            CalcFormula = sum("Strategy Sub_Activity Entry".Quantity where("CEO PC ID"= field(No),
+            CalcFormula = sum("Strategy Sub_Activity Entry".Quantity where("CEO PC ID" = field(No),
                                                                             // "Annual Workplan" = field(No),
                                                                             "Activity ID" = field("Activity ID")));
             FieldClass = FlowField;
@@ -272,7 +272,7 @@ Table 80020 "Strategy Workplan Lines"
         AnnualWorkplan: Record "Annual Strategy Workplan";
     begin
         if AnnualWorkplan.Get(No) then begin
-            if "Primary Directorate" = '' then
+            if ("Primary Directorate" = '') and (AnnualWorkplan."Primary Directorate" <> '') then
                 Validate("Primary Directorate", AnnualWorkplan."Primary Directorate");
 
             if ("Primary Department" = '') and (AnnualWorkplan.Department <> '') then
@@ -281,8 +281,6 @@ Table 80020 "Strategy Workplan Lines"
             if "Year Reporting Code" = '' then
                 "Year Reporting Code" := AnnualWorkplan."Year Reporting Code";
         end;
-
-        TestField("Primary Directorate");
     end;
 
     var

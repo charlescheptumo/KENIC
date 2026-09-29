@@ -41,7 +41,7 @@ Page 80417 "Functional AWP Card"
                 {
                     ApplicationArea = basic;
                     ToolTip = 'Specifies the value of the Primary Directorate field.';
-                    Visible = true;
+                    Visible = false;
                 }
                 field("Start Date"; Rec."Start Date")
                 {
@@ -161,7 +161,9 @@ Page 80417 "Functional AWP Card"
                     StrategicIntPlanningLines.Reset;
                     StrategicIntPlanningLines.SetRange("Strategic Plan ID", Rec."Strategy Plan ID");
                     StrategicIntPlanningLines.SetRange("Annual Reporting Codes", Rec."Year Reporting Code");
-                    StrategicIntPlanningLines.SetRange("Primary Directorate", Rec."Primary Directorate");
+                    // StrategicIntPlanningLines.SetRange("Primary Directorate", Rec."Primary Directorate");
+                    if Rec."Primary Directorate" <> '' then
+                        StrategicIntPlanningLines.SetRange("Primary Directorate", Rec."Primary Directorate");
                     StrategicIntPlanningLines.SetRange("Primary Department", Rec.Department);
                     if StrategicIntPlanningLines.FindSet() then begin
                         repeat
@@ -257,7 +259,9 @@ Page 80417 "Functional AWP Card"
                     StrategicIntPlanningLines.Reset;
                     StrategicIntPlanningLines.SetRange("Strategic Plan ID", Rec."Strategy Plan ID");
                     StrategicIntPlanningLines.SetRange("Annual Reporting Codes", Rec."Year Reporting Code");
-                    StrategicIntPlanningLines.SETRANGE("Primary Directorate", Rec."Primary Directorate");
+                    // StrategicIntPlanningLines.SETRANGE("Primary Directorate", Rec."Primary Directorate");
+                    if Rec."Primary Directorate" <> '' then
+                        StrategicIntPlanningLines.SetRange("Primary Directorate", Rec."Primary Directorate");
                     StrategicIntPlanningLines.SetRange("Primary Department", Rec.Department);
                     if StrategicIntPlanningLines.FindSet then begin
                         repeat
@@ -489,7 +493,7 @@ Page 80417 "Functional AWP Card"
                         CustomApprovals: Codeunit "Custom Approvals Codeunit";
                         VarVariant: Variant;
                     begin
-                        
+
 
 
                         // Rec.CalcFields("Total Assigned Weight(%)");
