@@ -1228,12 +1228,19 @@ page 60002 "HR Role Center"
                                 Caption = 'TNA Per Employee';
                                 RunObject = Report 50132;
                             }
+                            action("Training Evaluation Report")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Training Evaluation Report';
+                                RunObject = Report 50136;
+                            }
                             action(AnnualTrainingPlans)
                             {
                                 ApplicationArea = BasicHR;
                                 Caption = 'Annual Training Plans';
                                 ToolTip = 'Executes the Annual Training Plans action.';
                                 // RunObject = report 69145;
+                                Visible = false;
                             }
                             action(TotalsTrainingsPerEmployee)
                             {
@@ -1241,6 +1248,7 @@ page 60002 "HR Role Center"
                                 Caption = 'Totals Trainings Per Employee';
                                 ToolTip = 'Executes the Totals Trainings Per Employee action.';
                                 // RunObject = report 69111;
+                                Visible = false;
                             }
                             action(DepartmentalTraining)
                             {
@@ -1248,6 +1256,7 @@ page 60002 "HR Role Center"
                                 Caption = 'Departmental Trainings';
                                 ToolTip = 'Executes the Departmental Trainings action.';
                                 // RunObject = report 69112;
+                                Visible = false;
                             }
                             action(AnnualTrainingPlansStatistics)
                             {
@@ -1255,6 +1264,7 @@ page 60002 "HR Role Center"
                                 Caption = 'Annual Training Plans Statistics';
                                 ToolTip = 'Executes the Annual Training Plans Statistics action.';
                                 // RunObject = report 69114;
+                                Visible = false;
                             }
                         }
                     }
