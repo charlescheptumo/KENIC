@@ -74,6 +74,13 @@ Page 80417 "Functional AWP Card"
                     ToolTip = 'Specifies the value of the AWP Consolidation Template field.';
                     Visible = true;
                 }
+                field("Annual Strategy Type"; rec."Annual Strategy Type")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Annual Strategy Type';
+                    ToolTip = 'Specifies the value of the Annual Strategy Type field.';
+                    Visible = true;
+                }
                 // field("Functional Procurment Plan No"; Rec."Functional Procurment Plan No")
                 // {
                 //     ApplicationArea = Basic;

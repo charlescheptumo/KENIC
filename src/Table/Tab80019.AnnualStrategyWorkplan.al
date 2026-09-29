@@ -121,8 +121,9 @@ Table 80019 "Annual Strategy Workplan"
         field(43; "Annual Workplan"; Code[30])
         {
 
-          //  TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter(Organizational));
-          TableRelation = "Annual Strategy Workplan".No;
+          TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter(Organizational));
+         // TableRelation = "Annual Strategy Workplan".No;
+          //TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter(Functional));
         }
         field(44; Department; Code[30])
         {
