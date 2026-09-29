@@ -3543,6 +3543,177 @@ codeunit 50015 "EssQueries"
         EXIT(data);
     end;
 
+    // ===================== DISCIPLINARY (add inside codeunit 50015 "EssQueries") =====================
+
+    procedure fnCanCreateDisciplinary(userId: Code[50]) data: Text
+    begin
+        if DiscIsPrivileged(userId) then
+            exit('Yes');
+        exit('No');
+    end;
+
+    // Employees with a case that is not Closed/Reinstated.
+    // Privileged users (User Setup "Can Create Disciplinary Case") see everyone,
+    // a HOD sees their department, everyone else sees only their own file.
+    procedure fnGetDisciplinaryFiles(empNo: Code[30]; dept: Code[50]; jobTitle: Text) data: Text
+    var
+        Viewer: Record Employee;
+        Emp: Record Employee;
+        DiscCase: Record "HR Disciplinary Cases";
+        Added: List of [Code[30]];
+        Privileged: Boolean;
+        IsHOD: Boolean;
+    begin
+        if Viewer.Get(empNo) then begin
+            IsHOD := Viewer.HOD;
+            Privileged := DiscIsPrivileged(Viewer."User ID");
+        end;
+
+        DiscCase.Reset();
+        DiscCase.SetFilter(Status, '<>%1&<>%2', DiscCase.Status::Closed, DiscCase.Status::Reinstated);
+        if not (Privileged or IsHOD) then
+            DiscCase.SetRange("Employee No", empNo);
+
+        if DiscCase.FindSet() then
+            repeat
+                if not Added.Contains(DiscCase."Employee No") then
+                    if Emp.Get(DiscCase."Employee No") then
+                        if Privileged or (Emp."No." = empNo) or (IsHOD and (Emp."Department Code" = dept)) then begin
+                            Added.Add(DiscCase."Employee No");
+                            data += Emp."No." + '*' + DiscClean(Emp."First Name") + '*' + DiscClean(Emp."Middle Name") + '*' +
+                                DiscClean(Emp."Last Name") + '*' + DiscClean(Emp."E-Mail") + '::::';
+                        end;
+            until DiscCase.Next() = 0;
+    end;
+
+    // All case lines for one employee file. The index order is what Disciplinary.aspx reads.
+    procedure fngetHodCaseFiles(docNO: Code[30]) data: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        DiscCase.Reset();
+        DiscCase.SetRange("Employee No", docNO);
+        if DiscCase.FindSet() then
+            repeat
+                DiscCase.CalcFields("Legal Case Recommendation");
+                data +=
+                    DiscCase."Case Number" + '*' +                                   // 0
+                    DiscDateText(DiscCase."Date of Complaint") + '*' +               // 1
+                    DiscCase."Type of Disciplinary Case" + '*' +                     // 2
+                    DiscCase."Recommended Action" + '*' +                            // 3
+                    DiscClean(DiscCase."Case Description") + '*' +                   // 4
+                    DiscClean(DiscCase.Accuser) + '*' +                              // 5
+                    DiscClean(DiscCase.Witness) + '*' +                              // 6
+                    DiscClean(DiscCase."Action Taken") + '*' +                       // 7
+                    DiscDateText(DiscCase."Date To Discuss Case") + '*' +            // 8
+                    DiscClean(DiscCase."Disciplinary Remarks") + '*' +               // 9
+                    DiscClean(DiscCase."HOD Comments") + '*' +                       // 10
+                    DiscClean(DiscCase.Comments) + '*' +                             // 11
+                    DiscClean(DiscCase.Recomendations) + '*' +                       // 12
+                    Format(DiscCase.Status) + '*' +                                  // 13
+                    DiscClean(DiscCase."Response to Show Cause") + '*' +             // 14
+                    Format(DiscCase."Current Step") + '*' +                          // 15
+                    Format(DiscCase."Handled By", 0, 2) + '*' +                      // 16
+                    DiscClean(DiscCase."Area of Incident") + '*' +                   // 17
+                    DiscClean(DiscCase."Other Persons Involved") + '*' +             // 18
+                    DiscCase."Employee No" + '*' +                                   // 19
+                    DiscDateText(DiscCase."Date to Respond") + '*' +                 // 20
+                    DiscClean(DiscCase."Hearing Venue") + '*' +                      // 21
+                    DiscClean(DiscCase."DG Response") + '*' +                        // 22
+                    DiscDateText(DiscCase."DG Response Date") + '*' +                // 23
+                    DiscDateText(DiscCase."Appeal Date") + '*' +                     // 24
+                    DiscDateText(DT2Date(DiscCase."Disciplinary Hearing Date")) + '*' + // 25
+                    DiscCase."Disciplinary Commitee" + '*' +                         // 26
+                    DiscDateText(DiscCase."Recommendation Action Date") + '*' +      // 27
+                    DiscDateText(DiscCase."Action Taken Date") + '*' +               // 28
+                    DiscClean(DiscCase."Policy Guidlines In Effect") + '*' +         // 29
+                    DiscBoolText(DiscCase."Support Documents" = DiscCase."Support Documents"::Yes) + '*' + // 30
+                    DiscCase."Legal Case No." + '*' +                                // 31
+                    DiscClean(DiscCase."Legal Case Recommendation") + '*' +          // 32
+                    DiscBoolText(DiscCase."Case Created") + '*' +                    // 33
+                    DiscBoolText(DiscCase."Disciplinary Hearing") + '::::';          // 34
+            until DiscCase.Next() = 0;
+    end;
+
+    procedure fnGetDisciplinaryCommittees() data: Text
+    var
+        Committee: Record "Disciplinary Committees";
+    begin
+        Committee.Reset();
+        if Committee.FindSet() then
+            repeat
+                data += Committee.Code + '*' + DiscClean(Committee.Description) + '::::';
+            until Committee.Next() = 0;
+    end;
+
+    procedure fnGetHRModels() data: Text
+    begin
+        exit(DiscGetModels(0));
+    end;
+
+    procedure fnGetHRModelsTypeOfCase() data: Text
+    begin
+        exit(DiscGetModels(1));
+    end;
+
+    procedure fnGetDisciplinaryCaseFiles() data: Text
+    var
+        CaseRegister: Record "Case Register";
+    begin
+        CaseRegister.Reset();
+        if CaseRegister.FindSet() then
+            repeat
+                data += CaseRegister."No." + '*' + DiscClean(CaseRegister."Case Number") + '*' +
+                    DiscClean(CaseRegister."Case Desscription/Transpired") + '::::';
+            until CaseRegister.Next() = 0;
+    end;
+
+    // modelKind 0 = Disciplinary Action, 1 = Disciplinary Case
+    local procedure DiscGetModels(modelKind: Integer) data: Text
+    var
+        HRModels: Record "HR Models";
+    begin
+        HRModels.Reset();
+        if modelKind = 0 then
+            HRModels.SetRange(Type, HRModels.Type::"Disciplinary Action")
+        else
+            HRModels.SetRange(Type, HRModels.Type::"Disciplinary Case");
+        if HRModels.FindSet() then
+            repeat
+                data += HRModels.Code + '*' + DiscClean(HRModels.Description) + '::::';
+            until HRModels.Next() = 0;
+    end;
+
+    local procedure DiscIsPrivileged(userId: Code[50]): Boolean
+    var
+        UserSetup: Record "User Setup";
+    begin
+        if userId = '' then
+            exit(false);
+        if UserSetup.Get(userId) then
+            exit(UserSetup."Can Create Disciplinary Case");
+        exit(false);
+    end;
+
+    local procedure DiscDateText(d: Date): Text
+    begin
+        if d = 0D then
+            exit('');
+        exit(Format(d, 0, '<Month,2>/<Day,2>/<Year,2>'));
+    end;
+
+    local procedure DiscBoolText(b: Boolean): Text
+    begin
+        if b then
+            exit('yes');
+        exit('no');
+    end;
+
+    local procedure DiscClean(t: Text): Text
+    begin
+        exit(DelChr(t, '=', '*'));
+    end;
+
 
 
 }

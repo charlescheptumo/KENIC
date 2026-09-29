@@ -1484,7 +1484,7 @@ Codeunit 50012 "HRPortal"
                 TrainingParticipant.Destination := TrainingReq."Training Venue Region Code";
                 TrainingParticipant."Training Responsibility Code" := TrainingReq."Training Responsibility Code";
                 TrainingParticipant.Modify();
-                
+
             until TrainingParticipant.Next() = 0;
     end;
 
@@ -20404,6 +20404,411 @@ Codeunit 50012 "HRPortal"
         end else begin
             status := 'danger*Overtime application not found or not in Open status';
         end;
+    end;
+
+    // ===================== DISCIPLINARY (add inside codeunit 50012 "HRPortal") =====================
+    // Every procedure returns 'success*<message>' or 'danger*<message>'.
+
+    // ---------- Step 1: HOD ----------
+    procedure fnCreateDisciplinaryHodComments(empNo: Code[30]; dateOfReportings: Date; typeOfCases: Code[20]; caseDescriptions: Text; reporterIsStaffs: Boolean; reporters: Text; witnesss: Text; areaOfIncidents: Text; otherPersonsInvolveds: Text; hodCommentss: Text; witnessIsStaffs: Boolean; otherpersonsIsStaffs: Boolean) status: Text
+    var
+        Emp: Record Employee;
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not Emp.Get(empNo) then
+            exit('danger*Employee ' + empNo + ' does not exist');
+        if dateOfReportings = 0D then
+            exit('danger*Please provide the date of reporting');
+        if typeOfCases = '' then
+            exit('danger*Please select the type of disciplinary case');
+        if caseDescriptions = '' then
+            exit('danger*Please provide the case description');
+
+        DiscCase.Init();
+        DiscCase."Employee No" := empNo;
+        DiscCase."Case Number" := '';
+        DiscCase."Date of Complaint" := dateOfReportings;
+        DiscCase."Type of Disciplinary Case" := typeOfCases;
+        DiscCase."Case Description" := CopyStr(caseDescriptions, 1, MaxStrLen(DiscCase."Case Description"));
+        DiscCase."Accuser Is Staff" := reporterIsStaffs;
+        DiscCase.Accuser := CopyStr(reporters, 1, MaxStrLen(DiscCase.Accuser));
+        DiscCase."Witness Is Staff" := witnessIsStaffs;
+        DiscCase.Witness := CopyStr(witnesss, 1, MaxStrLen(DiscCase.Witness));
+        DiscCase."Area of Incident" := CopyStr(areaOfIncidents, 1, MaxStrLen(DiscCase."Area of Incident"));
+        DiscCase."Other Persons Is Staff" := otherpersonsIsStaffs;
+        DiscCase."Other Persons Involved" := CopyStr(otherPersonsInvolveds, 1, MaxStrLen(DiscCase."Other Persons Involved"));
+        DiscCase."HOD Comments" := CopyStr(hodCommentss, 1, MaxStrLen(DiscCase."HOD Comments"));
+        DiscCase."Mode of Lodging the Complaint" := 'Portal';
+        DiscCase.Status := DiscCase.Status::Open;
+        DiscCase."Current Step" := DiscCase."Current Step"::FromHODToHR;
+        DiscCase.Insert(true); // OnInsert assigns the Case Number from HR Setup "Disciplinary Cases Nos."
+
+        exit('success*Case ' + DiscCase."Case Number" + ' created successfully');
+    end;
+
+    procedure deleteHodLine(docNo: Code[30]; lineNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscCase.Get(docNo, lineNo) then
+            exit('danger*Case ' + lineNo + ' was not found');
+        if DiscCase.Status <> DiscCase.Status::Open then
+            exit('danger*Case ' + lineNo + ' has already been sent to HR and cannot be removed');
+
+        DiscCase.Delete();
+        exit('success*Case ' + lineNo + ' removed successfully');
+    end;
+
+    procedure NotifyHrFromHOD(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+        if (DiscCase."Date of Complaint" = 0D) or (DiscCase."Type of Disciplinary Case" = '') or (DiscCase."Case Description" = '') then
+            exit('danger*Date of reporting, type of case and case description are required before notifying HR');
+
+        DiscCase.NotifyHROnCaseFile(DiscCase);
+        DiscCase."Current Step" := DiscCase."Current Step"::ShowCauseReplyFromEmployee;
+        DiscCase.Status := DiscCase.Status::Ongoing;
+        DiscCase.Modify();
+        exit('success*HR has been notified on case ' + docNo);
+    end;
+
+    procedure notifyHr(empNo: Code[30]; docNo: Code[20]) status: Text
+    begin
+        exit(NotifyHrFromHOD(empNo, docNo));
+    end;
+
+    // ---------- Step 2: HR ----------
+    procedure fnCreateCaseDetailLines(docNo: Code[30]; caseNo: Code[20]; appealDate: Date; actionTaken: Text; actionTakenDate: Date; policyGuidelinesInEffect: Text; supportDocuments: Integer; legalCaseNo: Text; legalCaseRecommendation: Text; handledBy: Integer; caseCreated: Boolean; dateToRespond: Date; recommendations: Text; disciplinaryRemarks: Text; disciplinaryCommittee: Text; disciplinaryHearing: Boolean; hearingVenue: Text; disciplinaryHearingDate: Date; recommendedActionDate: Date; recommendedAction: Text; disciplinaryHearingTime: Time; hracDisciplinaryHearing: Boolean; hraDisciplinaryCommittee: Text; hracHearingVenue: Text; hracDisciplinaryHearingDate: Date; hracDisciplinaryHearingTime: Time) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        // legalCaseRecommendation and caseCreated are kept for the portal signature only:
+        // "Legal Case Recommendation" is a FlowField from the Case Register and "Case Created" is set by CreateCase.
+        if not DiscGetOpenCase(docNo, caseNo, DiscCase, status) then
+            exit(status);
+
+        DiscCase."Appeal Date" := appealDate;
+        DiscCase."Action Taken" := CopyStr(actionTaken, 1, MaxStrLen(DiscCase."Action Taken"));
+        DiscCase."Action Taken Date" := actionTakenDate;
+        DiscCase."Policy Guidlines In Effect" := CopyStr(policyGuidelinesInEffect, 1, MaxStrLen(DiscCase."Policy Guidlines In Effect"));
+        DiscCase."Support Documents" := supportDocuments;
+        DiscCase."Legal Case No." := CopyStr(legalCaseNo, 1, MaxStrLen(DiscCase."Legal Case No."));
+        DiscCase."Handled By" := handledBy;
+        DiscCase."Date to Respond" := dateToRespond;
+        DiscCase.Recomendations := CopyStr(recommendations, 1, MaxStrLen(DiscCase.Recomendations));
+        DiscCase."Disciplinary Remarks" := CopyStr(disciplinaryRemarks, 1, MaxStrLen(DiscCase."Disciplinary Remarks"));
+        DiscCase."Disciplinary Commitee" := CopyStr(disciplinaryCommittee, 1, MaxStrLen(DiscCase."Disciplinary Commitee"));
+        DiscCase."Disciplinary Hearing" := disciplinaryHearing;
+        DiscCase."Hearing Venue" := CopyStr(hearingVenue, 1, MaxStrLen(DiscCase."Hearing Venue"));
+        DiscCase."Displinary Hearing Time" := disciplinaryHearingTime;
+        if disciplinaryHearingDate <> 0D then
+            DiscCase."Disciplinary Hearing Date" := CreateDateTime(disciplinaryHearingDate, disciplinaryHearingTime)
+        else
+            DiscCase."Disciplinary Hearing Date" := 0DT;
+        DiscCase."Recommendation Action Date" := recommendedActionDate;
+        DiscCase."Recommended Action" := CopyStr(recommendedAction, 1, MaxStrLen(DiscCase."Recommended Action"));
+        DiscCase."HRAC Hearing" := hracDisciplinaryHearing;
+        DiscCase.HRAC := CopyStr(hraDisciplinaryCommittee, 1, MaxStrLen(DiscCase.HRAC));
+        DiscCase."HRAC Hearing Venue" := CopyStr(hracHearingVenue, 1, MaxStrLen(DiscCase."HRAC Hearing Venue"));
+        DiscCase."HRAC Hearing Date" := hracDisciplinaryHearingDate;
+        DiscCase."HRAC Hearing Time" := hracDisciplinaryHearingTime;
+        if DiscCase.Status = DiscCase.Status::Open then
+            DiscCase.Status := DiscCase.Status::Ongoing;
+        DiscCase.Modify();
+
+        exit('success*Case ' + caseNo + ' details saved successfully');
+    end;
+
+    procedure NotifyEmployee(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+        if not DiscHasAttachment(DiscCase."Case Number") then
+            exit('danger*Please attach the show cause letter before notifying the employee');
+
+        DiscCase.NotifyEmployeeToRespond(DiscCase);
+        DiscCase."Current Step" := DiscCase."Current Step"::ShowCauseToEmployee;
+        DiscCase.Modify();
+        exit('success*The case letter has been sent to the employee');
+    end;
+
+    procedure NotifyonDisciplinaryHearing(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+        if not DiscCase."Disciplinary Hearing" then
+            exit('danger*Disciplinary Hearing must be ticked on the case details');
+        if DiscCase."Disciplinary Commitee" = '' then
+            exit('danger*Please select the disciplinary committee');
+        if DiscCase."Disciplinary Hearing Date" = 0DT then
+            exit('danger*Please provide the disciplinary hearing date');
+        if DiscCase."Hearing Venue" = '' then
+            exit('danger*Please provide the hearing venue');
+
+        DiscCase.NotifyEmployeeAndCommitteeOnDispHearing(DiscCase);
+        DiscCase."Current Step" := DiscCase."Current Step"::DisciplinaryHearing;
+        DiscCase.Modify();
+        exit('success*The employee and committee members have been notified on the hearing');
+    end;
+
+    procedure NotifyDGOnDispHearings(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+
+        DiscCase.NotifyDGOnDispHearing(DiscCase);
+        DiscCase."Current Step" := DiscCase."Current Step"::ToDGAfterHearing;
+        DiscCase.Modify();
+        exit('success*The DG has been notified on the hearing outcome');
+    end;
+
+    procedure NotifyEmployeeOnDgResponse(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+        if DiscCase."DG Response" = '' then
+            exit('danger*The DG has not responded on this case yet');
+
+        DiscCase.NotifyEMPOnDGResponse(DiscCase);
+        DiscCase."Current Step" := DiscCase."Current Step"::DGOutcomeToEmployee;
+        DiscCase.Modify();
+        exit('success*The employee has been notified on the DG response');
+    end;
+
+    procedure CreateCase(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+        CaseRegister: Record "Case Register";
+        Emp: Record Employee;
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+        if DiscCase."Handled By" <> DiscCase."Handled By"::Court then
+            exit('danger*Handled By must be Court to create a court case');
+        if DiscCase."Case Created" then
+            exit('danger*Legal case ' + DiscCase."Legal Case No." + ' already exists for this case');
+
+        Emp.Get(DiscCase."Employee No");
+        CaseRegister.Init();
+        CaseRegister.Status := CaseRegister.Status::New;
+        CaseRegister."Employee No" := DiscCase."Employee No";
+        CaseRegister."Employee Name" := CopyStr(Emp."First Name" + ' ' + Emp."Middle Name" + ' ' + Emp."Last Name", 1, MaxStrLen(CaseRegister."Employee Name"));
+        CaseRegister."From Document Number" := DiscCase."Case Number";
+        CaseRegister.Insert(true);
+
+        DiscCase."Case Created" := true;
+        DiscCase."Legal Case No." := CaseRegister."No.";
+        DiscCase.Status := DiscCase.Status::"Court Case";
+        DiscCase.Modify();
+        exit('success*Legal case ' + CaseRegister."No." + ' created');
+    end;
+
+    procedure CloseDisciplinaryCase(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+        EmpDiscStatus: Record "Employee Disciplinary Status";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+
+        EmpDiscStatus.Reset();
+        EmpDiscStatus.SetRange("Employee No", DiscCase."Employee No");
+        EmpDiscStatus.SetRange("Case Number", DiscCase."Case Number");
+        EmpDiscStatus.SetRange("Disciplinary Status", '');
+        if not EmpDiscStatus.IsEmpty() then
+            exit('danger*Every disciplinary status line on this case must have a Disciplinary Status before closing');
+
+        DiscCase.Status := DiscCase.Status::Closed;
+        DiscCase."Closed By" := CopyStr(UserId, 1, MaxStrLen(DiscCase."Closed By"));
+        DiscCase.Modify();
+        exit('success*Case ' + docNo + ' closed');
+    end;
+
+    procedure ReinstateEmployee(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+        EmpDiscStatus: Record "Employee Disciplinary Status";
+        DiscStatusSetup: Record "Disciplinary Status Table";
+        AssignmentMatrix: Record "Assignment Matrix-X";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+
+        EmpDiscStatus.Reset();
+        EmpDiscStatus.SetRange("Case Number", DiscCase."Case Number");
+        EmpDiscStatus.SetRange("Employee No", DiscCase."Employee No");
+        if EmpDiscStatus.FindLast() then begin
+            if DiscStatusSetup.Get(EmpDiscStatus."Disciplinary Status") then begin
+                AssignmentMatrix.Reset();
+                AssignmentMatrix.SetRange(Type, AssignmentMatrix.Type::Deduction);
+                AssignmentMatrix.SetRange(Code, DiscStatusSetup."Deduction Code");
+                AssignmentMatrix.SetRange("Employee No", DiscCase."Employee No");
+                AssignmentMatrix.DeleteAll();
+            end;
+            EmpDiscStatus."Effect on Payroll" := false;
+            EmpDiscStatus.Modify();
+        end;
+
+        DiscCase.Status := DiscCase.Status::Reinstated;
+        DiscCase."Closed By" := CopyStr(UserId, 1, MaxStrLen(DiscCase."Closed By"));
+        DiscCase.Modify();
+        exit('success*Employee reinstated with full pay');
+    end;
+
+    // ---------- Step 3: Employee ----------
+    procedure fnCreateEmployeeDisciplinaryLines(docNo: Code[30]; caseNo: Code[20]; responseToShowCauses: Text) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(docNo, caseNo, DiscCase, status) then
+            exit(status);
+        if responseToShowCauses = '' then
+            exit('danger*Please enter your response to the show cause');
+
+        DiscCase."Response to Show Cause" := CopyStr(responseToShowCauses, 1, MaxStrLen(DiscCase."Response to Show Cause"));
+        DiscCase.Modify();
+        exit('success*Your response has been saved');
+    end;
+
+    procedure sendResponseToHr(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+        if DiscCase."Date to Respond" = 0D then
+            exit('danger*HR has not set a date to respond on this case');
+        if DiscCase."Response to Show Cause" = '' then
+            exit('danger*Please save your response to the show cause first');
+        if not DiscHasAttachment(DiscCase."Case Number") then
+            exit('danger*Please attach your response document first');
+
+        DiscCase.NotifyHROnResponseToShowCause(DiscCase);
+        DiscCase."Current Step" := DiscCase."Current Step"::FromHRAC;
+        DiscCase.Modify();
+        exit('success*Your response has been sent to HR');
+    end;
+
+    procedure appealCaseOnEmployeeLinesInternally(empNo: Code[30]; docNo: Code[20]) status: Text
+    begin
+        exit(DiscAppeal(empNo, docNo, false));
+    end;
+
+    procedure appealCaseByEmployeeExternally(empNo: Code[30]; docNo: Code[20]) status: Text
+    begin
+        exit(DiscAppeal(empNo, docNo, true));
+    end;
+
+    // ---------- Step 4: DG ----------
+    procedure fnCreateDGCaseLines(docNo: Code[30]; caseNo: Code[20]; dgResponse: Text) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(docNo, caseNo, DiscCase, status) then
+            exit(status);
+        if dgResponse = '' then
+            exit('danger*Please enter the DG response');
+
+        DiscCase."DG Response" := CopyStr(dgResponse, 1, MaxStrLen(DiscCase."DG Response"));
+        DiscCase."DG Response Date" := Today;
+        DiscCase.Modify();
+        exit('success*DG response saved');
+    end;
+
+    procedure NotifyHrONDGResponse(empNo: Code[30]; docNo: Code[20]) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+    begin
+        if not DiscGetOpenCase(empNo, docNo, DiscCase, status) then
+            exit(status);
+        if DiscCase."DG Response" = '' then
+            exit('danger*Please save the DG response first');
+
+        DiscCase.NotifyHROnDGResponse(DiscCase);
+        DiscCase."Current Step" := DiscCase."Current Step"::DGOutcomeToHR;
+        DiscCase.Modify();
+        exit('success*HR has been notified on the DG response');
+    end;
+
+    // ---------- Helpers ----------
+    local procedure DiscGetOpenCase(empNo: Code[30]; caseNo: Code[20]; var DiscCase: Record "HR Disciplinary Cases"; var status: Text): Boolean
+    begin
+        if not DiscCase.Get(empNo, caseNo) then begin
+            status := 'danger*Case ' + caseNo + ' was not found for employee ' + empNo;
+            exit(false);
+        end;
+        if DiscCase.Status in [DiscCase.Status::Closed, DiscCase.Status::Reinstated] then begin
+            status := 'danger*Case ' + caseNo + ' is ' + Format(DiscCase.Status) + ' and can no longer be changed';
+            exit(false);
+        end;
+        exit(true);
+    end;
+
+    local procedure DiscHasAttachment(caseNo: Code[20]): Boolean
+    var
+        DocAttach: Record "Document Attachment";
+    begin
+        DocAttach.Reset();
+        DocAttach.SetRange("Table ID", Database::"HR Disciplinary Cases");
+        DocAttach.SetRange("No.", caseNo);
+        exit(not DocAttach.IsEmpty());
+    end;
+
+    local procedure DiscAppeal(empNo: Code[30]; docNo: Code[20]; external: Boolean) status: Text
+    var
+        DiscCase: Record "HR Disciplinary Cases";
+        Appeals: Record "HR Appealed Disc. Cases";
+        LineNo: Integer;
+    begin
+        if not DiscCase.Get(empNo, docNo) then
+            exit('danger*Case ' + docNo + ' was not found for employee ' + empNo);
+
+        Appeals.Reset();
+        Appeals.SetRange("Case Number", DiscCase."Case Number");
+        Appeals.SetRange("Employee No", DiscCase."Employee No");
+        if external then
+            Appeals.SetRange("Appeal Type", Appeals."Appeal Type"::External);
+        if not Appeals.IsEmpty() then
+            exit('danger*An appeal for case ' + docNo + ' already exists');
+
+        LineNo := 1000;
+        Appeals.SetRange("Appeal Type");
+        if Appeals.FindLast() then
+            LineNo := Appeals."Line No." + 1000;
+
+        Appeals.Init();
+        Appeals."Case Number" := DiscCase."Case Number";
+        Appeals."Employee No" := DiscCase."Employee No";
+        Appeals.Validate("Employee No");
+        Appeals."Appeal Date" := Today;
+        if external then
+            Appeals."Appeal Type" := Appeals."Appeal Type"::External
+        else
+            Appeals."Appeal Type" := Appeals."Appeal Type"::Internal;
+        Appeals."Line No." := LineNo;
+        Appeals.Insert();
+
+        if external then
+            DiscCase.Status := DiscCase.Status::"External Appeal"
+        else
+            DiscCase.Status := DiscCase.Status::"Internal Appeal";
+        DiscCase."Appeal Date" := Today;
+        DiscCase."Closed By" := CopyStr(UserId, 1, MaxStrLen(DiscCase."Closed By"));
+        DiscCase.Modify();
+
+        DiscCase.NotifyHROnCaseAppeal(DiscCase);
+        exit('success*Case ' + docNo + ' has been appealed');
     end;
 
 
