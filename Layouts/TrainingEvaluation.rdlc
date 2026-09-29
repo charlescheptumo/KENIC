@@ -619,24 +619,6 @@ End Function
         <Field Name="OtherAreasText">
           <DataField>OtherAreasText</DataField>
         </Field>
-        <Field Name="AreaLineNo">
-          <DataField>AreaLineNo</DataField>
-        </Field>
-        <Field Name="AreaComment">
-          <DataField>AreaComment</DataField>
-        </Field>
-        <Field Name="AreaCourseTitle">
-          <DataField>AreaCourseTitle</DataField>
-        </Field>
-        <Field Name="AreaCourseMethodology">
-          <DataField>AreaCourseMethodology</DataField>
-        </Field>
-        <Field Name="OtherAreaLineNo">
-          <DataField>OtherAreaLineNo</DataField>
-        </Field>
-        <Field Name="OtherAreaComment">
-          <DataField>OtherAreaComment</DataField>
-        </Field>
       </Fields>
       <Query>
         <DataSourceName>DataSource</DataSourceName>

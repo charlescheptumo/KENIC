@@ -51,6 +51,10 @@ table 50171 "Domain Receipt"
             Caption = 'External Receipt No.';
             DataClassification = ToBeClassified;
         }
+        field(32;"IsManual Entry"; Boolean)
+        {
+            Caption='Manual Entry';
+        }
     }
 
     keys
