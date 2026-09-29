@@ -300,7 +300,7 @@ Codeunit 57007 "Strategic Planning"
         StrategyWorkplanLines.SETRANGE(No, AnnualStrategyWorkplan.No);
         IF StrategyWorkplanLines.FINDSET THEN BEGIN
             REPEAT
-                StrategyWorkplanLines.TESTFIELD("Primary Directorate");
+              //  StrategyWorkplanLines.TESTFIELD("Primary Directorate");
                 StrategyWorkplanLines.TESTFIELD("Primary Department");
 
                 StrategyWorkplanLines1.INIT;
