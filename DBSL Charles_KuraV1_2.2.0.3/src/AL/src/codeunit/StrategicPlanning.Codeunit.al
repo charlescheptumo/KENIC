@@ -937,7 +937,7 @@ Codeunit 57007 "Strategic Planning"
     //         until PCObjective.Next = 0;
     //     end;
     // end;
-    procedure FnSuggestPlogLiness(PerformanceDiaryLog: Record "Performance Diary Log")
+    procedure FnSuggestPlogLiness(PerformanceDiaryLog: Record "Performance Diary Log"): Integer
     var
         PlogLines: Record "Plog Lines";
         PCObjective: Record "PC Objective";
@@ -945,150 +945,220 @@ Codeunit 57007 "Strategic Planning"
         SubPlogLines: Record "Sub Plog Lines";
         SubPCObjective: Record "Sub PC Objective";
         PCJobDescription: Record "PC Job Description";
-        SubJDObjective: Record "Sub JD Objective";
+        SPMGeneralSetup: Record "SPM General Setup";
+        Added: Integer;
+        AddedPrimary: Integer;
+        AddedSecondary: Integer;
+        AddedJD: Integer;
     begin
         PerformanceDiaryLog.TestField("Employee No.");
         PerformanceDiaryLog.TestField("Personal Scorecard ID");
         PerformanceDiaryLog.TestField("Activity Start Date");
         PerformanceDiaryLog.TestField("Activity End Date");
 
-        SPMGeneralSetup.Get();
+        if SPMGeneralSetup.Get() then;
 
-        if SPMGeneralSetup."Allow Loading of  CSP" then begin
-            PCObjective.Reset;
-            PCObjective.SetRange("Strategy Plan ID", PerformanceDiaryLog."CSP ID");
-            PCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
-            PCObjective.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
-            if PCObjective.FindSet then
-                repeat
-                    PCObjective.CalcFields("Individual Achieved Targets");
+        
+        PCObjective.Reset();
+        PCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
+        PCObjective.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
+        if PCObjective.FindSet() then
+            repeat
+                PCObjective.CalcFields("Individual Achieved Targets");
 
-                    PlogLines.Reset;
-                    PlogLines.SetRange("PLog No.", PerformanceDiaryLog.No);
-                    PlogLines.SetRange("Activity Type", PlogLines."Activity Type"::"Primary Activity");
-                    PlogLines.SetRange("Initiative No.", PCObjective."Initiative No.");
-                    PlogLines.SetRange("Strategy Plan ID", PerformanceDiaryLog."CSP ID");
-                    PlogLines.SetRange("Employee No.", PerformanceDiaryLog."Employee No.");
-                    PlogLines.SetRange("Personal Scorecard ID", PerformanceDiaryLog."Personal Scorecard ID");
+                PlogLines.Reset();
+                PlogLines.SetRange("PLog No.", PerformanceDiaryLog.No);
+                PlogLines.SetRange("Activity Type", PlogLines."Activity Type"::"Primary Activity");
+                PlogLines.SetRange("Initiative No.", PCObjective."Initiative No.");
+                PlogLines.SetRange("Employee No.", PerformanceDiaryLog."Employee No.");
+                PlogLines.SetRange("Personal Scorecard ID", PerformanceDiaryLog."Personal Scorecard ID");
 
-                    if not PlogLines.FindFirst then begin
-                        PlogLines.Init;
-                        PlogLines."PLog No." := PerformanceDiaryLog.No;
-                        PlogLines."Activity Type" := PlogLines."Activity Type"::"Primary Activity";
-                        PlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";
-                        PlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
-                        PlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
-                        PlogLines."Initiative No." := PCObjective."Initiative No.";
-                        PlogLines.Validate("Initiative No.");
-                        PlogLines."Key Performance Indicator" := PCObjective."Key Performance Indicator";
-                        PlogLines."Unit of Measure" := PCObjective."Unit of Measure";
-                        PlogLines."Weight %" := PCObjective."Assigned Weight (%)";
-                        PlogLines."Remaining Targets" :=
-                            PCObjective."Imported Annual Target Qty" - PCObjective."Individual Achieved Targets";
-                        PlogLines.Insert(true);
-                    end else begin
-                        PlogLines."Remaining Targets" :=
-                            PCObjective."Imported Annual Target Qty" - PCObjective."Individual Achieved Targets";
-                        PlogLines.Modify(true);
-                    end;
+                if not PlogLines.FindFirst() then begin
+                    PlogLines.Init();
+                    PlogLines."PLog No." := PerformanceDiaryLog.No;
+                    PlogLines."Activity Type" := PlogLines."Activity Type"::"Primary Activity";
+                    PlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";
+                    PlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
+                    PlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
 
-                    SubPCObjective.Reset;
-                    SubPCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
-                    SubPCObjective.SetRange("Initiative No.", PCObjective."Initiative No.");
-                    if SubPCObjective.FindSet then
-                        repeat
-                            if not SubPlogLines.Get(
-                                PerformanceDiaryLog.No,
-                                SubPCObjective."Initiative No.",
-                                SubPCObjective."Sub Initiative No.",
-                                PerformanceDiaryLog."Personal Scorecard ID")
-                            then begin
-                                SubPlogLines.Init;
-                                SubPlogLines."PLog No." := PerformanceDiaryLog.No;
-                                SubPlogLines."Activity Type" := SubPlogLines."Activity Type"::"Primary Activity";
-                                SubPlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";
-                                SubPlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
-                                SubPlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
-                                SubPlogLines."Initiative No." := SubPCObjective."Initiative No.";
-                                SubPlogLines."Sub Activity No." := SubPCObjective."Sub Initiative No.";
-                                SubPlogLines.Description := SubPCObjective."Objective/Initiative";
-                                SubPlogLines."Unit of Measure" := SubPCObjective."Unit of Measure";
-                                SubPlogLines."Planned Date" := SubPCObjective."Due Date";
-                                SubPlogLines."Target Qty" := SubPCObjective."Imported Annual Target Qty";
-                                SubPlogLines."Weight %" := SubPCObjective."Assigned Weight (%)";
-                                SubPlogLines.Insert(true);
-                            end;
-                        until SubPCObjective.Next = 0;
-                until PCObjective.Next = 0;
+                    // Trigger field validation for Initiative No.
+                    PlogLines.Validate("Initiative No.", PCObjective."Initiative No.");
 
-            SecondaryPCObjective.Reset;
-            SecondaryPCObjective.SetRange("Strategy Plan ID", PerformanceDiaryLog."CSP ID");
-            SecondaryPCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
-            SecondaryPCObjective.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
-            if SecondaryPCObjective.FindSet then
-                repeat
-                    SecondaryPCObjective.CalcFields("Individual Achieved Targets");
+                    // Direct assignments for fields or fallbacks
+                    if PCObjective."Activity Description" <> '' then
+                        PlogLines."Activity Decription" := PCObjective."Activity Description"
+                    else
+                        PlogLines."Activity Decription" := PCObjective."Objective/Initiative";
 
-                    PlogLines.Reset;
-                    PlogLines.SetRange("PLog No.", PerformanceDiaryLog.No);
-                    PlogLines.SetRange("Activity Type", PlogLines."Activity Type"::"Secondary Activity");
-                    PlogLines.SetRange("Initiative No.", SecondaryPCObjective."Initiative No.");
-                    PlogLines.SetRange("Strategy Plan ID", PerformanceDiaryLog."CSP ID");
-                    PlogLines.SetRange("Employee No.", PerformanceDiaryLog."Employee No.");
-                    PlogLines.SetRange("Personal Scorecard ID", PerformanceDiaryLog."Personal Scorecard ID");
+                    PlogLines."Sub Intiative No" := PCObjective."Objective/Initiative";
+                    PlogLines."Planned Date" := PCObjective."Start Date";
+                    PlogLines."Due Date" := PCObjective."Due Date";
+                    PlogLines."Target Qty" := PCObjective."Imported Annual Target Qty";
+                    PlogLines."Achieved Date" := PerformanceDiaryLog."Document Date";
+                    PlogLines."AWP ID" := PerformanceDiaryLog."AWP ID";
+                    PlogLines."Board PC ID" := PerformanceDiaryLog."Board PC ID";
+                    PlogLines."CEO PC ID" := PerformanceDiaryLog."CEO PC ID";
+                    PlogLines."Functional PC" := PerformanceDiaryLog."Functional PC";
+                    PlogLines."Key Performance Indicator" := PCObjective."Key Performance Indicator";
+                    PlogLines."Unit of Measure" := PCObjective."Unit of Measure";
+                    PlogLines."Weight %" := PCObjective."Assigned Weight (%)";
+                    PlogLines."Remaining Targets" :=
+                        PCObjective."Imported Annual Target Qty" - PCObjective."Individual Achieved Targets";
 
-                    if not PlogLines.FindFirst then begin
-                        PlogLines.Init;
-                        PlogLines."PLog No." := PerformanceDiaryLog.No;
-                        PlogLines."Activity Type" := PlogLines."Activity Type"::"Secondary Activity";
-                        PlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";
-                        PlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
-                        PlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
-                        PlogLines."Initiative No." := SecondaryPCObjective."Initiative No.";
-                        PlogLines.Validate("Initiative No.");
-                        PlogLines."Weight %" := SecondaryPCObjective."Assigned Weight (%)";
-                        PlogLines."Remaining Targets" :=
-                            SecondaryPCObjective."Imported Annual Target Qty" - SecondaryPCObjective."Individual Achieved Targets";
-                        PlogLines.Insert(true);
-                    end;
-                until SecondaryPCObjective.Next = 0;
-        end;
+                    PlogLines.Insert(true);
+                    AddedPrimary += 1;
+                end else begin
+                    // Update existing record fields in case they were blank on previous runs
+                    if PCObjective."Activity Description" <> '' then
+                        PlogLines."Activity Decription" := PCObjective."Activity Description"
+                    else
+                        PlogLines."Activity Decription" := PCObjective."Objective/Initiative";
 
-        if SPMGeneralSetup."Allow Loading of JD" then begin
-            PCJobDescription.Reset;
-            PCJobDescription.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
-            PCJobDescription.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
-            if PCJobDescription.FindSet then
-                repeat
-                    PCJobDescription.CalcFields("Individual Achieved Targets");
+                    PlogLines."Key Performance Indicator" := PCObjective."Key Performance Indicator";
+                    PlogLines."Unit of Measure" := PCObjective."Unit of Measure";
+                    PlogLines."Target Qty" := PCObjective."Imported Annual Target Qty";
+                    PlogLines."Weight %" := PCObjective."Assigned Weight (%)";
+                    PlogLines."Remaining Targets" :=
+                        PCObjective."Imported Annual Target Qty" - PCObjective."Individual Achieved Targets";
 
-                    PlogLines.Reset;
-                    PlogLines.SetRange("PLog No.", PerformanceDiaryLog.No);
-                    PlogLines.SetRange("Activity Type", PlogLines."Activity Type"::"JD Activity");
-                    PlogLines.SetRange("Initiative No.", Format(PCJobDescription."Line Number"));
-                    PlogLines.SetRange("Employee No.", PerformanceDiaryLog."Employee No.");
-                    PlogLines.SetRange("Personal Scorecard ID", PerformanceDiaryLog."Personal Scorecard ID");
-                    PlogLines.SetRange("Strategy Plan ID", PerformanceDiaryLog."CSP ID");   // ✅ ADDED
+                    PlogLines.Modify(true);
+                end;
 
-                    if not PlogLines.FindFirst then begin
-                        PlogLines.Init;
-                        PlogLines."PLog No." := PerformanceDiaryLog.No;
-                        PlogLines."Activity Type" := PlogLines."Activity Type"::"JD Activity";
-                        PlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
-                        PlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";        // ✅ ADDED
-                        PlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
-                        PlogLines."Initiative No." := Format(PCJobDescription."Line Number");
-                        PlogLines."Sub Intiative No" := PCJobDescription.Description;
-                        PlogLines."Planned Date" := PCJobDescription."Start Date";
-                        PlogLines."Due Date" := PCJobDescription."Due Date";
-                        PlogLines."Target Qty" := PCJobDescription."Imported Annual Target Qty";
-                        PlogLines."Weight %" := PCJobDescription."Assigned Weight (%)";
-                        PlogLines."Remaining Targets" :=
-                            PCJobDescription."Imported Annual Target Qty" - PCJobDescription."Individual Achieved Targets";
-                        PlogLines.Insert(true);
-                    end;
-                until PCJobDescription.Next = 0;
-        end;
+           
+                SubPCObjective.Reset();
+                SubPCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
+                SubPCObjective.SetRange("Initiative No.", PCObjective."Initiative No.");
+                if SubPCObjective.FindSet() then
+                    repeat
+                        if not SubPlogLines.Get(
+                            PerformanceDiaryLog.No,
+                            SubPCObjective."Initiative No.",
+                            SubPCObjective."Sub Initiative No.",
+                            PerformanceDiaryLog."Personal Scorecard ID")
+                        then begin
+                            SubPlogLines.Init();
+                            SubPlogLines."PLog No." := PerformanceDiaryLog.No;
+                            SubPlogLines."Activity Type" := SubPlogLines."Activity Type"::"Primary Activity";
+                            SubPlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";
+                            SubPlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
+                            SubPlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
+                            SubPlogLines."Initiative No." := SubPCObjective."Initiative No.";
+                            SubPlogLines."Sub Activity No." := SubPCObjective."Sub Initiative No.";
+                            SubPlogLines.Description := SubPCObjective."Objective/Initiative";
+                            SubPlogLines."Unit of Measure" := SubPCObjective."Unit of Measure";
+                            SubPlogLines."Planned Date" := SubPCObjective."Due Date";
+                            SubPlogLines."Target Qty" := SubPCObjective."Imported Annual Target Qty";
+                            SubPlogLines."Weight %" := SubPCObjective."Assigned Weight (%)";
+                            SubPlogLines.Insert(true);
+                        end;
+                    until SubPCObjective.Next() = 0;
+            until PCObjective.Next() = 0;
+
+    
+        SecondaryPCObjective.Reset();
+        SecondaryPCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
+        SecondaryPCObjective.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
+        if SecondaryPCObjective.FindSet() then
+            repeat
+                SecondaryPCObjective.CalcFields("Individual Achieved Targets");
+
+                PlogLines.Reset();
+                PlogLines.SetRange("PLog No.", PerformanceDiaryLog.No);
+                PlogLines.SetRange("Activity Type", PlogLines."Activity Type"::"Secondary Activity");
+                PlogLines.SetRange("Initiative No.", SecondaryPCObjective."Initiative No.");
+                PlogLines.SetRange("Employee No.", PerformanceDiaryLog."Employee No.");
+                PlogLines.SetRange("Personal Scorecard ID", PerformanceDiaryLog."Personal Scorecard ID");
+
+                if not PlogLines.FindFirst() then begin
+                    PlogLines.Init();
+                    PlogLines."PLog No." := PerformanceDiaryLog.No;
+                    PlogLines."Activity Type" := PlogLines."Activity Type"::"Secondary Activity";
+                    PlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";
+                    PlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
+                    PlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
+
+                    PlogLines.Validate("Initiative No.", SecondaryPCObjective."Initiative No.");
+
+                    PlogLines."Sub Intiative No" := SecondaryPCObjective."Objective/Initiative";
+                    PlogLines."Planned Date" := SecondaryPCObjective."Start Date";
+                    PlogLines."Due Date" := SecondaryPCObjective."Due Date";
+                    PlogLines."Target Qty" := SecondaryPCObjective."Imported Annual Target Qty";
+                    PlogLines."Unit of Measure" := SecondaryPCObjective."Unit of Measure";
+                    PlogLines."Achieved Date" := PerformanceDiaryLog."Document Date";
+                    PlogLines."AWP ID" := PerformanceDiaryLog."AWP ID";
+                    PlogLines."Board PC ID" := PerformanceDiaryLog."Board PC ID";
+                    PlogLines."CEO PC ID" := PerformanceDiaryLog."CEO PC ID";
+                    PlogLines."Functional PC" := PerformanceDiaryLog."Functional PC";
+                    PlogLines."Weight %" := SecondaryPCObjective."Assigned Weight (%)";
+                    PlogLines."Remaining Targets" :=
+                        SecondaryPCObjective."Imported Annual Target Qty" - SecondaryPCObjective."Individual Achieved Targets";
+
+                    PlogLines.Insert(true);
+                    AddedSecondary += 1;
+                end else begin
+                    PlogLines."Unit of Measure" := SecondaryPCObjective."Unit of Measure";
+                    PlogLines."Target Qty" := SecondaryPCObjective."Imported Annual Target Qty";
+                    PlogLines."Weight %" := SecondaryPCObjective."Assigned Weight (%)";
+                    PlogLines."Remaining Targets" :=
+                        SecondaryPCObjective."Imported Annual Target Qty" - SecondaryPCObjective."Individual Achieved Targets";
+
+                    PlogLines.Modify(true);
+                end;
+            until SecondaryPCObjective.Next() = 0;
+
+        
+        PCJobDescription.Reset();
+        PCJobDescription.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
+        PCJobDescription.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
+        if PCJobDescription.FindSet() then
+            repeat
+                PCJobDescription.CalcFields("Individual Achieved Targets");
+
+                PlogLines.Reset();
+                PlogLines.SetRange("PLog No.", PerformanceDiaryLog.No);
+                PlogLines.SetRange("Activity Type", PlogLines."Activity Type"::"JD Activity");
+                PlogLines.SetRange("Initiative No.", Format(PCJobDescription."Line Number"));
+                PlogLines.SetRange("Employee No.", PerformanceDiaryLog."Employee No.");
+                PlogLines.SetRange("Personal Scorecard ID", PerformanceDiaryLog."Personal Scorecard ID");
+                PlogLines.SetRange("Strategy Plan ID", PerformanceDiaryLog."CSP ID");
+
+                if not PlogLines.FindFirst() then begin
+                    PlogLines.Init();
+                    PlogLines."PLog No." := PerformanceDiaryLog.No;
+                    PlogLines."Activity Type" := PlogLines."Activity Type"::"JD Activity";
+                    PlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
+                    PlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";
+                    PlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
+
+                    PlogLines.Validate("Initiative No.", Format(PCJobDescription."Line Number"));
+
+                    PlogLines."Sub Intiative No" := PCJobDescription.Description;
+                    PlogLines."Activity Decription" := PCJobDescription.Description;
+                    PlogLines."Planned Date" := PCJobDescription."Start Date";
+                    PlogLines."Achieved Date" := PerformanceDiaryLog."Document Date";
+                    PlogLines."Due Date" := PCJobDescription."Due Date";
+                    PlogLines."Target Qty" := PCJobDescription."Imported Annual Target Qty";
+                    PlogLines."Weight %" := PCJobDescription."Assigned Weight (%)";
+                    PlogLines."Remaining Targets" :=
+                        PCJobDescription."Imported Annual Target Qty" - PCJobDescription."Individual Achieved Targets";
+
+                    PlogLines.Insert(true);
+                    AddedJD += 1;
+                end else begin
+                    PlogLines."Sub Intiative No" := PCJobDescription.Description;
+                    PlogLines."Activity Decription" := PCJobDescription.Description;
+                    PlogLines."Target Qty" := PCJobDescription."Imported Annual Target Qty";
+                    PlogLines."Weight %" := PCJobDescription."Assigned Weight (%)";
+                    PlogLines."Remaining Targets" :=
+                        PCJobDescription."Imported Annual Target Qty" - PCJobDescription."Individual Achieved Targets";
+
+                    PlogLines.Modify(true);
+                end;
+            until PCJobDescription.Next() = 0;
+
+        Added := AddedPrimary + AddedSecondary + AddedJD;
+
+        exit(Added);
     end;
 
     procedure FnSuggestDepartmentPlogLines(PerformanceDiaryLog: Record "Performance Diary Log")

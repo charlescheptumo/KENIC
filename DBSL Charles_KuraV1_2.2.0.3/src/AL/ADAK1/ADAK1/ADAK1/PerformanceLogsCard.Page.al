@@ -191,12 +191,20 @@ Page 80186 "Performance Logs Card"
                 ToolTip = 'Executes the Suggest Targets action.';
 
                 trigger OnAction()
+                var
+                    Added: Integer;
                 begin
                     if not Confirm('Are you sure you want to Suggest Targets', true) then
-                        Error('Targets not Suggested');
+                        exit;
 
-                    StrategicPlanning.FnSuggestPlogLiness(Rec);
-                    Message('Performance log Target Lines Successfully');
+                    Added := StrategicPlanning.FnSuggestPlogLiness(Rec);
+                    CurrPage.Update(false);
+
+                    if Added = 0 then
+                        Message('No new target lines were added for scorecard %1 (%2 to %3).',
+                            Rec."Personal Scorecard ID", Rec."Activity Start Date", Rec."Activity End Date")
+                    else
+                        Message('%1 target line(s) added.', Added);
                 end;
             }
             separator(Action30)
