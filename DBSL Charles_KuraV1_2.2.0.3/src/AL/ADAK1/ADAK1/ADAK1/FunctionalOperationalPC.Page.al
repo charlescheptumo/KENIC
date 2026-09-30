@@ -106,12 +106,14 @@ Page 80081 "Functional/Operational PC"
                     ApplicationArea = Basic;
                     Editable = true;
                     ToolTip = 'Specifies the value of the Directorate field.';
+                    Visible = false;
                 }
                 field("Directorate Name"; Rec."Directorate Name")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Directorate Name field.';
+                    Visible = false;
                 }
                 field("Employee Name"; Rec."Employee Name")
                 {
@@ -259,7 +261,7 @@ Page 80081 "Functional/Operational PC"
                     StrategyObjLines.Reset;
                     StrategyObjLines.SetRange("Strategy Plan ID", Rec."Strategy Plan ID");
                     StrategyObjLines.SetRange(No, Rec."Annual Workplan");
-                    StrategyObjLines.SetRange("Primary Directorate", Rec.Directorate);
+                    //StrategyObjLines.SetRange("Primary Directorate", Rec.Directorate);
                     //StrategyObjLines.SETRANGE("Primary Department","Responsibility Center");
                     if StrategyObjLines.Find('-') then begin
                         repeat
@@ -272,8 +274,8 @@ Page 80081 "Functional/Operational PC"
                             PcLines."Objective/Initiative" := StrategyObjLines.Description;
                             PcLines."Year Reporting Code" := Rec."Annual Reporting Code";
                             PcLines."Initiative Type" := PcLines."initiative type"::Activity;
-                            PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
-                            PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
+                           // PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
+                           // PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
                             PcLines."Primary Department" := StrategyObjLines."Primary Department";
                             PcLines."Primary Department Name" := StrategyObjLines."Primary Department Name";
                             PcLines."Outcome Perfomance Indicator" := StrategyObjLines."Perfomance Indicator";
@@ -347,8 +349,8 @@ Page 80081 "Functional/Operational PC"
                             PcLines."Initiative Type" := PcLines."initiative type"::Board;
                             PcLines."Start Date" := Rec."Start Date";
                             PcLines."Due Date" := Rec."End Date";
-                            PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
-                            PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
+                           // PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
+                           // PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
                             //PcLines."Primary Directorate":=StrategyObjLines."Primary Directorate";
                             // PcLines."Primary Department":=StrategyObjLines."Primary Department";
                             PcLines."Imported Annual Target Qty" := BoardActivities.Target;

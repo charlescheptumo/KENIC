@@ -30,8 +30,8 @@ Table 80055 "Perfomance Contract Header"
                 if "Document Type" = "document type"::"CEO/Corporate PC" then begin
                     if No <> xRec.No then begin
                         SPMSetup.Get;
-                     //   NoSeriesMgt.TestManual(SPMSetup."Corporate PC No. Series");
-                     NoSeriesMgt.TestManual(SPMSetup."PWork Plans");
+                        //   NoSeriesMgt.TestManual(SPMSetup."Corporate PC No. Series");
+                        NoSeriesMgt.TestManual(SPMSetup."PWork Plans");
                         "No. Series" := '';
                     end;
                 end;
@@ -237,10 +237,42 @@ Table 80055 "Perfomance Contract Header"
 
             TableRelation = "Goal Template";
         }
+        // field(24; "Annual Workplan"; Code[50])
+        // {
+
+        //     TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter("Organizational PC" | Organizational), "Approval Status" = const(Released));
+
+        //     trigger OnValidate()
+        //     begin
+        //         if AnnualStrategyWorkplan.Get("Annual Workplan") then begin
+        //             "Strategy Plan ID" := AnnualStrategyWorkplan."Strategy Plan ID";
+        //             "Annual Reporting Code" := AnnualStrategyWorkplan."Year Reporting Code";
+        //             Validate("Annual Reporting Code");
+        //         end;
+        //     end;
+        // }
         field(24; "Annual Workplan"; Code[50])
         {
+            TableRelation = "Annual Strategy Workplan".No
+        where("Annual Strategy Type" = const(Functional),
+              "Approval Status" = const(Released),
+              Archived = const(false));
 
-            TableRelation = "Annual Strategy Workplan".No where("Annual Strategy Type" = filter("Organizational PC" | Organizational), "Approval Status" = const(Released));
+            trigger OnLookup()
+            var
+                AwpRec: Record "Annual Strategy Workplan";
+                ApprovedDeptAWPs: Page "Approved Dept Annual Workplans";
+            begin
+                AwpRec.SetRange("Annual Strategy Type", AwpRec."Annual Strategy Type"::Functional);
+                AwpRec.SetRange("Approval Status", AwpRec."Approval Status"::Released);
+                AwpRec.SetRange(Archived, false);
+                ApprovedDeptAWPs.SetTableView(AwpRec);
+                ApprovedDeptAWPs.LookupMode(true);
+                if ApprovedDeptAWPs.RunModal() = Action::LookupOK then begin
+                    ApprovedDeptAWPs.GetRecord(AwpRec);
+                    Validate("Annual Workplan", AwpRec.No);
+                end;
+            end;
 
             trigger OnValidate()
             begin
@@ -743,44 +775,44 @@ Table 80055 "Perfomance Contract Header"
     //     "Mission Statement" := companyinfo.Mission;
     // end;
 
-trigger OnInsert()
-begin
-    SPMSetup.Get;
+    trigger OnInsert()
+    begin
+        SPMSetup.Get;
 
-    if No = '' then
-        case "Document Type" of
-            "Document Type"::"Board/Executive PC",
-            "Document Type"::"CEO/Corporate PC":
-                begin
-                    SPMSetup.TestField("PWork Plans");
-                    "No. Series" := SPMSetup."PWork Plans";
-                end;
-            "Document Type"::"Functional/Operational PC":
-                begin
-                    SPMSetup.TestField("Functional PC No. Series");
-                    "No. Series" := SPMSetup."Functional PC No. Series";
-                end;
-            "Document Type"::"Individual Scorecard",
-            "Document Type"::"Individual Scorecard PC":
-                begin
-                    SPMSetup.TestField("Individual Scorecard Nos");
-                    "No. Series" := SPMSetup."Individual Scorecard Nos";
-                end;
-        end;
+        if No = '' then
+            case "Document Type" of
+                "Document Type"::"Board/Executive PC",
+                "Document Type"::"CEO/Corporate PC":
+                    begin
+                        SPMSetup.TestField("PWork Plans");
+                        "No. Series" := SPMSetup."PWork Plans";
+                    end;
+                "Document Type"::"Functional/Operational PC":
+                    begin
+                        SPMSetup.TestField("Functional PC No. Series");
+                        "No. Series" := SPMSetup."Functional PC No. Series";
+                    end;
+                "Document Type"::"Individual Scorecard",
+                "Document Type"::"Individual Scorecard PC":
+                    begin
+                        SPMSetup.TestField("Individual Scorecard Nos");
+                        "No. Series" := SPMSetup."Individual Scorecard Nos";
+                    end;
+            end;
 
-    if ("No" = '') and ("No. Series" <> '') then
-        "No" := NoSeriesMgt.GetNextNo("No. Series", WorkDate(), true);
+        if ("No" = '') and ("No. Series" <> '') then
+            "No" := NoSeriesMgt.GetNextNo("No. Series", WorkDate(), true);
 
-    TestField("No");
+        TestField("No");
 
-    "Created By" := UserId;
-    "Created On" := Today;
-    "Document Date" := Today;
+        "Created By" := UserId;
+        "Created On" := Today;
+        "Document Date" := Today;
 
-    companyinfo.Get();
-    "Vision Statement" := companyinfo.Vision;
-    "Mission Statement" := companyinfo.Mission;
-end;
+        companyinfo.Get();
+        "Vision Statement" := companyinfo.Vision;
+        "Mission Statement" := companyinfo.Mission;
+    end;
 
     var
         SPMSetup: Record "SPM General Setup";
