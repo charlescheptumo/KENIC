@@ -491,6 +491,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         OnCancelCircularResolutionApprovalRequestTxt: label 'An Approval of a Circular Resolution is cancelled';
         RunWorkflowOnCancelCircularResolutionForApprovalCode: label 'RUNWORKFLOWONCANCELCIRCULARRESOLUTIONFORAPPROVAL';
 
+        //Performance Log
+        OnSendPlogApprovalRequestTxt: label 'Approval of a Performance Log is requested';
+        RunWorkflowOnSendPlogForApprovalCode: label 'RUNWORKFLOWONSENDPLOGFORAPPROVAL';
+        OnCancelPlogApprovalRequestTxt: label 'An Approval of a Performance Log is canceled';
+        RunWorkflowOnCancelPlogForApprovalCode: label 'RUNWORKFLOWONCANCELPLOGFORAPPROVAL';
+
         //ESign Header
         OnSendESignHeaderApprovalRequestTxt: label 'Approval of E-Signature document is requested';
         RunWorkflowOnSendESignHeaderForApprovalCode: label 'RUNWORKFLOWONSENDESIGNHEADERFORAPPROVAL';
@@ -780,6 +786,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Circular Resolution
             Database::"Circular Resolution Header":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendCircularResolutionForApprovalCode));
+
+            //Performance Log
+            Database::"Performance Diary Log":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendPlogForApprovalCode));
 
             //ESign Header
             Database::"ESign Header":
@@ -1274,6 +1284,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelCircularResolutionForApprovalCode, Database::"Circular Resolution Header", OnCancelCircularResolutionApprovalRequestTxt, 0, false);
 
+        //Performance Log
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendPlogForApprovalCode, Database::"Performance Diary Log", OnSendPlogApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelPlogForApprovalCode, Database::"Performance Diary Log", OnCancelPlogApprovalRequestTxt, 0, false);
+
         //Employee Card
         WorkFlowEventHandling.AddEventToLibrary(RunWorkflowOnSendEmployeeCardForApprovalCode, Database::"Employee", OnSendEmployeeCardApprovalRequestTxt, 0, false);
         WorkFlowEventHandling.AddEventToLibrary(
@@ -1567,6 +1583,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             Database::"Circular Resolution Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendCircularResolutionForApprovalCode, Variant);
 
+            //Performance Log
+            Database::"Performance Diary Log":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendPlogForApprovalCode, Variant);
+
             //ESign Header
             Database::"ESign Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendESignHeaderForApprovalCode, Variant);
@@ -1850,6 +1870,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             Database::"Circular Resolution Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelCircularResolutionForApprovalCode, Variant);
 
+            //Performance Log
+            Database::"Performance Diary Log":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelPlogForApprovalCode, Variant);
+
             //ESign Header
             Database::"ESign Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelESignHeaderForApprovalCode, Variant);
@@ -1983,6 +2007,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
+        PerformanceLog: Record "Performance Diary Log"; 
     begin
         case RecRef.Number of
 
@@ -2743,6 +2768,17 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Handled := true;
                 end;
 
+            // Performance log
+            Database::"Performance Diary Log":
+                begin
+                    RecRef.SetTable(PerformanceLog);
+                    PerformanceLog.Validate("Approval Status", PerformanceLog."Approval Status"::Open);
+                    PerformanceLog.Modify;
+                    Variant := PerformanceLog;
+                    Handled := true;
+                end;
+
+
             //ESign Header
             Database::"ESign Header":
                 begin
@@ -2884,6 +2920,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
+        PerformanceLog: Record "Performance Diary Log";
     begin
         Handled := true;
         case RecRef.Number of
@@ -3615,6 +3652,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Variant := CircularResolutionHeader;
                 end;
 
+            //Performance log
+            Database::"Performance Diary Log":
+                begin
+                    RecRef.SetTable(PerformanceLog);
+                    PerformanceLog.Validate("Approval Status", PerformanceLog."Approval Status"::Released);
+                    PerformanceLog.Modify;
+                    Variant := PerformanceLog;
+                end;
+
+
             //ESign Header
             Database::"ESign Header":
                 begin
@@ -3881,6 +3928,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
+        PerformanceLog: Record "Performance Diary Log";
     begin
         RecRef.GetTable(Variant);
 
@@ -4678,6 +4726,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Variant := CircularResolutionHeader;
                     IsHandled := true;
                 end;
+
+                //Perfomance log
+                Database::"Performance Diary Log":
+                begin
+                    RecRef.SetTable(PerformanceLog);
+                    PerformanceLog.Validate("Approval Status", PerformanceLog."Approval Status"::"Pending Approval");
+                    PerformanceLog.Modify;
+                    Variant := PerformanceLog;
+                    IsHandled := true;
+                 end;
 
             //ESign Header
             Database::"ESign Header":
@@ -6554,7 +6612,7 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
             IsHandle := true;
     end;
 
-     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Page Management", 'OnAfterGetPageID', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Page Management", 'OnAfterGetPageID', '', false, false)]
     local procedure OnAfterGetPageID(var RecordRef: RecordRef; var PageID: Integer; ForceListPage: Boolean)
     begin
         if RecordRef.Number = Database::"Overtime Header" then

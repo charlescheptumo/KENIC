@@ -288,9 +288,9 @@ Codeunit 57007 "Strategic Planning"
 
         AnnualStrategyWorkplan.TESTFIELD("Annual Workplan");
         AnnualStrategyWorkplan.TESTFIELD(Posted, FALSE);
-       // AnnualStrategyWorkplan.CALCFIELDS("Total Assigned Weight(%)");
+        // AnnualStrategyWorkplan.CALCFIELDS("Total Assigned Weight(%)");
         //IF AnnualStrategyWorkplan."Total Assigned Weight(%)" <> 100 THEN
-          //  ERROR('Assigned Weight should be equals to 100%');
+        //  ERROR('Assigned Weight should be equals to 100%');
 
         IF NOT CONFIRM('Are you sure you want to update the Selected Annual Workplan?', TRUE) THEN BEGIN
             ERROR('Annual Workplan not Updated');
@@ -300,7 +300,7 @@ Codeunit 57007 "Strategic Planning"
         StrategyWorkplanLines.SETRANGE(No, AnnualStrategyWorkplan.No);
         IF StrategyWorkplanLines.FINDSET THEN BEGIN
             REPEAT
-              //  StrategyWorkplanLines.TESTFIELD("Primary Directorate");
+                //  StrategyWorkplanLines.TESTFIELD("Primary Directorate");
                 StrategyWorkplanLines.TESTFIELD("Primary Department");
 
                 StrategyWorkplanLines1.INIT;
@@ -1068,12 +1068,14 @@ Codeunit 57007 "Strategic Planning"
                     PlogLines.SetRange("Initiative No.", Format(PCJobDescription."Line Number"));
                     PlogLines.SetRange("Employee No.", PerformanceDiaryLog."Employee No.");
                     PlogLines.SetRange("Personal Scorecard ID", PerformanceDiaryLog."Personal Scorecard ID");
+                    PlogLines.SetRange("Strategy Plan ID", PerformanceDiaryLog."CSP ID");   // ✅ ADDED
 
                     if not PlogLines.FindFirst then begin
                         PlogLines.Init;
                         PlogLines."PLog No." := PerformanceDiaryLog.No;
                         PlogLines."Activity Type" := PlogLines."Activity Type"::"JD Activity";
                         PlogLines."Personal Scorecard ID" := PerformanceDiaryLog."Personal Scorecard ID";
+                        PlogLines."Strategy Plan ID" := PerformanceDiaryLog."CSP ID";        // ✅ ADDED
                         PlogLines."Employee No." := PerformanceDiaryLog."Employee No.";
                         PlogLines."Initiative No." := Format(PCJobDescription."Line Number");
                         PlogLines."Sub Intiative No" := PCJobDescription.Description;

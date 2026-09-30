@@ -65,6 +65,25 @@ Page 80186 "Performance Logs Card"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Personal Scorecard ID field.';
+
+                    trigger OnValidate()
+                    var
+                        PlogLines: Record "Plog Lines";
+                        SubPlogLines: Record "Sub Plog Lines";
+                    begin
+                        if Rec."Personal Scorecard ID" = '' then
+                            exit;
+                        Rec.TestField("Approval Status", Rec."Approval Status"::Open);
+                        CurrPage.Update(true);
+
+                        PlogLines.SetRange("PLog No.", Rec.No);
+                        PlogLines.DeleteAll();
+                        SubPlogLines.SetRange("PLog No.", Rec.No);
+                        SubPlogLines.DeleteAll();
+
+                        StrategicPlanning.FnSuggestPlogLiness(Rec);
+                        CurrPage.Update(false);
+                    end;
                 }
                 field("Year Reporting Code"; Rec."Year Reporting Code")
                 {
@@ -115,7 +134,7 @@ Page 80186 "Performance Logs Card"
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Department ID ID field.';
-                    caption= 'Department ID';
+                    caption = 'Department ID';
                 }
                 field("Functional PC"; Rec."Functional PC")
                 {
@@ -189,11 +208,13 @@ Page 80186 "Performance Logs Card"
                 Image = Approval;
                 Promoted = true;
                 PromotedCategory = Category5;
-                ToolTip = 'Executes the Approvals action.';
+                ToolTip = 'View approval entries for this document.';
 
                 trigger OnAction()
+                var
+                    ApprovalsMgt: Codeunit "Approvals Mgmt.";
                 begin
-                    //      ApprovalsMgmt.OpenApprovalEntriesPage(RecordId);
+                    ApprovalsMgt.OpenApprovalEntriesPage(Rec.RecordId);
                 end;
             }
             action("Send Approval Request")
@@ -204,113 +225,132 @@ Page 80186 "Performance Logs Card"
                 PromotedCategory = Category5;
                 ToolTip = 'Executes the Send Approval Request action.';
 
+                // trigger OnAction()
+                // var
+                //     //     ApprovalMgt: Codeunit "Approvals Mgmt.";
+                //     SMTPSetup: Codeunit Mail;
+                //     CompanyInfo: Record "Company Information";
+                //     UserSetup: Record "User Setup";
+                //     SenderAddress: Text[80];
+                //     Recipients: Text[80];
+                //     SenderName: Text[70];
+                //     Body: Text[250];
+                //     Subject: Text[80];
+                //     FileName: Text;
+                //     FileMangement: Codeunit "File Management";
+                //     ProgressWindow: Dialog;
+                //     SMTPMailSet: Record "Email Account";
+                //     FileDirectory: Text[100];
+                //     Window: Dialog;
+                //     WindowisOpen: Boolean;
+                //     Counter: Integer;
+                //     cu400: Codeunit Mail;
+                //     DocLog: Record "Document E-mail Log";
+                //     BranchName: Code[80];
+                //     DimValue: Record "Dimension Value";
+                //     CustEmail: Text[100];
+                //     HRSetup: Record "Human Resources Setup";
+                //     CompInfo: Record "Company Information";
+                //     FundingOpp: Record "Project Contract Header";
+                //     GrantsSetup: Record "Grants Setup";
+                //     PerfomanceContractHeader: Record "Perfomance Contract Header";
+                //     Employee: Record Employee;
+                //     PlogLines: Record "Plog Lines";
+                // begin
+                //     Rec.TestField("Approval Status", Rec."approval status"::Open);
+
+                //     PlogLines.Reset;
+                //     PlogLines.SetRange("PLog No.", Rec.No);
+                //     if PlogLines.FindFirst then begin
+                //         repeat
+                //             PlogLines.TestField("Achieved Target");
+                //         until PlogLines.Next = 0;
+                //     end;
+
+                //     Rec."Approval Status" := Rec."approval status"::Released;
+                //     Rec.Modify;
+                //     Message('Document has been approved Automatically');
+                //     //status must be open.
+                //     /*TESTFIELD("Created By",USERID); //control so that only the initiator of the document can send for approval
+                //      IF ApprovalsMgmt.IsBankRecReqApprovalsWorkflowEnabled(Rec) THEN
+                //       ApprovalsMgmt.OnSendBankRecReqForApproval(Rec);*/
+
+
+
+                //     /*
+                //     CompanyInfo.GET();
+                //       SMTPMailSet.GET;
+                //       SenderAddress := SMTPMailSet."Email Sender Address";
+                //       SenderName :=CompanyInfo.Name+' M&E';
+                //       Subject := STRSUBSTNO('Performance Log');
+                //          PerfomanceContractHeader.RESET;
+                //          PerfomanceContractHeader.SETRANGE(No,No);
+                //          IF PerfomanceContractHeader.FINDFIRST THEN BEGIN
+                //             FileDirectory :=  'C:\DOCS\';
+                //             FileName := 'PCA_'+PerfomanceContractHeader.No+'.pdf';
+                //             //Window.OPEN('processing');
+                //             Window.OPEN('PROCESSING Performance Log ############1##');
+                //               Window.UPDATE(1,PerfomanceContractHeader.No+'-'+PerfomanceContractHeader.Description);
+
+                //             WindowisOpen := TRUE;
+                //             IF FileName = '' THEN
+                //               ERROR('Please specify what the file should be saved as');
+
+
+                //              // Report.SaveAsPdf(80007,FileDirectory+FileName,PerfomanceContractHeader);
+
+
+
+
+                //             IF EXISTS(FileDirectory+FileName) THEN BEGIN
+                //               Counter:=Counter+1;
+
+                //             SMTPMailSet.GET;
+                //             SenderAddress := SMTPMailSet."Email Sender Address";
+
+
+
+                //            Employee.RESET;
+                //            Employee.SETRANGE("No.","Employee No.");
+                //            IF Employee.FIND('-') THEN BEGIN
+                //              Recipients :=Employee."Company E-Mail";
+                //            END;
+                //            IF Recipients<>'' THEN BEGIN
+                //              Body:='Dear Team <BR>Please find attached the Plog Report <Br>'+Description;
+                //               cu400.CreateMessage(CompanyInfo.Name,SenderAddress,Recipients,Subject,Body,TRUE);
+
+                //               cu400.AddBodyline(
+                //               '<BR><BR>Kind Regards,');
+                //               cu400.AddBodyline('<BR>'+CompInfo.Name);
+                //               cu400.AddAttachment(FileDirectory+FileName,FileName);
+                //               cu400.Send;
+
+                //               SLEEP(1000);
+                //               Window.CLOSE;
+                //           END;
+                //           END;
+                //         END;
+                //   */
+
+                // end;
                 trigger OnAction()
                 var
-                    //     ApprovalMgt: Codeunit "Approvals Mgmt.";
-                    SMTPSetup: Codeunit Mail;
-                    CompanyInfo: Record "Company Information";
-                    UserSetup: Record "User Setup";
-                    SenderAddress: Text[80];
-                    Recipients: Text[80];
-                    SenderName: Text[70];
-                    Body: Text[250];
-                    Subject: Text[80];
-                    FileName: Text;
-                    FileMangement: Codeunit "File Management";
-                    ProgressWindow: Dialog;
-                    SMTPMailSet: Record "Email Account";
-                    FileDirectory: Text[100];
-                    Window: Dialog;
-                    WindowisOpen: Boolean;
-                    Counter: Integer;
-                    cu400: Codeunit Mail;
-                    DocLog: Record "Document E-mail Log";
-                    BranchName: Code[80];
-                    DimValue: Record "Dimension Value";
-                    CustEmail: Text[100];
-                    HRSetup: Record "Human Resources Setup";
-                    CompInfo: Record "Company Information";
-                    FundingOpp: Record "Project Contract Header";
-                    GrantsSetup: Record "Grants Setup";
-                    PerfomanceContractHeader: Record "Perfomance Contract Header";
-                    Employee: Record Employee;
                     PlogLines: Record "Plog Lines";
+                    VarVariant: Variant;
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
                 begin
-                    Rec.TestField("Approval Status", Rec."approval status"::Open);
+                    Rec.TestField("Approval Status", Rec."Approval Status"::Open);
 
-                    PlogLines.Reset;
                     PlogLines.SetRange("PLog No.", Rec.No);
-                    if PlogLines.FindFirst then begin
+                    if PlogLines.FindSet() then
                         repeat
                             PlogLines.TestField("Achieved Target");
-                        until PlogLines.Next = 0;
-                    end;
+                        until PlogLines.Next() = 0;
 
-                    Rec."Approval Status" := Rec."approval status"::Released;
-                    Rec.Modify;
-                    Message('Document has been approved Automatically');
-                    //status must be open.
-                    /*TESTFIELD("Created By",USERID); //control so that only the initiator of the document can send for approval
-                     IF ApprovalsMgmt.IsBankRecReqApprovalsWorkflowEnabled(Rec) THEN
-                      ApprovalsMgmt.OnSendBankRecReqForApproval(Rec);*/
-
-
-
-                    /*
-                    CompanyInfo.GET();
-                      SMTPMailSet.GET;
-                      SenderAddress := SMTPMailSet."Email Sender Address";
-                      SenderName :=CompanyInfo.Name+' M&E';
-                      Subject := STRSUBSTNO('Performance Log');
-                         PerfomanceContractHeader.RESET;
-                         PerfomanceContractHeader.SETRANGE(No,No);
-                         IF PerfomanceContractHeader.FINDFIRST THEN BEGIN
-                            FileDirectory :=  'C:\DOCS\';
-                            FileName := 'PCA_'+PerfomanceContractHeader.No+'.pdf';
-                            //Window.OPEN('processing');
-                            Window.OPEN('PROCESSING Performance Log ############1##');
-                              Window.UPDATE(1,PerfomanceContractHeader.No+'-'+PerfomanceContractHeader.Description);
-
-                            WindowisOpen := TRUE;
-                            IF FileName = '' THEN
-                              ERROR('Please specify what the file should be saved as');
-
-
-                             // Report.SaveAsPdf(80007,FileDirectory+FileName,PerfomanceContractHeader);
-
-
-
-
-                            IF EXISTS(FileDirectory+FileName) THEN BEGIN
-                              Counter:=Counter+1;
-
-                            SMTPMailSet.GET;
-                            SenderAddress := SMTPMailSet."Email Sender Address";
-
-
-
-                           Employee.RESET;
-                           Employee.SETRANGE("No.","Employee No.");
-                           IF Employee.FIND('-') THEN BEGIN
-                             Recipients :=Employee."Company E-Mail";
-                           END;
-                           IF Recipients<>'' THEN BEGIN
-                             Body:='Dear Team <BR>Please find attached the Plog Report <Br>'+Description;
-                              cu400.CreateMessage(CompanyInfo.Name,SenderAddress,Recipients,Subject,Body,TRUE);
-
-                              cu400.AddBodyline(
-                              '<BR><BR>Kind Regards,');
-                              cu400.AddBodyline('<BR>'+CompInfo.Name);
-                              cu400.AddAttachment(FileDirectory+FileName,FileName);
-                              cu400.Send;
-
-                              SLEEP(1000);
-                              Window.CLOSE;
-                          END;
-                          END;
-                        END;
-                  */
-
+                    VarVariant := Rec;
+                    if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+                        CustomApprovals.OnSendDocForApproval(VarVariant);
+                    CurrPage.Update(false);
                 end;
             }
             action("Cancel Approval Request")
@@ -319,13 +359,17 @@ Page 80186 "Performance Logs Card"
                 Image = CancelApprovalRequest;
                 Promoted = true;
                 PromotedCategory = Category5;
-                ToolTip = 'Executes the Cancel Approval Request action.';
+                ToolTip = 'Cancel the pending approval request.';
 
                 trigger OnAction()
+                var
+                    VarVariant: Variant;
+                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
                 begin
-                    /*TESTFIELD("Approval Status","Approval Status"::"Pending Approval");//status must be open.
-                    ApprovalsMgmt.OnCancelPerformanceLogsApprovalRequest(Rec);*/
-
+                    Rec.TestField("Approval Status", Rec."Approval Status"::"Pending Approval");
+                    VarVariant := Rec;
+                    CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
+                    CurrPage.Update(false);
                 end;
             }
             separator(Action31)

@@ -287,13 +287,84 @@ Table 80090 "Performance Diary Log"
         if No = '' then begin
             SPMSetup.Get;
             SPMSetup.TestField("PLog Nos");
-         No := NoSeriesMgt.GetNextNo(SPMSetup."PLog Nos", WorkDate(), true);
+            No := NoSeriesMgt.GetNextNo(SPMSetup."PLog Nos", WorkDate(), true);
         end;
 
         "Document Date" := Today;
         "Created By" := UserId;
         "Created On" := Today;
         "Created Time" := Time;
+    end;
+
+    procedure SuggestPlogLines(ClearExisting: Boolean)
+    var
+        PlogLines: Record "Plog Lines";
+        PCObjective: Record "PC Objective";
+        SecondaryPCObjective: Record "Secondary PC Objective";
+        PCJobDescription: Record "PC Job Description";
+    begin
+        TestField("Employee No.");
+        TestField("Personal Scorecard ID");
+
+        if ClearExisting then begin
+            PlogLines.SetRange("PLog No.", No);
+            if not PlogLines.IsEmpty then
+                PlogLines.DeleteAll();
+        end;
+
+        // Primary activities
+        PCObjective.SetRange("Workplan No.", "Personal Scorecard ID");
+        if PCObjective.FindSet() then
+            repeat
+                InitPlogLine(PlogLines, PlogLines."Activity Type"::"Primary Activity", PCObjective."Initiative No.");
+                PlogLines."Sub Intiative No" := PCObjective."Objective/Initiative";
+                PlogLines."Planned Date" := PCObjective."Start Date";
+                PlogLines."Target Qty" := PCObjective."Imported Annual Target Qty";
+                PlogLines."Due Date" := PCObjective."Due Date";
+                PlogLines."Weight %" := PCObjective."Assigned Weight (%)";
+                PlogLines."Activity Decription" := PCObjective."Activity Description";
+                PlogLines."Key Performance Indicator" := PCObjective."Key Performance Indicator";
+                if PlogLines.Insert() then;
+            until PCObjective.Next() = 0;
+
+        // Secondary activities
+        SecondaryPCObjective.SetRange("Workplan No.", "Personal Scorecard ID");
+        if SecondaryPCObjective.FindSet() then
+            repeat
+                InitPlogLine(PlogLines, PlogLines."Activity Type"::"Secondary Activity", SecondaryPCObjective."Initiative No.");
+                PlogLines."Sub Intiative No" := SecondaryPCObjective."Objective/Initiative";
+                PlogLines."Planned Date" := SecondaryPCObjective."Start Date";
+                PlogLines."Target Qty" := SecondaryPCObjective."Imported Annual Target Qty";
+                PlogLines."Due Date" := SecondaryPCObjective."Due Date";
+                PlogLines."Weight %" := SecondaryPCObjective."Assigned Weight (%)";
+                if PlogLines.Insert() then;
+            until SecondaryPCObjective.Next() = 0;
+
+        // Job description activities
+        PCJobDescription.SetRange("Workplan No.", "Personal Scorecard ID");
+        if PCJobDescription.FindSet() then
+            repeat
+                InitPlogLine(PlogLines, PlogLines."Activity Type"::"JD Activity", Format(PCJobDescription."Line Number"));
+                if PlogLines.Insert() then;
+            until PCJobDescription.Next() = 0;
+    end;
+
+    local procedure InitPlogLine(var PlogLines: Record "Plog Lines"; ActivityType: Option; InitiativeNo: Code[100])
+    begin
+        PlogLines.Init();
+        PlogLines."PLog No." := No;
+        PlogLines."Initiative No." := InitiativeNo;
+        PlogLines."Strategy Plan ID" := "CSP ID";
+        PlogLines."Employee No." := "Employee No.";
+        PlogLines."Personal Scorecard ID" := "Personal Scorecard ID";
+        PlogLines."Activity Type" := ActivityType;
+        PlogLines."Year Reporting Code" := "Year Reporting Code";
+        PlogLines."Goal ID" := "Goal ID";
+        PlogLines."Achieved Date" := "Document Date";
+        PlogLines."AWP ID" := "AWP ID";
+        PlogLines."Board PC ID" := "Board PC ID";
+        PlogLines."CEO PC ID" := "CEO PC ID";
+        PlogLines."Functional PC" := "Functional PC";
     end;
 
     var
