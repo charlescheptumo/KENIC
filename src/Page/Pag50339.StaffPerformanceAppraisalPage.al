@@ -820,11 +820,11 @@ Page 50339 "Staff Performance Appraisal"
                     IF CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) THEN
                         CustomApprovals.OnSendDocForApproval(VarVariant);
                     Rec.TestField("Approval Status", Rec."approval status"::Open);
-                    TotalWeight := 0;
-                    Rec.CalcFields("Total Assigned Weight(%)", "Secondary Assigned Weight(%)", "JD Assigned Weight(%)");
-                    TotalWeight := Rec."Total Assigned Weight(%)" + Rec."Secondary Assigned Weight(%)" + Rec."JD Assigned Weight(%)";
-                    if not (TotalWeight = 100) then
-                        Error('Total Assigned Weight for all Core Mandate Primary Activities should be (100%),Currently is %1', TotalWeight);
+                   // TotalWeight := 0;
+                    //Rec.CalcFields("Total Assigned Weight(%)", "Secondary Assigned Weight(%)", "JD Assigned Weight(%)");
+                    //TotalWeight := Rec."Total Assigned Weight(%)" + Rec."Secondary Assigned Weight(%)" + Rec."JD Assigned Weight(%)";
+                    //if not (TotalWeight = 100) then
+                      //  Error('Total Assigned Weight for all Core Mandate Primary Activities should be (100%),Currently is %1', TotalWeight);
 
                     PcLines.Reset;
                     PcLines.SetRange("Workplan No.", Rec.No);
