@@ -28,6 +28,7 @@ Page 80054 "Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of Activity Description';
+                    Visible = false;
                 }
                 field("Primary Directorate"; Rec."Primary Directorate")
                 {
@@ -64,12 +65,13 @@ Page 80054 "Workplan Initiatives"
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Key Performance Indicator field.';
-                    // Visible = false;
+                    Visible = false;
                 }
                 field(Outcome;Rec.Outcome)
                 {
                  ApplicationArea = Basic;
                  Editable = false;
+                 Visible = false;
                 }
                 field("Unit of Measure"; Rec."Unit of Measure")
                 {
