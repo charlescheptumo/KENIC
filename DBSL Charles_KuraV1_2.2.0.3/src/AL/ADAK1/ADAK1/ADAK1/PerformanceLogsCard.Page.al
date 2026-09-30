@@ -35,6 +35,7 @@ Page 80186 "Performance Logs Card"
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Directorate Code field.';
+                    visible = false;
                 }
                 field("Department Code"; Rec."Department Code")
                 {
