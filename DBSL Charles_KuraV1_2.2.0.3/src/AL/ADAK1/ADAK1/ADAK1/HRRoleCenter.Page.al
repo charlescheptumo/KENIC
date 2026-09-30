@@ -686,7 +686,7 @@ page 60002 "HR Role Center"
                             RunObject = page "Pre-Screening Templates";
                             ToolTip = 'Executes the Pre-Screening Templates action.';
                         }
-                        
+
                         action("Interview Questions")
                         {
                             ApplicationArea = BasicHR;
@@ -2191,6 +2191,29 @@ page 60002 "HR Role Center"
                         RunObject = Page "Staff Clearance Setup";
                         ToolTip = 'Executes the Staff Clearance Setup action.';
                     }
+                }
+            }
+            group(PerdiemSetup)
+            {
+
+                action(PerdiemSetp)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Per Diem Setup';
+                    RunObject = Page "Per Diem Setup";
+                }
+                action(PerDiemWarrants)
+                {
+                    ApplicationArea = all;
+                    Caption = 'Per Diem Warrants';
+                    RunObject = page "Per Diem Warrants";
+                }
+                action(TransferPerDiem)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Transfer Per Diem To Payroll';
+                    RunObject = Report "Per Diem Payroll Transfer";
+
                 }
             }
             group("Successor Selection Justification")

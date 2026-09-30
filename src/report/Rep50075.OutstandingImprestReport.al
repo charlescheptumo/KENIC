@@ -149,6 +149,7 @@ report 50075 "Outstanding Imprest Report"
                         UnpostedImprest.SetRange("Account Type", UnpostedImprest."Account Type"::Employee);
                         UnpostedImprest.SetRange("Account No.", Emp."No.");
                         UnpostedImprest.SetRange("Payment Type", UnpostedImprest."Payment Type"::Imprest);
+                        UnpostedImprest.SetRange("Per Diem Warrant", false);
                         //UnpostedImprest.SetRange(Surrendered, false);
                         UnpostedImprest.SetRange("Archive Document", false);
                         UnpostedImprest.SetRange(Posted, true);

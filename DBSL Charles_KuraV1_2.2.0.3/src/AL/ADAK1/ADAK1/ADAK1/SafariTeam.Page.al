@@ -12,7 +12,7 @@ Page 57034 "Safari Team"
         {
             repeater(Group)
             {
-                
+
                 field("No."; Rec."No.")
                 {
                     ApplicationArea = Basic;
@@ -70,6 +70,11 @@ Page 57034 "Safari Team"
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Return Date field.';
+                }
+                field("Accommodation Provided"; Rec."Accommodation Provided")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies whether accommodation is provided for this traveller.';
                 }
                 field(Name; Rec.Name)
                 {
@@ -196,11 +201,11 @@ Page 57034 "Safari Team"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Outstanding Amount field.';
                 }
-                field("No. Of Outstanding Imprest";Rec."No. Of Outstanding Imprest")
+                field("No. Of Outstanding Imprest"; Rec."No. Of Outstanding Imprest")
                 {
-                  ApplicationArea = Basic;
-                  ToolTip = 'Specifies the value of the No. of  Outstanding field.';
-                  Visible = false;
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the No. of  Outstanding field.';
+                    Visible = false;
                 }
                 field("Tasks to Carry Out"; Rec."Tasks to Carry Out")
                 {
@@ -281,19 +286,19 @@ Page 57034 "Safari Team"
             end;
 
         end;
-         Rec."Total per Employee" := Rec."Total Entitlement" + Rec."Total otherCost";
+        Rec."Total per Employee" := Rec."Total Entitlement" + Rec."Total otherCost";
     end;
 
     trigger OnOpenPage()
     begin
         Rec."Total per Employee" := Rec."Total Entitlement" + Rec."Total otherCost";
-        
+
     end;
 
 
 
     var
-      //  [InDataSet]
+        //  [InDataSet]
         Show: Boolean;
         editTransport: Boolean;
         ApprovalEntry: Record "Approval Entry";

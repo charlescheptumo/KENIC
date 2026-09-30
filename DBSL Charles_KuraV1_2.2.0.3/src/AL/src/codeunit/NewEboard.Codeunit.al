@@ -2498,4 +2498,37 @@ Codeunit 50032 NewEboard
             until CommitteeMember.Next() = 0;
     end;
 
+
+    procedure fnSavePerDiemApplication(directorNo: Code[20]; applicationNo: Code[20]; purpose: Text; destination: Text; travelDate: DateTime; noOfDays: Decimal; accommodationProvided: Boolean) status: Text
+    var
+        PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+        DocNo: Code[20];
+    begin
+        DocNo := PerDiemMgt.SaveDirectorApplication(directorNo, applicationNo, purpose, destination, DT2Date(travelDate), noOfDays, accommodationProvided);
+        exit('success*' + DocNo);
+    end;
+
+    procedure fnSendPerDiemForApproval(directorNo: Code[20]; applicationNo: Code[20]) status: Text
+    var
+        PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+    begin
+        if PerDiemMgt.SubmitDirectorApplication(directorNo, applicationNo) then
+            exit('success*Your per diem application was sent for approval');
+        exit('danger*Approval workflow is not enabled');
+    end;
+
+    procedure fnCancelPerDiemApproval(directorNo: Code[20]; applicationNo: Code[20]) status: Text
+    var
+        PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+    begin
+        PerDiemMgt.CancelDirectorApplication(directorNo, applicationNo);
+        exit('success*Your per diem approval request was cancelled');
+    end;
+
+    procedure fnGetPerDiemApplications(directorNo: Code[20]) status: Text
+    var
+        PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+    begin
+        exit(PerDiemMgt.GetDirectorApplications(directorNo));
+    end;
 }

@@ -131,6 +131,16 @@ Page 57033 "Imprest Memo"
                     Visible = true;
                     ToolTip = 'Specifies the value of the Travel Date field.';
                 }
+                field("Per Diem via Payroll"; Rec."Per Diem via Payroll")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies whether the subsistence on this memo is paid through payroll.';
+                }
+                field("Accommodation Provided"; Rec."Accommodation Provided")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies whether accommodation is provided for all travellers by default.';
+                }
                 field("No. of days"; Rec."No. of days")
                 {
                     ApplicationArea = Basic;
@@ -235,14 +245,14 @@ Page 57033 "Imprest Memo"
                 field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
                     ApplicationArea = Basic;
-                    Editable = false;
+                    Editable = true;
                     ToolTip = 'Specifies the value of the Shortcut Dimension 1 Code field.';
                 }
                 field("Global Dimension 2 Code"; Rec."Global Dimension 2 Code")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Constituency';
-                    Visible = false;
+                    Visible = true;
                     ToolTip = 'Specifies the value of the Constituency field.';
                 }
                 field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
@@ -516,8 +526,8 @@ Page 57033 "Imprest Memo"
                     Rec.TestField(Subject);
                     Rec.TestField(Date);
                     Rec.TestField("Imprest Naration");
-                    Rec.TestField(Job);
-                    Rec.TestField("Job  Task");
+                   // Rec.TestField(Job);
+                    //Rec.TestField("Job  Task");
                     rec.TestField(rec."Shortcut Dimension 1 Code");
                     rec.TestField("Responsibility Center");
                     //cc//  Rec.Status := Rec.Status::Released;

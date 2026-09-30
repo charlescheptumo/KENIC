@@ -54,6 +54,18 @@ Page 57042 "Imprest Memo-p"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Subject field.';
                 }
+                field("Per Diem via Payroll"; Rec."Per Diem via Payroll")
+                {
+                    ApplicationArea = Basic;
+                    Editable = false;
+                    ToolTip = 'Specifies whether the subsistence on this memo is paid through payroll.';
+                }
+                field("Accommodation Provided"; Rec."Accommodation Provided")
+                {
+                    ApplicationArea = Basic;
+                    Editable = false;
+                    ToolTip = 'Specifies whether accommodation is provided.';
+                }
                 field(Objective; ObjText)
                 {
                     ApplicationArea = Basic;
@@ -655,7 +667,10 @@ Page 57042 "Imprest Memo-p"
                                     Imprestheaders."Paying Bank Account" := Memoheaders."Paying Bank Account";
                                     Imprestheaders."Imprest Issue Date" := Today;
                                     Imprestheaders.Validate("Paying Bank Account");
+                                    //  IF Imprestheaders.Insert(true) then begin
                                     IF Imprestheaders.Insert(true) then begin
+                                        if Memoheaders."Per Diem via Payroll" then
+                                            PerDiemMgt.StampStaffWarrant(Imprestheaders, SafariMembers);
 
                                         //Commented by FRed to effect a directive from Matilda(DDF);
                                         //Check if Employee has another imprest that has not been posted--Fred Requirement from DDF(Matilda);
@@ -682,7 +697,13 @@ Page 57042 "Imprest Memo-p"
                                         Imprestlines.Purpose := Memoheaders.Subject;
                                         Imprestlines."Daily Rate" := SafariMembers."Direct Unit Cost";
                                         Imprestlines."No. of Days" := SafariMembers."Time Period";
+                                        // Imprestlines.Amount := SafariMembers.Entitlement;
+                                        // Imprestlines."Job No." := SafariMembers.Job;
                                         Imprestlines.Amount := SafariMembers.Entitlement;
+                                        if Memoheaders."Per Diem via Payroll" then begin
+                                            Imprestlines."Daily Rate" := Imprestheaders."PD Daily Rate";
+                                            Imprestlines.Amount := Imprestheaders."PD Gross Amount";
+                                        end;
                                         Imprestlines."Job No." := SafariMembers.Job;
                                         Imprestlines."Job Task No." := SafariMembers."Job  Task";
                                         Imprestlines."Currency Code" := SafariMembers."Currency Code";
@@ -695,11 +716,25 @@ Page 57042 "Imprest Memo-p"
                                         //THEN
                                         // Imprestlines.MODIFY(TRUE);
                                     end;
+                                    // //Insert Other costs
+                                    // LineNo := LineNo + 10;
+                                    // FnInsertOtherCostsDetails(Rec);
+                                    // LineNo := LineNo + 10;
+                                    // FnInsertCasualSDetails(Rec);
+                                    if Memoheaders."Per Diem via Payroll" then begin
+                                        PerDiemWarrant := Imprestheaders;
+                                        PerDiemMgt.CreateCompanionImprest(PerDiemWarrant, Noseries, CompanionImprest);
+                                        Imprestheaders := CompanionImprest;
+                                    end;
                                     //Insert Other costs
                                     LineNo := LineNo + 10;
                                     FnInsertOtherCostsDetails(Rec);
                                     LineNo := LineNo + 10;
                                     FnInsertCasualSDetails(Rec);
+                                    if Memoheaders."Per Diem via Payroll" then begin
+                                        PerDiemMgt.RemoveEmptyCompanionImprest(CompanionImprest);
+                                        Imprestheaders := PerDiemWarrant;
+                                    end;
 
                                     LineNo := LineNo + 10;
                                     if SafariMembers."Transport Costs" <> 0 then begin
@@ -1083,6 +1118,9 @@ Page 57042 "Imprest Memo-p"
         CommitmentEntries: Record "Commitment Entries";
         CustomFunction: Codeunit "Custom Function";
         CommitmentType: Enum "Commitment Type";
+        PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+        PerDiemWarrant: Record payments;
+        CompanionImprest: Record payments;
 
     local procedure SetControlAppearance()
     var

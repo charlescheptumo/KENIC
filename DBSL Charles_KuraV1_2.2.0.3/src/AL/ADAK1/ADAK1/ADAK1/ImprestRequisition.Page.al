@@ -88,7 +88,7 @@ Page 57012 "Imprest Requisition"
                     ToolTip = 'Specifies the value of the Payment Narration field.';
                 }
 
-                               field(Description; Rec.Description)
+                field(Description; Rec.Description)
                 {
                     ToolTip = 'Specifies the value of the Description field.';
                     Editable = false;
@@ -145,10 +145,22 @@ Page 57012 "Imprest Requisition"
                         if Page.RunModal(Page::"Posted Imprest Memos", ImpMemo) = Action::LookupOK then
                             Rec."Imprest Memo No" := ImpMemo."No.";
                         Rec.Description := ImpMemo.Subject;
-                        Rec."Destination Narration" := ImpMemo."Imprest Naration"; 
+                        Rec."Destination Narration" := ImpMemo."Imprest Naration";
                     end;
                 }
-                 field("Destination Narration"; Rec."Destination Narration")
+                field("Per Diem Warrant"; Rec."Per Diem Warrant") { ApplicationArea = Basic; ToolTip = 'Specifies whether this warrant is paid through payroll.'; }
+                field("PD Recipient Type"; Rec."PD Recipient Type") { ApplicationArea = Basic; ToolTip = 'Specifies whether the warrant is for staff or a board member.'; }
+                field("PD Accommodation"; Rec."PD Accommodation") { ApplicationArea = Basic; ToolTip = 'Specifies whether accommodation was provided.'; }
+                field("PD Daily Rate"; Rec."PD Daily Rate") { ApplicationArea = Basic; ToolTip = 'Specifies the daily rate after accommodation.'; }
+                field("PD No. of Days"; Rec."PD No. of Days") { ApplicationArea = Basic; ToolTip = 'Specifies the number of days.'; }
+                field("PD Gross Amount"; Rec."PD Gross Amount") { ApplicationArea = Basic; ToolTip = 'Specifies the gross per diem.'; }
+                field("PD Non-Taxable Amount"; Rec."PD Non-Taxable Amount") { ApplicationArea = Basic; ToolTip = 'Specifies the non-taxable part.'; }
+                field("PD Taxable Amount"; Rec."PD Taxable Amount") { ApplicationArea = Basic; ToolTip = 'Specifies the taxable excess.'; }
+                field("PD Payroll Status"; Rec."PD Payroll Status") { ApplicationArea = Basic; ToolTip = 'Specifies the payroll status.'; }
+                field("PD Advance PV No."; Rec."PD Advance PV No.") { ApplicationArea = Basic; ToolTip = 'Specifies the advance payment voucher.'; }
+                field("PD Paid in Advance"; Rec."PD Paid in Advance") { ApplicationArea = Basic; ToolTip = 'Specifies whether it was paid before payroll.'; }
+                field("PD Payroll Period"; Rec."PD Payroll Period") { ApplicationArea = Basic; ToolTip = 'Specifies the payroll period.'; }
+                field("Destination Narration"; Rec."Destination Narration")
                 {
                     ApplicationArea = Basic;
                     Editable = false;

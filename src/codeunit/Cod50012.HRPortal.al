@@ -20812,4 +20812,44 @@ Codeunit 50012 "HRPortal"
     end;
 
 
+    procedure setImprestMemoPerDiem(employeeNo: Code[50]; imprestNo: Code[50]; perDiemViaPayroll: Boolean; accommodationProvided: Boolean) status: Text
+    var
+        PerDiemMemo: Record "Imprest Memo";
+    begin
+        PerDiemMemo.Reset();
+        PerDiemMemo.SetRange(Requestor, employeeNo);
+        PerDiemMemo.SetRange("No.", imprestNo);
+        PerDiemMemo.SetRange(Status, PerDiemMemo.Status::Open);
+        if not PerDiemMemo.FindFirst() then
+            exit('danger*An imprest memo with the given number does not exist, you are not the requestor or it is no longer open');
+        PerDiemMemo.Validate("Per Diem via Payroll", perDiemViaPayroll);
+        PerDiemMemo.Validate("Accommodation Provided", accommodationProvided);
+        PerDiemMemo.Modify(true);
+        exit('success*Per diem settings were updated');
+    end;
+
+    procedure setTeamMemberAccommodation(employeeNo: Code[50]; imprestNo: Code[50]; teamMember: Code[50]; accommodationProvided: Boolean) status: Text
+    var
+        PerDiemMemo: Record "Imprest Memo";
+        PerDiemMember: Record "Project Members";
+    begin
+        PerDiemMemo.Reset();
+        PerDiemMemo.SetRange(Requestor, employeeNo);
+        PerDiemMemo.SetRange("No.", imprestNo);
+        PerDiemMemo.SetRange(Status, PerDiemMemo.Status::Open);
+        if not PerDiemMemo.FindFirst() then
+            exit('danger*An imprest memo with the given number does not exist, you are not the requestor or it is no longer open');
+        PerDiemMember.Reset();
+        PerDiemMember.SetRange("Imprest Memo No.", imprestNo);
+        PerDiemMember.SetRange("No.", teamMember);
+        if not PerDiemMember.FindSet(true) then
+            exit('danger*The team member is not on this imprest memo');
+        repeat
+            PerDiemMember.Validate("Accommodation Provided", accommodationProvided);
+            PerDiemMember.Modify(true);
+        until PerDiemMember.Next() = 0;
+        exit('success*Accommodation was updated for the team member');
+    end;
+
+
 }

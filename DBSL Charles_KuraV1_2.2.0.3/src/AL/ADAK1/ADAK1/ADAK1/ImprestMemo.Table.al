@@ -932,6 +932,34 @@ Table 57008 "Imprest Memo"
 
 
         }
+        field(70036; "Per Diem via Payroll"; Boolean)
+        {
+            Caption = 'Per Diem via Payroll';
+            DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            var
+                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+            begin
+                TestField(Status, Status::Open);
+                if Modify() then
+                    PerDiemMgt.RecalculateMemoMembers(Rec, false);
+            end;
+        }
+        field(70037; "Accommodation Provided"; Boolean)
+        {
+            Caption = 'Accommodation Provided';
+            DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            var
+                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+            begin
+                TestField(Status, Status::Open);
+                if Modify() then
+                    PerDiemMgt.RecalculateMemoMembers(Rec, true);
+            end;
+        }
 
     }
 

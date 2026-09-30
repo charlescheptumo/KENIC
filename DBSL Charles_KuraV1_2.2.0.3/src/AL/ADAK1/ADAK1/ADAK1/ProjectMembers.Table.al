@@ -52,10 +52,13 @@ Table 57009 "Project Members"
                                 UnpostedImprest.Reset();
                                 UnpostedImprest.SetRange("Account Type", UnpostedImprest."Account Type"::Employee);
                                 UnpostedImprest.SetRange("Account No.", "No.");
+                                // UnpostedImprest.SetRange("Payment Type", UnpostedImprest."Payment Type"::Imprest);
+                                // UnpostedImprest.SetRange(Surrendered, false);
                                 UnpostedImprest.SetRange("Payment Type", UnpostedImprest."Payment Type"::Imprest);
+                                UnpostedImprest.SetRange("Per Diem Warrant", false);
                                 UnpostedImprest.SetRange(Surrendered, false);
                                 UnpostedImprest.SetRange("Archive Document", false);
-                                 UnpostedImprest.SetRange(Status,Status::"Pending Approval");
+                                UnpostedImprest.SetRange(Status, Status::"Pending Approval");
                                 //   UnpostedImprest.SetFilter(Status, '%1|%2|%3', UnpostedImprest.Status::Open, UnpostedImprest.Status::"Pending Approval", UnpostedImprest.Status::Released);
                                 UnpostedImprest.SetRange(Posted, false);
                                 if UnpostedImprest.FindSet() then begin
@@ -210,6 +213,8 @@ Table 57009 "Project Members"
         {
 
             trigger OnValidate()
+            var
+                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
             begin
                 ImprestMemo.Reset;//Commented by Ruth
                 ImprestMemo.SetRange(ImprestMemo."No.", "Imprest Memo No.");
@@ -283,7 +288,10 @@ Table 57009 "Project Members"
                 end;
 
 
+                // "Direct Unit Cost" := ResourceCost."Direct Unit Cost";
+                // Validate("Total Entitlement");
                 "Direct Unit Cost" := ResourceCost."Direct Unit Cost";
+                PerDiemMgt.ApplyAccommodationToMember(Rec);
                 Validate("Total Entitlement");
                 //"Vote Item":="G/L Account";
 
@@ -551,15 +559,14 @@ Table 57009 "Project Members"
             TableRelation = "G/L Account"."No.";
             trigger OnValidate()
             var
-               GLAccount : Record "G/L Account";
+                GLAccount: Record "G/L Account";
             begin
                 GLAccount.Reset;
-                GLAccount.SetRange("No.","Vote Item");
-                if GLAccount.FindFirst() then
-                begin
+                GLAccount.SetRange("No.", "Vote Item");
+                if GLAccount.FindFirst() then begin
                     Rec."Global Dimension 1 Code" := GLAccount."Global Dimension 1 Code";
                     Rec."Global Dimension 2 Code" := GLAccount."Global Dimension 2 Code";
-                end;   
+                end;
             end;
         }
         field(50021; "Vote Amount"; Decimal)
@@ -728,7 +735,7 @@ Table 57009 "Project Members"
             DataClassification = ToBeClassified;
             TableRelation = "Job Task"."Job Task No." where("Job No." = field(Job),
                                                              "Job Task Type" = const(Posting));
-                                                             // "Global Dimension 1 Code" = field("Global Dimension 1 Code"),
+            // "Global Dimension 1 Code" = field("Global Dimension 1 Code"),
 
             trigger OnValidate()
             begin
@@ -855,7 +862,7 @@ Table 57009 "Project Members"
                     // Rec.Validate("Vote Item");
                     // Rec.Validate(Job);
                     UpdateCommitment();
-                   // "Job  Task" := AdvanceTypes."G/L Account";
+                    // "Job  Task" := AdvanceTypes."G/L Account";
                     //Rec.Validate("Job  Task");
                 end;
 
@@ -894,14 +901,26 @@ Table 57009 "Project Members"
         }
         field(70048; "Total otherCost"; Decimal)
         {
-            CalcFormula = Sum("Other Costs"."Line Amount" where("Imprest Memo No." = field("Imprest Memo No."),"Employee No To Surrender" = field("No.")));
+            CalcFormula = Sum("Other Costs"."Line Amount" where("Imprest Memo No." = field("Imprest Memo No."), "Employee No To Surrender" = field("No.")));
             Editable = false;
             FieldClass = FlowField;
         }
         field(70049; "No. Of Outstanding Imprest"; Integer)
         {
             FieldClass = FlowField;
-            CalcFormula = Count(payments Where ("Document Type" = const(Imprest),"Account No." = field("No."),Surrendered = Const(false),"Archive Document"=const(false)));
+            CalcFormula = Count(payments Where("Document Type" = const(Imprest), "Account No." = field("No."), Surrendered = Const(false), "Archive Document" = const(false), "Per Diem Warrant" = const(false)));
+            //CalcFormula = Count(payments Where ("Document Type" = const(Imprest),"Account No." = field("No."),Surrendered = Const(false),"Archive Document"=const(false)));
+        }
+        field(70100; "Accommodation Provided"; Boolean)
+        {
+            Caption = 'Accommodation Provided';
+            DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            begin
+                if "Time Period" <> 0 then
+                    Validate("Time Period");
+            end;
         }
     }
 
@@ -923,7 +942,9 @@ Table 57009 "Project Members"
         ImprestMemo.SetRange("No.", "Imprest Memo No.");
         if ImprestMemo.FindSet then begin
             "Local Travel" := ImprestMemo."Local Travel";
+            // "International Travel" := ImprestMemo."International Travel";
             "International Travel" := ImprestMemo."International Travel";
+            "Accommodation Provided" := ImprestMemo."Accommodation Provided";
 
         end;
         if "No." <> '' then
