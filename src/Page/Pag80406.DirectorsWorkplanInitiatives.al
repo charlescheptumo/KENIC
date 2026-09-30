@@ -31,12 +31,14 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Outcome Perfomance Indicator field.';
+                    Visible = false;
                 }
                 field("Key Performance Indicator"; Rec."Key Performance Indicator")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Key Performance Indicator field.';
+                    Visible = false;
                 }
                 field("Unit of Measure"; Rec."Unit of Measure")
                 {
@@ -85,12 +87,14 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Directorate field.';
+                    Visible = false;
                 }
                 field("Primary Directorate Name"; Rec."Primary Directorate Name")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Primary Directorate Name field.';
+                    Visible = false;
                 }
                 field("Primary Department"; Rec."Primary Department")
                 {
@@ -125,11 +129,13 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Strategy Framework field.';
+                    Visible = false;
                 }
                 field("Framework Perspective"; Rec."Framework Perspective")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Framework Perspective field.';
+                    Visible = false;
                 }
             }
         }
