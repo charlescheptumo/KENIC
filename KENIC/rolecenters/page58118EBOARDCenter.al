@@ -68,6 +68,14 @@ page 58118 "Head of E-Board"
                         Caption = 'Declaration Interest Types';
                         RunObject = Page "Declaration Interest Types";
                         ToolTip = 'Manage declaration interest type categories.';
+                    }//page 58291 "Board Data Consent Log"
+
+                    action("Board Data Consent Log")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Board Data Consent';
+                        RunObject = Page "Board Data Consent Log";
+                        ToolTip = 'Manage board data consent log.';
                     }
                 }
             }
