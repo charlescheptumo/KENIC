@@ -8993,5 +8993,8 @@ permissionset 50000 GeneratedPermission
         page "Successor Form List"=X,
         page "Successor Form Top Dev Areas"=X,
         page "Training Needs Dev Goals"=X,
+        table "Board Data Consent Log"=X,
+        tabledata "Board Data Consent Log"=RIMD,
+        page "Board Data Consent Log"=X,
         page "Training Needs Dev Objectives"=X;
 }

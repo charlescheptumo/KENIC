@@ -9097,5 +9097,8 @@ permissionset 50001 KenicPermissions
         page "Domain Renewal Stat List"=X,
         page "Offense Details"=X,
         page "Posted EFT Batches"=X,
+        table "Board Data Consent Log"=X,
+        tabledata "Board Data Consent Log"=RIMD,
+        page "Board Data Consent Log"=X,
         page "Training Needs Dev Obj Lookup"=X;
 }
