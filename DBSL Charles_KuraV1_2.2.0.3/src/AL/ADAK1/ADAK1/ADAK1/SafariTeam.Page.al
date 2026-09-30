@@ -65,16 +65,21 @@ Page 57034 "Safari Team"
                         Rec.Validate("No.");
                     end;
                 }
+                field("Accommodation Provided"; Rec."Accommodation Provided")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies whether accommodation is provided for this traveller. The imprest amount becomes 40% of the full amount.';
+                }
+                field("Full Entitlement"; Rec."Full Entitlement")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the imprest amount before the accommodation percentage.';
+                }
                 field("Return Date"; Rec."Return Date")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Return Date field.';
-                }
-                field("Accommodation Provided"; Rec."Accommodation Provided")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies whether accommodation is provided for this traveller.';
                 }
                 field(Name; Rec.Name)
                 {

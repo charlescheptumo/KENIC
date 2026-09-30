@@ -857,7 +857,7 @@ Table 57000 "payments"
             var
                 PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
             begin
-                PerDiemMgt.CheckImprestNotPerDiem("Imprest Issue Doc. No");
+                PerDiemMgt.CheckNotPerDiemForSurrender("Imprest Issue Doc. No");
                 ImpSurrLines.Reset;
                 ImpSurrLines.SetRange(No, "No.");
                 ImpSurrLines.DeleteAll;
@@ -1955,27 +1955,23 @@ Table 57000 "payments"
             FieldClass = FlowField;
             CalcFormula = lookup("Imprest Memo".Subject where("No." = field("Imprest Memo No")));
         }
-        field(70200; "Per Diem Warrant"; Boolean)
+        field(70200; "Per Diem through Payroll"; Boolean)
         {
-            Caption = 'Per Diem Warrant';
+            Caption = 'Per Diem through Payroll';
             DataClassification = CustomerContent;
             Editable = false;
         }
-        field(70201; "PD Recipient Type"; Option)
+        field(70201; "Accommodation Provided"; Boolean)
         {
-            Caption = 'Per Diem Recipient Type';
+            Caption = 'Accommodation Provided';
             DataClassification = CustomerContent;
             Editable = false;
-            OptionCaption = ' ,Staff,Board Member';
-            OptionMembers = " ",Employee,Director;
         }
-        field(70202; "PD Payroll Status"; Option)
+        field(70202; "PD No. of Days"; Decimal)
         {
-            Caption = 'Per Diem Payroll Status';
+            Caption = 'Per Diem No. of Days';
             DataClassification = CustomerContent;
             Editable = false;
-            OptionCaption = ' ,Pending Payroll,Advance PV Created,Advance Paid,Sent to Payroll';
-            OptionMembers = " ","Pending Payroll","Advance PV Created","Advance Paid","Sent to Payroll";
         }
         field(70203; "PD Payroll Period"; Date)
         {
@@ -1983,61 +1979,18 @@ Table 57000 "payments"
             DataClassification = CustomerContent;
             Editable = false;
         }
-        field(70204; "PD Daily Rate"; Decimal)
+        field(70204; "PD Paid Early"; Boolean)
         {
-            Caption = 'Per Diem Daily Rate';
+            Caption = 'Per Diem Paid Early';
             DataClassification = CustomerContent;
             Editable = false;
         }
-        field(70205; "PD No. of Days"; Decimal)
-        {
-            Caption = 'Per Diem No. of Days';
-            DataClassification = CustomerContent;
-            Editable = false;
-        }
-        field(70206; "PD Accommodation"; Boolean)
-        {
-            Caption = 'Accommodation Provided';
-            DataClassification = CustomerContent;
-            Editable = false;
-        }
-        field(70207; "PD Gross Amount"; Decimal)
-        {
-            Caption = 'Per Diem Gross Amount';
-            DataClassification = CustomerContent;
-            Editable = false;
-        }
-        field(70208; "PD Non-Taxable Amount"; Decimal)
-        {
-            Caption = 'Per Diem Non-Taxable Amount';
-            DataClassification = CustomerContent;
-            Editable = false;
-        }
-        field(70209; "PD Taxable Amount"; Decimal)
-        {
-            Caption = 'Per Diem Taxable Amount';
-            DataClassification = CustomerContent;
-            Editable = false;
-        }
-        field(70210; "PD Advance PV No."; Code[20])
-        {
-            Caption = 'Per Diem Advance PV No.';
-            DataClassification = CustomerContent;
-            Editable = false;
-        }
-        field(70211; "PD Paid in Advance"; Boolean)
-        {
-            Caption = 'Per Diem Paid in Advance';
-            DataClassification = CustomerContent;
-            Editable = false;
-        }
-        field(70212; "PD Commitment Reversed"; Boolean)
+        field(70205; "PD Commitment Reversed"; Boolean)
         {
             Caption = 'Per Diem Commitment Reversed';
             DataClassification = CustomerContent;
             Editable = false;
         }
-
 
 
     }

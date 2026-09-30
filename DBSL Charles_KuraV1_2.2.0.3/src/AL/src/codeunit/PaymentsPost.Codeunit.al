@@ -2694,7 +2694,12 @@ Codeunit 57000 "Payments-Post"
         CustomFunction: Codeunit "Custom Function";
         "Account Type": Enum "Gen. Journal Account Type";
         CommitmentType: Enum "Commitment Type";
+        PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
     begin
+        if Imprest."Per Diem through Payroll" then begin
+            PerDiemMgt.PostEarlyPerDiem(Imprest);
+            exit;
+        end;
         if Confirm(Text002, false, Imprest."No.") = true then begin
             if Imprest.Status <> Imprest.Status::Released then
                 Error(Text003, Imprest."No.");

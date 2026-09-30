@@ -131,15 +131,15 @@ Page 57033 "Imprest Memo"
                     Visible = true;
                     ToolTip = 'Specifies the value of the Travel Date field.';
                 }
-                field("Per Diem via Payroll"; Rec."Per Diem via Payroll")
+                field("Per Diem through Payroll"; Rec."Per Diem through Payroll")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies whether the subsistence on this memo is paid through payroll.';
+                    ToolTip = 'Specifies whether the per diem on this memo is paid through payroll.';
                 }
                 field("Accommodation Provided"; Rec."Accommodation Provided")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies whether accommodation is provided for all travellers by default.';
+                    ToolTip = 'Specifies whether accommodation is provided. The imprest amount on every traveller line becomes 40% of the full amount.';
                 }
                 field("No. of days"; Rec."No. of days")
                 {
@@ -526,7 +526,7 @@ Page 57033 "Imprest Memo"
                     Rec.TestField(Subject);
                     Rec.TestField(Date);
                     Rec.TestField("Imprest Naration");
-                   // Rec.TestField(Job);
+                    // Rec.TestField(Job);
                     //Rec.TestField("Job  Task");
                     rec.TestField(rec."Shortcut Dimension 1 Code");
                     rec.TestField("Responsibility Center");

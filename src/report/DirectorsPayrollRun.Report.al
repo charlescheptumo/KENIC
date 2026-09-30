@@ -15,10 +15,13 @@ Report 89032 "Directors Payroll Run"
             }
 
             trigger OnAfterGetRecord()
+            var
+                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
             begin
                 NETPAY3 := 0;
                 CompRec.Get;
                 CompRec.TestField(CompRec."Tax Relief Code");
+                PerDiemMgt.ProcessDirectorPerDiemEarnings(Vendor."No.", Month);
                 Vendor.CalcFields(Vendor."Total Allowances", Vendor."Taxable Income", Vendor."Total Deductions");
                 //MESSAGE('Taxable AMount %1',Vendor."Taxable Income");
 
@@ -42,6 +45,7 @@ Report 89032 "Directors Payroll Run"
                     // end of deletion
                 end;
 
+                PerDiemMgt.ProcessDirectorPerDiemDeductions(Vendor."No.", Month);
                 //NSSF 1 Deduction
                 Deductions.Reset;
                 Deductions.SetRange(Deductions.Code, CompRec."NSSF Tier I Code");

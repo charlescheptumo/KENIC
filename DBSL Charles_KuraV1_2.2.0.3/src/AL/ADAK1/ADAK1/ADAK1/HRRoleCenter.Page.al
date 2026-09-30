@@ -2206,15 +2206,15 @@ page 60002 "HR Role Center"
                 {
                     ApplicationArea = all;
                     Caption = 'Per Diem Warrants';
-                    RunObject = page "Per Diem Warrants";
+                    RunObject = page "Per Diem Requisitions";
                 }
-                action(TransferPerDiem)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Transfer Per Diem To Payroll';
-                    RunObject = Report "Per Diem Payroll Transfer";
+                // action(TransferPerDiem)
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Transfer Per Diem To Payroll';
+                //     RunObject = Report "Per Diem Payroll Transfer";
 
-                }
+                // }
             }
             group("Successor Selection Justification")
             {

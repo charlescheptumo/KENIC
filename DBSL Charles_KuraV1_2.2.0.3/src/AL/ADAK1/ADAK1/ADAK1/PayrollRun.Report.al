@@ -16,12 +16,15 @@ Report 69004 "Payroll Run"
             }
 
             trigger OnAfterGetRecord()
+            var
+                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
             begin
 
                 NETPAY3 := 0;
                 CompRec.Get;
                 CompRec.TestField(CompRec."Tax Relief Code");
                 Employee.CalcFields(Employee.Branch, Employee.Paypoint, Employee."Staffing Group", Employee.Department, Insurance, IsInsuarence);
+                PerDiemMgt.ProcessEmployeePerDiems(Employee."No.", Month);
 
                 Deductions.Reset;
                 Deductions.SetRange(Deductions.Code, CompRec."NSSF Tier II Code");

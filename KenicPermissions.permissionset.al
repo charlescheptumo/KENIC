@@ -9103,10 +9103,10 @@ permissionset 50001 KenicPermissions
         page "Training Needs Dev Obj Lookup"=X,
         tabledata "Per Diem Setup"=RIMD,
         table "Per Diem Setup"=X,
-        report "Per Diem Payroll Transfer"=X,
         codeunit "Batch EFT Excel Export"=X,
         codeunit "Per Diem Payroll Mgt."=X,
         xmlport "Batch EFT Bank File"=X,
         page "Per Diem Setup"=X,
-        page "Per Diem Warrants"=X;
+        page "Disciplinary Case WS"=X,
+        page "Per Diem Requisitions"=X;
 }

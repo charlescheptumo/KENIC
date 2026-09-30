@@ -52,11 +52,12 @@ Table 57009 "Project Members"
                                 UnpostedImprest.Reset();
                                 UnpostedImprest.SetRange("Account Type", UnpostedImprest."Account Type"::Employee);
                                 UnpostedImprest.SetRange("Account No.", "No.");
-                                // UnpostedImprest.SetRange("Payment Type", UnpostedImprest."Payment Type"::Imprest);
-                                // UnpostedImprest.SetRange(Surrendered, false);
                                 UnpostedImprest.SetRange("Payment Type", UnpostedImprest."Payment Type"::Imprest);
-                                UnpostedImprest.SetRange("Per Diem Warrant", false);
+                                UnpostedImprest.SetRange("Per Diem through Payroll", false);
                                 UnpostedImprest.SetRange(Surrendered, false);
+                                // UnpostedImprest.SetRange("Payment Type", UnpostedImprest."Payment Type"::Imprest);
+                                // UnpostedImprest.SetRange("Per Diem Warrant", false);
+                                // UnpostedImprest.SetRange(Surrendered, false);
                                 UnpostedImprest.SetRange("Archive Document", false);
                                 UnpostedImprest.SetRange(Status, Status::"Pending Approval");
                                 //   UnpostedImprest.SetFilter(Status, '%1|%2|%3', UnpostedImprest.Status::Open, UnpostedImprest.Status::"Pending Approval", UnpostedImprest.Status::Released);
@@ -216,6 +217,7 @@ Table 57009 "Project Members"
             var
                 PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
             begin
+                PerDiemMgt.RestoreFullEntitlement(Rec);
                 ImprestMemo.Reset;//Commented by Ruth
                 ImprestMemo.SetRange(ImprestMemo."No.", "Imprest Memo No.");
                 if ImprestMemo.FindSet then begin
@@ -291,7 +293,7 @@ Table 57009 "Project Members"
                 // "Direct Unit Cost" := ResourceCost."Direct Unit Cost";
                 // Validate("Total Entitlement");
                 "Direct Unit Cost" := ResourceCost."Direct Unit Cost";
-                PerDiemMgt.ApplyAccommodationToMember(Rec);
+                PerDiemMgt.ApplyAccommodation(Rec);
                 Validate("Total Entitlement");
                 //"Vote Item":="G/L Account";
 
@@ -908,7 +910,8 @@ Table 57009 "Project Members"
         field(70049; "No. Of Outstanding Imprest"; Integer)
         {
             FieldClass = FlowField;
-            CalcFormula = Count(payments Where("Document Type" = const(Imprest), "Account No." = field("No."), Surrendered = Const(false), "Archive Document" = const(false), "Per Diem Warrant" = const(false)));
+            CalcFormula = Count(payments Where("Document Type" = const(Imprest), "Account No." = field("No."), Surrendered = Const(false), "Archive Document" = const(false), "Per Diem through Payroll" = const(false)));
+            // CalcFormula = Count(payments Where("Document Type" = const(Imprest), "Account No." = field("No."), Surrendered = Const(false), "Archive Document" = const(false), "Per Diem Warrant" = const(false)));
             //CalcFormula = Count(payments Where ("Document Type" = const(Imprest),"Account No." = field("No."),Surrendered = Const(false),"Archive Document"=const(false)));
         }
         field(70100; "Accommodation Provided"; Boolean)
@@ -921,6 +924,12 @@ Table 57009 "Project Members"
                 if "Time Period" <> 0 then
                     Validate("Time Period");
             end;
+        }
+        field(70101; "Full Entitlement"; Decimal)
+        {
+            Caption = 'Imprest Amount before Accommodation';
+            DataClassification = CustomerContent;
+            Editable = false;
         }
     }
 
@@ -945,6 +954,7 @@ Table 57009 "Project Members"
             // "International Travel" := ImprestMemo."International Travel";
             "International Travel" := ImprestMemo."International Travel";
             "Accommodation Provided" := ImprestMemo."Accommodation Provided";
+            // "Accommodation Provided" := ImprestMemo."Accommodation Provided";
 
         end;
         if "No." <> '' then
