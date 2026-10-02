@@ -53,7 +53,8 @@ page 58118 "Head of E-Board"
 
                 group("Declarations Group")
                 {
-                    Caption = 'Conflict Declarations';
+                    // Caption = 'Conflict Declarations';
+                    Caption = 'Board Data Consent';
 
                     action("Board Declarations")
                     {
@@ -61,6 +62,7 @@ page 58118 "Head of E-Board"
                         Caption = 'Board Declarations';
                         RunObject = Page "Board Declarations";
                         ToolTip = 'View and manage board member conflict of interest declarations.';
+                        Visible = false;
                     }
                     action("Declaration Interest Types")
                     {
@@ -68,6 +70,7 @@ page 58118 "Head of E-Board"
                         Caption = 'Declaration Interest Types';
                         RunObject = Page "Declaration Interest Types";
                         ToolTip = 'Manage declaration interest type categories.';
+                        Visible = false;
                     }//page 58291 "Board Data Consent Log"
 
                     action("Board Data Consent Log")
