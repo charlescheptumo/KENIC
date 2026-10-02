@@ -958,7 +958,7 @@ Codeunit 57007 "Strategic Planning"
 
         if SPMGeneralSetup.Get() then;
 
-        
+
         PCObjective.Reset();
         PCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
         PCObjective.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
@@ -1024,7 +1024,7 @@ Codeunit 57007 "Strategic Planning"
                     PlogLines.Modify(true);
                 end;
 
-           
+
                 SubPCObjective.Reset();
                 SubPCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
                 SubPCObjective.SetRange("Initiative No.", PCObjective."Initiative No.");
@@ -1054,7 +1054,7 @@ Codeunit 57007 "Strategic Planning"
                     until SubPCObjective.Next() = 0;
             until PCObjective.Next() = 0;
 
-    
+
         SecondaryPCObjective.Reset();
         SecondaryPCObjective.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
         SecondaryPCObjective.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
@@ -1106,7 +1106,7 @@ Codeunit 57007 "Strategic Planning"
                 end;
             until SecondaryPCObjective.Next() = 0;
 
-        
+
         PCJobDescription.Reset();
         PCJobDescription.SetRange("Workplan No.", PerformanceDiaryLog."Personal Scorecard ID");
         PCJobDescription.SetRange("Due Date", PerformanceDiaryLog."Activity Start Date", PerformanceDiaryLog."Activity End Date");
@@ -1341,6 +1341,89 @@ Codeunit 57007 "Strategic Planning"
         Sub_Strategy_Activity."Unit of Measure" := UnitofMeasure;
         Sub_Strategy_Activity."Sub Initiative No." := Sub_Intiative_No;
         Sub_Strategy_Activity.Insert(true);
+    end;
+
+
+    procedure PostPlogAchievement(PlogHeader: Record "Performance Diary Log"; PlogLine: Record "Plog Lines")
+    var
+        Entry: Record "Strategy Sub_Activity Entry";
+        QPeriod: Record "Quarterly Reporting Periods";
+        QuarterCode: Code[50];
+    begin
+        if PlogLine."Achieved Target" = 0 then
+            exit;
+
+        PlogHeader.TestField("CSP ID");
+
+        // 
+        QPeriod.SetRange("Year Code", PlogHeader."Year Reporting Code");
+        QPeriod.SetFilter("Reporting Start Date", '<=%1', PlogLine."Achieved Date");
+        QPeriod.SetFilter("Reporting End Date", '>=%1', PlogLine."Achieved Date");
+        if QPeriod.FindFirst() then
+            QuarterCode := QPeriod.Code;
+
+        Entry.Init();
+        Entry."Strategic Plan ID" := PlogHeader."CSP ID";
+        Entry."Strategy ID" := PlogHeader."CSP ID";
+        Entry."Objective ID" := PlogHeader."Objective ID";
+        Entry."Activity ID" := PlogLine."Initiative No.";
+        Entry."Entry Description" := CopyStr(PlogHeader.Description, 1, MaxStrLen(Entry."Entry Description"));
+        Entry."Entry Type" := Entry."Entry Type"::Actual;
+        Entry."Source Type" := Entry."Source Type"::"Perfomance Contract";
+        Entry."Document Type" := Entry."Document Type"::Plog;
+        Entry."Year Reporting Code" := PlogHeader."Year Reporting Code";
+        Entry."Quarter Reporting Code" := QuarterCode;
+        Entry."Planning Date" := PlogLine."Planned Date";
+        Entry."Posting Date" := PlogLine."Achieved Date";
+        Entry."Primary Directorate" := PlogHeader."Directorate Code";
+        Entry."Primary Department" := PlogHeader."Department Code";
+        Entry.Quantity := PlogLine."Achieved Target";
+        Entry."Unit of Measure" := PlogLine."Unit of Measure";
+        Entry."External Document No" := PlogHeader.No;
+        Entry."Employee No" := PlogHeader."Employee No.";
+        Entry."User ID" := CopyStr(UserId(), 1, MaxStrLen(Entry."User ID"));
+        Entry."Region Code" := PlogHeader."Region ID";
+        Entry."Performance Contract ID" := PlogHeader."Personal Scorecard ID";
+        Entry."Annual Workplan" := PlogHeader."AWP ID";
+        Entry."Board PC ID" := PlogHeader."Board PC ID";
+        Entry."CEO PC ID" := PlogHeader."CEO PC ID";
+        Entry."Functional PC ID" := PlogHeader."Functional PC";
+        Entry."Department Plan ID" := PlogHeader."Functional PC";
+        Entry."Directors PC ID" := PlogHeader."Directors PC ID";
+        Entry."Department/Center PC ID" := PlogHeader."Department/Center PC ID";
+        Entry.Comments := PlogLine.Comments;
+        Entry.Insert(true);
+
+        // 
+        UpdateWorkplanAchieved(PlogHeader."Functional PC", PlogLine."Initiative No.", false);
+        UpdateWorkplanAchieved(PlogHeader."AWP ID", PlogLine."Initiative No.", true);
+    end;
+
+    local procedure UpdateWorkplanAchieved(WorkplanNo: Code[100]; ActivityID: Code[50]; IsAWP: Boolean)
+    var
+        WPLine: Record "Strategy Workplan Lines";
+        Entry: Record "Strategy Sub_Activity Entry";
+    begin
+        if WorkplanNo = '' then
+            exit;
+
+        WPLine.SetRange(No, WorkplanNo);
+        WPLine.SetRange("Activity ID", ActivityID);
+        if not WPLine.FindFirst() then
+            exit;
+
+        Entry.SetRange("Entry Type", Entry."Entry Type"::Actual);
+        Entry.SetRange("Source Type", Entry."Source Type"::"Perfomance Contract");
+        Entry.SetRange(Reversed, false);
+        Entry.SetRange("Activity ID", ActivityID);
+        if IsAWP then
+            Entry.SetRange("Annual Workplan", WorkplanNo)
+        else
+            Entry.SetRange("Functional PC ID", WorkplanNo);
+        Entry.CalcSums(Quantity);
+
+        WPLine."AnnualWorkplan Achieved Target" := Entry.Quantity;
+        WPLine.Modify();
     end;
 }
 

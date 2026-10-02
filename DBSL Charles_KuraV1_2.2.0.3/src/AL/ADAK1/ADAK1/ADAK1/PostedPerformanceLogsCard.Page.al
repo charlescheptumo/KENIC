@@ -346,27 +346,30 @@ Page 80382 "Posted Performance Logs Card"
                 trigger OnAction()
                 var
                     PlogLines: Record "Plog Lines";
+                    PostedCount: Integer;
                 begin
                     if not Confirm('Are you sure you want to Post', true) then
-                        Error('Perforamnce Log not Posted');
-                    Rec.TestField("Approval Status", Rec."approval status"::Released);
-                    PlogLines.Reset;
+                        exit;
+                    Rec.TestField("Approval Status", Rec."Approval Status"::Released);
+                    Rec.TestField(Posted, false);
+
                     PlogLines.SetRange("PLog No.", Rec.No);
-                    if PlogLines.FindFirst then begin
+                    if PlogLines.FindSet() then
                         repeat
-                            if (PlogLines."Activity Type" <> PlogLines."activity type"::"JD Activity") then begin
-                                StrategicPlanning.FnInsertPlogEntry(Rec."CSP ID", '', '', '', PlogLines."Initiative No.", Rec.Description, Entrytype::Actual, Rec."Year Reporting Code", '', PlogLines."Planned Date", Rec."Directorate Code", Rec."Department Code", PlogLines."Achieved Target", 0, Rec.No, SourceType
-                               , Rec."Employee No.", PlogLines."Achieved Date", Documenttype::Plog, Rec."Region ID", Rec."Personal Scorecard ID", Rec."AWP ID", Rec."Board PC ID", Rec."CEO PC ID", Rec."Functional PC", PlogLines."Unit of Measure", PlogLines.Comments);
-                            end;
-                            if (PlogLines."Activity Type" = PlogLines."activity type"::"JD Activity") then begin
-                                StrategicPlanning.FnInsertJDPlogEntry(PlogLines);
-                            end;
-                        until PlogLines.Next = 0;
-                    end;
+                            if PlogLines."Activity Type" = PlogLines."Activity Type"::"JD Activity" then
+                                StrategicPlanning.FnInsertJDPlogEntry(PlogLines)
+                            else
+                                StrategicPlanning.PostPlogAchievement(Rec, PlogLines);
+                            PostedCount += 1;
+                        until PlogLines.Next() = 0;
+
+                    if PostedCount = 0 then
+                        Error('No performance log lines were found to post.');
+
                     Rec.Posted := true;
                     Rec."Posted By" := UserId;
                     Rec."Posted On" := Today;
-                    Rec.Modify;
+                    Rec.Modify();
 
                     Message('Performance Log %1 has been Posted Successfully', Rec.No);
                 end;
