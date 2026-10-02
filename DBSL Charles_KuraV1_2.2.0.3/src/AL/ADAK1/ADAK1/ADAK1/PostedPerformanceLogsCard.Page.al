@@ -333,47 +333,51 @@ Page 80382 "Posted Performance Logs Card"
             }
             separator(Action33)
             {
-            }
-            action("Post Performance Log")
-            {
-                ApplicationArea = Basic;
-                Image = Post;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                ToolTip = 'Executes the Post Performance Log action.';
+            }action("Post Performance Log")
+{
+    ApplicationArea = Basic;
+    Image = Post;
+    Promoted = true;
+    PromotedCategory = Process;
+    PromotedIsBig = true;
+    ToolTip = 'Executes the Post Performance Log action.';
 
-                trigger OnAction()
-                var
-                    PlogLines: Record "Plog Lines";
-                    PostedCount: Integer;
-                begin
-                    if not Confirm('Are you sure you want to Post', true) then
-                        exit;
-                    Rec.TestField("Approval Status", Rec."Approval Status"::Released);
-                    Rec.TestField(Posted, false);
+    trigger OnAction()
+    var
+        PlogLines: Record "Plog Lines";
+        StrategyEntry: Record "Strategy Sub_Activity Entry";
+        PostedCount: Integer;
+    begin
+        if not Confirm('Are you sure you want to Post', true) then
+            exit;
+        Rec.TestField("Approval Status", Rec."Approval Status"::Released);
+        // Rec.TestField(Posted, false);   // re-enable after debugging
 
-                    PlogLines.SetRange("PLog No.", Rec.No);
-                    if PlogLines.FindSet() then
-                        repeat
-                            if PlogLines."Activity Type" = PlogLines."Activity Type"::"JD Activity" then
-                                StrategicPlanning.FnInsertJDPlogEntry(PlogLines)
-                            else
-                                StrategicPlanning.PostPlogAchievement(Rec, PlogLines);
-                            PostedCount += 1;
-                        until PlogLines.Next() = 0;
+        PlogLines.SetRange("PLog No.", Rec.No);
+        if PlogLines.FindSet() then
+            repeat
+                if PlogLines."Activity Type" = PlogLines."Activity Type"::"JD Activity" then
+                    StrategicPlanning.FnInsertJDPlogEntry(PlogLines)
+                else
+                    StrategicPlanning.PostPlogAchievement(Rec, PlogLines);
+                PostedCount += 1;
+            until PlogLines.Next() = 0;
 
-                    if PostedCount = 0 then
-                        Error('No performance log lines were found to post.');
+        if PostedCount = 0 then
+            Error('No performance log lines were found to post.');
 
-                    Rec.Posted := true;
-                    Rec."Posted By" := UserId;
-                    Rec."Posted On" := Today;
-                    Rec.Modify();
+        StrategyEntry.SetRange("External Document No", Rec.No);
+        StrategyEntry.SetRange("Entry Type", StrategyEntry."Entry Type"::Actual);
 
-                    Message('Performance Log %1 has been Posted Successfully', Rec.No);
-                end;
-            }
+        Rec.Posted := true;
+        Rec."Posted By" := UserId;
+        Rec."Posted On" := Today;
+        Rec.Modify();
+
+        Message('Finished. Lines processed: %1. Entries now in Strategy Sub_Activity Entry for %2: %3',
+            PostedCount, Rec.No, StrategyEntry.Count());
+    end;
+} 
         }
     }
 

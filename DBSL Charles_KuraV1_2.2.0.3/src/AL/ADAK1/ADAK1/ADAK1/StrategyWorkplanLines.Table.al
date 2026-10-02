@@ -181,11 +181,20 @@ Table 80020 "Strategy Workplan Lines"
             DataClassification = ToBeClassified;
             TableRelation = "Strategy Framework".Code;
         }
+        // field(25; "AnnualWorkplan Achieved Target"; Decimal)
+        // {
+        //     CalcFormula = sum("Strategy Sub_Activity Entry".Quantity where("CEO PC ID" = field(No),
+        //                                                                     // "Annual Workplan" = field(No),
+        //                                                                     "Activity ID" = field("Activity ID")));
+        //     FieldClass = FlowField;
+        //     Editable = false;
+        // }
         field(25; "AnnualWorkplan Achieved Target"; Decimal)
         {
-            CalcFormula = sum("Strategy Sub_Activity Entry".Quantity where("CEO PC ID" = field(No),
-                                                                            // "Annual Workplan" = field(No),
-                                                                            "Activity ID" = field("Activity ID")));
+            CalcFormula = sum("Strategy Sub_Activity Entry".Quantity where("Annual Workplan" = field(No),
+                                                                    "Activity ID" = field("Activity ID"),
+                                                                    "Entry Type" = const(Actual),
+                                                                    Reversed = const(false)));
             FieldClass = FlowField;
             Editable = false;
         }

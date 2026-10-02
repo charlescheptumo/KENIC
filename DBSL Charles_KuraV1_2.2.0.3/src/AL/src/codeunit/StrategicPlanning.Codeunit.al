@@ -1344,86 +1344,113 @@ Codeunit 57007 "Strategic Planning"
     end;
 
 
-    procedure PostPlogAchievement(PlogHeader: Record "Performance Diary Log"; PlogLine: Record "Plog Lines")
-    var
-        Entry: Record "Strategy Sub_Activity Entry";
-        QPeriod: Record "Quarterly Reporting Periods";
-        QuarterCode: Code[50];
-    begin
-        if PlogLine."Achieved Target" = 0 then
-            exit;
+   procedure PostPlogAchievement(PlogHeader: Record "Performance Diary Log"; PlogLine: Record "Plog Lines")
+var
+    Entry: Record "Strategy Sub_Activity Entry";
+    QPeriod: Record "Quarterly Reporting Periods";
+    QuarterCode: Code[50];
+begin
+    Message('START Plog=%1 Initiative=%2 Type=%3 Achieved Target=%4 Achieved Date=%5 CSP ID=%6 AWP=%7 Functional PC=%8',
+        PlogHeader.No, PlogLine."Initiative No.", PlogLine."Activity Type", PlogLine."Achieved Target",
+        PlogLine."Achieved Date", PlogHeader."CSP ID", PlogHeader."AWP ID", PlogHeader."Functional PC");
 
-        PlogHeader.TestField("CSP ID");
-
-        // 
-        QPeriod.SetRange("Year Code", PlogHeader."Year Reporting Code");
-        QPeriod.SetFilter("Reporting Start Date", '<=%1', PlogLine."Achieved Date");
-        QPeriod.SetFilter("Reporting End Date", '>=%1', PlogLine."Achieved Date");
-        if QPeriod.FindFirst() then
-            QuarterCode := QPeriod.Code;
-
-        Entry.Init();
-        Entry."Strategic Plan ID" := PlogHeader."CSP ID";
-        Entry."Strategy ID" := PlogHeader."CSP ID";
-        Entry."Objective ID" := PlogHeader."Objective ID";
-        Entry."Activity ID" := PlogLine."Initiative No.";
-        Entry."Entry Description" := CopyStr(PlogHeader.Description, 1, MaxStrLen(Entry."Entry Description"));
-        Entry."Entry Type" := Entry."Entry Type"::Actual;
-        Entry."Source Type" := Entry."Source Type"::"Perfomance Contract";
-        Entry."Document Type" := Entry."Document Type"::Plog;
-        Entry."Year Reporting Code" := PlogHeader."Year Reporting Code";
-        Entry."Quarter Reporting Code" := QuarterCode;
-        Entry."Planning Date" := PlogLine."Planned Date";
-        Entry."Posting Date" := PlogLine."Achieved Date";
-        Entry."Primary Directorate" := PlogHeader."Directorate Code";
-        Entry."Primary Department" := PlogHeader."Department Code";
-        Entry.Quantity := PlogLine."Achieved Target";
-        Entry."Unit of Measure" := PlogLine."Unit of Measure";
-        Entry."External Document No" := PlogHeader.No;
-        Entry."Employee No" := PlogHeader."Employee No.";
-        Entry."User ID" := CopyStr(UserId(), 1, MaxStrLen(Entry."User ID"));
-        Entry."Region Code" := PlogHeader."Region ID";
-        Entry."Performance Contract ID" := PlogHeader."Personal Scorecard ID";
-        Entry."Annual Workplan" := PlogHeader."AWP ID";
-        Entry."Board PC ID" := PlogHeader."Board PC ID";
-        Entry."CEO PC ID" := PlogHeader."CEO PC ID";
-        Entry."Functional PC ID" := PlogHeader."Functional PC";
-        Entry."Department Plan ID" := PlogHeader."Functional PC";
-        Entry."Directors PC ID" := PlogHeader."Directors PC ID";
-        Entry."Department/Center PC ID" := PlogHeader."Department/Center PC ID";
-        Entry.Comments := PlogLine.Comments;
-        Entry.Insert(true);
-
-        // 
-        UpdateWorkplanAchieved(PlogHeader."Functional PC", PlogLine."Initiative No.", false);
-        UpdateWorkplanAchieved(PlogHeader."AWP ID", PlogLine."Initiative No.", true);
+    if PlogLine."Achieved Target" = 0 then begin
+        Message('SKIPPED Initiative %1: Achieved Target is 0, so no entry was created.', PlogLine."Initiative No.");
+        exit;
     end;
 
-    local procedure UpdateWorkplanAchieved(WorkplanNo: Code[100]; ActivityID: Code[50]; IsAWP: Boolean)
-    var
-        WPLine: Record "Strategy Workplan Lines";
-        Entry: Record "Strategy Sub_Activity Entry";
-    begin
-        if WorkplanNo = '' then
-            exit;
+    if PlogHeader."CSP ID" = '' then
+        Error('Initiative %1: CSP ID is blank on Performance Log %2. It is part of the entry primary key.',
+            PlogLine."Initiative No.", PlogHeader.No);
 
-        WPLine.SetRange(No, WorkplanNo);
-        WPLine.SetRange("Activity ID", ActivityID);
-        if not WPLine.FindFirst() then
-            exit;
+    QPeriod.SetRange("Year Code", PlogHeader."Year Reporting Code");
+    QPeriod.SetFilter("Reporting Start Date", '<=%1', PlogLine."Achieved Date");
+    QPeriod.SetFilter("Reporting End Date", '>=%1', PlogLine."Achieved Date");
+    if QPeriod.FindFirst() then
+        QuarterCode := QPeriod.Code
+    else
+        Message('WARNING Initiative %1: no quarter found for Year=%2 and Achieved Date=%3. Quarter left blank.',
+            PlogLine."Initiative No.", PlogHeader."Year Reporting Code", PlogLine."Achieved Date");
 
-        Entry.SetRange("Entry Type", Entry."Entry Type"::Actual);
-        Entry.SetRange("Source Type", Entry."Source Type"::"Perfomance Contract");
-        Entry.SetRange(Reversed, false);
-        Entry.SetRange("Activity ID", ActivityID);
-        if IsAWP then
-            Entry.SetRange("Annual Workplan", WorkplanNo)
-        else
-            Entry.SetRange("Functional PC ID", WorkplanNo);
-        Entry.CalcSums(Quantity);
+    Entry.Init();
+    Entry."Strategic Plan ID" := PlogHeader."CSP ID";
+    Entry."Strategy ID" := PlogHeader."CSP ID";
+    Entry."Objective ID" := PlogHeader."Objective ID";
+    Entry."Activity ID" := PlogLine."Initiative No.";
+    Entry."Entry Description" := CopyStr(PlogHeader.Description, 1, MaxStrLen(Entry."Entry Description"));
+    Entry."Entry Type" := Entry."Entry Type"::Actual;
+    Entry."Source Type" := Entry."Source Type"::"Perfomance Contract";
+    Entry."Document Type" := Entry."Document Type"::Plog;
+    Entry."Year Reporting Code" := PlogHeader."Year Reporting Code";
+    Entry."Quarter Reporting Code" := QuarterCode;
+    Entry."Planning Date" := PlogLine."Planned Date";
+    Entry."Posting Date" := PlogLine."Achieved Date";
+    Entry."Primary Directorate" := PlogHeader."Directorate Code";
+    Entry."Primary Department" := PlogHeader."Department Code";
+    Entry.Quantity := PlogLine."Achieved Target";
+    Entry."Unit of Measure" := PlogLine."Unit of Measure";
+    Entry."External Document No" := PlogHeader.No;
+    Entry."Employee No" := PlogHeader."Employee No.";
+    Entry."User ID" := CopyStr(UserId(), 1, MaxStrLen(Entry."User ID"));
+    Entry."Region Code" := PlogHeader."Region ID";
+    Entry."Performance Contract ID" := PlogHeader."Personal Scorecard ID";
+    Entry."Annual Workplan" := PlogHeader."AWP ID";
+    Entry."Board PC ID" := PlogHeader."Board PC ID";
+    Entry."CEO PC ID" := PlogHeader."CEO PC ID";
+    Entry."Functional PC ID" := PlogHeader."Functional PC";
+    Entry."Department Plan ID" := PlogHeader."Functional PC";
+    Entry."Directors PC ID" := PlogHeader."Directors PC ID";
+    Entry."Department/Center PC ID" := PlogHeader."Department/Center PC ID";
+    Entry.Comments := PlogLine.Comments;
 
-        WPLine."AnnualWorkplan Achieved Target" := Entry.Quantity;
-        WPLine.Modify();
+    if not Entry.Insert(true) then
+        Error('INSERT FAILED Initiative %1: %2', PlogLine."Initiative No.", GetLastErrorText());
+
+    Message('POSTED Initiative %1: entry created. Strategic Plan ID=%2, Entry No=%3, Quantity=%4.',
+        PlogLine."Initiative No.", Entry."Strategic Plan ID", Entry."Entry No", Entry.Quantity);
+
+    UpdateWorkplanAchieved(PlogHeader."Functional PC", PlogLine."Initiative No.", false);
+    UpdateWorkplanAchieved(PlogHeader."AWP ID", PlogLine."Initiative No.", true);
+end;
+
+   local procedure UpdateWorkplanAchieved(WorkplanNo: Code[100]; ActivityID: Code[50]; IsAWP: Boolean)
+var
+    WPLine: Record "Strategy Workplan Lines";
+    Entry: Record "Strategy Sub_Activity Entry";
+    Kind: Text;
+begin
+    if IsAWP then
+        Kind := 'AWP'
+    else
+        Kind := 'Functional PC';
+
+    if WorkplanNo = '' then begin
+        Message('WP UPDATE (%1) skipped: %1 ID is blank on the Plog.', Kind);
+        exit;
     end;
+
+    WPLine.SetRange(No, WorkplanNo);
+    WPLine.SetRange("Activity ID", ActivityID);
+    if not WPLine.FindFirst() then begin
+        Message('WP UPDATE (%1) skipped: no Strategy Workplan Lines row with No=%2 and Activity ID=%3.',
+            Kind, WorkplanNo, ActivityID);
+        exit;
+    end;
+
+    Entry.SetRange("Entry Type", Entry."Entry Type"::Actual);
+    Entry.SetRange("Source Type", Entry."Source Type"::"Perfomance Contract");
+    Entry.SetRange(Reversed, false);
+    Entry.SetRange("Activity ID", ActivityID);
+    if IsAWP then
+        Entry.SetRange("Annual Workplan", WorkplanNo)
+    else
+        Entry.SetRange("Functional PC ID", WorkplanNo);
+    Entry.CalcSums(Quantity);
+
+    WPLine."AnnualWorkplan Achieved Target" := Entry.Quantity;
+    WPLine.Modify();
+
+    Message('WP UPDATE (%1): line %2 / %3 Achieved Target set to %4.', Kind, WorkplanNo, ActivityID, Entry.Quantity);
+end;
 }
 
