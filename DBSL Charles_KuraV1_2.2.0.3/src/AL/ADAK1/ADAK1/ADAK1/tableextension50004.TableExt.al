@@ -413,6 +413,60 @@ TableExtension 50004 "tableextension50004" extends Customer
                     Error(Err002);
             end;
         }
+        
+        //BEGIN Etims
+        modify("VAT Registration No.")
+        {
+            Caption = 'KRA Pin Registration';
+        }
+
+        field(85031; "Branch Code"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = "eTims-Branch"."Branch Id";
+            Caption = 'Branch Code';
+        }
+        field(85032; useYn; Option)
+        {
+            Caption = 'UseYN';
+            OptionMembers = "","Y","N";
+        }
+        field(85033; Remark; Text[200])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(85034; regrNm; Text[200])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(85035; regrId; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(85036; modrNm; Text[200])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(85037; modrId; Code[20])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(85038; "Posted to Etims"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(85039; "Customer Status"; Option)
+        {
+            OptionCaption = 'Active,inactive';
+            OptionMembers = Active,inactive;
+            trigger OnValidate()
+            begin
+                if Rec."Customer Status" = rec."Customer Status"::inactive then begin
+                    if Rec.Blocked = rec.Blocked::" " then
+                        Error('Kindly block the customer before deactivating!!');
+                end;
+            end;
+        }
     }
 
     trigger OnAfterInsert()
@@ -513,8 +567,8 @@ TableExtension 50004 "tableextension50004" extends Customer
                     begin
                         TUESetup.Get();
                         TUESetup.TestField("Athlete Nos");
-                      "No." := NoSeriesMgmt.GetNextNo(TUESetup."Athlete Nos",WorkDate(),true);
-                      //  NoSeriesMgmt.InitSeries(TUESetup."Athlete Nos", xRec."No. Series", 0D, "No.", "No. Series");
+                        "No." := NoSeriesMgmt.GetNextNo(TUESetup."Athlete Nos", WorkDate(), true);
+                        //  NoSeriesMgmt.InitSeries(TUESetup."Athlete Nos", xRec."No. Series", 0D, "No.", "No. Series");
                         "Gen. Bus. Posting Group" := TUESetup."DefaultAthlete Gen.Bus. PGroup";
                         "Customer Posting Group" := TUESetup."Default Athlete Posting Group";
                         "VAT Bus. Posting Group" := TUESetup."Athlete VAT Posting group";
