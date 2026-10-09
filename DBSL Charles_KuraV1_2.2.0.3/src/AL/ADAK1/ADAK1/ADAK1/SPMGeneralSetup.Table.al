@@ -200,6 +200,22 @@ Table 80021 "SPM General Setup"
             TableRelation = "User Setup"."User ID";
         }
 
+        field(42; "360 Evaluation Nos."; Code[20])
+        {
+            Caption = '360 Evaluation Nos.';
+            DataClassification = ToBeClassified;
+            TableRelation = "No. Series";
+        }
+        field(43; "360 CEO Job Title Filter"; Text[100])
+        {
+            Caption = '360 CEO Job Title Filter';
+            DataClassification = ToBeClassified;
+        }
+        field(44; "360 Mgr Job Title Filter"; Text[100])
+        {
+            Caption = '360 Manager Job Title Filter';
+            DataClassification = ToBeClassified;
+        }
 
 
 
