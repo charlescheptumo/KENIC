@@ -43,6 +43,11 @@ Page 80030 "Strategic Initiatives"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Code field.';
                 }
+                field("Key Result Area"; Rec."Key Result Area")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Code field.';
+                }
                 field(Description; Rec.Description)
                 {
                     ApplicationArea = Basic;
