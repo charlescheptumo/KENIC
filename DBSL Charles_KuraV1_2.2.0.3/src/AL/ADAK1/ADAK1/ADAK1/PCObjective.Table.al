@@ -467,6 +467,22 @@ Table 80060 "PC Objective"
         {
 
         }
+        field(77; "Theme ID"; Code[50])
+        {
+
+        }
+        field(78; "Objective ID"; Code[50])
+        {
+
+        }
+        field(79; "Key Result Area"; Text[255])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = Strategy.Description where("Objective ID" = field("Objective ID"),
+                                                          "Theme ID" = field("Theme ID"),
+                                                          "Objective ID" = field("Objective ID"),
+                                                          "Strategic Plan ID" = field("Strategy Plan ID"));
+        }
     }
 
     keys

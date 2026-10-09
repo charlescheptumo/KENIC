@@ -22,6 +22,11 @@ Page 80406 "Directors Workplan Initiatives"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Initiative No. field.';
                 }
+                field("Key Result Area"; Rec."Key Result Area")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Key Result Area field.';
+                }
                 field("Objective/Initiative"; Rec."Objective/Initiative")
                 {
                     ApplicationArea = Basic;
