@@ -218,7 +218,7 @@ Table 80015 "Strategic Initiative"
 
     keys
     {
-        key(Key1; "Strategic Plan ID", "Theme ID", "Goal ID", "Objective ID", "Strategy ID", "Code", "Strategy Framework", "Primary Directorate")
+        key(Key1; "Strategic Plan ID", "Theme ID", "Goal ID", "Objective ID", "Strategy ID", "Code", "Strategy Framework", "Primary Directorate","Key Result Area")
         {
             Clustered = true;
         }
