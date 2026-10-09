@@ -1,3 +1,4 @@
+
 table 80302 "360 Closed Line"
 {
     Caption = '360 Closed Line';
@@ -13,11 +14,6 @@ table 80302 "360 Closed Line"
         field(2; "Line No."; Integer)
         {
             Caption = 'Line No.';
-        }
-        field(3; "Question Code"; Code[20])
-        {
-            Caption = 'Question Code';
-            TableRelation = "360 Question"."Code";
         }
         field(4; Question; Text[500])
         {

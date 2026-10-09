@@ -15,11 +15,6 @@ table 80303 "360 Open Line"
         {
             Caption = 'Line No.';
         }
-        field(3; "Question Code"; Code[20])
-        {
-            Caption = 'Question Code';
-            TableRelation = "360 Question"."Code";
-        }
         field(4; Question; Text[500])
         {
             Caption = 'Question';

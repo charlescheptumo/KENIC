@@ -42,11 +42,10 @@ page 58293 "360 Evaluation List"
                 trigger OnAction()
                 var
                     Header: Record "360 Evaluation Header";
-                    SetupMgt: Codeunit "360 Setup Mgt.";
                 begin
                     Header.Init();
                     Header.Insert(true);
-                    Header.Validate("Evaluatee Employee No.", SetupMgt.FindCEO());
+                    Header.Validate("Evaluatee Employee No.", Header.FindCEO());
                     Header.Modify(true);
                     Header.SuggestQuestions();
                     Page.Run(Page::"360 Evaluation Card", Header);
@@ -136,7 +135,7 @@ page 58293 "360 Evaluation List"
 
     trigger OnOpenPage()
     begin
-      
+
         Rec.FilterGroup(2);
         Rec.SetRange("Created By", UserId);
         Rec.FilterGroup(0);

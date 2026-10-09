@@ -5,10 +5,11 @@ table 58216 "360 Question"
 
     fields
     {
-        field(1; "Code"; Code[20])
+        field(1; "Entry No."; Integer)
         {
-            Caption = 'Code';
-            NotBlank = true;
+            Caption = 'Entry No.';
+            AutoIncrement = true;
+            Editable = false;
         }
         field(2; "Evaluatee Category"; Enum "360 Category")
         {
@@ -35,7 +36,7 @@ table 58216 "360 Question"
 
     keys
     {
-        key(PK; "Code")
+        key(PK; "Entry No.")
         {
             Clustered = true;
         }
@@ -44,5 +45,3 @@ table 58216 "360 Question"
         }
     }
 }
-
-

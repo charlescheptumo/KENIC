@@ -1,4 +1,3 @@
-
 table 80301 "360 Evaluation Header"
 {
     Caption = '360 Evaluation';
@@ -44,7 +43,7 @@ table 80301 "360 Evaluation Header"
             begin
                 if Employee.Get("Evaluatee Employee No.") then begin
                     "Evaluatee Name" := Employee.FullName();
-                    "Evaluatee Category" := SetupMgt.GetCategory("Evaluatee Employee No.");
+                    "Evaluatee Category" := GetCategory("Evaluatee Employee No.");
                 end else
                     "Evaluatee Name" := '';
                 UpdateSelfFlag();
@@ -172,7 +171,7 @@ table 80301 "360 Evaluation Header"
         Question: Record "360 Question";
         ClosedLine: Record "360 Closed Line";
         OpenLine: Record "360 Open Line";
-        LineNo: Integer;
+        Added: Integer;
     begin
         TestStatusOpen();
         TestField("Evaluatee Employee No.");
@@ -186,35 +185,96 @@ table 80301 "360 Evaluation Header"
         Question.SetRange(Active, true);
         Question.SetRange("Evaluatee Category", "Evaluatee Category");
 
-        // Closed (Likert) questions
         Question.SetRange("Question Type", Question."Question Type"::Closed);
-        if Question.FindSet() then begin
-            LineNo := 0;
+        if Question.FindSet() then
             repeat
-                LineNo += 10000;
-                ClosedLine.Init();
-                ClosedLine."Evaluation No." := "No.";
-                ClosedLine."Line No." := LineNo;
-                ClosedLine."Question Code" := Question."Code";
-                ClosedLine.Question := Question.Question;
-                ClosedLine.Insert();
+                AddClosed(Question.Question);
+                Added += 1;
             until Question.Next() = 0;
-        end;
 
-        // Open-ended questions
         Question.SetRange("Question Type", Question."Question Type"::Open);
-        if Question.FindSet() then begin
-            LineNo := 0;
+        if Question.FindSet() then
             repeat
-                LineNo += 10000;
-                OpenLine.Init();
-                OpenLine."Evaluation No." := "No.";
-                OpenLine."Line No." := LineNo;
-                OpenLine."Question Code" := Question."Code";
-                OpenLine.Question := Question.Question;
-                OpenLine.Insert();
+                AddOpen(Question.Question);
+                Added += 1;
             until Question.Next() = 0;
-        end;
+
+        if Added = 0 then
+            Error('No active questions are set up for %1. Add them first under 360 Questions.', "Evaluatee Category");
+    end;
+
+    local procedure AddClosed(QuestionText: Text[500])
+    var
+        ClosedLine: Record "360 Closed Line";
+        NextLineNo: Integer;
+    begin
+        ClosedLine.SetRange("Evaluation No.", "No.");
+        if ClosedLine.FindLast() then
+            NextLineNo := ClosedLine."Line No." + 10000
+        else
+            NextLineNo := 10000;
+
+        ClosedLine.Init();
+        ClosedLine."Evaluation No." := "No.";
+        ClosedLine."Line No." := NextLineNo;
+        ClosedLine.Question := QuestionText;
+        ClosedLine.Insert();
+    end;
+
+    local procedure AddOpen(QuestionText: Text[500])
+    var
+        OpenLine: Record "360 Open Line";
+        NextLineNo: Integer;
+    begin
+        OpenLine.SetRange("Evaluation No.", "No.");
+        if OpenLine.FindLast() then
+            NextLineNo := OpenLine."Line No." + 10000
+        else
+            NextLineNo := 10000;
+
+        OpenLine.Init();
+        OpenLine."Evaluation No." := "No.";
+        OpenLine."Line No." := NextLineNo;
+        OpenLine.Question := QuestionText;
+        OpenLine.Insert();
+    end;
+
+    // Role comes from the employee's Job Title, using the two filters in SPM General Setup.
+    // CEO is checked first, then Manager; everyone else is a Colleague.
+    procedure GetCategory(EmployeeNo: Code[50]): Enum "360 Category"
+    begin
+        if EmployeeNo = '' then
+            exit(Enum::"360 Category"::Colleague);
+        SPMSetup.Get();
+        if MatchesJobTitle(EmployeeNo, SPMSetup."360 CEO Job Title Filter") then
+            exit(Enum::"360 Category"::CEO);
+        if MatchesJobTitle(EmployeeNo, SPMSetup."360 Mgr Job Title Filter") then
+            exit(Enum::"360 Category"::Manager);
+        exit(Enum::"360 Category"::Colleague);
+    end;
+
+    procedure FindCEO(): Code[20]
+    var
+        Emp: Record Employee;
+    begin
+        SPMSetup.Get();
+        SPMSetup.TestField("360 CEO Job Title Filter");
+        Emp.SetRange(Status, Emp.Status::Active);
+        Emp.SetFilter("Job Title", SPMSetup."360 CEO Job Title Filter");
+        if not Emp.FindFirst() then
+            Error('No active employee has a job title matching %1. Check the 360 CEO Job Title Filter in SPM General Setup.', SPMSetup."360 CEO Job Title Filter");
+        exit(Emp."No.");
+    end;
+
+    local procedure MatchesJobTitle(EmployeeNo: Code[50]; TitleFilter: Text): Boolean
+    var
+        Emp: Record Employee;
+    begin
+        if TitleFilter = '' then
+            exit(false);
+        Emp.SetRange("No.", EmployeeNo);
+        Emp.SetFilter("Job Title", TitleFilter);
+        exit(not Emp.IsEmpty());
     end;
 
     procedure Submit()
@@ -259,7 +319,7 @@ table 80301 "360 Evaluation Header"
         if "Self Evaluation" then
             exit;
 
-        EvaluatorCategory := SetupMgt.GetCategory("Evaluator Employee No.");
+        EvaluatorCategory := GetCategory("Evaluator Employee No.");
         case "Evaluatee Category" of
             "Evaluatee Category"::Manager:
                 if EvaluatorCategory = EvaluatorCategory::CEO then
@@ -288,5 +348,4 @@ table 80301 "360 Evaluation Header"
         Employee: Record Employee;
         SPMSetup: Record "SPM General Setup";
         NoSeriesMgt: Codeunit "No. Series";
-        SetupMgt: Codeunit "360 Setup Mgt.";
 }
