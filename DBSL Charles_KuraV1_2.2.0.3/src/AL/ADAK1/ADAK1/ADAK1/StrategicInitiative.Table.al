@@ -205,6 +205,14 @@ Table 80015 "Strategic Initiative"
         {
             DataClassification = ToBeClassified;
         }
+        field(30; "Key Result Area"; Text[255])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = Strategy.Description where("Objective ID" = field("Objective ID"),
+                                                          "Theme ID" = field("Theme ID"),
+                                                          "Objective ID" = field("Objective ID"),
+                                                          "Strategic Plan ID" = field("Strategic Plan ID"));
+        }
 
     }
 
