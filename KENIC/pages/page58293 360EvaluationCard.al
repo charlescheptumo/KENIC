@@ -67,22 +67,22 @@ page 58296 "360 Evaluation Card"
     {
         area(processing)
         {
-            action("Suggest Questions")
-            {
-                ApplicationArea = All;
-                Image = Suggest;
-                Promoted = true;
-                PromotedCategory = Process;
-                ToolTip = 'Reloads the closed and open questions for the evaluatee category. Existing answers are replaced.';
+            // action("Suggest Questions")
+            // {
+            //     ApplicationArea = All;
+            //     Image = Suggest;
+            //     Promoted = true;
+            //     PromotedCategory = Process;
+            //     ToolTip = 'Reloads the closed and open questions for the evaluatee category. Existing answers are replaced.';
 
-                trigger OnAction()
-                begin
-                    if not Confirm('This will replace the current questions and any answers. Continue?', false) then
-                        exit;
-                    Rec.SuggestQuestions();
-                    CurrPage.Update(false);
-                end;
-            }
+            //     trigger OnAction()
+            //     begin
+            //         if not Confirm('This will replace the current questions and any answers. Continue?', false) then
+            //             exit;
+            //         Rec.SuggestQuestions();
+            //         CurrPage.Update(false);
+            //     end;
+            // }
             action(Submit)
             {
                 ApplicationArea = All;
