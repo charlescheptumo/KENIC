@@ -239,16 +239,16 @@ table 80301 "360 Evaluation Header"
         OpenLine.Insert();
     end;
 
-    // Role comes from the employee's Job Title, using the two filters in SPM General Setup.
-    // CEO is checked first, then Manager; everyone else is a Colleague.
+    // Role comes from the Employee card: CEO box = CEO, HOD (Manager) box = Manager, neither = Colleague.
     procedure GetCategory(EmployeeNo: Code[50]): Enum "360 Category"
+    var
+        Emp: Record Employee;
     begin
-        if EmployeeNo = '' then
+        if not Emp.Get(EmployeeNo) then
             exit(Enum::"360 Category"::Colleague);
-        SPMSetup.Get();
-        if MatchesJobTitle(EmployeeNo, SPMSetup."360 CEO Job Title Filter") then
+        if Emp.CEO then
             exit(Enum::"360 Category"::CEO);
-        if MatchesJobTitle(EmployeeNo, SPMSetup."360 Mgr Job Title Filter") then
+        if Emp.HOD then
             exit(Enum::"360 Category"::Manager);
         exit(Enum::"360 Category"::Colleague);
     end;
@@ -257,12 +257,10 @@ table 80301 "360 Evaluation Header"
     var
         Emp: Record Employee;
     begin
-        SPMSetup.Get();
-        SPMSetup.TestField("360 CEO Job Title Filter");
         Emp.SetRange(Status, Emp.Status::Active);
-        Emp.SetFilter("Job Title", SPMSetup."360 CEO Job Title Filter");
+        Emp.SetRange(CEO, true);
         if not Emp.FindFirst() then
-            Error('No active employee has a job title matching %1. Check the 360 CEO Job Title Filter in SPM General Setup.', SPMSetup."360 CEO Job Title Filter");
+            Error('No active employee is marked as CEO. Tick the CEO box on the CEO''s employee card.');
         exit(Emp."No.");
     end;
 
