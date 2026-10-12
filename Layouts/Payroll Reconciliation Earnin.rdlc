@@ -2857,24 +2857,6 @@ zTWHouPLjj2vv5C5sGRZ84uW2VZybGNTloMNGZVFNAl8YzQXpmo2jFIcFtyZiqAk+arzflFx7Tz+6FIG
         <Field Name="DifferenceFormat">
           <DataField>DifferenceFormat</DataField>
         </Field>
-        <Field Name="GrossPay">
-          <DataField>GrossPay</DataField>
-        </Field>
-        <Field Name="GrossPayFormat">
-          <DataField>GrossPayFormat</DataField>
-        </Field>
-        <Field Name="GrossPayLast">
-          <DataField>GrossPayLast</DataField>
-        </Field>
-        <Field Name="GrossPayLastFormat">
-          <DataField>GrossPayLastFormat</DataField>
-        </Field>
-        <Field Name="diffgross">
-          <DataField>diffgross</DataField>
-        </Field>
-        <Field Name="diffgrossFormat">
-          <DataField>diffgrossFormat</DataField>
-        </Field>
         <Field Name="ThisMonth">
           <DataField>ThisMonth</DataField>
         </Field>
