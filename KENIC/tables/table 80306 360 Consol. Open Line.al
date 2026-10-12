@@ -1,6 +1,8 @@
 table 80306 "360 Consol. Open Line"
 {
     Caption = '360 Consolidated Open Line';
+    DrillDownPageId = "360 Consol. Open Lines"; 
+    LookupPageId = "360 Consol. Open Lines";
     DataClassification = CustomerContent;
 
     fields

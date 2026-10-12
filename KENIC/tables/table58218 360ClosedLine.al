@@ -2,6 +2,8 @@
 table 80302 "360 Closed Line"
 {
     Caption = '360 Closed Line';
+    DrillDownPageId = "360 Closed Lines"; 
+    LookupPageId = "360 Closed Lines";
     DataClassification = CustomerContent;
 
     fields

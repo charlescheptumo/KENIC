@@ -20,6 +20,7 @@ page 58301 "360 Consolidated Result Card"
                 field("Year Reporting Code"; Rec."Year Reporting Code") { ApplicationArea = All; }
                 field("No. of Responses"; Rec."No. of Responses") { ApplicationArea = All; }
                 field("Self Responses"; Rec."Self Responses") { ApplicationArea = All; }
+                field("Written Responses"; Rec."Written Responses") { ApplicationArea = All; }
                 field("Overall Average"; Rec."Overall Average") { ApplicationArea = All; }
                 field("Self Average"; Rec."Self Average") { ApplicationArea = All; }
                 field("Last Consolidated On"; Rec."Last Consolidated On") { ApplicationArea = All; }

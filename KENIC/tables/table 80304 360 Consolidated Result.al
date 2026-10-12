@@ -1,8 +1,3 @@
-// =====================================================================
-// 360 CONSOLIDATION - NEW OBJECTS (same pattern as "Consolidate Annual Workplan")
-// Evaluation (one per evaluator)  --Consolidate button-->  Consolidated Result (one per evaluatee per year)
-// Adjust the object IDs to your free range.
-// =====================================================================
 
 table 80304 "360 Consolidated Result"
 {
@@ -64,6 +59,14 @@ table 80304 "360 Consolidated Result"
             Caption = 'Last Consolidated On';
             Editable = false;
         }
+        field(10; "Written Responses"; Integer)
+        {
+            Caption = 'Written Responses';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = count("360 Consol. Open Line" where("Evaluatee Employee No." = field("Evaluatee Employee No."),
+                                                      "Year Reporting Code" = field("Year Reporting Code")));
+        }
     }
 
     keys
@@ -87,65 +90,3 @@ table 80304 "360 Consolidated Result"
         ConsOpen.DeleteAll();
     end;
 }
-
-table 80305 "360 Consol. Closed Line"
-{
-    Caption = '360 Consolidated Closed Line';
-    DataClassification = CustomerContent;
-
-    fields
-    {
-        field(1; "Evaluatee Employee No."; Code[50])
-        {
-            Caption = 'Evaluatee Employee No.';
-        }
-        field(2; "Year Reporting Code"; Code[50])
-        {
-            Caption = 'Year Reporting Code';
-        }
-        field(3; "Line No."; Integer)
-        {
-            Caption = 'Line No.';
-        }
-        field(4; "Question Entry No."; Integer)
-        {
-            Caption = 'Question Entry No.';
-        }
-        field(5; "Question Text"; Text[500])
-        {
-            Caption = 'Question';
-        }
-        field(6; "Total Score"; Decimal)
-        {
-            Caption = 'Total Score';
-        }
-        field(7; "Response Count"; Integer)
-        {
-            Caption = 'Responses';
-        }
-        field(8; "Average Score"; Decimal)
-        {
-            Caption = 'Average Score (Others)';
-            DecimalPlaces = 0 : 2;
-        }
-        field(9; "Self Score"; Decimal)
-        {
-            Caption = 'Self Score';
-            DecimalPlaces = 0 : 2;
-        }
-    }
-
-    keys
-    {
-        key(PK; "Evaluatee Employee No.", "Year Reporting Code", "Line No.")
-        {
-            Clustered = true;
-        }
-        key(Question; "Evaluatee Employee No.", "Year Reporting Code", "Question Entry No.")
-        {
-        }
-    }
-}
-
-
-
