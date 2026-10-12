@@ -28,6 +28,11 @@ table 80304 "360 Consolidated Result"
         {
             Caption = 'No. of Responses';
             Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = count("360 Evaluation Header" where("Evaluatee Employee No." = field("Evaluatee Employee No."),
+                                                      "Year Reporting Code" = field("Year Reporting Code"),
+                                                      Consolidated = const(true),
+                                                      "Self Evaluation" = const(false)));
         }
         field(6; "Self Responses"; Integer)
         {

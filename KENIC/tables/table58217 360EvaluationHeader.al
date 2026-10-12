@@ -1,6 +1,7 @@
 table 80301 "360 Evaluation Header"
 {
     Caption = '360 Evaluation';
+    DrillDownPageId = "360 Respondents";
     DataClassification = CustomerContent;
 
     fields
@@ -213,7 +214,7 @@ table 80301 "360 Evaluation Header"
             Error('No active questions are set up for %1. Add them first under 360 Questions.', "Evaluatee Category");
     end;
 
-   local procedure AddClosed(QuestionText: Text[500]; QuestionEntryNo: Integer)
+    local procedure AddClosed(QuestionText: Text[500]; QuestionEntryNo: Integer)
     var
         ClosedLine: Record "360 Closed Line";
         NextLineNo: Integer;
@@ -233,7 +234,7 @@ table 80301 "360 Evaluation Header"
     end;
 
 
- local procedure AddOpen(QuestionText: Text[500]; QuestionEntryNo: Integer)
+    local procedure AddOpen(QuestionText: Text[500]; QuestionEntryNo: Integer)
     var
         OpenLine: Record "360 Open Line";
         NextLineNo: Integer;
@@ -251,7 +252,7 @@ table 80301 "360 Evaluation Header"
         OpenLine.Question := QuestionText;
         OpenLine.Insert();
     end;
- // Evaluator names are never copied, so the result stays anonymous.
+    // Evaluator names are never copied, so the result stays anonymous.
     procedure Consolidate()
     var
         Result: Record "360 Consolidated Result";
@@ -299,10 +300,12 @@ table 80301 "360 Evaluation Header"
                 InsertConsolOpenLine(OpenLine."Question Entry No.", OpenLine.Question, OpenLine.Response);
             until OpenLine.Next() = 0;
 
+        // if "Self Evaluation" then
+        //     Result."Self Responses" += 1
+        // else
+        //     Result."No. of Responses" += 1;
         if "Self Evaluation" then
-            Result."Self Responses" += 1
-        else
-            Result."No. of Responses" += 1;
+            Result."Self Responses" += 1;
         Result."Last Consolidated On" := Today;
         Result.Modify();
 
