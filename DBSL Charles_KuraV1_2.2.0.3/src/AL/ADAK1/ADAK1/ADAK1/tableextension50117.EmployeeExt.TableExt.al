@@ -2372,6 +2372,7 @@ TableExtension 50117 "Employee Ext" extends Employee
         }
         field(70011; HOD; Boolean)
         {
+            Caption = 'Manager';
         }
         field(70012; HR; Boolean)
         {
