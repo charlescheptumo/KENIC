@@ -118,6 +118,16 @@ table 80301 "360 Evaluation Header"
             FieldClass = FlowField;
             CalcFormula = average("360 Closed Line".Score where("Evaluation No." = field("No."), Score = filter(> 0)));
         }
+        field(16; Consolidated; Boolean)
+        {
+            Caption = 'Posted';
+            Editable = false;
+        }
+        field(17; "Consolidated On"; Date)
+        {
+            Caption = 'Posted On';
+            Editable = false;
+        }
     }
 
     keys
@@ -188,14 +198,14 @@ table 80301 "360 Evaluation Header"
         Question.SetRange("Question Type", Question."Question Type"::Closed);
         if Question.FindSet() then
             repeat
-                AddClosed(Question.Question);
+                AddClosed(Question.Question, Question."Entry No.");
                 Added += 1;
             until Question.Next() = 0;
 
         Question.SetRange("Question Type", Question."Question Type"::Open);
         if Question.FindSet() then
             repeat
-                AddOpen(Question.Question);
+                AddOpen(Question.Question, Question."Entry No.");
                 Added += 1;
             until Question.Next() = 0;
 
@@ -203,7 +213,7 @@ table 80301 "360 Evaluation Header"
             Error('No active questions are set up for %1. Add them first under 360 Questions.', "Evaluatee Category");
     end;
 
-    local procedure AddClosed(QuestionText: Text[500])
+   local procedure AddClosed(QuestionText: Text[500]; QuestionEntryNo: Integer)
     var
         ClosedLine: Record "360 Closed Line";
         NextLineNo: Integer;
@@ -217,11 +227,13 @@ table 80301 "360 Evaluation Header"
         ClosedLine.Init();
         ClosedLine."Evaluation No." := "No.";
         ClosedLine."Line No." := NextLineNo;
+        ClosedLine."Question Entry No." := QuestionEntryNo;
         ClosedLine.Question := QuestionText;
         ClosedLine.Insert();
     end;
 
-    local procedure AddOpen(QuestionText: Text[500])
+
+ local procedure AddOpen(QuestionText: Text[500]; QuestionEntryNo: Integer)
     var
         OpenLine: Record "360 Open Line";
         NextLineNo: Integer;
@@ -235,9 +247,123 @@ table 80301 "360 Evaluation Header"
         OpenLine.Init();
         OpenLine."Evaluation No." := "No.";
         OpenLine."Line No." := NextLineNo;
+        OpenLine."Question Entry No." := QuestionEntryNo;
         OpenLine.Question := QuestionText;
         OpenLine.Insert();
     end;
+ // Evaluator names are never copied, so the result stays anonymous.
+    procedure Consolidate()
+    var
+        Result: Record "360 Consolidated Result";
+        ClosedLine: Record "360 Closed Line";
+        OpenLine: Record "360 Open Line";
+        ConsClosed: Record "360 Consol. Closed Line";
+    begin
+        TestField(Status, Status::Submitted);
+        TestField("Evaluatee Employee No.");
+        TestField("Year Reporting Code");
+        if Consolidated then
+            Error('Evaluation %1 has already been consolidated.', "No.");
+
+        if not Result.Get("Evaluatee Employee No.", "Year Reporting Code") then begin
+            Result.Init();
+            Result."Evaluatee Employee No." := "Evaluatee Employee No.";
+            Result."Year Reporting Code" := "Year Reporting Code";
+            Result."Evaluatee Name" := "Evaluatee Name";
+            Result."Evaluatee Category" := "Evaluatee Category";
+            Result.Insert();
+        end;
+
+        // Closed questions: add the score to the question's total and recalculate the average
+        ClosedLine.SetRange("Evaluation No.", "No.");
+        if ClosedLine.FindSet() then
+            repeat
+                if ClosedLine."Question Entry No." = 0 then
+                    Error('This evaluation was created before consolidation was added, so its questions cannot be matched. Create a new evaluation instead.');
+                GetConsolClosedLine(ConsClosed, ClosedLine."Question Entry No.", ClosedLine.Question);
+                if "Self Evaluation" then
+                    ConsClosed."Self Score" := ClosedLine.Score
+                else begin
+                    ConsClosed."Total Score" += ClosedLine.Score;
+                    ConsClosed."Response Count" += 1;
+                    ConsClosed."Average Score" := Round(ConsClosed."Total Score" / ConsClosed."Response Count", 0.01);
+                end;
+                ConsClosed.Modify();
+            until ClosedLine.Next() = 0;
+
+        // Open questions: copy each written answer (no evaluator name)
+        OpenLine.SetRange("Evaluation No.", "No.");
+        OpenLine.SetFilter(Response, '<>%1', '');
+        if OpenLine.FindSet() then
+            repeat
+                InsertConsolOpenLine(OpenLine."Question Entry No.", OpenLine.Question, OpenLine.Response);
+            until OpenLine.Next() = 0;
+
+        if "Self Evaluation" then
+            Result."Self Responses" += 1
+        else
+            Result."No. of Responses" += 1;
+        Result."Last Consolidated On" := Today;
+        Result.Modify();
+
+        Consolidated := true;
+        "Consolidated On" := Today;
+        Modify();
+    end;
+
+    local procedure GetConsolClosedLine(var ConsClosed: Record "360 Consol. Closed Line"; QuestionEntryNo: Integer; QuestionText: Text[500])
+    var
+        LastLine: Record "360 Consol. Closed Line";
+        NextLineNo: Integer;
+    begin
+        ConsClosed.Reset();
+        ConsClosed.SetRange("Evaluatee Employee No.", "Evaluatee Employee No.");
+        ConsClosed.SetRange("Year Reporting Code", "Year Reporting Code");
+        ConsClosed.SetRange("Question Entry No.", QuestionEntryNo);
+        if ConsClosed.FindFirst() then
+            exit;
+
+        LastLine.SetRange("Evaluatee Employee No.", "Evaluatee Employee No.");
+        LastLine.SetRange("Year Reporting Code", "Year Reporting Code");
+        if LastLine.FindLast() then
+            NextLineNo := LastLine."Line No." + 10000
+        else
+            NextLineNo := 10000;
+
+        ConsClosed.Reset();
+        ConsClosed.Init();
+        ConsClosed."Evaluatee Employee No." := "Evaluatee Employee No.";
+        ConsClosed."Year Reporting Code" := "Year Reporting Code";
+        ConsClosed."Line No." := NextLineNo;
+        ConsClosed."Question Entry No." := QuestionEntryNo;
+        ConsClosed."Question Text" := QuestionText;
+        ConsClosed.Insert();
+    end;
+
+    local procedure InsertConsolOpenLine(QuestionEntryNo: Integer; QuestionText: Text[500]; ResponseText: Text[2048])
+    var
+        ConsOpen: Record "360 Consol. Open Line";
+        LastLine: Record "360 Consol. Open Line";
+        NextLineNo: Integer;
+    begin
+        LastLine.SetRange("Evaluatee Employee No.", "Evaluatee Employee No.");
+        LastLine.SetRange("Year Reporting Code", "Year Reporting Code");
+        if LastLine.FindLast() then
+            NextLineNo := LastLine."Line No." + 10000
+        else
+            NextLineNo := 10000;
+
+        ConsOpen.Init();
+        ConsOpen."Evaluatee Employee No." := "Evaluatee Employee No.";
+        ConsOpen."Year Reporting Code" := "Year Reporting Code";
+        ConsOpen."Line No." := NextLineNo;
+        ConsOpen."Question Entry No." := QuestionEntryNo;
+        ConsOpen."Question Text" := QuestionText;
+        ConsOpen."Response Text" := ResponseText;
+        ConsOpen."Self Response" := "Self Evaluation";
+        ConsOpen.Insert();
+    end;
+
 
     // Role comes from the Employee card: CEO box = CEO, HOD (Manager) box = Manager, neither = Colleague.
     procedure GetCategory(EmployeeNo: Code[50]): Enum "360 Category"

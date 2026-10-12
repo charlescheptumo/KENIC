@@ -15,6 +15,11 @@ table 80302 "360 Closed Line"
         {
             Caption = 'Line No.';
         }
+        field(3; "Question Entry No."; Integer)
+        {
+            Caption = 'Question Entry No.';
+            Editable = false;
+        }
         field(4; Question; Text[500])
         {
             Caption = 'Question';

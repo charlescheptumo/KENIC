@@ -15,6 +15,11 @@ table 80303 "360 Open Line"
         {
             Caption = 'Line No.';
         }
+        field(3; "Question Entry No."; Integer)
+        {
+            Caption = 'Question Entry No.';
+            Editable = false;
+        }
         field(4; Question; Text[500])
         {
             Caption = 'Question';

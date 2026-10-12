@@ -47,6 +47,8 @@ page 58296 "360 Evaluation Card"
                 }
                 field("Submitted On"; Rec."Submitted On") { ApplicationArea = All; }
                 field("Average Score"; Rec."Average Score") { ApplicationArea = All; }
+                 field(Consolidated; Rec.Consolidated) { ApplicationArea = All; }
+               // field("Consolidated On"; Rec."Consolidated On") { ApplicationArea = All; }
             }
             part(ClosedLines; "360 Closed Lines")
             {
@@ -101,6 +103,27 @@ page 58296 "360 Evaluation Card"
                     Message('Evaluation %1 has been submitted.', Rec."No.");
                 end;
             }
+
+            action(Consolidate)
+            {
+                ApplicationArea = All;
+                Caption = 'Post';
+                Image = PostBatch;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                ToolTip = 'Adds this submitted evaluation to the consolidated 360 result of the evaluatee for the year.';
+
+                trigger OnAction()
+                begin
+                    if not Confirm('Consolidate this evaluation into the 360 result of %1?', false, Rec."Evaluatee Name") then
+                        exit;
+                    Rec.Consolidate();
+                    CurrPage.Update(false);
+                    Message('Evaluation %1 has been consolidated successfully.', Rec."No.");
+                end;
+            }
+
         }
     }
 }

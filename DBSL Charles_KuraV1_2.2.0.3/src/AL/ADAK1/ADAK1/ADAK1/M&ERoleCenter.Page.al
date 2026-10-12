@@ -614,7 +614,7 @@ Page 59059 "M&E Role Center"
                 // }
             }
 
-                        group("PerformanceEvaluation360")
+            group("PerformanceEvaluation360")
             {
                 Caption = '360 Performance Evaluation';
 
@@ -625,6 +625,14 @@ Page 59059 "M&E Role Center"
                     RunObject = Page "360 Evaluation List";
                     ToolTip = 'Evaluate the CEO, managers and colleagues, or do a self-evaluation.';
                 }
+                action("360 Consolidated Results")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = '360 Consolidated Results';
+                    RunObject = Page "360 Consolidated Results";
+                    ToolTip = 'View the consolidated 360 results per employee: average per question, number of responses and anonymous comments.';
+                }
+
                 action("360 Questions")
                 {
                     ApplicationArea = Basic, Suite;
