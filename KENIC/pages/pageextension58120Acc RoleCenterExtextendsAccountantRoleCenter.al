@@ -2,6 +2,17 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
 {
     actions
     {
+        addbefore("Posted Sales Invoices")
+        {
+            action("Posted Receipts List")
+            {
+                ApplicationArea = All;
+                Caption = 'Posted Receipts';
+                ToolTip = 'View the list of posted receipts.';
+                Image = PostedReceipts;
+                RunObject = page "Posted Receipts List";
+            }
+        }
 
         addafter("Domain Customers")
         {
