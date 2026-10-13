@@ -208,6 +208,18 @@ Page 80036 "Strategy General Setup"
                     ToolTip = 'Specifies the value of the HOD Planning & Strategy field.';
 
                 }
+                field("360 Evaluation Nos"; Rec."360 Evaluation Nos.")
+                {
+                    ToolTip = 'Specifies the value od 360.';
+                }
+                field("360 CEO Job Title Filter"; Rec."360 CEO Job Title Filter")
+                {
+                      ToolTip = 'Specifies the value od 360.';
+                }
+                field("360 Mgr Job Title Filter"; Rec."360 Mgr Job Title Filter")
+                {
+                     ToolTip = 'Specifies the value od 360.';
+                }
             }
         }
     }

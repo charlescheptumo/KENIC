@@ -205,9 +205,32 @@ Table 80015 "Strategic Initiative"
         {
             DataClassification = ToBeClassified;
         }
+        // field(30; "Key Result Area"; Text[255])
+        // {
+        //     DataClassification = ToBeClassified;
+        //     TableRelation = Strategy.Description where("Objective ID" = field("Objective ID"),
+        //                                                   "Theme ID" = field("Theme ID"),
+        //                                                   "Objective ID" = field("Objective ID"),
+        //                                                   "Strategic Plan ID" = field("Strategic Plan ID"));
+        // }
+        field(30; "Key Result Area"; Text[255])
+        {
+            Caption = 'Key Result Area';
+            FieldClass = FlowField;
+            CalcFormula = lookup(Strategy.Description where("Strategic Plan ID" = field("Strategic Plan ID"),
+                                                    "Strategy ID" = field("Strategy ID")));
+            Editable = false;
+        }
 
     }
 
+    // keys
+    // {
+    //     key(Key1; "Strategic Plan ID", "Theme ID", "Goal ID", "Objective ID", "Strategy ID", "Code", "Strategy Framework", "Primary Directorate", "Key Result Area")
+    //     {
+    //         Clustered = true;
+    //     }
+    // }
     keys
     {
         key(Key1; "Strategic Plan ID", "Theme ID", "Goal ID", "Objective ID", "Strategy ID", "Code", "Strategy Framework", "Primary Directorate")

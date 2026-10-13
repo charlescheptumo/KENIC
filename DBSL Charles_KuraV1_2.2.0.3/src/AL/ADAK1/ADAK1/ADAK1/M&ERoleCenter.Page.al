@@ -613,6 +613,34 @@ Page 59059 "M&E Role Center"
 
                 // }
             }
+
+            group("PerformanceEvaluation360")
+            {
+                Caption = '360 Performance Evaluation';
+
+                action("360 Evaluations")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = '360 Evaluations';
+                    RunObject = Page "360 Evaluation List";
+                    ToolTip = 'Evaluate the CEO, managers and colleagues, or do a self-evaluation.';
+                }
+                action("360 Consolidated Results")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = '360 Consolidated Results';
+                    RunObject = Page "360 Consolidated Results";
+                    ToolTip = 'View the consolidated 360 results per employee: average per question, number of responses and anonymous comments.';
+                }
+
+                action("360 Questions")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = '360 Questions';
+                    RunObject = Page "360 Questions";
+                    ToolTip = 'Maintain the closed and open questions for the CEO, manager and colleague evaluations.';
+                }
+            }
             group("PerfomanceReporting")
             {
                 Caption = 'Perfomance Reporting';
