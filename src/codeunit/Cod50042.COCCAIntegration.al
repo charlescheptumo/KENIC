@@ -959,4 +959,340 @@ codeunit 50042 COCCAIntegration
             UpdatedCount += 1;
         end;
     end;
+
+    procedure PushDomainReceipt(ReceiptId: Integer): Text
+    var
+        DomainReceipt: Record "Domain Receipt";
+        PayloadObj: JsonObject;
+        PayloadTxt: Text;
+        ResponseTxt: Text;
+        ErrTxt: Text;
+        HttpStatus: Integer;
+    begin
+        if not DomainReceipt.Get(ReceiptId) then
+            Error('Domain receipt %1 was not found.', ReceiptId);
+
+        DomainReceipt.TestField(ReceiptDate);
+
+        BuildDomainReceiptPayload(DomainReceipt, PayloadObj);
+        PayloadObj.WriteTo(PayloadTxt);
+
+        SendDomainReceiptRequest(
+            PayloadTxt,
+            HttpStatus,
+            ResponseTxt,
+            ErrTxt);
+
+        // Parse JSON error bodies as well, including duplicate responses.
+        if ResponseTxt = '' then
+            Error(
+                'No response body was received for receipt %1. %2',
+                ReceiptId,
+                ErrTxt);
+
+        HandleDomainReceiptResponse(
+            ResponseTxt,
+            ReceiptId,
+            HttpStatus,
+            ErrTxt);
+
+        exit(ResponseTxt);
+    end;
+
+    local procedure BuildDomainReceiptPayload(
+        DomainReceipt: Record "Domain Receipt";
+        var PayloadObj: JsonObject)
+    begin
+        Clear(PayloadObj);
+
+        PayloadObj.Add('receiptId', DomainReceipt.ReceiptId);
+        PayloadObj.Add('roid', DomainReceipt.Roid);
+        PayloadObj.Add('ledgerId', DomainReceipt.LedgerId);
+
+        AddReceiptDateTime(
+            PayloadObj, 'receiptDate', DomainReceipt.ReceiptDate);
+
+        PayloadObj.Add('amount', DomainReceipt.Amount);
+        PayloadObj.Add('bankCode', DomainReceipt.BankCode);
+
+        AddReceiptDateTime(
+            PayloadObj, 'chequeDate', DomainReceipt.ChequeDate);
+
+        PayloadObj.Add('chequeNumber', DomainReceipt.ChequeNumber);
+        PayloadObj.Add('drawerName', DomainReceipt.DrawerName);
+        PayloadObj.Add('cash', DomainReceipt.Cash);
+        PayloadObj.Add('details', DomainReceipt.Details);
+        PayloadObj.Add('inWords', DomainReceipt.InWords);
+        PayloadObj.Add('vatWithheld', DomainReceipt.VatWithheld);
+
+        AddReceiptNullableText(
+            PayloadObj, 'vatCertNo', DomainReceipt.VatCertNo);
+
+        PayloadObj.Add('voided', DomainReceipt.Voided);
+
+        AddReceiptDateTime(
+            PayloadObj, 'voidDate', DomainReceipt.VoidDate);
+
+        PayloadObj.Add('smsTransId', DomainReceipt.SmsTransId);
+        PayloadObj.Add('mpesaTrxId', DomainReceipt.MpesaTrxId);
+        PayloadObj.Add('mpesa', DomainReceipt.Mpesa);
+        PayloadObj.Add('iPay', DomainReceipt.IPay);
+        PayloadObj.Add('mpesaApiId', DomainReceipt.MpesaApiId);
+        PayloadObj.Add('ncbaKes', DomainReceipt.NcbaKes);
+        PayloadObj.Add('imKes', DomainReceipt.ImKes);
+        PayloadObj.Add('imUsd', DomainReceipt.ImUsd);
+        PayloadObj.Add('posted', DomainReceipt.Posted);
+        PayloadObj.Add('postedBy', DomainReceipt."Posted By");
+
+        AddReceiptDate(
+            PayloadObj, 'postedDate', DomainReceipt."Posted Date");
+
+        AddReceiptTime(
+            PayloadObj, 'postedTime', DomainReceipt."Posted Time");
+
+        PayloadObj.Add(
+            'sourceReceiptNo', DomainReceipt."Source Receipt No.");
+
+        PayloadObj.Add(
+            'externalReceiptNo', DomainReceipt."External Receipt No.");
+
+        // "Entry No." and "IsManual Entry" are not in the API payload.
+    end;
+
+    local procedure AddReceiptNullableText(
+        var PayloadObj: JsonObject;
+        PropertyName: Text;
+        PropertyValue: Text)
+    var
+        JsonVal: JsonValue;
+    begin
+        if PropertyValue = '' then
+            JsonVal.SetValueToNull()
+        else
+            JsonVal.SetValue(PropertyValue);
+
+        PayloadObj.Add(PropertyName, JsonVal);
+    end;
+
+    local procedure AddReceiptDateTime(
+        var PayloadObj: JsonObject;
+        PropertyName: Text;
+        PropertyValue: DateTime)
+    var
+        JsonVal: JsonValue;
+    begin
+        if PropertyValue = 0DT then
+            JsonVal.SetValueToNull()
+        else
+            JsonVal.SetValue(PropertyValue);
+
+        PayloadObj.Add(PropertyName, JsonVal);
+    end;
+
+    local procedure AddReceiptDate(
+        var PayloadObj: JsonObject;
+        PropertyName: Text;
+        PropertyValue: Date)
+    var
+        JsonVal: JsonValue;
+    begin
+        if PropertyValue = 0D then
+            JsonVal.SetValueToNull()
+        else
+            JsonVal.SetValue(PropertyValue);
+
+        PayloadObj.Add(PropertyName, JsonVal);
+    end;
+
+    local procedure AddReceiptTime(
+        var PayloadObj: JsonObject;
+        PropertyName: Text;
+        PropertyValue: Time)
+    var
+        JsonVal: JsonValue;
+    begin
+        if PropertyValue = 0T then
+            JsonVal.SetValueToNull()
+        else
+            JsonVal.SetValue(
+                Format(PropertyValue, 0, '<Hours24,2>:<Minutes,2>:<Seconds,2>'));
+
+        PayloadObj.Add(PropertyName, JsonVal);
+    end;
+
+    local procedure SendDomainReceiptRequest(
+        PayloadTxt: Text;
+        var HttpStatus: Integer;
+        var ResponseTxt: Text;
+        var ErrTxt: Text)
+    var
+        Client: HttpClient;
+        Request: HttpRequestMessage;
+        Response: HttpResponseMessage;
+        Content: HttpContent;
+        ContentHeaders: HttpHeaders;
+    begin
+        Clear(ResponseTxt);
+        Clear(ErrTxt);
+        HttpStatus := 0;
+
+        Request.SetRequestUri(
+            'http://41.90.10.39:8099/api/Transactions/receipt/save');
+        Request.Method('POST');
+
+        Content.WriteFrom(PayloadTxt);
+        Content.GetHeaders(ContentHeaders);
+
+        if ContentHeaders.Contains('Content-Type') then
+            ContentHeaders.Remove('Content-Type');
+
+        ContentHeaders.Add('Content-Type', 'application/json');
+        Request.Content(Content);
+
+        if not Client.Send(Request, Response) then begin
+            ErrTxt :=
+                'HTTP send failed. Check connectivity and Allow HttpClient Requests.';
+            exit;
+        end;
+
+        HttpStatus := Response.HttpStatusCode();
+
+        if not Response.Content.ReadAs(ResponseTxt) then begin
+            ErrTxt := StrSubstNo(
+                'HTTP %1: Unable to read the response body.',
+                HttpStatus);
+            exit;
+        end;
+
+        if not Response.IsSuccessStatusCode() then
+            ErrTxt := StrSubstNo(
+                'HTTP %1: %2',
+                HttpStatus,
+                ResponseTxt);
+    end;
+
+    local procedure HandleDomainReceiptResponse(
+        ResponseTxt: Text;
+        LocalReceiptId: Integer;
+        HttpStatus: Integer;
+        ErrTxt: Text)
+    var
+        RootObj: JsonObject;
+        JsonTok: JsonToken;
+        JsonVal: JsonValue;
+        WarningArray: JsonArray;
+        WarningTok: JsonToken;
+        Success: Boolean;
+        ResultMessage: Text;
+        WarningText: Text;
+        ApiReceiptId: Integer;
+        ExistingReceiptId: Integer;
+    begin
+        if not RootObj.ReadFrom(ResponseTxt) then
+            Error(
+                'Invalid API response for receipt %1. HTTP %2.\Response: %3',
+                LocalReceiptId,
+                HttpStatus,
+                ResponseTxt);
+
+        if not RootObj.Get('success', JsonTok) then
+            Error('The API response does not contain "success".\%1', ResponseTxt);
+
+        if not JsonTok.IsValue() then
+            Error('Invalid "success" value.\%1', ResponseTxt);
+
+        JsonVal := JsonTok.AsValue();
+        if JsonVal.IsNull() then
+            Error('The API returned a null "success" value.\%1', ResponseTxt);
+
+        Success := JsonVal.AsBoolean();
+        ResultMessage := GetReceiptResponseText(RootObj, 'message');
+
+        if not Success then begin
+            if RootObj.Get('existingReceiptId', JsonTok) then
+                if JsonTok.IsValue() then
+                    if not JsonTok.AsValue().IsNull() then begin
+                        ExistingReceiptId := JsonTok.AsValue().AsInteger();
+
+                        Error(
+                            'Receipt %1 was not saved: %2\Existing API Receipt ID: %3.',
+                            LocalReceiptId,
+                            ResultMessage,
+                            ExistingReceiptId);
+                    end;
+
+            Error(
+                'Receipt %1 was not saved. HTTP %2.\%3',
+                LocalReceiptId,
+                HttpStatus,
+                ResultMessage);
+        end;
+
+        // A success flag must also have a successful HTTP status.
+        if (HttpStatus < 200) or (HttpStatus > 299) then
+            Error(
+                'The API returned success=true with an unsuccessful HTTP status.\%1',
+                ErrTxt);
+
+        if not RootObj.Get('receiptId', JsonTok) then
+            Error(
+                'The API returned success but no receiptId.\%1',
+                ResponseTxt);
+
+        if not JsonTok.IsValue() then
+            Error('Invalid API receiptId.\%1', ResponseTxt);
+
+        if JsonTok.AsValue().IsNull() then
+            Error('The API returned a null receiptId.\%1', ResponseTxt);
+
+        ApiReceiptId := JsonTok.AsValue().AsInteger();
+
+        if RootObj.Get('warnings', JsonTok) then
+            if JsonTok.IsArray() then begin
+                WarningArray := JsonTok.AsArray();
+
+                foreach WarningTok in WarningArray do
+                    if WarningTok.IsValue() then
+                        if not WarningTok.AsValue().IsNull() then begin
+                            if WarningText <> '' then
+                                WarningText += '\';
+
+                            WarningText += WarningTok.AsValue().AsText();
+                        end;
+            end;
+
+        if GuiAllowed then begin
+            if WarningText <> '' then
+                Message(
+                    'Receipt %1 sent successfully.\%2\API Receipt ID: %3.\Warnings:\%4',
+                    LocalReceiptId,
+                    ResultMessage,
+                    ApiReceiptId,
+                    WarningText)
+            else
+                Message(
+                    'Receipt %1 sent successfully.\%2\API Receipt ID: %3.',
+                    LocalReceiptId,
+                    ResultMessage,
+                    ApiReceiptId);
+        end;
+    end;
+
+    local procedure GetReceiptResponseText(
+        RootObj: JsonObject;
+        PropertyName: Text): Text
+    var
+        JsonTok: JsonToken;
+    begin
+        if not RootObj.Get(PropertyName, JsonTok) then
+            exit('');
+
+        if not JsonTok.IsValue() then
+            exit('');
+
+        if JsonTok.AsValue().IsNull() then
+            exit('');
+
+        exit(JsonTok.AsValue().AsText());
+    end;
 }

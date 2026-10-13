@@ -188,6 +188,25 @@ page 50356 "Domain Receipt List"
                     Page.Run(0, PostingLog);
                 end;
             }
+
+            action(SendToCoCCA)
+            {
+                ApplicationArea = All;
+                Caption = 'Push Receipt To COCCA';
+                Image = Send;
+                Promoted = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    CoCCA: Codeunit CoCCAIntegration;
+                    ResponseTxt: Text;
+                begin
+                    ResponseTxt := CoCCA.PushDomainReceipt(Rec.ReceiptId);
+                end;
+            }
+
+
         }
     }
 }
