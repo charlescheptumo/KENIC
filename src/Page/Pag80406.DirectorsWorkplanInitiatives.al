@@ -73,7 +73,6 @@ Page 80406 "Directors Workplan Initiatives"
                 field("Assigned Weight (%)"; Rec."Assigned Weight (%)")
                 {
                     ApplicationArea = Basic;
-                    Visible = true;
                     ToolTip = 'Specifies the value of the Assigned Weight (%) field.';
                     Visible = false;
                 }
