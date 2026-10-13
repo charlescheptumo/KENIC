@@ -477,11 +477,23 @@ Table 80060 "PC Objective"
         }
         field(79; "Key Result Area"; Text[255])
         {
+            Caption = 'Key Result Area';
+            FieldClass = FlowField;
+            CalcFormula = lookup(Strategy.Description where("Strategic Plan ID" = field("Strategic Plan ID"),
+                                                    "Strategy ID" = field("Strategy ID")));
+            Editable = false;
+        }
+        field(80; "Strategic Plan ID"; Code[50])
+        {
+
+        }
+        field(81; "Strategy ID"; Code[50])
+        {
             DataClassification = ToBeClassified;
-            TableRelation = Strategy.Description where("Objective ID" = field("Objective ID"),
+            TableRelation = Strategy."Strategy ID" where("Objective ID" = field("Objective ID"),
                                                           "Theme ID" = field("Theme ID"),
                                                           "Objective ID" = field("Objective ID"),
-                                                          "Strategic Plan ID" = field("Strategy Plan ID"));
+                                                          "Strategic Plan ID" = field("Strategic Plan ID"));
         }
     }
 
