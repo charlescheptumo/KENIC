@@ -163,6 +163,19 @@ Page 57067 "Receipt"
                     Editable = false;
                     ToolTip = 'Specifies the value of the Cashier field.';
                 }
+
+                field("Adjustment Receipt?"; Rec."Adjustment Receipt?")
+                {
+                    ApplicationArea = Basic;
+                    // Editable = false;
+                    ToolTip = 'Specifies the value of the Adjustment Receipt? field.';
+                }
+                field("Adjustment for"; Rec."Adjustment for")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Adjustment for field.';
+                }
+
                 field("Posted Date"; Rec."Posted Date")
                 {
                     ApplicationArea = Basic;
@@ -240,6 +253,38 @@ Page 57067 "Receipt"
                     CurrPage.SaveRecord;
                 end;
             }
+            // action(Post)
+            // {
+            //     ApplicationArea = Basic;
+            //     Image = Post;
+            //     Promoted = true;
+            //     PromotedCategory = New;
+            //     ToolTip = 'Executes the Post action.';
+
+            //     trigger OnAction()
+            //     begin
+            //         /*
+            //         usersetup.GET(USERID);
+            //         IF usersetup."Post Receipts"=FALSE THEN
+            //         ERROR(Text0001);
+            //         usersetup.RESET;
+            //         IF usersetup."User ID"=Cashier THEN
+            //          ERROR('You cannot create and post the receipt, Alternative Cashier should post');
+            //          */
+
+            //         Rec.TestField("Received From");
+            //         Rec.TestField("On Behalf Of");
+
+            //         if Rec."Receipt Status" = Rec."Receipt Status"::Released then
+            //             PaymentPost.PostReceipt(Rec);
+
+            //         //else
+            //         // error('Receipt Must Be Fully Released.');
+            //         CurrPage.Close;
+
+
+            //     end;
+            // }
             action(Post)
             {
                 ApplicationArea = Basic;
@@ -247,7 +292,7 @@ Page 57067 "Receipt"
                 Promoted = true;
                 PromotedCategory = New;
                 ToolTip = 'Executes the Post action.';
-
+ 
                 trigger OnAction()
                 begin
                     /*
@@ -258,18 +303,26 @@ Page 57067 "Receipt"
                     IF usersetup."User ID"=Cashier THEN
                      ERROR('You cannot create and post the receipt, Alternative Cashier should post');
                      */
-
+ 
                     Rec.TestField("Received From");
                     Rec.TestField("On Behalf Of");
-
-                    if Rec."Receipt Status" = Rec."Receipt Status"::Released then
+ 
+                    //if Rec."Receipt Status" = Rec."Receipt Status"::Released then
+                    if Rec."Adjustment Receipt?" = false then begin
+ 
                         PaymentPost.PostReceipt(Rec);
-
-                        //else
-                       // error('Receipt Must Be Fully Released.');
+ 
+                    end else begin
+ 
+                        PaymentPost.PostAdjustmentReceipt(Rec);
+                    end;
+                   
+ 
+                    //else
+                    // error('Receipt Must Be Fully Released.');
                     CurrPage.Close;
-
-
+ 
+ 
                 end;
             }
             action("&Print")

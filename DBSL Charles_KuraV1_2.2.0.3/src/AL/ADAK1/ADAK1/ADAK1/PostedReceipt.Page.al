@@ -148,6 +148,39 @@ Page 57075 "Posted Receipt"
                     Report.Run(56003, true, true, Rec);
                 end;
             }
+            action(AdjustTransaction)
+            {
+                ApplicationArea = Basic, Suite;
+                Caption = 'Adjust Receipt';
+                Ellipsis = true;
+                Image = ReverseRegister;
+                Scope = Repeater;
+                ToolTip = 'Adjust a posted manual receipt.';
+                enabled = false;
+ 
+                trigger OnAction()
+                var
+                    NewReceipt: Record "Receipts Header1";
+                begin
+                    if not Confirm('Do you want to create an adjustment receipt for Receipt %1?', false, Rec."No.")
+                    then
+                        exit;
+ 
+                    NewReceipt.Init();
+                    // Copy all fields from current receipt
+                    NewReceipt.TransferFields(Rec);
+                    // Let the No. Series assign a new number
+                    NewReceipt."No." := '';
+                    // Mark as adjustment
+                    NewReceipt."Adjustment Receipt?" := true;
+                    // Reference original receipt
+                    NewReceipt.Validate("Adjustment for", Rec."No.");
+                    // Insert new receipt
+                    NewReceipt.Insert(true);
+ 
+                    Message('Adjustment Receipt %1 has been created for Receipt %2.', NewReceipt."No.", Rec."No.");
+                end;
+            }
             action("&Navigate")
             {
                 ApplicationArea = Basic;
