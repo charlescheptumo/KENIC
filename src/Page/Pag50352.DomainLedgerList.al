@@ -273,6 +273,7 @@ page 50352 "Domain Ledger List"
                         DomainReceiptMgt.PostDomainAdjustment(Rec);
                         Rec.InvoiceCreated := true;
                         Rec.Modify();
+                        Commit();
                     end;
                     if Rec.TransType = 'Refund' then begin
                         if Rec.RefundForId = 0 then
