@@ -163,6 +163,11 @@ Page 57012 "Imprest Requisition"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the number of per diem days.';
                 }
+                field("PD Salary Adv. Memo No."; Rec."PD Salary Adv. Memo No.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the Salary Advance Memo created because the travel date is on or after the payroll pay date.';
+                }
                 field("PD Paid Early"; Rec."PD Paid Early")
                 {
                     ApplicationArea = Basic;
