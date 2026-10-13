@@ -263,7 +263,7 @@ page 50352 "Domain Ledger List"
                     PostedSalesInvHeader: Record "Sales Invoice Header";
                     PostedSalesCrMemoHeader: Record "Sales Cr.Memo Header";
                 begin
-                    if not (Rec.TransType in ['Registration', 'Renewal', 'AutoRenewal', 'Application', 'Restoration', 'Transfer', 'Refund', 'AccessFee']) then
+                    if not (Rec.TransType in ['Adjustment', 'Registration', 'Renewal', 'AutoRenewal', 'Application', 'Restoration', 'Transfer', 'Refund', 'AccessFee']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
 
                     if Rec.InvoiceCreated then

@@ -156,7 +156,7 @@ Page 57075 "Posted Receipt"
                 Image = ReverseRegister;
                 Scope = Repeater;
                 ToolTip = 'Adjust a posted manual receipt.';
-                enabled = false;
+                enabled = true;
  
                 trigger OnAction()
                 var
@@ -221,6 +221,8 @@ Page 57075 "Posted Receipt"
                 Image = ReverseRegister;
                 Scope = Repeater;
                 ToolTip = 'Reverse a posted general ledger entry.';
+                Enabled =false;
+
 
                 trigger OnAction()
                 var
