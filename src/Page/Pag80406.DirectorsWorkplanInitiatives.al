@@ -21,6 +21,7 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Initiative No. field.';
+                    Visible = false;
                 }
                 field("Key Result Area"; Rec."Key Result Area")
                 {
@@ -50,6 +51,7 @@ Page 80406 "Directors Workplan Initiatives"
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Unit of Measure field.';
+                    Visible = false;
                 }
                 field("Desired Perfomance Direction"; Rec."Desired Perfomance Direction")
                 {
@@ -60,6 +62,7 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Previous Annual Target Qty field.';
+                    Visible = false;
                 }
                 field("Imported Annual Target Qty"; Rec."Imported Annual Target Qty")
                 {
@@ -70,8 +73,8 @@ Page 80406 "Directors Workplan Initiatives"
                 field("Assigned Weight (%)"; Rec."Assigned Weight (%)")
                 {
                     ApplicationArea = Basic;
-                    Visible = true;
                     ToolTip = 'Specifies the value of the Assigned Weight (%) field.';
+                    Visible = false;
                 }
                 field("Start Date"; Rec."Start Date")
                 {
