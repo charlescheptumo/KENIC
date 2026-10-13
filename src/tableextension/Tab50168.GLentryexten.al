@@ -38,6 +38,14 @@ tableextension 50168 "G/L Entry Ext" extends "G/L Entry"
             ToolTip = 'Specifies the name of the bank associated with the paying bank account for this G/L entry.';
         }
 
+        field(50105; "Domain Name"; Text[100])
+        {
+            Caption = 'Domain Name';
+            ToolTip = 'Specifies the domain name associated with this G/L entry.';
+             FieldClass = FlowField;
+            CalcFormula = lookup("Domain Ledger Entry".DomainName where("Sales Invoice No." = field("Document No.")));
+        }
+
 
     }
 

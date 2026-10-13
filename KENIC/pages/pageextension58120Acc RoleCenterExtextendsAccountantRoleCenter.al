@@ -2,6 +2,17 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
 {
     actions
     {
+        addbefore("Posted Sales Invoices")
+        {
+            action("Posted Receipts List")
+            {
+                ApplicationArea = All;
+                Caption = 'Posted Receipts';
+                ToolTip = 'View the list of posted receipts.';
+                Image = PostedReceipts;
+                RunObject = page "Posted Receipts List";
+            }
+        }
 
         addafter("Domain Customers")
         {
@@ -106,6 +117,27 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
                     ToolTip = 'View domain account manager statistics breakdown.';
                     Image = List;
                     RunObject = page "Domain Acct Statistics List";
+                }
+            }
+            group("EFT Voucher")
+            {
+                Caption = 'EFT Vouchers';
+                // ToolTip = 'Manage .';
+                action("Posted EFT Vouchers")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Posted EFT Vouchers';
+                    ToolTip = 'View posted EFT Vouchers';
+                    Image = List;
+                    RunObject = page "Posted EFT Batches";
+                }
+                action("Batch EFT Vouchers")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Batch EFT Vouchers';
+                    ToolTip = 'View batch EFT Vouchers';
+                    Image = List;
+                    RunObject = page "Batch EFT Vouchers";
                 }
             }
 
