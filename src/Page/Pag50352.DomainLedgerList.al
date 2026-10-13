@@ -250,6 +250,7 @@ page 50352 "Domain Ledger List"
                     SalesInvoiceHeader: Record "Sales Invoice Header";
                     OrigLedgerEntry: Record "Domain Ledger Entry";
                     CorrectPostedSalesInvoice: Codeunit "Correct Posted Sales Invoice";
+                    DomainReceiptMgt: Codeunit "Payments-Post";
                     ItemNo: Code[20];
                     InvoiceNo: Code[20];
                     OriginalInvoiceNo: Code[20];
@@ -268,6 +269,11 @@ page 50352 "Domain Ledger List"
                     if Rec.InvoiceCreated then
                         Error('A document has already been created for this entry (%1).', Rec."Sales Invoice No.");
 
+                    if Rec.TransType = 'Adjustment' then begin
+                        DomainReceiptMgt.PostDomainAdjustment(Rec);
+                        Rec.InvoiceCreated := true;
+                        Rec.Modify();
+                    end;
                     if Rec.TransType = 'Refund' then begin
                         if Rec.RefundForId = 0 then
                             Error('Refund For ID is not set on this entry. Cannot create credit memo.');

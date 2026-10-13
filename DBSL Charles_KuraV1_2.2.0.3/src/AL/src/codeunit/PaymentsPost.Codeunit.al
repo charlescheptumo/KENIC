@@ -311,7 +311,94 @@ Codeunit 57000 "Payments-Post"
        
     end;
 
-    
+    procedure PostDomainAdjustment(ReceiptRec: Record "Domain Ledger Entry")
+    var
+        GenJnLine: Record "Gen. Journal Line";
+        LineNo: Integer;
+        GLEntry: Record "G/L Entry";
+        CMSetup: Record "Cash Management Setup";
+        BankAccountNo: Code[20];
+        DocNo: Code[20];
+    begin
+        if Confirm(Text017, false, ReceiptRec.Id) = true then begin
+ 
+            ReceiptRec.TestField(Created);
+            ReceiptRec.TestField(ClientRoid);
+ 
+            if ReceiptRec.Amount = 0 then
+                Error('Amount cannot be zero');
+ 
+            CMSetup.Get();
+            CMSetup.TestField("Receipt Template");
+            CMSetup.TestField("Receipt Batch Name");
+ 
+            // Determine bank account based on the receipt channel
+            BankAccountNo := '';
+ 
+            CMSetup.TestField(NCBA);
+                        BankAccountNo := CMSetup.NCBA;                    
+ 
+            if BankAccountNo = '' then
+                Error('Unable to determine the Bank Account for receipt %1. Please check the payment channel setup.', ReceiptRec.Id);
+ 
+            DocNo := Format(ReceiptRec.Id);
+ 
+            // Delete Lines Present on the General Journal Line
+            GenJnLine.Reset;
+            GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
+            GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
+            GenJnLine.DeleteAll;
+ 
+            Batch.Init;
+            Batch."Journal Template Name" := CMSetup."Receipt Template";
+            Batch.Name := CMSetup."Receipt Batch Name";
+            if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
+                Batch.Insert;
+ 
+            //Bank Entry
+            LineNo := LineNo + 10000;
+ 
+            GenJnLine.Init;
+            GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+            GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+            GenJnLine."Line No." := LineNo;
+            GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
+            GenJnLine."Account No." := BankAccountNo;
+            GenJnLine.Validate(GenJnLine."Account No.");
+            GenJnLine."Posting Date" := DT2Date(ReceiptRec.Created);
+            GenJnLine."Document No." := DocNo;
+            GenJnLine."External Document No." := FORMAT(ReceiptRec.DocumentNumber);
+            GenJnLine.Description := ReceiptRec.Description;
+            GenJnLine.Amount := -ReceiptRec.Amount;
+            GenJnLine.Validate(GenJnLine.Amount);
+ 
+            if GenJnLine.Amount <> 0 then
+                GenJnLine.Insert;
+ 
+            //Customer Entry (Roid is the Customer)
+            LineNo := LineNo + 10000;
+            GenJnLine.Init;
+            GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+            GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+            GenJnLine."Line No." := LineNo;
+            GenJnLine."Account Type" := GenJnLine."account type"::Customer;
+            GenJnLine."Account No." := ReceiptRec.ClientRoid;
+            GenJnLine.Validate(GenJnLine."Account No.");
+            GenJnLine."Posting Date" := DT2Date(ReceiptRec.Created);
+            GenJnLine."Document No." := DocNo;
+            GenJnLine."External Document No." := FORMAT(ReceiptRec.DocumentNumber);
+            GenJnLine.Description := ReceiptRec.Description;
+            GenJnLine.Amount := ReceiptRec.Amount;
+            GenJnLine.Validate(GenJnLine.Amount);
+ 
+            if GenJnLine.Amount <> 0 then
+                GenJnLine.Insert;
+ 
+            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+           
+        end;
+    end;
+ 
  
 local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts Header1")
     var
