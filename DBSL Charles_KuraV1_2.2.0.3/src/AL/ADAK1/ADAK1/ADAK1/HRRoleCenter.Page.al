@@ -2208,6 +2208,12 @@ page 60002 "HR Role Center"
                     Caption = 'Per Diem Warrants';
                     RunObject = page "Per Diem Requisitions";
                 }
+                action(PerDiemRequisitions)
+                {
+                    ApplicationArea = all;
+                    Caption = 'Per Diem Requisitions';
+                    RunObject = page "Per Diem Requisitions";
+                }
                 // action(TransferPerDiem)
                 // {
                 //     ApplicationArea = All;
