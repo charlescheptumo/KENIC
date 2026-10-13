@@ -475,11 +475,19 @@ Table 80060 "PC Objective"
         {
 
         }
+        // field(79; "Key Result Area"; Text[255])
+        // {
+        //     Caption = 'Key Result Area';
+        //     FieldClass = FlowField;
+        //     CalcFormula = lookup(Strategy.Description where("Strategic Plan ID" = field("Strategic Plan ID"),
+        //                                             "Strategy ID" = field("Strategy ID")));
+        //     Editable = false;
+        // }
         field(79; "Key Result Area"; Text[255])
         {
             Caption = 'Key Result Area';
             FieldClass = FlowField;
-            CalcFormula = lookup(Strategy.Description where("Strategic Plan ID" = field("Strategic Plan ID"),
+            CalcFormula = lookup(Strategy.Description where("Strategic Plan ID" = field("Strategy Plan ID"),
                                                     "Strategy ID" = field("Strategy ID")));
             Editable = false;
         }
@@ -487,13 +495,20 @@ Table 80060 "PC Objective"
         {
 
         }
+        // field(81; "Strategy ID"; Code[50])
+        // {
+        //     DataClassification = ToBeClassified;
+        //     TableRelation = Strategy."Strategy ID" where("Objective ID" = field("Objective ID"),
+        //                                                   "Theme ID" = field("Theme ID"),
+        //                                                   "Objective ID" = field("Objective ID"),
+        //                                                   "Strategic Plan ID" = field("Strategic Plan ID"));
+        // }
         field(81; "Strategy ID"; Code[50])
         {
             DataClassification = ToBeClassified;
-            TableRelation = Strategy."Strategy ID" where("Objective ID" = field("Objective ID"),
-                                                          "Theme ID" = field("Theme ID"),
-                                                          "Objective ID" = field("Objective ID"),
-                                                          "Strategic Plan ID" = field("Strategic Plan ID"));
+            TableRelation = Strategy."Strategy ID" where("Strategic Plan ID" = field("Strategy Plan ID"),
+                                                  "Theme ID" = field("Theme ID"),
+                                                  "Objective ID" = field("Objective ID"));
         }
     }
 
@@ -530,8 +545,12 @@ Table 80060 "PC Objective"
                     Rec."Start Date" := PerfomanceContractHeader."Start Date";
                 if Rec."Due Date" = 0D then
                     Rec."Due Date" := PerfomanceContractHeader."End Date";
+
             end;
         end;
+
+        if Rec."Strategic Plan ID" = '' then
+            Rec."Strategic Plan ID" := Rec."Strategy Plan ID";
     end;
 
     var
