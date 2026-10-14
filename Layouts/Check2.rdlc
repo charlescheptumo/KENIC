@@ -3290,6 +3290,21 @@ End Function</Code>
         <Field Name="LineNo_GenJnlLine">
           <DataField>LineNo_GenJnlLine</DataField>
         </Field>
+        <Field Name="DocumentNo_GenJnlLine">
+          <DataField>DocumentNo_GenJnlLine</DataField>
+        </Field>
+        <Field Name="Amount_GenJnlLine">
+          <DataField>Amount_GenJnlLine</DataField>
+        </Field>
+        <Field Name="Amount_GenJnlLineFormat">
+          <DataField>Amount_GenJnlLineFormat</DataField>
+        </Field>
+        <Field Name="AmountInWords_GenJnlLine">
+          <DataField>AmountInWords_GenJnlLine</DataField>
+        </Field>
+        <Field Name="VendorName">
+          <DataField>VendorName</DataField>
+        </Field>
         <Field Name="CheckToAddr1">
           <DataField>CheckToAddr1</DataField>
         </Field>
@@ -3298,6 +3313,36 @@ End Function</Code>
         </Field>
         <Field Name="CheckNoText">
           <DataField>CheckNoText</DataField>
+        </Field>
+        <Field Name="BankAccountNo">
+          <DataField>BankAccountNo</DataField>
+        </Field>
+        <Field Name="BankBranchNo">
+          <DataField>BankBranchNo</DataField>
+        </Field>
+        <Field Name="BankBranchName">
+          <DataField>BankBranchName</DataField>
+        </Field>
+        <Field Name="BankAccountNumber">
+          <DataField>BankAccountNumber</DataField>
+        </Field>
+        <Field Name="ChequeDate">
+          <DataField>ChequeDate</DataField>
+        </Field>
+        <Field Name="payee">
+          <DataField>payee</DataField>
+        </Field>
+        <Field Name="amount">
+          <DataField>amount</DataField>
+        </Field>
+        <Field Name="amountFormat">
+          <DataField>amountFormat</DataField>
+        </Field>
+        <Field Name="BankName">
+          <DataField>BankName</DataField>
+        </Field>
+        <Field Name="AccountName">
+          <DataField>AccountName</DataField>
         </Field>
         <Field Name="FirstPage">
           <DataField>FirstPage</DataField>
@@ -3349,6 +3394,9 @@ End Function</Code>
         </Field>
         <Field Name="DocNo">
           <DataField>DocNo</DataField>
+        </Field>
+        <Field Name="IsLastRec">
+          <DataField>IsLastRec</DataField>
         </Field>
         <Field Name="DocDate">
           <DataField>DocDate</DataField>
@@ -3454,6 +3502,27 @@ End Function</Code>
         </Field>
         <Field Name="VoidText">
           <DataField>VoidText</DataField>
+        </Field>
+        <Field Name="DateCheck">
+          <DataField>DateCheck</DataField>
+        </Field>
+        <Field Name="BankAccountNo_Print">
+          <DataField>BankAccountNo_Print</DataField>
+        </Field>
+        <Field Name="BankBranchNo_Print">
+          <DataField>BankBranchNo_Print</DataField>
+        </Field>
+        <Field Name="BankAccountNumber_Print">
+          <DataField>BankAccountNumber_Print</DataField>
+        </Field>
+        <Field Name="BankName_Print">
+          <DataField>BankName_Print</DataField>
+        </Field>
+        <Field Name="AccountName_Print">
+          <DataField>AccountName_Print</DataField>
+        </Field>
+        <Field Name="CheckNoText_Print">
+          <DataField>CheckNoText_Print</DataField>
         </Field>
       </Fields>
       <Query>

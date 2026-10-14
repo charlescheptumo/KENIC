@@ -198,80 +198,80 @@ page 90400 "PIP Card"
             separator(Action30)
             {
             }
-            action(Approvals)
-            {
-                ApplicationArea = Basic;
-                Image = Approval;
-                Promoted = true;
-                PromotedCategory = Category5;
+            // action(Approvals)
+            // {
+            //     ApplicationArea = Basic;
+            //     Image = Approval;
+            //     Promoted = true;
+            //     PromotedCategory = Category5;
 
-                trigger OnAction()
-                var
-                    ApprovalsMgt: Codeunit "Approvals Mgmt.";
-                begin
-                    ApprovalsMgt.OpenApprovalEntriesPage(Rec.RecordId);
-                end;
-            }
-            action("Send Approval Request")
-            {
-                ApplicationArea = Basic;
-                Image = SendApprovalRequest;
-                Promoted = true;
-                PromotedCategory = Category5;
+            //     trigger OnAction()
+            //     var
+            //         ApprovalsMgt: Codeunit "Approvals Mgmt.";
+            //     begin
+            //         ApprovalsMgt.OpenApprovalEntriesPage(Rec.RecordId);
+            //     end;
+            // }
+            // action("Send Approval Request")
+            // {
+            //     ApplicationArea = Basic;
+            //     Image = SendApprovalRequest;
+            //     Promoted = true;
+            //     PromotedCategory = Category5;
 
-                trigger OnAction()
-                var
-                    VarVariant: Variant;
-                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
-                begin
-                    Rec.TestField("Approval Status", Rec."Approval Status"::Open);
-                    Rec.ValidateBeforeSubmit();
+            //     trigger OnAction()
+            //     var
+            //         VarVariant: Variant;
+            //         CustomApprovals: Codeunit "Custom Approvals Codeunit";
+            //     begin
+            //         Rec.TestField("Approval Status", Rec."Approval Status"::Open);
+            //         Rec.ValidateBeforeSubmit();
 
-                    VarVariant := Rec;
-                    if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
-                        CustomApprovals.OnSendDocForApproval(VarVariant);
-                    CurrPage.Update(false);
-                end;
-            }
-            action("Cancel Approval Request")
-            {
-                ApplicationArea = Basic;
-                Image = CancelApprovalRequest;
-                Promoted = true;
-                PromotedCategory = Category5;
+            //         VarVariant := Rec;
+            //         if CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+            //             CustomApprovals.OnSendDocForApproval(VarVariant);
+            //         CurrPage.Update(false);
+            //     end;
+            // }
+            // action("Cancel Approval Request")
+            // {
+            //     ApplicationArea = Basic;
+            //     Image = CancelApprovalRequest;
+            //     Promoted = true;
+            //     PromotedCategory = Category5;
 
-                trigger OnAction()
-                var
-                    VarVariant: Variant;
-                    CustomApprovals: Codeunit "Custom Approvals Codeunit";
-                begin
-                    Rec.TestField("Approval Status", Rec."Approval Status"::"Pending Approval");
-                    VarVariant := Rec;
-                    CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
-                    CurrPage.Update(false);
-                end;
-            }
+            //     trigger OnAction()
+            //     var
+            //         VarVariant: Variant;
+            //         CustomApprovals: Codeunit "Custom Approvals Codeunit";
+            //     begin
+            //         Rec.TestField("Approval Status", Rec."Approval Status"::"Pending Approval");
+            //         VarVariant := Rec;
+            //         CustomApprovals.OnCancelDocApprovalRequest(VarVariant);
+            //         CurrPage.Update(false);
+            //     end;
+            // }
             separator(Action31)
             {
             }
-            action(Attachments)
-            {
-                ApplicationArea = All;
-                Caption = 'Upload Documents';
-                Image = Attach;
-                Promoted = true;
-                PromotedCategory = Category9;
+            // action(Attachments)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Upload Documents';
+            //     Image = Attach;
+            //     Promoted = true;
+            //     PromotedCategory = Category9;
 
-                trigger OnAction()
-                var
-                    DocumentAttachmentDetails: Page "Document Attachment Details";
-                    RecRef: RecordRef;
-                begin
-                    RecRef.GetTable(Rec);
-                    DocumentAttachmentDetails.OpenForRecRef(RecRef);
-                    DocumentAttachmentDetails.RunModal();
-                end;
-            }
+            //     trigger OnAction()
+            //     var
+            //         DocumentAttachmentDetails: Page "Document Attachment Details";
+            //         RecRef: RecordRef;
+            //     begin
+            //         RecRef.GetTable(Rec);
+            //         DocumentAttachmentDetails.OpenForRecRef(RecRef);
+            //         DocumentAttachmentDetails.RunModal();
+            //     end;
+            // }
         }
     }
 
