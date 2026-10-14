@@ -274,8 +274,8 @@ Page 80081 "Functional/Operational PC"
                             PcLines."Objective/Initiative" := StrategyObjLines.Description;
                             PcLines."Year Reporting Code" := Rec."Annual Reporting Code";
                             PcLines."Initiative Type" := PcLines."initiative type"::Activity;
-                           // PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
-                           // PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
+                            // PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
+                            // PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
                             PcLines."Primary Department" := StrategyObjLines."Primary Department";
                             PcLines."Primary Department Name" := StrategyObjLines."Primary Department Name";
                             PcLines."Outcome Perfomance Indicator" := StrategyObjLines."Perfomance Indicator";
@@ -293,6 +293,15 @@ Page 80081 "Functional/Operational PC"
                             PcLines."Q4 Target Qty" := StrategyObjLines."Q4 Target";
                             PcLines."Strategy Framework" := StrategyObjLines."Strategy Framework";
                             PcLines."Framework Perspective" := StrategyObjLines."Framework Perspective";
+                            PcLines."Objective ID" := StrategyObjLines."Objective ID";
+
+                            StrategicInit.Reset();
+                            StrategicInit.SetRange(Code, StrategyObjLines."Activity ID");
+                            if StrategicInit.FindFirst() then begin
+                                PcLines."Theme ID" := StrategicInit."Theme ID";
+                                PcLines."Strategy ID" := StrategicInit."Strategy ID";
+                            end;
+
                             PcLines.Insert(true);
                             //
                             // SubWorkplanActivity.Reset;
@@ -349,8 +358,8 @@ Page 80081 "Functional/Operational PC"
                             PcLines."Initiative Type" := PcLines."initiative type"::Board;
                             PcLines."Start Date" := Rec."Start Date";
                             PcLines."Due Date" := Rec."End Date";
-                           // PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
-                           // PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
+                            // PcLines."Primary Directorate" := StrategyObjLines."Primary Directorate";
+                            // PcLines."Primary Directorate Name" := StrategyObjLines."Primary Directorate Name";
                             //PcLines."Primary Directorate":=StrategyObjLines."Primary Directorate";
                             // PcLines."Primary Department":=StrategyObjLines."Primary Department";
                             PcLines."Imported Annual Target Qty" := BoardActivities.Target;
@@ -712,6 +721,7 @@ Page 80081 "Functional/Operational PC"
     end;
 
     var
+        StrategicInit: Record "Strategic Initiative";
         GoalTemplateLine: Record "Goal Template Line";
         workplangoalhub: Record "PC Goal Hub";
         StrategyObjLines: Record "Strategy Workplan Lines";

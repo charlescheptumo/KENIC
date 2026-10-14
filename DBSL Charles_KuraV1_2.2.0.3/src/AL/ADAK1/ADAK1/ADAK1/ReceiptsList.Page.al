@@ -7,7 +7,7 @@ Page 57065 "Receipts List"
     Editable = false;
     PageType = List;
     SourceTable = "Receipts Header1";
-    SourceTableView = where(Posted = const(false),"Direct Income Voucher"=const(false));
+    SourceTableView = where(Posted = const(false), "Direct Income Voucher" = const(false));
     UsageCategory = Lists;
 
     layout
@@ -45,6 +45,16 @@ Page 57065 "Receipts List"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Cheque Date field.';
+                }
+                field("Adjustment Receipt?"; Rec."Adjustment Receipt?")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Adjustment Receipt? field.';
+                }
+                field("Adjustment for"; Rec."Adjustment for")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Adjustment for field.';
                 }
                 field("Responsibility Center"; Rec."Responsibility Center")
                 {
@@ -134,7 +144,7 @@ Page 57065 "Receipts List"
                 field("Receipt Status"; Rec."Receipt Status")
                 {
                     ToolTip = 'Specifies the value of the Receipt Status field.', Comment = '%';
-                } 
+                }
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = Basic;

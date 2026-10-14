@@ -148,6 +148,64 @@ Page 57075 "Posted Receipt"
                     Report.Run(56003, true, true, Rec);
                 end;
             }
+          action(AdjustTransaction)
+            {
+                ApplicationArea = Basic, Suite;
+                Caption = 'Adjust Receipt';
+                Ellipsis = true;
+                Image = ReverseRegister;
+                Scope = Repeater;
+                ToolTip = 'Adjust a posted manual receipt.';
+                enabled = True;
+ 
+                trigger OnAction()
+                var
+                    NewReceipt: Record "Receipts Header1";
+                    ReceiptLine: Record "Receipt Lines1";
+                    NewReceiptLine: Record "Receipt Lines1";
+                begin
+                    if not Confirm(
+                        'Do you want to create an adjustment receipt for Receipt %1?',
+                        false,
+                        Rec."No.")
+                    then
+                        exit;
+ 
+                    // Create Header
+                    NewReceipt.Init();
+                    NewReceipt.TransferFields(Rec);
+ 
+                    NewReceipt."No." := '';
+                    NewReceipt."Adjustment Receipt?" := true;
+                    NewReceipt.Posted := false;
+                    NewReceipt."Posted By" := '';
+                    NewReceipt."Posted Date" := 0D;
+                    NewReceipt."Posted Time" := 0T;
+ 
+                    NewReceipt.Validate("Adjustment for", Rec."No.");
+ 
+                    NewReceipt.Insert(true);
+ 
+                    // Copy Lines
+                    ReceiptLine.SetRange("Receipt No.", Rec."No.");
+                    if ReceiptLine.FindSet() then
+                        repeat
+                            NewReceiptLine.Init();
+                            NewReceiptLine.TransferFields(ReceiptLine);
+ 
+                            // Point to new receipt
+                            NewReceiptLine.Validate("Receipt No.", NewReceipt."No.");
+ 
+                            // If line no. is auto-generated clear it
+                            // NewReceiptLine."Line No." := 0;
+ 
+                            NewReceiptLine.Insert(true);
+                        until ReceiptLine.Next() = 0;
+ 
+                    Message('Adjustment Receipt %1 has been created for Receipt %2.', NewReceipt."No.", Rec."No.");
+                end;
+            }
+
             action("&Navigate")
             {
                 ApplicationArea = Basic;
@@ -188,6 +246,8 @@ Page 57075 "Posted Receipt"
                 Image = ReverseRegister;
                 Scope = Repeater;
                 ToolTip = 'Reverse a posted general ledger entry.';
+                Enabled =false;
+
 
                 trigger OnAction()
                 var

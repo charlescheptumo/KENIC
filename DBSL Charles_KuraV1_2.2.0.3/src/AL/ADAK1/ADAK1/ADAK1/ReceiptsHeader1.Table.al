@@ -349,6 +349,15 @@ Table 56007 "Receipts Header1"
             DataClassification = ToBeClassified;
             Editable = false;
         }
+         field(501; "Adjustment Receipt?"; Boolean)
+        {
+ 
+        }
+        field(502; "Adjustment for"; Code[50])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = "Receipts Header1"."No." where(Posted = const(true));
+        }
     }
 
     keys

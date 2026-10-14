@@ -24,7 +24,7 @@ Page 80054 "Workplan Initiatives"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Initiative No. field.';
                 }
-                field("Activity Description";Rec."Activity Description")
+                field("Activity Description"; Rec."Activity Description")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of Activity Description';
@@ -48,6 +48,12 @@ Page 80054 "Workplan Initiatives"
                     ToolTip = 'Specifies the value of the Objective/Initiative field.';
                     Visible = true;
                 }
+                field("Key Result Area"; Rec."Key Result Area")
+                {
+                    ApplicationArea = Basic;
+                    Editable = false;
+                    ToolTip = 'Specifies the Key Result Area (Strategy description) for this initiative.';
+                }
                 field("Departmental Objective"; Rec."Departmental Objective")
                 {
                     ApplicationArea = Basic;
@@ -67,11 +73,11 @@ Page 80054 "Workplan Initiatives"
                     ToolTip = 'Specifies the value of the Key Performance Indicator field.';
                     Visible = false;
                 }
-                field(Outcome;Rec.Outcome)
+                field(Outcome; Rec.Outcome)
                 {
-                 ApplicationArea = Basic;
-                 Editable = false;
-                 Visible = false;
+                    ApplicationArea = Basic;
+                    Editable = false;
+                    Visible = false;
                 }
                 field("Unit of Measure"; Rec."Unit of Measure")
                 {
@@ -138,9 +144,9 @@ Page 80054 "Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Department ID field.';
-                    
+
                 }
-                field(YearReportingCode;Rec."Year Reporting Code")
+                field(YearReportingCode; Rec."Year Reporting Code")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Reporting Year';
@@ -176,7 +182,7 @@ Page 80054 "Workplan Initiatives"
                     ToolTip = 'Specifies the value of the Framework Perspective field.';
                     Visible = false;
                 }
-                field("Individual Achieved Targets";Rec."Individual Achieved Targets")
+                field("Individual Achieved Targets"; Rec."Individual Achieved Targets")
                 {
                     ApplicationArea = Basic;
                 }

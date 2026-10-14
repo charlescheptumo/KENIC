@@ -696,6 +696,9 @@ Page 57042 "Imprest Memo-p"
                                         // Imprestlines.Purpose := SafariMembers."Work Type";
                                         Imprestlines.Purpose := Memoheaders.Subject;
                                         Imprestlines."Daily Rate" := SafariMembers."Direct Unit Cost";
+                                        // Accommodation: keep the reduced daily rate so any later recalculation (rate x days) keeps the 40%.
+                                        if SafariMembers."Accommodation Provided" and (SafariMembers."Time Period" <> 0) then
+                                            Imprestlines."Daily Rate" := Round(SafariMembers.Entitlement / SafariMembers."Time Period", 0.01);
                                         Imprestlines."No. of Days" := SafariMembers."Time Period";
                                         Imprestlines.Amount := SafariMembers.Entitlement;
                                         Imprestlines."Job No." := SafariMembers.Job;

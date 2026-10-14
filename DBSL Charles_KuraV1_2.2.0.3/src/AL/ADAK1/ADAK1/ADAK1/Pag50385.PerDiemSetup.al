@@ -25,6 +25,11 @@ page 50650 "Per Diem Setup"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the percentage of the imprest amount paid when accommodation is provided.';
                 }
+                field("PD Tax %"; Rec."PD Tax %")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the tax rate charged on the part of the per diem above the daily tax-free limit, for example 30.';
+                }
             }
             group(Staff)
             {
@@ -32,17 +37,18 @@ page 50650 "Per Diem Setup"
                 field("PD Non-Taxable Earning"; Rec."PD Non-Taxable Earning")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the earning code used for the non-taxable part of the per diem.';
+                    Caption = 'Staff Per Diem Earning';
+                    ToolTip = 'Specifies the non-taxable earning code that carries the full per diem amount.';
                 }
-                field("PD Taxable Earning"; Rec."PD Taxable Earning")
+                field("PD Tax Deduction"; Rec."PD Tax Deduction")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the earning code used for the taxable excess of the per diem.';
+                    ToolTip = 'Specifies the deduction code for the tax on the per diem above the daily tax-free limit (for example PD-ADV).';
                 }
                 field("PD Advance Deduction"; Rec."PD Advance Deduction")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the deduction code used to recover per diems already paid outside payroll.';
+                    ToolTip = 'Specifies the deduction code used to recover per diems already paid by the bank before the pay date (for example PD-REC).';
                 }
             }
             group(Board)

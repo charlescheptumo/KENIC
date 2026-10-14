@@ -17,6 +17,11 @@ Page 80408 "Staff Workplan Initiatives"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Initiative Type field.';
                 }
+                field("Key Result area"; Rec."Key Result Area")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Key Result Area field.';
+                }
                 field("Initiative No."; Rec."Initiative No.")
                 {
                     ApplicationArea = Basic;

@@ -227,6 +227,15 @@ Table 57000 "payments"
             Editable = false;
             OptionCaption = 'Open,Pending Approval,Pending Prepayment,Released,Rejected,,Closed';
             OptionMembers = Open,"Pending Approval","Pending Prepayment",Released,Rejected,,Closed;
+
+            trigger OnValidate()
+            var
+                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+            begin
+                // Per diem travelling on or after the pay date: create the Salary Advance Memo on approval.
+                if (Status = Status::Released) and "Per Diem through Payroll" then
+                    PerDiemMgt.OnPerDiemReleased(Rec);
+            end;
         }
         field(20; "Payment Type"; Option)
         {
@@ -1818,8 +1827,8 @@ Table 57000 "payments"
         {
             // TableRelation = "Cash Management Setup"."Salary Advance Memo No";
             // TableRelation = "General Correspondence Header"."Document No" where(Status = const(Approved));
-            TableRelation = "General Correspondence Header"."Document No" where("Sender No" = field("Account No."));
-
+            //   TableRelation = "General Correspondence Header"."Document No" where("Sender No" = field("Account No."));
+            TableRelation = "Payments"."No." where("Payment Type" = const(Imprest), Posted = const(false), Status = const(Released));
             // trigger OnValidate()
             // var
             //     Payments1: Record Payments;
@@ -1988,6 +1997,12 @@ Table 57000 "payments"
         field(70205; "PD Commitment Reversed"; Boolean)
         {
             Caption = 'Per Diem Commitment Reversed';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(70206; "PD Salary Adv. Memo No."; Code[20])
+        {
+            Caption = 'Per Diem Salary Advance Memo No.';
             DataClassification = CustomerContent;
             Editable = false;
         }

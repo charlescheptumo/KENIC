@@ -521,6 +521,23 @@ Page 57015 "Approved Imprest Requisition"
                         CurrPage.Close;
                     end;
                 }
+                action(CreatePerDiemSalaryAdvanceMemo)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Create Salary Advance Memo';
+                    Image = CreateDocument;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    ToolTip = 'Creates a Salary Advance Memo for a per diem whose travel date is on or after the payroll pay date.';
+
+                    trigger OnAction()
+                    var
+                        PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+                    begin
+                        PerDiemMgt.CreateSalaryAdvanceMemoManually(Rec);
+                        CurrPage.Update(false);
+                    end;
+                }
                 action(MarkDocumentPosted)
                 {
                     ApplicationArea = Basic;

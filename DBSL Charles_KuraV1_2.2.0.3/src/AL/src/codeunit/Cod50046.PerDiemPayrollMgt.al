@@ -10,13 +10,20 @@ codeunit 50650 "Per Diem Payroll Mgt."
         PerDiemSetup: Record "Per Diem Setup";
         SetupRead: Boolean;
         InPayrollErr: Label 'Imprest %1 has already been paid through payroll period %2 and cannot be posted.', Comment = '%1 = imprest no., %2 = period';
-        TravelAfterPayDateErr: Label 'The travel date %1 of imprest %2 is on or after the pay date %3. It will be paid through payroll and cannot be posted.', Comment = '%1 = travel date, %2 = imprest no., %3 = pay date';
+        TravelAfterPayDateErr: Label 'The travel date %1 of imprest %2 is on or after the pay date %3. It is paid through a Salary Advance and cannot be posted here.', Comment = '%1 = travel date, %2 = imprest no., %3 = pay date';
         NoOpenPeriodErr: Label 'There is no open payroll period.';
         PayDateMissingErr: Label 'Pay Date must be filled in on payroll period %1.', Comment = '%1 = period';
         PostConfirmQst: Label 'Post per diem imprest %1 as an early payment?', Comment = '%1 = imprest no.';
         PerDiemSurrenderErr: Label 'Imprest %1 is paid through payroll and cannot be surrendered.', Comment = '%1 = imprest no.';
         NoRateErr: Label 'No resource cost is set up for work type %1.', Comment = '%1 = work type';
         NotDirectorAppErr: Label 'Per diem application %1 does not belong to board member %2.', Comment = '%1 = application no., %2 = director no.';
+        NotStaffPerDiemErr: Label 'Imprest %1 is not a staff per diem paid through payroll.', Comment = '%1 = imprest no.';
+        SAMemoExistsErr: Label 'Salary Advance Memo %2 has already been created for imprest %1.', Comment = '%1 = imprest no., %2 = memo no.';
+        AlreadyPaidErr: Label 'Imprest %1 has already been paid and does not need a salary advance.', Comment = '%1 = imprest no.';
+        TravelBeforePayDateErr: Label 'The travel date %1 of imprest %2 is before the pay date %3. Post it as an early payment instead of a salary advance.', Comment = '%1 = travel date, %2 = imprest no., %3 = pay date';
+        TravelInLaterMonthErr: Label 'The travel date %1 of imprest %2 falls in a later payroll month. Create the Salary Advance Memo when that month''s payroll period is open.', Comment = '%1 = travel date, %2 = imprest no.';
+        SAMemoCreatedMsg: Label 'Salary Advance Memo %1 has been created for imprest %2. HR can now create the Salary Advance from it.', Comment = '%1 = memo no., %2 = imprest no.';
+        SAMemoPurposeTxt: Label 'Per diem %1 %2', Locked = true;
 
     procedure GetSetup()
     begin
@@ -205,19 +212,24 @@ codeunit 50650 "Per Diem Payroll Mgt."
         Imprest: Record payments;
         TempImprest: Record payments temporary;
         AssignmentMatrix: Record "Assignment Matrix-X";
-        NonTaxableAmount: Decimal;
-        TaxableAmount: Decimal;
+        PayrollPeriod: Record "Payroll PeriodX";
+        TaxAmount: Decimal;
     begin
         GetSetup();
-        if (PerDiemSetup."PD Non-Taxable Earning" = '') or (PerDiemSetup."PD Taxable Earning" = '') or (PerDiemSetup."PD Advance Deduction" = '') then
+        if (PerDiemSetup."PD Non-Taxable Earning" = '') or (PerDiemSetup."PD Tax Deduction" = '') then
             exit;
         if not Employee.Get(EmployeeNo) then
             exit;
 
+        // Remove the per diem lines of an earlier run of this period, so a re-run never duplicates.
         AssignmentMatrix.Reset();
         AssignmentMatrix.SetRange("Employee No", EmployeeNo);
         AssignmentMatrix.SetRange("Payroll Period", PeriodStart);
-        AssignmentMatrix.SetFilter(Code, '%1|%2|%3', PerDiemSetup."PD Non-Taxable Earning", PerDiemSetup."PD Taxable Earning", PerDiemSetup."PD Advance Deduction");
+        AssignmentMatrix.SetFilter(Code, '%1|%2|%3|%4',
+            PerDiemSetup."PD Non-Taxable Earning",
+            CodeOrDefault(PerDiemSetup."PD Taxable Earning"),
+            PerDiemSetup."PD Tax Deduction",
+            CodeOrDefault(PerDiemSetup."PD Advance Deduction"));
         AssignmentMatrix.SetFilter("Reference No", '<>%1', '');
         AssignmentMatrix.DeleteAll();
 
@@ -229,6 +241,18 @@ codeunit 50650 "Per Diem Payroll Mgt."
         Imprest.SetRange(Status, Imprest.Status::Released);
         Imprest.SetRange("Archive Document", false);
         Imprest.SetFilter("PD Payroll Period", '%1|%2', 0D, PeriodStart);
+        if Imprest.IsEmpty() then
+            exit;
+
+        if not PayrollPeriod.Get(PeriodStart) then
+            exit;
+        if PayrollPeriod."Pay Date" = 0D then
+            Error(PayDateMissingErr, PeriodStart);
+
+        // Travel on or after the pay date is paid by salary advance and belongs to a later payroll.
+        ReleaseLaterTravel(Imprest, PeriodStart, PayrollPeriod."Pay Date");
+        Imprest.SetFilter("Travel Date", '..%1', PayrollPeriod."Pay Date" - 1);
+
         if Imprest.FindSet() then
             repeat
                 TempImprest := Imprest;
@@ -240,16 +264,163 @@ codeunit 50650 "Per Diem Payroll Mgt."
                 Imprest.Get(TempImprest."No.");
                 Imprest.CalcFields("Imprest Amount");
                 if Imprest."Imprest Amount" > 0 then begin
-                    SplitAmount(Imprest."Imprest Amount", Imprest."PD No. of Days", NonTaxableAmount, TaxableAmount);
-                    InsertAssignmentLine(Employee, AssignmentMatrix.Type::Payment, PerDiemSetup."PD Non-Taxable Earning", PeriodStart, Imprest."No.", NonTaxableAmount);
-                    InsertAssignmentLine(Employee, AssignmentMatrix.Type::Payment, PerDiemSetup."PD Taxable Earning", PeriodStart, Imprest."No.", TaxableAmount);
-                    if Imprest."PD Paid Early" then
+                    TaxAmount := CalcPerDiemTax(Imprest."Imprest Amount", Imprest."PD No. of Days");
+                    InsertAssignmentLine(Employee, AssignmentMatrix.Type::Payment, PerDiemSetup."PD Non-Taxable Earning", PeriodStart, Imprest."No.", Imprest."Imprest Amount");
+                    InsertAssignmentLine(Employee, AssignmentMatrix.Type::Deduction, PerDiemSetup."PD Tax Deduction", PeriodStart, Imprest."No.", TaxAmount);
+                    if Imprest."PD Paid Early" then begin
+                        PerDiemSetup.TestField("PD Advance Deduction");
                         InsertAssignmentLine(Employee, AssignmentMatrix.Type::Deduction, PerDiemSetup."PD Advance Deduction", PeriodStart, Imprest."No.", Imprest."Imprest Amount");
+                    end;
                     Imprest."PD Payroll Period" := PeriodStart;
                     ReverseCommitment(Imprest);
                     Imprest.Modify();
                 end;
             until TempImprest.Next() = 0;
+    end;
+
+    local procedure ReleaseLaterTravel(var Imprest: Record payments; PeriodStart: Date; PayDate: Date)
+    var
+        LaterImprest: Record payments;
+    begin
+        // Per diems stamped on this period by an earlier run but travelling on or after the pay date are freed for the next payroll.
+        LaterImprest.CopyFilters(Imprest);
+        LaterImprest.SetRange("PD Payroll Period", PeriodStart);
+        LaterImprest.SetFilter("Travel Date", '%1..', PayDate);
+        if not LaterImprest.IsEmpty() then
+            LaterImprest.ModifyAll("PD Payroll Period", 0D);
+    end;
+
+    procedure CalcPerDiemTax(TotalAmount: Decimal; NoOfDays: Decimal): Decimal
+    var
+        TaxFreeAmount: Decimal;
+    begin
+        GetSetup();
+        if NoOfDays <= 0 then
+            exit(0);
+        TaxFreeAmount := Round(PerDiemSetup."Daily Tax-Free Limit" * NoOfDays, 1);
+        if TotalAmount <= TaxFreeAmount then
+            exit(0);
+        PerDiemSetup.TestField("PD Tax %");
+        exit(Round((TotalAmount - TaxFreeAmount) * PerDiemSetup."PD Tax %" / 100, 1));
+    end;
+
+    local procedure CodeOrDefault(EDCode: Code[20]): Code[20]
+    begin
+        if EDCode = '' then
+            exit(PerDiemSetup."PD Non-Taxable Earning");
+        exit(EDCode);
+    end;
+
+    procedure OnPerDiemReleased(var Imprest: Record payments)
+    begin
+        // Called when an imprest is released by approval. Never blocks the approval.
+        CreateSalaryAdvanceMemo(Imprest, false);
+    end;
+
+    procedure CreateSalaryAdvanceMemoManually(var Imprest: Record payments)
+    var
+        MemoNo: Code[20];
+    begin
+        MemoNo := CreateSalaryAdvanceMemo(Imprest, true);
+        Imprest.Modify();
+        Message(SAMemoCreatedMsg, MemoNo, Imprest."No.");
+    end;
+
+    procedure CreateSalaryAdvanceMemo(var Imprest: Record payments; ShowErrors: Boolean): Code[20]
+    var
+        SAMemo: Record payments;
+        Employee: Record Employee;
+        CashMgtSetup: Record "Cash Management Setup";
+        PeriodStart: Date;
+        PayDate: Date;
+    begin
+        if (Imprest."Payment Type" <> Imprest."Payment Type"::Imprest) or (not Imprest."Per Diem through Payroll") or
+           (Imprest."Account Type" <> Imprest."Account Type"::Employee)
+        then begin
+            if ShowErrors then
+                Error(NotStaffPerDiemErr, Imprest."No.");
+            exit('');
+        end;
+        if Imprest."PD Salary Adv. Memo No." <> '' then begin
+            if ShowErrors then
+                Error(SAMemoExistsErr, Imprest."No.", Imprest."PD Salary Adv. Memo No.");
+            exit('');
+        end;
+        if Imprest.Posted or Imprest."PD Paid Early" then begin
+            if ShowErrors then
+                Error(AlreadyPaidErr, Imprest."No.");
+            exit('');
+        end;
+        if not FindOpenStaffPeriod(PeriodStart, PayDate) then begin
+            if ShowErrors then
+                GetOpenPeriod(false, PeriodStart, PayDate);
+            exit('');
+        end;
+        if Imprest."Travel Date" < PayDate then begin
+            if ShowErrors then
+                Error(TravelBeforePayDateErr, Imprest."Travel Date", Imprest."No.", PayDate);
+            exit('');
+        end;
+        if Imprest."Travel Date" >= CalcDate('<1M>', PayDate) then begin
+            if ShowErrors then
+                Error(TravelInLaterMonthErr, Imprest."Travel Date", Imprest."No.");
+            exit('');
+        end;
+        CashMgtSetup.Get();
+        if CashMgtSetup."Salary Advance Memo No" = '' then begin
+            if ShowErrors then
+                CashMgtSetup.TestField("Salary Advance Memo No");
+            exit('');
+        end;
+        Imprest.CalcFields("Imprest Amount");
+        if Imprest."Imprest Amount" <= 0 then
+            exit('');
+
+        SAMemo.Init();
+        SAMemo."No." := '';
+        SAMemo."Payment Type" := SAMemo."Payment Type"::"Salary Advance Memo";
+        SAMemo."Document Type" := SAMemo."Document Type"::"Salary Advance Memo";
+        SAMemo.Date := Today;
+        SAMemo.Insert(true);
+
+        SAMemo."Account Type" := SAMemo."Account Type"::Employee;
+        SAMemo."Account No." := Imprest."Account No.";
+        SAMemo."Account Name" := Imprest."Account Name";
+        if Employee.Get(Imprest."Account No.") then begin
+            SAMemo."Date of Joining" := Employee."Employment Date";
+            SAMemo."Shortcut Dimension 1 Code" := Employee."Global Dimension 1 Code";
+            SAMemo."Shortcut Dimension 2 Code" := Employee."Global Dimension 2 Code";
+        end;
+        SAMemo.Validate("Salary Advance", Imprest."Imprest Amount");
+        SAMemo.Validate("No of months deducted", 1);
+        SAMemo."Recovery Start Month" := CalcDate('<CM+1D>', PeriodStart);
+        SAMemo.Purpose := CopyStr(StrSubstNo(SAMemoPurposeTxt, Imprest."No.", Imprest.Purpose), 1, MaxStrLen(SAMemo.Purpose));
+        SAMemo."Reference No." := Imprest."No.";
+        SAMemo."Travel Date" := Imprest."Travel Date";
+        SAMemo.Status := SAMemo.Status::Open;
+        if Imprest."Created By" <> '' then
+            SAMemo."Created By" := Imprest."Created By"
+        else
+            SAMemo."Created By" := CopyStr(UserId(), 1, MaxStrLen(SAMemo."Created By"));
+        SAMemo.Modify();
+
+        Imprest."PD Salary Adv. Memo No." := SAMemo."No.";
+        exit(SAMemo."No.");
+    end;
+
+    local procedure FindOpenStaffPeriod(var PeriodStart: Date; var PayDate: Date): Boolean
+    var
+        PayrollPeriod: Record "Payroll PeriodX";
+    begin
+        PayrollPeriod.Reset();
+        PayrollPeriod.SetRange(Closed, false);
+        if not PayrollPeriod.FindFirst() then
+            exit(false);
+        if PayrollPeriod."Pay Date" = 0D then
+            exit(false);
+        PeriodStart := PayrollPeriod."Starting Date";
+        PayDate := PayrollPeriod."Pay Date";
+        exit(true);
     end;
 
     local procedure SplitAmount(TotalAmount: Decimal; NoOfDays: Decimal; var NonTaxableAmount: Decimal; var TaxableAmount: Decimal)

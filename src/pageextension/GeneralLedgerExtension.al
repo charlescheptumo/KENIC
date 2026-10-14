@@ -14,6 +14,14 @@ pageextension 50347 "General Ledger Entries Ext" extends "General Ledger Entries
                 Editable = false;
             }
         }
+        addafter("Description")
+        {
+            field("Domain Name"; Rec."Domain Name")
+            {
+                ApplicationArea = All;
+                //  Editable = false; 
+            }
+        }
 
         addafter("Gen. Prod. Posting Group")
         {
