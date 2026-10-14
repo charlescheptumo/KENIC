@@ -216,6 +216,10 @@ Table 80021 "SPM General Setup"
             Caption = '360 Manager Job Title Filter';
             DataClassification = ToBeClassified;
         }
+        field(45; "PIP Nos"; Code[20])
+        {
+            TableRelation = "No. Series";
+        }
 
 
 

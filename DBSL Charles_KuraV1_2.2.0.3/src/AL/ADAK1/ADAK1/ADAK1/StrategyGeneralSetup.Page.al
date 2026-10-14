@@ -220,6 +220,12 @@ Page 80036 "Strategy General Setup"
                 {
                      ToolTip = 'Specifies the value od 360.';
                 }
+                field("PIP Nos"; Rec."PIP Nos")
+                {
+                                    
+                     ToolTip = 'Specifies the value od 360.';
+                }
+                
             }
         }
     }
