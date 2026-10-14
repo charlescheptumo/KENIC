@@ -1827,8 +1827,8 @@ Table 57000 "payments"
         {
             // TableRelation = "Cash Management Setup"."Salary Advance Memo No";
             // TableRelation = "General Correspondence Header"."Document No" where(Status = const(Approved));
-            TableRelation = "General Correspondence Header"."Document No" where("Sender No" = field("Account No."));
-
+            //   TableRelation = "General Correspondence Header"."Document No" where("Sender No" = field("Account No."));
+            TableRelation = "Payments"."No." where("Payment Type" = const(Imprest), Posted = const(false), Status = const(Released));
             // trigger OnValidate()
             // var
             //     Payments1: Record Payments;
