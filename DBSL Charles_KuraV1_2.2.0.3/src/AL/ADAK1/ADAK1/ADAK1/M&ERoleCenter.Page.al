@@ -641,6 +641,19 @@ Page 59059 "M&E Role Center"
                     ToolTip = 'Maintain the closed and open questions for the CEO, manager and colleague evaluations.';
                 }
             }
+
+            group("PerformanceImprovementPlan")
+            {
+                Caption = 'Performance Improvement Plans';
+
+                action("Performance Improvement Plans")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Performance Improvement Plans';
+                    RunObject = Page "PIP List";
+                    ToolTip = 'Create and track performance improvement plans for employees, including goals, activities, resources, expectations and progress checkpoints.';
+                }
+            }
             group("PerfomanceReporting")
             {
                 Caption = 'Perfomance Reporting';
