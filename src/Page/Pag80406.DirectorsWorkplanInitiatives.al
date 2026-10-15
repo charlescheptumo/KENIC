@@ -16,6 +16,7 @@ Page 93406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Initiative Type field.';
+                    visible = false;
                 }
                 field("Initiative No."; Rec."Initiative No.")
                 {
@@ -69,6 +70,7 @@ Page 93406 "Directors Workplan Initiatives"
                     ApplicationArea = Basic;
                     Caption = 'Agreed Targets';
                     ToolTip = 'Specifies the value of the Agreed Targets field.';
+                    visible = false;
                 }
                 field("Assigned Weight (%)"; Rec."Assigned Weight (%)")
                 {
@@ -80,16 +82,19 @@ Page 93406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Start Date field.';
+                    Visible = false;
                 }
                 field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Due Date field.';
+                    Visible = false;
                 }
                 field("Additional Comments"; Rec."Additional Comments")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Additional Comments field.';
+                    visible = false;
                 }
                 field("Primary Directorate"; Rec."Primary Directorate")
                 {
@@ -108,12 +113,14 @@ Page 93406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Department field.';
+                    Visible = false;
                 }
                 field("Primary Department Name"; Rec."Primary Department Name")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Primary Department Name field.';
+                    visible = false;
                 }
                 field("Strategy Plan ID"; Rec."Strategy Plan ID")
                 {
