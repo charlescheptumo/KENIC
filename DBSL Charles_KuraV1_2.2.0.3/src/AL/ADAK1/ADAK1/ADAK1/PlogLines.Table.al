@@ -225,6 +225,28 @@ Table 80191 "Plog Lines"
         {
             DataClassification = ToBeClassified;
         }
+        field(45; "Supervisor rating"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(46; "Supervisor Score"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            MinValue = 0;
+
+            trigger OnValidate()
+            begin
+                if "Supervisor Score" > "Weight %" then
+                    Error('Supervisor score %1 cannot exceed the objective weight %2.',
+                        "Supervisor Score", "Weight %");
+                CalcFinalScore();
+            end;
+        }
+        field(47; "Final Score"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
 
     }
 
@@ -239,6 +261,10 @@ Table 80191 "Plog Lines"
     fieldgroups
     {
     }
+    procedure CalcFinalScore()
+    begin
+        "Final Score" := Round(0.4 * "Achieved Weight(%)" + 0.6 * "Supervisor Score", 0.01);
+    end;
 
     var
         PerformanceIndicator: Record "Performance Indicator";
