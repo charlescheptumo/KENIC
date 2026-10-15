@@ -553,6 +553,25 @@ Table 80060 "PC Objective"
             Rec."Strategic Plan ID" := Rec."Strategy Plan ID";
     end;
 
+    procedure UpdateStrategyLinks()
+    var
+        StratInit: Record "Strategic Initiative";
+    begin
+        if "Initiative Type" <> "Initiative Type"::Activity then
+            exit;
+        if "Initiative No." = '' then
+            exit;
+
+        StratInit.SetRange(Code, "Initiative No.");
+        if "Strategy Plan ID" <> '' then
+            StratInit.SetRange("Strategic Plan ID", "Strategy Plan ID");
+        if StratInit.FindFirst() then begin
+            "Theme ID" := StratInit."Theme ID";
+            "Objective ID" := StratInit."Objective ID";
+            "Strategy ID" := StratInit."Strategy ID";
+        end;
+    end;
+
     var
         PerformanceIndicator: Record "Performance Indicator";
         StrategicInitiative: Record "Strategic Initiative";
