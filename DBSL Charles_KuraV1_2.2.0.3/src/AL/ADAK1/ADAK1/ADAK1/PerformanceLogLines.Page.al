@@ -16,11 +16,19 @@ Page 80199 "Performance Log Lines"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Initiative No. field.';
                 }
+                field(KeyResultArea; KeyResultArea)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Key Result Area';
+                    Editable = false;
+                    ToolTip = 'Specifies the key result area of the activity.';
+                }
                 field("Sub Intiative No"; Rec."Sub Intiative No")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Objective';
                     Editable = false;
+                    Visible = false;
                     ToolTip = 'Specifies the objective.';
                 }
                 field("Activity Decription"; Rec."Activity Decription")
@@ -142,9 +150,14 @@ Page 80199 "Performance Log Lines"
             }
         }
     }
+    trigger OnAfterGetRecord()
+    begin
+        KeyResultArea := Rec.GetKeyResultArea();
+    end;
 
     var
         SubPlogLines: Record "Sub Plog Lines";
         TotalWeight: Decimal;
+        KeyResultArea: Text[255];
 }
 

@@ -266,6 +266,24 @@ Table 80191 "Plog Lines"
         "Final Score" := Round(0.4 * "Achieved Weight(%)" + 0.6 * "Supervisor Score", 0.01);
     end;
 
+    procedure GetKeyResultArea(): Text[255]
+    var
+        PCObjective: Record "PC Objective";
+    begin
+        if "Activity Type" <> "Activity Type"::"Primary Activity" then
+            exit('');
+
+        PCObjective.SetRange("Workplan No.", "Personal Scorecard ID");
+        PCObjective.SetRange("Initiative No.", "Initiative No.");
+        if "Strategy Plan ID" <> '' then
+            PCObjective.SetRange("Strategy Plan ID", "Strategy Plan ID");
+        if PCObjective.FindFirst() then begin
+            PCObjective.CalcFields("Key Result Area");
+            exit(PCObjective."Key Result Area");
+        end;
+        exit('');
+    end;
+
     var
         PerformanceIndicator: Record "Performance Indicator";
         StrategicInitiative: Record "PC Objective";
