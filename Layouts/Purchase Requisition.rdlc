@@ -7680,6 +7680,27 @@ End Function</Code>
         <Field Name="JobTaskNo_PurchaseHeader">
           <DataField>JobTaskNo_PurchaseHeader</DataField>
         </Field>
+        <Field Name="Responsibility_Center">
+          <DataField>Responsibility_Center</DataField>
+        </Field>
+        <Field Name="postaddress">
+          <DataField>postaddress</DataField>
+        </Field>
+        <Field Name="postalcode">
+          <DataField>postalcode</DataField>
+        </Field>
+        <Field Name="Respemail">
+          <DataField>Respemail</DataField>
+        </Field>
+        <Field Name="phone">
+          <DataField>phone</DataField>
+        </Field>
+        <Field Name="physicaladdress">
+          <DataField>physicaladdress</DataField>
+        </Field>
+        <Field Name="respName">
+          <DataField>respName</DataField>
+        </Field>
         <Field Name="ReportForNavId_5701">
           <DataField>ReportForNavId_5701</DataField>
         </Field>

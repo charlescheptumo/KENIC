@@ -1295,4 +1295,1592 @@ codeunit 50042 COCCAIntegration
 
         exit(JsonTok.AsValue().AsText());
     end;
+
+    procedure GetAdjustmentsByDateRange(StartDate: Date; EndDate: Date; PageSize: Integer): Text
+    var
+        RequestObj: JsonObject;
+        Root: JsonObject;
+        Data: JsonArray;
+        Token: JsonToken;
+        Row: JsonToken;
+        JsonBody: Text;
+        ResponseTxt: Text;
+        ErrTxt: Text;
+        HttpStatus: Integer;
+        PageNo: Integer;
+        TotalPages: Integer;
+        InsertedCount: Integer;
+        UpdatedCount: Integer;
+    begin
+        if StartDate = 0D then
+            Error('Start Date must be provided.');
+        if EndDate = 0D then
+            Error('End Date must be provided.');
+        if EndDate < StartDate then
+            Error('End Date must not be before Start Date.');
+        if (PageSize < 1) or (PageSize > 500) then
+            Error('Page Size must be between 1 and 500.');
+
+        PageNo := 1;
+        repeat
+            Clear(RequestObj);
+            Clear(Root);
+            Clear(ResponseTxt);
+            Clear(ErrTxt);
+            Clear(HttpStatus);
+            RequestObj.Add('startDate', Format(StartDate, 0, '<Year4>-<Month,2>-<Day,2>'));
+            RequestObj.Add('endDate', Format(EndDate, 0, '<Year4>-<Month,2>-<Day,2>'));
+            RequestObj.Add('page', PageNo);
+            RequestObj.Add('pageSize', PageSize);
+            RequestObj.WriteTo(JsonBody);
+            SendPostRequest2('Transactions/adjustment/list', JsonBody, HttpStatus, ResponseTxt, ErrTxt);
+
+            // The supplied API contract defines 404 as no matching adjustments.
+            if HttpStatus = 404 then begin
+                if PageNo = 1 then
+                    exit('No adjustments found for the specified date range.');
+                Error('Adjustment page %1 returned HTTP 404 after earlier pages. Please retry.', PageNo);
+            end;
+            if ErrTxt <> '' then
+                Error('Adjustment retrieval failed on page %1. %2', PageNo, ErrTxt);
+            if (HttpStatus < 200) or (HttpStatus > 299) then
+                Error('Adjustment retrieval failed. HTTP %1. Response: %2', HttpStatus, ResponseTxt);
+            if not Root.ReadFrom(ResponseTxt) then
+                Error('The adjustment API returned invalid JSON.');
+            if not Root.Get('success', Token) then
+                Error('Missing success property in adjustment response.');
+            if not Token.IsValue() then
+                Error('Invalid success property.');
+            if Token.AsValue().IsNull() then
+                Error('Null success property.');
+            if not Token.AsValue().AsBoolean() then
+                Error('The adjustment API returned success=false. Response: %1', ResponseTxt);
+            if AdjustmentInteger(Root, 'page') <> PageNo then
+                Error('Unexpected page number in adjustment response. Expected %1.', PageNo);
+            TotalPages := AdjustmentInteger(Root, 'totalPages');
+            if TotalPages < 0 then
+                Error('Invalid totalPages in adjustment response.');
+            if not Root.Get('data', Token) then
+                Error('Missing data property in adjustment response.');
+            if not Token.IsArray() then
+                Error('The adjustment data property is not an array.');
+            Data := Token.AsArray();
+            if (Data.Count() = 0) and (PageNo < TotalPages) then
+                Error('Empty adjustment page %1 before the final page.', PageNo);
+            foreach Row in Data do begin
+                if not Row.IsObject() then
+                    Error('Invalid adjustment row on page %1.', PageNo);
+                ImportOneAdjustment(Row.AsObject(), InsertedCount, UpdatedCount);
+            end;
+            PageNo += 1;
+        until PageNo > TotalPages;
+        exit(StrSubstNo('Adjustment retrieval successful. Inserted=%1, Updated=%2.', InsertedCount, UpdatedCount));
+    end;
+
+    local procedure ImportOneAdjustment(Obj: JsonObject; var InsertedCount: Integer; var UpdatedCount: Integer)
+    var
+        Adjustment: Record "Domain Adjustment";
+        AdjustmentId: BigInteger;
+        IsNew: Boolean;
+        TextValue: Text;
+        Output: OutStream;
+    begin
+        AdjustmentId := AdjustmentBigInteger(Obj, 'adjustmentid');
+        if AdjustmentId <= 0 then
+            Error('Adjustment row has a missing or invalid adjustmentid.');
+        IsNew := not Adjustment.Get(AdjustmentId);
+        if IsNew then begin
+            Adjustment.Init();
+            Adjustment.AdjustmentId := AdjustmentId;
+        end;
+        TextValue := AdjustmentText(Obj, 'roid');
+        if StrLen(TextValue) > MaxStrLen(Adjustment.Roid) then
+            Error('ROID exceeds the supported length for adjustment %1.', AdjustmentId);
+        Adjustment.Roid := TextValue;
+        Adjustment.LedgerId := AdjustmentBigInteger(Obj, 'ledgerid');
+        Adjustment.TransactionId := AdjustmentBigInteger(Obj, 'transactionid');
+        Adjustment.AdjustmentDate := AdjustmentDateTime(Obj, 'adjustmentdate');
+        Adjustment.Amount := AdjustmentDecimal(Obj, 'amount');
+        TextValue := AdjustmentText(Obj, 'narration');
+        if StrLen(TextValue) > MaxStrLen(Adjustment.Narration) then
+            Error('Narration exceeds the supported length for adjustment %1.', AdjustmentId);
+        Adjustment.Narration := TextValue;
+        Clear(Adjustment.Details);
+        TextValue := AdjustmentText(Obj, 'details');
+        if TextValue <> '' then begin
+            Adjustment.Details.CreateOutStream(Output, TextEncoding::UTF8);
+            Output.WriteText(TextValue);
+            Clear(Output);
+        end;
+        Clear(Adjustment.RawJsonPayload);
+        Obj.WriteTo(TextValue);
+        Adjustment.RawJsonPayload.CreateOutStream(Output, TextEncoding::UTF8);
+        Output.WriteText(TextValue);
+        Clear(Output);
+        Adjustment.LastUpdatedAt := CurrentDateTime();
+        Adjustment.LastUpdatedBy := CopyStr(UserId(), 1, MaxStrLen(Adjustment.LastUpdatedBy));
+        if IsNew then begin
+            Adjustment.Insert(true);
+            InsertedCount += 1;
+        end else begin
+            Adjustment.Modify(true);
+            UpdatedCount += 1;
+        end;
+    end;
+
+    local procedure AdjustmentText(Obj: JsonObject; PropertyName: Text): Text
+    var
+        Token: JsonToken;
+    begin
+        if not Obj.Get(PropertyName, Token) then
+            exit('');
+        if not Token.IsValue() then
+            Error('Property %1 must be a scalar value.', PropertyName);
+        if Token.AsValue().IsNull() then
+            exit('');
+        exit(Token.AsValue().AsText());
+    end;
+
+    local procedure AdjustmentBigInteger(Obj: JsonObject; PropertyName: Text): BigInteger
+    var
+        ValueText: Text;
+        Result: BigInteger;
+    begin
+        ValueText := AdjustmentText(Obj, PropertyName);
+        if ValueText = '' then
+            exit(0);
+        if not Evaluate(Result, ValueText, 9) then
+            Error('Invalid integer for %1: %2.', PropertyName, ValueText);
+        exit(Result);
+    end;
+
+    local procedure AdjustmentInteger(Obj: JsonObject; PropertyName: Text): Integer
+    var
+        ValueText: Text;
+        Result: Integer;
+    begin
+        ValueText := AdjustmentText(Obj, PropertyName);
+        if ValueText = '' then
+            Error('Missing pagination property %1.', PropertyName);
+        if not Evaluate(Result, ValueText, 9) then
+            Error('Invalid pagination property %1: %2.', PropertyName, ValueText);
+        exit(Result);
+    end;
+
+    local procedure AdjustmentDecimal(Obj: JsonObject; PropertyName: Text): Decimal
+    var
+        ValueText: Text;
+        Result: Decimal;
+    begin
+        ValueText := AdjustmentText(Obj, PropertyName);
+        if ValueText = '' then
+            Error('Missing numeric property %1.', PropertyName);
+        if not Evaluate(Result, ValueText, 9) then
+            Error('Invalid decimal for %1: %2.', PropertyName, ValueText);
+        exit(Result);
+    end;
+
+    local procedure AdjustmentDateTime(Obj: JsonObject; PropertyName: Text): DateTime
+    var
+        ValueText: Text;
+        Result: DateTime;
+    begin
+        ValueText := AdjustmentText(Obj, PropertyName);
+        if ValueText = '' then
+            exit(0DT);
+        // CoCCA sample has microseconds and no timezone. BC stores milliseconds.
+        // This implementation assumes timezone-less API timestamps represent UTC.
+        if StrLen(ValueText) > 19 then
+            if CopyStr(ValueText, 20, 1) = '.' then begin
+                while (StrLen(ValueText) > 23) and
+                      (CopyStr(ValueText, 24, 1) >= '0') and
+                      (CopyStr(ValueText, 24, 1) <= '9') do
+                    ValueText := DelStr(ValueText, 24, 1);
+            end;
+        if (StrPos(ValueText, 'Z') = 0) and
+           (StrPos(CopyStr(ValueText, 20), '+') = 0) and
+           (StrPos(CopyStr(ValueText, 20), '-') = 0) then
+            ValueText += 'Z';
+        if not Evaluate(Result, ValueText, 9) then
+            Error('Invalid datetime for %1: %2.', PropertyName, ValueText);
+        exit(Result);
+    end;
+
+    procedure GetRenewalsByDateRange(
+    StartDate: Date;
+    EndDate: Date;
+    PageSize: Integer): Text
+    var
+        RequestObj: JsonObject;
+        Root: JsonObject;
+        Data: JsonArray;
+        Token: JsonToken;
+        Row: JsonToken;
+        JsonBody: Text;
+        ResponseTxt: Text;
+        ErrTxt: Text;
+        HttpStatus: Integer;
+        PageNo: Integer;
+        TotalPages: Integer;
+        InsertedCount: Integer;
+        UpdatedCount: Integer;
+    begin
+        if StartDate = 0D then
+            Error('Start Date must be provided.');
+
+        if EndDate = 0D then
+            Error('End Date must be provided.');
+
+        if EndDate < StartDate then
+            Error('End Date must not be before Start Date.');
+
+        // Whole-day selection: maximum 31 calendar days inclusive.
+        if (EndDate - StartDate) >= 31 then
+            Error('Date range must not exceed 31 calendar days inclusive.');
+
+        if (PageSize < 1) or (PageSize > 200) then
+            Error('Page Size must be between 1 and 200.');
+
+        PageNo := 1;
+
+        repeat
+            Clear(RequestObj);
+            Clear(Root);
+            Clear(ResponseTxt);
+            Clear(ErrTxt);
+            Clear(HttpStatus);
+
+            RequestObj.Add(
+                'startDate',
+                Format(StartDate, 0, '<Year4>-<Month,2>-<Day,2>') +
+                'T00:00:00+03:00');
+
+            RequestObj.Add(
+                'endDate',
+                Format(EndDate, 0, '<Year4>-<Month,2>-<Day,2>') +
+                'T23:59:59.999+03:00');
+
+            RequestObj.Add('page', PageNo);
+            RequestObj.Add('pageSize', PageSize);
+            RequestObj.WriteTo(JsonBody);
+
+            SendPostRequest2(
+                'Transactions/ledger/renewals-by-date',
+                JsonBody,
+                HttpStatus,
+                ResponseTxt,
+                ErrTxt);
+
+            if HttpStatus = 404 then begin
+                if PageNo = 1 then
+                    exit('No renewals found for the specified date range.');
+
+                Error(
+                    'Renewal page %1 returned HTTP 404 after earlier pages. Please retry.',
+                    PageNo);
+            end;
+
+            if ErrTxt <> '' then
+                Error(
+                    'Renewal retrieval failed on page %1. %2',
+                    PageNo,
+                    ErrTxt);
+
+            if (HttpStatus < 200) or (HttpStatus > 299) then
+                Error(
+                    'Renewal retrieval failed. HTTP %1. Response: %2',
+                    HttpStatus,
+                    ResponseTxt);
+
+            if not Root.ReadFrom(ResponseTxt) then
+                Error('The renewal API returned invalid JSON.');
+
+            // Present in the sample response.
+            if Root.Get('success', Token) then begin
+                if not Token.IsValue() then
+                    Error('Invalid success property.');
+
+                if Token.AsValue().IsNull() then
+                    Error('Null success property.');
+
+                if not Token.AsValue().AsBoolean() then
+                    Error(
+                        'The renewal API returned success=false. Response: %1',
+                        ResponseTxt);
+            end;
+
+            if RenewalInteger(Root, 'page') <> PageNo then
+                Error(
+                    'Unexpected page number in renewal response. Expected %1.',
+                    PageNo);
+
+            TotalPages := RenewalInteger(Root, 'totalPages');
+
+            if TotalPages < 0 then
+                Error('Invalid totalPages in renewal response.');
+
+            if not Root.Get('data', Token) then
+                Error('Missing data property in renewal response.');
+
+            if not Token.IsArray() then
+                Error('The renewal data property is not an array.');
+
+            Data := Token.AsArray();
+
+            if (Data.Count() = 0) and (PageNo < TotalPages) then
+                Error(
+                    'Empty renewal page %1 before the final page.',
+                    PageNo);
+
+            foreach Row in Data do begin
+                if not Row.IsObject() then
+                    Error(
+                        'Invalid renewal row on page %1.',
+                        PageNo);
+
+                ImportOneRenewal(
+                    Row.AsObject(),
+                    InsertedCount,
+                    UpdatedCount);
+            end;
+
+            PageNo += 1;
+
+        until PageNo > TotalPages;
+
+        exit(
+            StrSubstNo(
+                'Renewal retrieval successful. Inserted=%1, Updated=%2.',
+                InsertedCount,
+                UpdatedCount));
+    end;
+
+
+    local procedure ImportOneRenewal(
+        Obj: JsonObject;
+        var InsertedCount: Integer;
+        var UpdatedCount: Integer)
+    var
+        Renewal: Record "Domain Renewal";
+        LedgerId: BigInteger;
+        IsNew: Boolean;
+        Token: JsonToken;
+        RawJson: Text;
+        Output: OutStream;
+    begin
+        LedgerId := RenewalBigInteger(Obj, 'ledgerId');
+
+        if LedgerId <= 0 then
+            Error('Renewal has a missing or invalid ledgerId.');
+
+        IsNew := not Renewal.Get(LedgerId);
+
+        if IsNew then begin
+            Renewal.Init();
+            Renewal.LedgerId := LedgerId;
+        end;
+
+        Renewal.DomainName :=
+            RenewalCheckedText(
+                Obj, 'domainName', MaxStrLen(Renewal.DomainName));
+
+        Renewal.ClientRoid :=
+            RenewalCheckedText(
+                Obj, 'clientRoid', MaxStrLen(Renewal.ClientRoid));
+
+        Renewal.Description :=
+            RenewalCheckedText(
+                Obj, 'description', MaxStrLen(Renewal.Description));
+
+        Renewal.TransType :=
+            RenewalCheckedText(
+                Obj, 'transType', MaxStrLen(Renewal.TransType));
+
+        Renewal.State :=
+            RenewalCheckedText(
+                Obj, 'state', MaxStrLen(Renewal.State));
+
+        Renewal.BlockReason :=
+            RenewalCheckedText(
+                Obj, 'blockReason', MaxStrLen(Renewal.BlockReason));
+
+        Renewal.Amount := RenewalDecimal(Obj, 'amount');
+        Renewal.Total := RenewalDecimal(Obj, 'total');
+
+        Renewal.Created :=
+            RenewalDateTime(Obj, 'created');
+
+        Renewal.PreviousExpiryDate :=
+            RenewalDateTime(Obj, 'previousExpiryDate');
+
+        Renewal.ExDate :=
+            RenewalDateTime(Obj, 'exDate');
+
+        Renewal.EligibleUntil :=
+            RenewalDateTime(Obj, 'eligibleUntil');
+
+        Renewal.WithinWindow :=
+            RenewalBoolean(Obj, 'withinWindow');
+
+        Renewal.CanReverse :=
+            RenewalBoolean(Obj, 'canReverse');
+
+        // Clear an old credit note value if the refreshed value is null.
+        Clear(Renewal.CreditNoteId);
+        Renewal.HasCreditNoteId := false;
+
+        if Obj.Get('creditNoteId', Token) then begin
+            if not Token.IsValue() then
+                Error(
+                    'Invalid creditNoteId for ledger %1.',
+                    LedgerId);
+
+            if not Token.AsValue().IsNull() then begin
+                Renewal.CreditNoteId :=
+                    RenewalBigInteger(Obj, 'creditNoteId');
+
+                Renewal.HasCreditNoteId := true;
+            end;
+        end;
+
+        Clear(Renewal.RawJsonPayload);
+        Obj.WriteTo(RawJson);
+
+        Renewal.RawJsonPayload.CreateOutStream(
+            Output,
+            TextEncoding::UTF8);
+
+        Output.WriteText(RawJson);
+        Clear(Output);
+
+        Renewal.LastUpdatedAt := CurrentDateTime();
+
+        Renewal.LastUpdatedBy :=
+            CopyStr(
+                UserId(),
+                1,
+                MaxStrLen(Renewal.LastUpdatedBy));
+
+        if IsNew then begin
+            Renewal.Insert(true);
+            InsertedCount += 1;
+        end else begin
+            Renewal.Modify(true);
+            UpdatedCount += 1;
+        end;
+    end;
+
+
+    local procedure RenewalCheckedText(
+        Obj: JsonObject;
+        PropertyName: Text;
+        MaximumLength: Integer): Text
+    var
+        ValueText: Text;
+    begin
+        ValueText := RenewalText(Obj, PropertyName);
+
+        if StrLen(ValueText) > MaximumLength then
+            Error(
+                'Property %1 exceeds the supported length of %2.',
+                PropertyName,
+                MaximumLength);
+
+        exit(ValueText);
+    end;
+
+
+    local procedure RenewalBoolean(
+        Obj: JsonObject;
+        PropertyName: Text): Boolean
+    var
+        Token: JsonToken;
+    begin
+        if not Obj.Get(PropertyName, Token) then
+            Error(
+                'Missing boolean property %1.',
+                PropertyName);
+
+        if not Token.IsValue() then
+            Error(
+                'Invalid boolean property %1.',
+                PropertyName);
+
+        if Token.AsValue().IsNull() then
+            Error(
+                'Null boolean property %1.',
+                PropertyName);
+
+        exit(Token.AsValue().AsBoolean());
+    end;
+
+
+    local procedure RenewalText(
+        Obj: JsonObject;
+        PropertyName: Text): Text
+    var
+        Token: JsonToken;
+    begin
+        if not Obj.Get(PropertyName, Token) then
+            exit('');
+
+        if not Token.IsValue() then
+            Error(
+                'Property %1 must be a scalar value.',
+                PropertyName);
+
+        if Token.AsValue().IsNull() then
+            exit('');
+
+        exit(Token.AsValue().AsText());
+    end;
+
+
+    local procedure RenewalBigInteger(
+        Obj: JsonObject;
+        PropertyName: Text): BigInteger
+    var
+        ValueText: Text;
+        Result: BigInteger;
+    begin
+        ValueText := RenewalText(Obj, PropertyName);
+
+        if ValueText = '' then
+            exit(0);
+
+        if not Evaluate(Result, ValueText, 9) then
+            Error(
+                'Invalid integer for %1: %2.',
+                PropertyName,
+                ValueText);
+
+        exit(Result);
+    end;
+
+
+    local procedure RenewalInteger(
+        Obj: JsonObject;
+        PropertyName: Text): Integer
+    var
+        ValueText: Text;
+        Result: Integer;
+    begin
+        ValueText := RenewalText(Obj, PropertyName);
+
+        if ValueText = '' then
+            Error(
+                'Missing pagination property %1.',
+                PropertyName);
+
+        if not Evaluate(Result, ValueText, 9) then
+            Error(
+                'Invalid pagination property %1: %2.',
+                PropertyName,
+                ValueText);
+
+        exit(Result);
+    end;
+
+
+    local procedure RenewalDecimal(
+        Obj: JsonObject;
+        PropertyName: Text): Decimal
+    var
+        ValueText: Text;
+        Result: Decimal;
+    begin
+        ValueText := RenewalText(Obj, PropertyName);
+
+        if ValueText = '' then
+            Error(
+                'Missing numeric property %1.',
+                PropertyName);
+
+        if not Evaluate(Result, ValueText, 9) then
+            Error(
+                'Invalid decimal for %1: %2.',
+                PropertyName,
+                ValueText);
+
+        exit(Result);
+    end;
+
+
+    local procedure RenewalDateTime(
+        Obj: JsonObject;
+        PropertyName: Text): DateTime
+    var
+        ValueText: Text;
+        Result: DateTime;
+    begin
+        ValueText := RenewalText(Obj, PropertyName);
+
+        if ValueText = '' then
+            exit(0DT);
+
+        // Reduce fractional seconds to milliseconds.
+        // Existing timezone offsets are preserved.
+        if StrLen(ValueText) > 19 then
+            if CopyStr(ValueText, 20, 1) = '.' then begin
+                while (StrLen(ValueText) > 23) and
+                      (CopyStr(ValueText, 24, 1) >= '0') and
+                      (CopyStr(ValueText, 24, 1) <= '9') do
+                    ValueText := DelStr(ValueText, 24, 1);
+            end;
+
+        // Assumption: offset-free API timestamps represent UTC.
+        if (StrPos(ValueText, 'Z') = 0) and
+           (StrPos(CopyStr(ValueText, 20), '+') = 0) and
+           (StrPos(CopyStr(ValueText, 20), '-') = 0) then
+            ValueText += 'Z';
+
+        if not Evaluate(Result, ValueText, 9) then
+            Error(
+                'Invalid datetime for %1: %2.',
+                PropertyName,
+                ValueText);
+
+        exit(Result);
+    end;
+
+    procedure NewCoCCAWriteRequest(
+        Operation: Enum "CoCCA Write Operation";
+        LedgerId: BigInteger)
+    var
+        Request: Record "CoCCA Write Request";
+    begin
+        Request.Init();
+        Request.Operation := Operation;
+        Request.Status := Request.Status::Draft;
+        Request."Target Ledger ID" := LedgerId;
+        Request."Posting DateTime" := CurrentDateTime();
+        Request."Cheque DateTime" := CurrentDateTime();
+
+        Request."Requested By" :=
+            CopyStr(UserId(), 1, MaxStrLen(Request."Requested By"));
+
+        Request.Insert(true);
+
+        Request."BC Reference" :=
+            StrSubstNo('BC-COCCA-%1', Request.SystemId);
+
+        Request.Modify(true);
+        Commit();
+
+        Page.RunModal(Page::"CoCCA Write Request", Request);
+    end;
+
+
+    procedure PostCoCCAWriteRequest(EntryNo: Integer)
+    var
+        Request: Record "CoCCA Write Request";
+        Payload: JsonObject;
+        Endpoint: Text;
+        PayloadText: Text;
+        ResponseText: Text;
+        TransportError: Text;
+        ResultMessage: Text;
+        HttpStatus: Integer;
+        ResultState: Enum "CoCCA Write State";
+        RemoteId: BigInteger;
+        RemoteLedgerId: BigInteger;
+        CreditNoteId: BigInteger;
+        TransportOK: Boolean;
+    begin
+        Request.LockTable();
+        Request.Get(EntryNo);
+
+        if Request.Status <> Request.Status::Draft then
+            Error(
+                'Request %1 has already been attempted. Check its response/status; do not resubmit.',
+                EntryNo);
+
+        BuildCoCCAWritePayload(Request, Endpoint, Payload);
+        Payload.WriteTo(PayloadText);
+
+        WriteCoCCAAuditBlob(Request, PayloadText, 1);
+
+        Request.Status := Request.Status::Sending;
+        Request."Attempted At" := CurrentDateTime();
+        Request."Last Message" :=
+            'Attempt recorded. If interrupted, reconcile with CoCCA before taking further action.';
+
+        Request.Modify(false);
+
+        // Persist the attempt before the external write.
+        // Call from the dedicated UI, not within a financial posting transaction.
+        Commit();
+
+        ClearLastError();
+
+        TransportOK :=
+            TryCoCCAWriteTransport(
+                Endpoint,
+                PayloadText,
+                HttpStatus,
+                ResponseText,
+                TransportError);
+
+        if not TransportOK then
+            TransportError := GetLastErrorText();
+
+        ResultState := ResultState::Unknown;
+        ResultMessage :=
+            'Outcome uncertain. Do not resend. Reconcile against CoCCA using the saved request.';
+
+        if TransportOK then begin
+            ClearLastError();
+
+            if not TryParseCoCCAWriteResult(
+                Request.Operation,
+                Request."Target Ledger ID",
+                HttpStatus,
+                ResponseText,
+                ResultState,
+                RemoteId,
+                RemoteLedgerId,
+                CreditNoteId,
+                ResultMessage)
+            then begin
+                ResultState := ResultState::Unknown;
+                ResultMessage :=
+                    'Response could not be verified: ' +
+                    GetLastErrorText() +
+                    ' Do not resend; reconcile with CoCCA.';
+            end;
+        end;
+
+        if TransportError <> '' then
+            ResultMessage += ' Transport: ' + TransportError;
+
+        Request.LockTable();
+        Request.Get(EntryNo);
+
+        // A concurrent status check may already have confirmed completion.
+        if (Request.Status = Request.Status::Succeeded) and
+           ((ResultState = ResultState::Pending) or
+            (ResultState = ResultState::Unknown))
+        then begin
+            ResultState := ResultState::Succeeded;
+
+            if CreditNoteId = 0 then
+                CreditNoteId := Request."Credit Note ID";
+
+            ResultMessage :=
+                'Completion was already confirmed by a status check. ' +
+                ResultMessage;
+        end;
+
+        Request.Status := ResultState;
+        Request."HTTP Status" := HttpStatus;
+        Request."Remote Record ID" := RemoteId;
+        Request."Remote Ledger ID" := RemoteLedgerId;
+        Request."Credit Note ID" := CreditNoteId;
+
+        Request."Last Message" :=
+            CopyStr(ResultMessage, 1, MaxStrLen(Request."Last Message"));
+
+        WriteCoCCAAuditBlob(Request, ResponseText, 2);
+
+        Request.Modify(false);
+        Commit();
+    end;
+
+
+    local procedure BuildCoCCAWritePayload(
+        Request: Record "CoCCA Write Request";
+        var Endpoint: Text;
+        var Payload: JsonObject)
+    var
+        ChannelValue: Text;
+    begin
+        Clear(Payload);
+        Request.TestField("Requested By");
+
+        case Request.Operation of
+            Request.Operation::Adjustment:
+                begin
+                    Request.TestField(Roid);
+
+                    ValidateCoCCAIntId(
+                        Request."Target Ledger ID",
+                        'ledgerId',
+                        false);
+
+                    Request.TestField("Posting DateTime");
+                    Request.TestField(Amount);
+                    Request.TestField("Transaction ID");
+                    Request.TestField(Narration);
+
+                    Endpoint := 'Transactions/adjustment/save';
+
+                    Payload.Add('roid', Request.Roid);
+                    Payload.Add('ledgerId', Request."Target Ledger ID");
+
+                    Payload.Add(
+                        'adjustmentDate',
+                        Format(Request."Posting DateTime", 0, 9));
+
+                    Payload.Add('amount', Request.Amount);
+                    Payload.Add('transactionId', Request."Transaction ID");
+                    Payload.Add('narration', Request.Narration);
+                    Payload.Add('details', Request.Details);
+                    Payload.Add('requestedBy', Request."Requested By");
+                end;
+
+            Request.Operation::Receipt:
+                begin
+                    Request.TestField(Roid);
+                    Request.TestField("Cheque DateTime");
+                    Request.TestField("Cheque Number");
+
+                    ValidateCoCCAIntId(
+                        Request."Target Ledger ID",
+                        'ledgerId',
+                        true);
+
+                    if Request."Payment Channel" =
+                       Request."Payment Channel"::Mpesa
+                    then
+                        ValidateCoCCAIntId(
+                            Request."Mpesa API ID",
+                            'mpesaApiId',
+                            false);
+
+                    case Request."Payment Channel" of
+                        Request."Payment Channel"::Mpesa:
+                            ChannelValue := 'Mpesa';
+
+                        Request."Payment Channel"::Ipay:
+                            ChannelValue := 'Ipay';
+
+                        Request."Payment Channel"::NCBAKES:
+                            ChannelValue := 'ncba_kes';
+
+                        Request."Payment Channel"::IMKES:
+                            ChannelValue := 'im_kes';
+
+                        Request."Payment Channel"::IMUSD:
+                            ChannelValue := 'im_usd';
+
+                        Request."Payment Channel"::Cash:
+                            ChannelValue := '';
+                    end;
+
+                    Endpoint := 'Transactions/receipt/save';
+
+                    Payload.Add('roid', Request.Roid);
+
+                    if Request."Target Ledger ID" <> 0 then
+                        Payload.Add(
+                            'ledgerId',
+                            Request."Target Ledger ID");
+
+                    if Request."Posting DateTime" <> 0DT then
+                        Payload.Add(
+                            'receiptDate',
+                            Format(Request."Posting DateTime", 0, 9));
+
+                    Payload.Add('amount', Request.Amount);
+
+                    Payload.Add(
+                        'chequeDate',
+                        Format(Request."Cheque DateTime", 0, 9));
+
+                    Payload.Add('chequeNumber', Request."Cheque Number");
+
+                    if ChannelValue <> '' then begin
+                        Payload.Add('bankCode', ChannelValue);
+                        Payload.Add('drawerName', ChannelValue);
+                    end;
+
+                    Payload.Add(
+                        'cash',
+                        Request."Payment Channel" =
+                        Request."Payment Channel"::Cash);
+
+                    Payload.Add(
+                        'mpesa',
+                        Request."Payment Channel" =
+                        Request."Payment Channel"::Mpesa);
+
+                    Payload.Add(
+                        'iPay',
+                        Request."Payment Channel" =
+                        Request."Payment Channel"::Ipay);
+
+                    Payload.Add(
+                        'ncbaKes',
+                        Request."Payment Channel" =
+                        Request."Payment Channel"::NCBAKES);
+
+                    Payload.Add(
+                        'imKes',
+                        Request."Payment Channel" =
+                        Request."Payment Channel"::IMKES);
+
+                    Payload.Add(
+                        'imUsd',
+                        Request."Payment Channel" =
+                        Request."Payment Channel"::IMUSD);
+
+                    if Request."Payment Channel" =
+                       Request."Payment Channel"::Mpesa
+                    then
+                        Payload.Add(
+                            'mpesaApiId',
+                            Request."Mpesa API ID");
+
+                    Payload.Add('details', Request.Details);
+                    Payload.Add('inWords', Request."In Words");
+                    Payload.Add('vatWithheld', Request."VAT Withheld");
+                    Payload.Add('vatCertNo', Request."VAT Certificate No.");
+                    Payload.Add('voided', Request.Voided);
+
+                    if Request."Void DateTime" <> 0DT then
+                        Payload.Add(
+                            'voidDate',
+                            Format(Request."Void DateTime", 0, 9));
+
+                    if Request."SMS Transaction ID" <> '' then
+                        Payload.Add(
+                            'smsTransId',
+                            Request."SMS Transaction ID");
+
+                    if Request."Mpesa Transaction ID" <> '' then
+                        Payload.Add(
+                            'mpesaTrxId',
+                            Request."Mpesa Transaction ID");
+                end;
+
+            Request.Operation::Reversal:
+                begin
+                    ValidateCoCCAIntId(
+                        Request."Target Ledger ID",
+                        'ledgerId',
+                        false);
+
+                    Endpoint := 'Transactions/ledger/reverse-renewal';
+
+                    Payload.Add('ledgerId', Request."Target Ledger ID");
+                    Payload.Add('requestedBy', Request."Requested By");
+
+                    if Request."BC Reference" <> '' then
+                        Payload.Add(
+                            'bcReference',
+                            Request."BC Reference");
+                end;
+        end;
+    end;
+
+
+    local procedure ValidateCoCCAIntId(
+        Value: BigInteger;
+        PropertyName: Text;
+        AllowZero: Boolean)
+    begin
+        if AllowZero and (Value = 0) then
+            exit;
+
+        if (Value <= 0) or (Value > 2147483647) then
+            Error(
+                '%1 must be between 1 and 2147483647.',
+                PropertyName);
+    end;
+
+
+    [TryFunction]
+    local procedure TryCoCCAWriteTransport(
+        Endpoint: Text;
+        Payload: Text;
+        var HttpStatus: Integer;
+        var ResponseText: Text;
+        var ErrText: Text)
+    begin
+        SendCoCCAWritePost(
+            Endpoint,
+            Payload,
+            HttpStatus,
+            ResponseText,
+            ErrText);
+    end;
+
+
+    [TryFunction]
+    local procedure TryParseCoCCAWriteResult(
+        Operation: Enum "CoCCA Write Operation";
+        TargetLedgerId: BigInteger;
+        HttpStatus: Integer;
+        ResponseText: Text;
+        var ResultState: Enum "CoCCA Write State";
+        var RemoteId: BigInteger;
+        var RemoteLedgerId: BigInteger;
+        var CreditNoteId: BigInteger;
+        var ResultMessage: Text)
+    var
+        Root: JsonObject;
+        RecordObj: JsonObject;
+        StatusObj: JsonObject;
+        Token: JsonToken;
+        Success: Boolean;
+        WarningText: Text;
+        HasWarnings: Boolean;
+        ReversalState: Text;
+    begin
+        if not Root.ReadFrom(ResponseText) then
+            Error('Invalid JSON response.');
+
+        if not Root.Get('success', Token) then
+            Error('Missing success property.');
+
+        Success := Token.AsValue().AsBoolean();
+        ResultMessage := CoCCAWriteText(Root, 'message');
+        ResultState := ResultState::Unknown;
+
+        if (HttpStatus = 400) or
+           (HttpStatus = 404) or
+           (HttpStatus = 409)
+        then begin
+            if Success then
+                Error('HTTP rejection conflicts with success=true.');
+
+            ResultState := ResultState::Rejected;
+
+            if ResultMessage = '' then
+                ResultMessage :=
+                    StrSubstNo(
+                        'Request rejected. HTTP %1.',
+                        HttpStatus);
+
+            if HttpStatus = 409 then begin
+                ResultMessage += ' Do not retry the same request.';
+
+                if Operation = Operation::Receipt then
+                    RemoteId :=
+                        CoCCAWriteId(Root, 'existingReceiptId');
+
+                if Operation = Operation::Reversal then
+                    CreditNoteId :=
+                        CoCCAWriteId(Root, 'creditNoteId');
+
+                if Operation = Operation::Adjustment then
+                    if Root.Get('existing', Token) then
+                        if Token.IsObject() then begin
+                            RecordObj := Token.AsObject();
+
+                            RemoteId :=
+                                CoCCAWriteId(
+                                    RecordObj,
+                                    'adjustmentid');
+
+                            RemoteLedgerId :=
+                                CoCCAWriteId(
+                                    RecordObj,
+                                    'ledgerid');
+                        end;
+            end;
+
+            exit;
+        end;
+
+        if not Success then begin
+            ResultMessage +=
+                ' Outcome not confirmed. Do not resend; reconcile with CoCCA.';
+            exit;
+        end;
+
+        if (HttpStatus = 202) and
+           (Operation = Operation::Reversal)
+        then begin
+            ResultState := ResultState::Pending;
+            ResultMessage :=
+                'Reversal requested. Use Check Reversal Status until completed; do not send the reversal again.';
+            exit;
+        end;
+
+        if HttpStatus <> 200 then begin
+            ResultMessage +=
+                StrSubstNo(
+                    ' Unexpected HTTP %1. Do not resend; reconcile with CoCCA.',
+                    HttpStatus);
+            exit;
+        end;
+
+        case Operation of
+            Operation::Adjustment:
+                begin
+                    if not Root.Get('record', Token) then
+                        Error('Missing adjustment record.');
+
+                    RecordObj := Token.AsObject();
+
+                    RemoteId :=
+                        CoCCAWriteId(RecordObj, 'adjustmentid');
+
+                    RemoteLedgerId :=
+                        CoCCAWriteId(RecordObj, 'ledgerid');
+
+                    if (RemoteId <= 0) or (RemoteLedgerId <= 0) then
+                        Error(
+                            'Missing adjustment ID or returned ledger ID.');
+                end;
+
+            Operation::Receipt:
+                begin
+                    RemoteId := CoCCAWriteId(Root, 'receiptId');
+
+                    if RemoteId <= 0 then
+                        Error('Missing receipt ID.');
+
+                    if Root.Get('warnings', Token) then begin
+                        HasWarnings := true;
+
+                        if Token.IsValue() then
+                            HasWarnings :=
+                                not Token.AsValue().IsNull();
+
+                        if HasWarnings then begin
+                            Token.WriteTo(WarningText);
+                            ResultMessage +=
+                                ' Warnings: ' + WarningText;
+                        end;
+                    end;
+                end;
+
+            Operation::Reversal:
+                begin
+                    if not Root.Get('status', Token) then
+                        Error('Missing reversal status.');
+
+                    StatusObj := Token.AsObject();
+
+                    ParseCoCCAReversalStatus(
+                        StatusObj,
+                        TargetLedgerId,
+                        ReversalState,
+                        CreditNoteId);
+
+                    if ReversalState <> 'completed' then
+                        Error(
+                            'HTTP 200 reversal response is not completed.');
+
+                    ResultMessage :=
+                        StrSubstNo(
+                            'Reversal completed. Credit note %1.',
+                            CreditNoteId);
+                end;
+        end;
+
+        ResultState := ResultState::Succeeded;
+
+        if ResultMessage = '' then
+            ResultMessage :=
+                'CoCCA request completed successfully.';
+    end;
+
+
+    procedure CheckCoCCAReversalStatus(EntryNo: Integer)
+    var
+        Request: Record "CoCCA Write Request";
+        Payload: JsonObject;
+        PayloadText: Text;
+        ResponseText: Text;
+        ErrText: Text;
+        MessageText: Text;
+        HttpStatus: Integer;
+        CreditNoteId: BigInteger;
+        StateText: Text;
+        OK: Boolean;
+    begin
+        Request.Get(EntryNo);
+
+        if Request.Operation <> Request.Operation::Reversal then
+            Error('This is not a renewal reversal request.');
+
+        if Request.Status = Request.Status::Draft then
+            Error('Submit the reversal request first.');
+
+        Payload.Add('ledgerId', Request."Target Ledger ID");
+        Payload.WriteTo(PayloadText);
+
+        ClearLastError();
+
+        OK :=
+            TryCoCCAWriteTransport(
+                'Transactions/ledger/reversal-status',
+                PayloadText,
+                HttpStatus,
+                ResponseText,
+                ErrText);
+
+        if not OK then
+            ErrText := GetLastErrorText();
+
+        if OK and (HttpStatus = 200) then begin
+            ClearLastError();
+
+            OK :=
+                TryParseCoCCAStatusResponse(
+                    ResponseText,
+                    Request."Target Ledger ID",
+                    StateText,
+                    CreditNoteId);
+
+            if not OK then
+                ErrText := GetLastErrorText();
+        end else
+            OK := false;
+
+        Request.LockTable();
+        Request.Get(EntryNo);
+
+        if OK then begin
+            case StateText of
+                'completed':
+                    begin
+                        Request.Status := Request.Status::Succeeded;
+                        Request."Credit Note ID" := CreditNoteId;
+
+                        MessageText :=
+                            StrSubstNo(
+                                'Reversal completed. Credit note %1.',
+                                CreditNoteId);
+                    end;
+
+                'pending':
+                    begin
+                        if Request.Status <> Request.Status::Succeeded then
+                            Request.Status := Request.Status::Pending;
+
+                        MessageText :=
+                            'Reversal pending. Check status again later; do not resubmit.';
+                    end;
+
+                'none':
+                    MessageText :=
+                        'Server reports no reversal. No automatic resubmission is permitted; reconcile before creating any new request.';
+            end;
+        end else
+            MessageText :=
+                StrSubstNo(
+                    'Status check failed. HTTP %1. %2 Response: %3',
+                    HttpStatus,
+                    ErrText,
+                    ResponseText);
+
+        Request."Status Checked At" := CurrentDateTime();
+        Request."Status HTTP Code" := HttpStatus;
+
+        Request."Status Message" :=
+            CopyStr(
+                MessageText,
+                1,
+                MaxStrLen(Request."Status Message"));
+
+        WriteCoCCAAuditBlob(Request, ResponseText, 3);
+
+        Request.Modify(false);
+        Commit();
+    end;
+
+
+    [TryFunction]
+    local procedure TryParseCoCCAStatusResponse(
+        ResponseText: Text;
+        TargetLedgerId: BigInteger;
+        var StateText: Text;
+        var CreditNoteId: BigInteger)
+    var
+        Root: JsonObject;
+        Token: JsonToken;
+    begin
+        if not Root.ReadFrom(ResponseText) then
+            Error('Invalid status JSON.');
+
+        if not Root.Get('success', Token) then
+            Error('Missing success property.');
+
+        if not Token.AsValue().AsBoolean() then
+            Error('Status API returned success=false.');
+
+        if not Root.Get('status', Token) then
+            Error('Missing status object.');
+
+        ParseCoCCAReversalStatus(
+            Token.AsObject(),
+            TargetLedgerId,
+            StateText,
+            CreditNoteId);
+    end;
+
+
+    local procedure ParseCoCCAReversalStatus(
+        StatusObj: JsonObject;
+        TargetLedgerId: BigInteger;
+        var StateText: Text;
+        var CreditNoteId: BigInteger)
+    var
+        Token: JsonToken;
+        CreditNote: JsonObject;
+    begin
+        if CoCCAWriteId(StatusObj, 'ledgerId') <> TargetLedgerId then
+            Error(
+                'Reversal status ledgerId does not match the requested renewal.');
+
+        StateText := CoCCAWriteText(StatusObj, 'state');
+
+        if not (StateText in ['none', 'pending', 'completed']) then
+            Error('Unexpected reversal status: %1.', StateText);
+
+        CreditNoteId := 0;
+
+        if StateText <> 'completed' then
+            exit;
+
+        if not StatusObj.Get('creditNote', Token) then
+            Error('Completed reversal has no credit note.');
+
+        CreditNote := Token.AsObject();
+        CreditNoteId := CoCCAWriteId(CreditNote, 'id');
+
+        if CreditNoteId <= 0 then
+            Error('Missing credit note ID.');
+
+        if CoCCAWriteId(CreditNote, 'refundForId') <> TargetLedgerId then
+            Error(
+                'Credit note refundForId does not match the original renewal.');
+
+        // Credit note JSON is read-only and is never sent for reversal.
+    end;
+
+
+    local procedure CoCCAWriteText(
+        Obj: JsonObject;
+        PropertyName: Text): Text
+    var
+        Token: JsonToken;
+    begin
+        if not Obj.Get(PropertyName, Token) then
+            exit('');
+
+        if not Token.IsValue() then
+            Error('Invalid scalar property %1.', PropertyName);
+
+        if Token.AsValue().IsNull() then
+            exit('');
+
+        exit(Token.AsValue().AsText());
+    end;
+
+
+    local procedure CoCCAWriteId(
+        Obj: JsonObject;
+        PropertyName: Text): BigInteger
+    var
+        ValueText: Text;
+        Result: BigInteger;
+    begin
+        ValueText := CoCCAWriteText(Obj, PropertyName);
+
+        if ValueText = '' then
+            exit(0);
+
+        if not Evaluate(Result, ValueText, 9) then
+            Error(
+                'Invalid ID %1: %2.',
+                PropertyName,
+                ValueText);
+
+        exit(Result);
+    end;
+
+
+    local procedure WriteCoCCAAuditBlob(
+        var Request: Record "CoCCA Write Request";
+        ValueText: Text;
+        BlobKind: Integer)
+    var
+        Output: OutStream;
+    begin
+        case BlobKind of
+            1:
+                begin
+                    Clear(Request."Request Payload");
+
+                    Request."Request Payload".CreateOutStream(
+                        Output,
+                        TextEncoding::UTF8);
+                end;
+
+            2:
+                begin
+                    Clear(Request."Response Payload");
+
+                    Request."Response Payload".CreateOutStream(
+                        Output,
+                        TextEncoding::UTF8);
+                end;
+
+            3:
+                begin
+                    Clear(Request."Status Response");
+
+                    Request."Status Response".CreateOutStream(
+                        Output,
+                        TextEncoding::UTF8);
+                end;
+
+            else
+                Error('Invalid audit BLOB kind.');
+        end;
+
+        Output.WriteText(ValueText);
+    end;
+
+
+    procedure DownloadCoCCAWriteAudit(EntryNo: Integer)
+    var
+        Request: Record "CoCCA Write Request";
+        TempBuffer: Record "CoCCA Write Request" temporary;
+        Root: JsonObject;
+        Input: InStream;
+        Output: OutStream;
+        ValueText: Text;
+        FileName: Text;
+    begin
+        Request.Get(EntryNo);
+
+        Request.CalcFields(
+            "Request Payload",
+            "Response Payload",
+            "Status Response");
+
+        Root.Add('entryNo', EntryNo);
+        Root.Add('operation', Format(Request.Operation));
+        Root.Add('state', Format(Request.Status));
+        Root.Add('httpStatus', Request."HTTP Status");
+        Root.Add('message', Request."Last Message");
+        Root.Add('statusHttpCode', Request."Status HTTP Code");
+        Root.Add('statusMessage', Request."Status Message");
+
+        Clear(ValueText);
+
+        if Request."Request Payload".HasValue() then begin
+            Request."Request Payload".CreateInStream(
+                Input,
+                TextEncoding::UTF8);
+
+            Input.ReadText(ValueText);
+        end;
+
+        Root.Add('requestJson', ValueText);
+
+        Clear(ValueText);
+
+        if Request."Response Payload".HasValue() then begin
+            Request."Response Payload".CreateInStream(
+                Input,
+                TextEncoding::UTF8);
+
+            Input.ReadText(ValueText);
+        end;
+
+        Root.Add('responseJson', ValueText);
+
+        Clear(ValueText);
+
+        if Request."Status Response".HasValue() then begin
+            Request."Status Response".CreateInStream(
+                Input,
+                TextEncoding::UTF8);
+
+            Input.ReadText(ValueText);
+        end;
+
+        Root.Add('latestStatusJson', ValueText);
+        Root.WriteTo(ValueText);
+
+        TempBuffer.Init();
+
+        TempBuffer."Request Payload".CreateOutStream(
+            Output,
+            TextEncoding::UTF8);
+
+        Output.WriteText(ValueText);
+        Clear(Output);
+
+        TempBuffer."Request Payload".CreateInStream(
+            Input,
+            TextEncoding::UTF8);
+
+        FileName :=
+            StrSubstNo('CoCCA-Request-%1.json', EntryNo);
+
+        DownloadFromStream(Input, '', '', '', FileName);
+    end;
+
+
+    local procedure SendCoCCAWritePost(
+        Endpoint: Text;
+        Payload: Text;
+        var HttpStatus: Integer;
+        var ResponseText: Text;
+        var ErrText: Text)
+    var
+        Client: HttpClient;
+        HttpRequest: HttpRequestMessage;
+        HttpResponse: HttpResponseMessage;
+        Content: HttpContent;
+        ContentHeaders: HttpHeaders;
+    begin
+        Clear(HttpStatus);
+        Clear(ResponseText);
+        Clear(ErrText);
+
+        Content.WriteFrom(Payload);
+        Content.GetHeaders(ContentHeaders);
+
+        if ContentHeaders.Contains('Content-Type') then
+            ContentHeaders.Remove('Content-Type');
+
+        ContentHeaders.Add(
+            'Content-Type',
+            'application/json; charset=utf-8');
+
+        HttpRequest.Method := 'POST';
+
+        HttpRequest.SetRequestUri(
+            GetCoCCAWriteBaseUrl() + Endpoint);
+
+        HttpRequest.Content := Content;
+
+        Client.Timeout(60000);
+
+        // Send once only; do not automatically retry registry writes.
+        if not Client.Send(HttpRequest, HttpResponse) then begin
+            ErrText :=
+                'HTTP request could not be sent. The remote outcome may be unknown.';
+            exit;
+        end;
+
+        HttpStatus := HttpResponse.HttpStatusCode();
+
+        if not HttpResponse.Content.ReadAs(ResponseText) then begin
+            ErrText := 'HTTP response body could not be read.';
+            exit;
+        end;
+
+        if not HttpResponse.IsSuccessStatusCode() then
+            ErrText :=
+                StrSubstNo(
+                    'HTTP %1: %2',
+                    HttpStatus,
+                    HttpResponse.ReasonPhrase());
+    end;
+
+
+    local procedure GetCoCCAWriteBaseUrl(): Text
+    begin
+        exit('http://41.90.10.39:8099/api/');
+    end;
 }
