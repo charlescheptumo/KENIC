@@ -41,6 +41,18 @@ Page 80408 "Staff Workplan Initiatives"
                     Caption = 'Activity';
                     ToolTip = 'Specifies the activity.';
                 }
+                field("Start Date"; Rec."Start Date")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Date set';
+                    ToolTip = 'Specifies the Date set.';
+                }
+                field("Due Date"; Rec."Due Date")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Due Date';
+                    ToolTip = 'Specifies the Due Date.';
+                }
             }
         }
     }
