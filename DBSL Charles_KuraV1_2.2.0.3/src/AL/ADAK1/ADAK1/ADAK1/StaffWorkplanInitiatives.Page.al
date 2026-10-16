@@ -12,135 +12,34 @@ Page 80408 "Staff Workplan Initiatives"
         {
             repeater(Group)
             {
-                field("Initiative Type"; Rec."Initiative Type")
+                field("Framework Perspective"; Rec."Framework Perspective")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Initiative Type field.';
+                    Caption = 'Perspective';
+                    ToolTip = 'Specifies the perspective.';
                 }
                 field("Key Result area"; Rec."Key Result Area")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Key Result Area field.';
                 }
-                field("Initiative No."; Rec."Initiative No.")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Initiative No. field.';
-                }
                 field("Objective/Initiative"; Rec."Objective/Initiative")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Objective/Initiative field.';
-                }
-                field("Outcome Perfomance Indicator"; Rec."Outcome Perfomance Indicator")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Outcome Perfomance Indicator field.';
-                    Visible = false;
-                }
-                field("Key Performance Indicator"; Rec."Key Performance Indicator")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Key Performance Indicator field.';
-                    Visible = false;
-                }
-                field("Unit of Measure"; Rec."Unit of Measure")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Unit of Measure field.';
-                }
-                field("Desired Perfomance Direction"; Rec."Desired Perfomance Direction")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Desired Perfomance Direction field.';
-                }
-                field("Previous Annual Target Qty"; Rec."Previous Annual Target Qty")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Previous Annual Target Qty field.';
-                }
-                field("Imported Annual Target Qty"; Rec."Imported Annual Target Qty")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Agreed Targets';
-                    ToolTip = 'Specifies the value of the Agreed Targets field.';
+                    Caption = 'Objective';
+                    ToolTip = 'Specifies the objective.';
                 }
                 field("Assigned Weight (%)"; Rec."Assigned Weight (%)")
                 {
                     ApplicationArea = Basic;
-                    Visible = true;
-                    ToolTip = 'Specifies the value of the Assigned Weight (%) field.';
+                    Caption = 'Objective %';
+                    ToolTip = 'Specifies the objective weight.';
                 }
-                field("Start Date"; Rec."Start Date")
+                field("Activity Description"; Rec."Activity Description")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Start Date field.';
-                }
-                field("Due Date"; Rec."Due Date")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Due Date field.';
-                }
-                field("Additional Comments"; Rec."Additional Comments")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Additional Comments field.';
-                }
-                field("Primary Directorate"; Rec."Primary Directorate")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Primary Directorate field.';
-                    Visible = false;
-                }
-                field("Primary Directorate Name"; Rec."Primary Directorate Name")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Primary Directorate Name field.';
-                    Visible = false;
-                }
-                field("Primary Department"; Rec."Primary Department")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Primary Department field.';
-                }
-                field("Primary Department Name"; Rec."Primary Department Name")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Primary Department Name field.';
-                }
-                field("Strategy Plan ID"; Rec."Strategy Plan ID")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Strategy Plan ID field.';
-                }
-                field("Individual Achieved Targets"; Rec."Individual Achieved Targets")
-                {
-                    ApplicationArea = Basic;
-                    Caption = ' Achieved Targets';
-                    ToolTip = 'Specifies the value of the  Achieved Targets field.';
-                }
-                field("Achieved Target"; AchievedTarget)
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    Visible = false;
-                    ToolTip = 'Specifies the value of the AchievedTarget field.';
-                }
-                field("Strategy Framework"; Rec."Strategy Framework")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Strategy Framework field.';
-                    Visible = false;
-                }
-                field("Framework Perspective"; Rec."Framework Perspective")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Framework Perspective field.';
-                    Visible = false;
+                    Caption = 'Activity';
+                    ToolTip = 'Specifies the activity.';
                 }
             }
         }

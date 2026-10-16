@@ -1828,7 +1828,16 @@ Table 57000 "payments"
             // TableRelation = "Cash Management Setup"."Salary Advance Memo No";
             // TableRelation = "General Correspondence Header"."Document No" where(Status = const(Approved));
             //   TableRelation = "General Correspondence Header"."Document No" where("Sender No" = field("Account No."));
-            TableRelation = "Payments"."No." where("Payment Type" = const(Imprest), Posted = const(false), Status = const(Released));
+            // Salary Advance card: pick an approved Salary Advance Memo and the card is filled from it.
+            TableRelation = "Payments"."No." where("Payment Type" = const("Salary Advance Memo"), Posted = const(false), Status = const(Released));
+
+            trigger OnValidate()
+            var
+                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+            begin
+                if "Payment Type" = "Payment Type"::"Salary Advance" then
+                    PerDiemMgt.FillSalaryAdvanceFromMemo(Rec);
+            end;
             // trigger OnValidate()
             // var
             //     Payments1: Record Payments;

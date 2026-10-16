@@ -335,7 +335,10 @@ Page 50339 "Staff Performance Appraisal"
                                         PcLines."Q1 Target Qty" := PcLinesN."Q1 Target Qty";
                                         PcLines."Q2 Target Qty" := PcLinesN."Q2 Target Qty";
                                         PcLines."Q3 Target Qty" := PcLinesN."Q3 Target Qty";
+                                        // PcLines."Q4 Target Qty" := PcLinesN."Q4 Target Qty";
+                                        // PcLines.Insert(true);
                                         PcLines."Q4 Target Qty" := PcLinesN."Q4 Target Qty";
+                                        PcLines.UpdateStrategyLinks();
                                         PcLines.Insert(true);
 
 
@@ -457,7 +460,10 @@ Page 50339 "Staff Performance Appraisal"
                                 PcLines."Q1 Target Qty" := PcLinesN."Q1 Target Qty";
                                 PcLines."Q2 Target Qty" := PcLinesN."Q2 Target Qty";
                                 PcLines."Q3 Target Qty" := PcLinesN."Q3 Target Qty";
+                                // PcLines."Q4 Target Qty" := PcLinesN."Q4 Target Qty";
+                                // PcLines.Insert(true);
                                 PcLines."Q4 Target Qty" := PcLinesN."Q4 Target Qty";
+                                PcLines.UpdateStrategyLinks();
                                 PcLines.Insert(true);
 
 
@@ -601,6 +607,8 @@ Page 50339 "Staff Performance Appraisal"
                                     PcLinesN."Initiative No." := PcLines."Initiative No.";
                                     PcLinesN.TRANSFERFIELDS(PcLines, FALSE);
                                     //PcLinesN."Reporting Category":=PcLinesN."Reporting Category"::Staff;
+                                    // PcLinesN.INSERT;
+                                    PcLinesN.UpdateStrategyLinks();
                                     PcLinesN.INSERT;
 
                                     OriginalSubActivities.RESET;
@@ -662,6 +670,8 @@ Page 50339 "Staff Performance Appraisal"
                                     PcLinesN."Initiative No." := PcLines."Initiative No.";
                                     PcLinesN.TRANSFERFIELDS(PcLines, FALSE);
                                     //PcLinesN."Reporting Category":=PcLinesN."Reporting Category"::Staff;
+                                    // PcLinesN.INSERT;
+                                    PcLinesN.UpdateStrategyLinks();
                                     PcLinesN.INSERT;
 
                                     OriginalSubActivities.RESET;
@@ -820,11 +830,11 @@ Page 50339 "Staff Performance Appraisal"
                     IF CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) THEN
                         CustomApprovals.OnSendDocForApproval(VarVariant);
                     Rec.TestField("Approval Status", Rec."approval status"::Open);
-                   // TotalWeight := 0;
+                    // TotalWeight := 0;
                     //Rec.CalcFields("Total Assigned Weight(%)", "Secondary Assigned Weight(%)", "JD Assigned Weight(%)");
                     //TotalWeight := Rec."Total Assigned Weight(%)" + Rec."Secondary Assigned Weight(%)" + Rec."JD Assigned Weight(%)";
                     //if not (TotalWeight = 100) then
-                      //  Error('Total Assigned Weight for all Core Mandate Primary Activities should be (100%),Currently is %1', TotalWeight);
+                    //  Error('Total Assigned Weight for all Core Mandate Primary Activities should be (100%),Currently is %1', TotalWeight);
 
                     PcLines.Reset;
                     PcLines.SetRange("Workplan No.", Rec.No);

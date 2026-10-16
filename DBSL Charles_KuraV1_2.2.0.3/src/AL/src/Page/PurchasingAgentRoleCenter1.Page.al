@@ -470,72 +470,74 @@ Page 70119 "Purchasing Agent Role Center1"
                     ToolTip = 'Executes the Approved Goods Rejection action.';
                 }
             }
-            group("Meals Requisitions")
-            {
-                Caption = 'Meal Requisitions';
-                Image = LotInfo;
-                action("Meal Requisitions List")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Meal Requisitions List';
-                    RunObject = Page "Meal Requisitions";
-                    ToolTip = 'Executes the Meal Requisitions List action.';
-                }
-                action("Approved Meals Requisitions")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Approved Meals Requisitions';
-                    RunObject = Page "Approved Meal Requisitions";
-                    ToolTip = 'Executes the Approved Meals Requisitions action.';
-                }
+            //dennison-not required in KENIC
+            // group("Meals Requisitions")
+            // {
+            //     Caption = 'Meal Requisitions';
+            //     Image = LotInfo;
+            //     action("Meal Requisitions List")
+                
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Meal Requisitions List';
+            //         RunObject = Page "Meal Requisitions";
+            //                         ToolTip = 'Executes the Meal Requisitions List action.';
+            //     }
+            //     action("Approved Meals Requisitions")
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Approved Meals Requisitions';
+            //         RunObject = Page "Approved Meal Requisitions";
+            //                         ToolTip = 'Executes the Approved Meals Requisitions action.';
+            //     }
 
-            }
-            group("EEM Loan Issue")
-            {
-                Caption = 'EEM Loan Issues';
-                action("Loan Issue Requests")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Loan Issue Requests List';
-                    RunObject = Page "Loan Issue Requests";
-                    ToolTip = 'Executes the Loan Issue Requests List action.';
-                }
-                action("Approved Loan Issue Requests")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Approved Loan Issue Requests';
-                    RunObject = Page "Approved Loan Issue Requests";
-                    ToolTip = 'Executes the Approved Loan Issue Requests action.';
-                }
-                action("Posted Loan Issues")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Posted Loan Issues';
-                    RunObject = Page "Posted Loan Issue Req.";
-                    ToolTip = 'Executes the Posted Loan Issues action.';
-                }
-                action("Loan Issue Surrenders")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Loan Issue Surrenders List';
-                    RunObject = Page "Loan Issue Surrenders";
-                    ToolTip = 'Executes the Loan Issue Surrenders List action.';
-                }
-                action("Approved Loan Issue Surrenders")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Approved Loan Issue Surrenders';
-                    RunObject = Page "Approved Loan Issue Surrenders";
-                    ToolTip = 'Executes the Approved Loan Issue Surrenders action.';
-                }
-                action("Posted Loan Issue Surrenders")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Posted Loan Issue Surrenders';
-                    RunObject = Page "Posted Loan Issue Surrenders";
-                    ToolTip = 'Executes the Posted Loan Issue Surrenders action.';
-                }
-            }
+          //  }
+            // group("EEM Loan Issue")
+            // {
+            //     Caption = 'EEM Loan Issues';
+            //     action("Loan Issue Requests")
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Loan Issue Requests List';
+            //         RunObject = Page "Loan Issue Requests";
+            //                         ToolTip = 'Executes the Loan Issue Requests List action.';
+            //     }
+            //     action("Approved Loan Issue Requests")
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Approved Loan Issue Requests';
+            //         RunObject = Page "Approved Loan Issue Requests";
+            //                         ToolTip = 'Executes the Approved Loan Issue Requests action.';
+            //     }
+            //     action("Posted Loan Issues")
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Posted Loan Issues';
+            //         RunObject = Page "Posted Loan Issue Req.";
+            //                         ToolTip = 'Executes the Posted Loan Issues action.';
+            //     }
+            //     action("Loan Issue Surrenders")
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Loan Issue Surrenders List';
+            //         RunObject = Page "Loan Issue Surrenders";
+            //                         ToolTip = 'Executes the Loan Issue Surrenders List action.';
+            //     }
+            //     action("Approved Loan Issue Surrenders")
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Approved Loan Issue Surrenders';
+            //         RunObject = Page "Approved Loan Issue Surrenders";
+            //                         ToolTip = 'Executes the Approved Loan Issue Surrenders action.';
+            //     }
+            //     action("Posted Loan Issue Surrenders")
+            //     {
+            //         ApplicationArea = Basic;
+            //         Caption = 'Posted Loan Issue Surrenders';
+            //         RunObject = Page "Posted Loan Issue Surrenders";
+            //                         ToolTip = 'Executes the Posted Loan Issue Surrenders action.';
+            //     }
+            // }
             group("Purchase Requisitions ")
             {
                 Caption = 'Purchase Requisitions ';
@@ -545,32 +547,32 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = 'Purchase Requisitions List';
                     RunObject = Page "Open Purchase Requisitions";
-                    ToolTip = 'Executes the Purchase Requisitions List action.';
+                                    ToolTip = 'Executes the Purchase Requisitions List action.';
                 }
                 action("Approved Purchase Requsitions ")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Approved Purchase Requsitions ';
                     RunObject = Page "Approved PRN";
-                    ToolTip = 'Executes the Approved Purchase Requsitions  action.';
+                                    ToolTip = 'Executes the Approved Purchase Requsitions  action.';
                 }
                 action("Unassigned Purchase Requisitions")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Unasssigned PRNs";
-                    ToolTip = 'Executes the Unassigned Purchase Requisitions action.';
+                                    ToolTip = 'Executes the Unassigned Purchase Requisitions action.';
                 }
                 action("Assigned Purchase Requisitions")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Assigned PRNs";
-                    ToolTip = 'Executes the Assigned Purchase Requisitions action.';
+                                    ToolTip = 'Executes the Assigned Purchase Requisitions action.';
                 }
                 action("Ordered Purchase Requisitions")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Ordered Requisitions";
-                    ToolTip = 'Executes the Ordered Purchase Requisitions action.';
+                                    ToolTip = 'Executes the Ordered Purchase Requisitions action.';
                 }
             }
             group("Sourcing Process")
@@ -581,185 +583,185 @@ Page 70119 "Purchasing Agent Role Center1"
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Works Purchase Requisitions";
-                    ToolTip = 'Executes the Works Purchase Requisition action.';
+                                    ToolTip = 'Executes the Works Purchase Requisition action.';
                 }
                 action("Approved Purchase Requisition ")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved PRN";
-                    ToolTip = 'Executes the Approved Purchase Requisition  action.';
+                                    ToolTip = 'Executes the Approved Purchase Requisition  action.';
                 }
                 action("Direct Procurement Tender Invi")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Direct Procurement Tender Invitation';
                     RunObject = Page "Direct Procurement Tender Invi";
-                    ToolTip = 'Executes the Direct Procurement Tender Invitation action.';
+                                    ToolTip = 'Executes the Direct Procurement Tender Invitation action.';
                 }
                 action("Approved Direct Procurements")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Approved Direct Procurements';
                     RunObject = Page "Approved Direct Procurements";
-                    ToolTip = 'Executes the Approved Direct Procurements action.';
+                                    ToolTip = 'Executes the Approved Direct Procurements action.';
                 }
                 action("Processed Direct Procurement")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Processed Direct Procurement';
                     RunObject = Page "Processed Direct Procurements";
-                    ToolTip = 'Executes the Processed Direct Procurement action.';
+                                    ToolTip = 'Executes the Processed Direct Procurement action.';
                 }
                 action("Cancelled Direct Procurements")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Cancelled Direct Procurements';
                     RunObject = Page "Cancelled Direct Procurements";
-                    ToolTip = 'Executes the Cancelled Direct Procurements action.';
+                                    ToolTip = 'Executes the Cancelled Direct Procurements action.';
                 }
                 action("Closed Direct Procurements")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Closed Direct Procurements';
                     RunObject = Page "Closed Direct Procurements";
-                    ToolTip = 'Executes the Closed Direct Procurements action.';
+                                    ToolTip = 'Executes the Closed Direct Procurements action.';
                 }
                 action("Draft Invitation for Supply")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Draft Invitation For Supply";
-                    ToolTip = 'Executes the Draft Invitation for Supply action.';
+                                    ToolTip = 'Executes the Draft Invitation for Supply action.';
                 }
                 action("Approved Invitation for Supply")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Invitation For Supply";
-                    ToolTip = 'Executes the Approved Invitation for Supply action.';
+                                    ToolTip = 'Executes the Approved Invitation for Supply action.';
                 }
                 action("Published Invitation for Supply")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Publishe Invitation For Supply";
-                    ToolTip = 'Executes the Published Invitation for Supply action.';
+                                    ToolTip = 'Executes the Published Invitation for Supply action.';
                 }
                 action("Request for Quoatation(RFQ)")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Request for Quotation List';
                     RunObject = Page "Request For Quotations (RFQ)";
-                    ToolTip = 'Executes the Request for Quotation List action.';
+                                    ToolTip = 'Executes the Request for Quotation List action.';
                 }
                 action("Approved Quotation(RFQ)")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Quotations(RFQ)";
-                    ToolTip = 'Executes the Approved Quotation(RFQ) action.';
+                                    ToolTip = 'Executes the Approved Quotation(RFQ) action.';
                 }
                 action("Tender Addendum Notice")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Tender Addendum Notice";
-                    ToolTip = 'Executes the Tender Addendum Notice action.';
+                                    ToolTip = 'Executes the Tender Addendum Notice action.';
                 }
                 action("Standard Purchase Requisitions Notes")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Open Purchase Requisitions";
-                    ToolTip = 'Executes the Standard Purchase Requisitions Notes action.';
+                                    ToolTip = 'Executes the Standard Purchase Requisitions Notes action.';
                 }
                 action("Approved Purchase Requisition Pending Ordering")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved PRN";
-                    ToolTip = 'Executes the Approved Purchase Requisition Pending Ordering action.';
+                                    ToolTip = 'Executes the Approved Purchase Requisition Pending Ordering action.';
                 }
                 action("Low Value Procurements (LVP)")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Low Value Procurements (LVP)";
-                    ToolTip = 'Executes the Low Value Procurements (LVP) action.';
+                                    ToolTip = 'Executes the Low Value Procurements (LVP) action.';
                 }
                 action("Approved Low Value Procurements (LVP)")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Low Value Procurement";
-                    ToolTip = 'Executes the Approved Low Value Procurements (LVP) action.';
+                                    ToolTip = 'Executes the Approved Low Value Procurements (LVP) action.';
                 }
                 action("Processed Low Value Procurements (LVP)")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Processed LowValue Procurement";
-                    ToolTip = 'Executes the Processed Low Value Procurements (LVP) action.';
+                                    ToolTip = 'Executes the Processed Low Value Procurements (LVP) action.';
                 }
                 action("Frameork Agreements Invitations")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Framework Agreements List";
-                    ToolTip = 'Executes the Frameork Agreements Invitations action.';
+                                    ToolTip = 'Executes the Frameork Agreements Invitations action.';
                 }
                 action("Approved Framework Agreement Invitations")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Framework Agreements";
-                    ToolTip = 'Executes the Approved Framework Agreement Invitations action.';
+                                    ToolTip = 'Executes the Approved Framework Agreement Invitations action.';
                 }
                 action("Submitted Framework Agreement Invitations")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Submitted Framewo Procurements";
-                    ToolTip = 'Executes the Submitted Framework Agreement Invitations action.';
+                                    ToolTip = 'Executes the Submitted Framework Agreement Invitations action.';
                 }
                 action("Processed Framework Agreement Invitations")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Processed Framework Agreements";
-                    ToolTip = 'Executes the Processed Framework Agreement Invitations action.';
+                                    ToolTip = 'Executes the Processed Framework Agreement Invitations action.';
                 }
                 action("Framework Request For Quotations (RFQ)")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Special Request For Quotations";
-                    ToolTip = 'Executes the Framework Request For Quotations (RFQ) action.';
+                                    ToolTip = 'Executes the Framework Request For Quotations (RFQ) action.';
                 }
                 action("Approved Special Quotations")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Special Quotations";
-                    ToolTip = 'Executes the Approved Special Quotations action.';
+                                    ToolTip = 'Executes the Approved Special Quotations action.';
                 }
                 action("Archived Special Request For Quotations (RFQ)")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Archived Special RFQs";
-                    ToolTip = 'Executes the Archived Special Request For Quotations (RFQ) action.';
+                                    ToolTip = 'Executes the Archived Special Request For Quotations (RFQ) action.';
                 }
 
                 action("Direct Procurement List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Direct Procurement List";
-                    Visible = false;
-                    ToolTip = 'Executes the Direct Procurement List action.';
+                                    Visible = false;
+                                    ToolTip = 'Executes the Direct Procurement List action.';
                 }
                 action("Prebid Meeting Register")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFS Prebid Register";
-                    ToolTip = 'Executes the Prebid Meeting Register action.';
+                                    ToolTip = 'Executes the Prebid Meeting Register action.';
                 }
                 action("IFS Committee2")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Standing Committees';
                     RunObject = Page "Clustered IFS Tender Committee";
-                    ToolTip = 'Executes the Standing Committees action.';
+                                    ToolTip = 'Executes the Standing Committees action.';
                 }
                 action("IFS Committee")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Tender Committees';
                     RunObject = Page "IFS Tender Committee";
-                    ToolTip = 'Executes the Tender Committees action.';
+                                    ToolTip = 'Executes the Tender Committees action.';
                 }
             }
             group("Supplier Prequalification")
@@ -771,7 +773,7 @@ Page 70119 "Purchasing Agent Role Center1"
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Vendor Registration";
-                    ToolTip = 'Executes the Registered Suppliers action.';
+                                    ToolTip = 'Executes the Registered Suppliers action.';
                 }
                 // action("Invitation for Registration")
                 // {
@@ -782,68 +784,68 @@ Page 70119 "Purchasing Agent Role Center1"
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Invitation For Registration";
-                    ToolTip = 'Executes the Invitation for Registration action.';
+                                    ToolTip = 'Executes the Invitation for Registration action.';
                 }
                 action("Published Invitation for Registration")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "pubInvitation For Registration";
-                    ToolTip = 'Executes the Published Invitation for Registration action.';
+                                    ToolTip = 'Executes the Published Invitation for Registration action.';
                 }
                 action("IFR Tender Committe")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFP Tender Committee";
-                    ToolTip = 'Executes the IFR Tender Committe action.';
+                                    ToolTip = 'Executes the IFR Tender Committe action.';
                 }
                 action("IFR Response List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFR Response List";
-                    ToolTip = 'Executes the IFR Response List action.';
+                                    ToolTip = 'Executes the IFR Response List action.';
                 }
                 action("Registration Responses")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "RFI Response List";
-                    ToolTip = 'Executes the Registration Responses action.';
+                                    ToolTip = 'Executes the Registration Responses action.';
                 }
                 action("IFP Opening Register")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFP Opening Register";
-                    ToolTip = 'Executes the IFP Opening Register action.';
+                                    ToolTip = 'Executes the IFP Opening Register action.';
                 }
                 action("Final Evaluation Vouchers")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFRPrequalification Evaluation";
-                    ToolTip = 'Executes the Final Evaluation Vouchers action.';
+                                    ToolTip = 'Executes the Final Evaluation Vouchers action.';
                 }
                 action("IFR Evaluation Report")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFR Evaluation  Report List";
-                    ToolTip = 'Executes the IFR Evaluation Report action.';
+                                    ToolTip = 'Executes the IFR Evaluation Report action.';
                 }
                 action("IFR Proffessional Opinion")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFR Proffession Opinion list";
-                    ToolTip = 'Executes the IFR Proffessional Opinion action.';
+                                    ToolTip = 'Executes the IFR Proffessional Opinion action.';
                 }
                 action("Appr. IFR Professional Opinion")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Appr. IFR Profession Opinion";
-                    ToolTip = 'Executes the IFR Proffessional Opinion action.';
-                    Caption = 'Approved Professional Opinion List';
+                                    ToolTip = 'Executes the IFR Proffessional Opinion action.';
+                                    Caption = 'Approved Professional Opinion List';
                 }
                 action("IFR Notice Of Award")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFR Notice of Award list";
-                    ToolTip = 'Executes the IFR Notice Of Award action.';
+                                    ToolTip = 'Executes the IFR Notice Of Award action.';
                 }
                 // action("Registration Evaluation Vouchers")
                 // {
@@ -875,22 +877,22 @@ Page 70119 "Purchasing Agent Role Center1"
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Vendor Appraisal Vouchers";
-                    ToolTip = 'Executes the Supplier Appraisal action.';
-                    Visible = true;
+                                    ToolTip = 'Executes the Supplier Appraisal action.';
+                                    Visible = true;
                 }
                 action("Appraisal Periods")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Vendor Appraisal Periods";
-                    ToolTip = 'Executes the Appraisal Periods action.';
-                    Visible = true;
+                                    ToolTip = 'Executes the Appraisal Periods action.';
+                                    Visible = true;
                 }
                 action("Appraisal Report")
                 {
                     ApplicationArea = Basic;
                     RunObject = Report "Consolidated Vendor Appraissal";
-                    ToolTip = 'Executes the Appraisal Report action.';
-                    Visible = true;
+                                    ToolTip = 'Executes the Appraisal Report action.';
+                                    Visible = true;
                 }
                 //Reinventment
                 // action("Registered Suppliers")
@@ -958,31 +960,31 @@ Page 70119 "Purchasing Agent Role Center1"
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Bid Response List";
-                    ToolTip = 'Executes the Bid Response List action.';
+                                    ToolTip = 'Executes the Bid Response List action.';
                 }
                 action("Evaluation Templates")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Bid Evaluation Template";
-                    ToolTip = 'Executes the Evaluation Templates action.';
+                                    ToolTip = 'Executes the Evaluation Templates action.';
                 }
                 action("Standing Committees")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Clustered IFS Tender Committee";
-                    ToolTip = 'Executes the Standing Committees action.';
+                                    ToolTip = 'Executes the Standing Committees action.';
                 }
                 action("IFS Tender Committees")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "IFS Tender Committee";
-                    ToolTip = 'Executes the IFS Tender Committees action.';
+                                    ToolTip = 'Executes the IFS Tender Committees action.';
                 }
                 action("Technical Bid Opening Register")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Bid Opening Register";
-                    ToolTip = 'Executes the Technical Bid Opening Register action.';
+                                    ToolTip = 'Executes the Technical Bid Opening Register action.';
                 }
                 action("Individual Preliminary Eval")
                 {
@@ -990,21 +992,21 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Individual Preliminary Evaluation';
                     Visible = false;
                     RunObject = Page "Individual Preliminary Evaluat";
-                    ToolTip = 'Executes the Individual Preliminary Evaluation action.';
+                                    ToolTip = 'Executes the Individual Preliminary Evaluation action.';
                 }
                 action("Final preliminary Eval")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Final preliminary Evaluation';
                     RunObject = Page "Bid Evaluation Register";
-                    ToolTip = 'Executes the Final preliminary Evaluation action.';
+                                    ToolTip = 'Executes the Final preliminary Evaluation action.';
                 }
                 action("Consolidated Preliminary Evaluation")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Consolidated Preliminary Evaluation';
                     RunObject = Page "Consolidated Preliminary List";
-                    ToolTip = 'Executes the Consolidated Preliminary Evaluation action.';
+                                    ToolTip = 'Executes the Consolidated Preliminary Evaluation action.';
                 }
 
                 action("Individual Technical Eval")
@@ -1013,28 +1015,28 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Individual Technical Evaluation';
                     Visible = false;
                     RunObject = Page "Individual Technical Bid Eval";
-                    ToolTip = 'Executes the Individual Technical Evaluation action.';
+                                    ToolTip = 'Executes the Individual Technical Evaluation action.';
                 }
                 action("Final Technical Eval")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Final Technical Evaluation';
                     RunObject = Page "Technical Bid Evaluation list";
-                    ToolTip = 'Executes the Final Technical Evaluation action.';
+                                    ToolTip = 'Executes the Final Technical Evaluation action.';
                 }
                 action("Consolidated Technical Evaluation")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Consolidated Technical Evaluation';
                     RunObject = Page "Consolidated Technical List";
-                    ToolTip = 'Executes the Consolidated Technical Evaluation action.';
+                                    ToolTip = 'Executes the Consolidated Technical Evaluation action.';
                 }
 
                 action("Financial Opening Register")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Finance Opening Register";
-                    ToolTip = 'Executes the Financial Opening Register action.';
+                                    ToolTip = 'Executes the Financial Opening Register action.';
                 }
                 action("Individual financial Eval")
                 {
@@ -1042,51 +1044,51 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Individual financial Evaluation';
                     Visible = false;
                     RunObject = Page "Individual Financial Bid Eval";
-                    ToolTip = 'Executes the Individual financial Evaluation action.';
+                                    ToolTip = 'Executes the Individual financial Evaluation action.';
                 }
                 action("Final Financial Eval")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Final Financial Evaluation';
                     RunObject = Page "Financial Bid Evaluation list";
-                    ToolTip = 'Executes the Final Financial Evaluation action.';
+                                    ToolTip = 'Executes the Final Financial Evaluation action.';
                 }
                 action("Approved Report")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Approved Evaluation Reports';
                     RunObject = Page "Approved Invitation For Supply";
-                    ToolTip = 'Executes the Approved Evaluation Reports action.';
+                                    ToolTip = 'Executes the Approved Evaluation Reports action.';
                 }
                 action("Vendor Due-Diligence")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Vendor Due-Diligence";
-                    ToolTip = 'Executes the Vendor Due-Diligence action.';
+                                    ToolTip = 'Executes the Vendor Due-Diligence action.';
                 }
                 action("Final Evaluation Report")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Final Evaluation  Report";
-                    ToolTip = 'Executes the Final Evaluation Report action.';
+                                    ToolTip = 'Executes the Final Evaluation Report action.';
                 }
                 action("Professional Opinion")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Proffession Opinion list";
-                    ToolTip = 'Executes the Professional Opinion action.';
+                                    ToolTip = 'Executes the Professional Opinion action.';
                 }
                 action("Notification of Award")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Notice of Award list";
-                    ToolTip = 'Executes the Notification of Award action.';
+                                    ToolTip = 'Executes the Notification of Award action.';
                 }
                 action("Consolidated1 Preliminary Evaluation")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Consolidated Preliminary List";
-                    ToolTip = 'Executes the Consolidated1 Preliminary Evaluation action.';
+                                    ToolTip = 'Executes the Consolidated1 Preliminary Evaluation action.';
                 }
             }
             group("Reports&Analysis1")
@@ -1097,35 +1099,35 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = '30% 2nd Quater Report';
                     RunObject = report "30% 2nd Quater";
-                    ToolTip = 'Executes the 30% 2nd Quater Report action.';
+                                    ToolTip = 'Executes the 30% 2nd Quater Report action.';
                 }
                 action("40%  Allocation")
                 {
                     ApplicationArea = Basic;
                     Caption = '40%  Allocation Report';
                     RunObject = report "40%  Allocation";
-                    ToolTip = 'Executes the 40%  Allocation Report action.';
+                                    ToolTip = 'Executes the 40%  Allocation Report action.';
                 }
                 action("Monthly Progress Report")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Monthly Progress Report';
                     RunObject = report "Monthly Progress Report";
-                    ToolTip = 'Executes the Monthly Progress Report action.';
+                                    ToolTip = 'Executes the Monthly Progress Report action.';
                 }
                 action("Procurement Plan Summary Report")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Procurement Plan Summary Report';
                     RunObject = report "Procurement Plan Summary";
-                    ToolTip = 'Executes the Procurement Plan Summary Report action.';
+                                    ToolTip = 'Executes the Procurement Plan Summary Report action.';
                 }
                 action(InventoryUsage)
                 {
                     ApplicationArea = Basic;
                     Caption = 'Inventory Usage';
                     RunObject = report "InventoryUsage";
-                    ToolTip = 'Executes the Inventory Usage action.';
+                                    ToolTip = 'Executes the Inventory Usage action.';
                 }
 
             }
@@ -1143,21 +1145,21 @@ Page 70119 "Purchasing Agent Role Center1"
                         ApplicationArea = Basic;
                         Caption = 'Fixed ASSETS';
                         RunObject = Page "Fixed Asset List";
-                        ToolTip = 'Executes the Fixed ASSETS action.';
+                                        ToolTip = 'Executes the Fixed ASSETS action.';
                     }
                     action("Insurance")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Insurance';
                         RunObject = Page "Insurance List";
-                        ToolTip = 'Executes the Insurance action.';
+                                        ToolTip = 'Executes the Insurance action.';
                     }
                     action("Asset Transfer List")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Asset Transfer List';
                         RunObject = Page "Hr Asset Transfer List";
-                        ToolTip = 'Executes the Asset Transfer List action.';
+                                        ToolTip = 'Executes the Asset Transfer List action.';
                     }
 
                 }
@@ -1169,14 +1171,14 @@ Page 70119 "Purchasing Agent Role Center1"
                         ApplicationArea = Basic;
                         Caption = 'FA Registers';
                         RunObject = Page "FA Registers";
-                        ToolTip = 'Executes the FA Registers action.';
+                                        ToolTip = 'Executes the FA Registers action.';
                     }
                     action("Navigate3")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Navigate';
                         RunObject = Page "Navigate";
-                        ToolTip = 'Executes the Navigate action.';
+                                        ToolTip = 'Executes the Navigate action.';
                     }
 
                 }
@@ -1188,14 +1190,14 @@ Page 70119 "Purchasing Agent Role Center1"
                         ApplicationArea = Basic;
                         Caption = 'FA Aalysis';
                         RunObject = Page "FA Allocations";
-                        ToolTip = 'Executes the FA Aalysis action.';
+                                        ToolTip = 'Executes the FA Aalysis action.';
                     }
                     action("Navigate")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Navigate';
                         RunObject = Page "Navigate";
-                        ToolTip = 'Executes the Navigate action.';
+                                        ToolTip = 'Executes the Navigate action.';
                     }
 
                 }
@@ -1208,35 +1210,35 @@ Page 70119 "Purchasing Agent Role Center1"
                         ApplicationArea = Basic;
                         Caption = 'Fixed ASSETS';
                         RunObject = Page "Fixed Asset List";
-                        ToolTip = 'Executes the Fixed ASSETS action.';
+                                        ToolTip = 'Executes the Fixed ASSETS action.';
                     }
                     action("Functional Disposal plans")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Functional Disposal plans';
                         RunObject = Page "Functional Disposal plans";
-                        ToolTip = 'Executes the Functional Disposal plans action.';
+                                        ToolTip = 'Executes the Functional Disposal plans action.';
                     }
                     action("Submitted Functional Disposal plans")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Submitted Functional Disposal plans';
                         RunObject = Page "Sub Functional Disposal plans";
-                        ToolTip = 'Executes the Submitted Functional Disposal plans action.';
+                                        ToolTip = 'Executes the Submitted Functional Disposal plans action.';
                     }
                     action("Consolidated Disposal plan")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Consolidated Disposal plan';
                         RunObject = Page "Disposal plan";
-                        ToolTip = 'Executes the Consolidated Disposal plan action.';
+                                        ToolTip = 'Executes the Consolidated Disposal plan action.';
                     }
                     action("Disposal Committee Appointment")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Disposal Committee Appointment';
                         RunObject = Page "Disposal Committee";
-                        ToolTip = 'Executes the Disposal Committee Appointment action.';
+                                        ToolTip = 'Executes the Disposal Committee Appointment action.';
                     }
                 }
 
@@ -1249,14 +1251,14 @@ Page 70119 "Purchasing Agent Role Center1"
                         ApplicationArea = Basic;
                         Caption = 'Asset Disposal Requisition';
                         RunObject = Page "Disposal List";
-                        ToolTip = 'Executes the Asset Disposal Requisition action.';
+                                        ToolTip = 'Executes the Asset Disposal Requisition action.';
                     }
                     action("Approved Disposal Requisition List")
                     {
                         ApplicationArea = Basic;
                         Caption = 'Approved Disposal Requisition List';
                         RunObject = Page "Approved REQ Disposal List";
-                        ToolTip = 'Executes the Approved Disposal Requisition List action.';
+                                        ToolTip = 'Executes the Approved Disposal Requisition List action.';
                     }
 
                 }
@@ -1272,14 +1274,14 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Asset Transfer Vouchers';
                             RunObject = Page "Asset Transfer Vouchers";
-                            ToolTip = 'Executes the Asset Transfer Vouchers action.';
+                                            ToolTip = 'Executes the Asset Transfer Vouchers action.';
                         }
                         action("Approved Asset Transfer Vouchers")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Approved Asset Transfer Vouchers';
                             RunObject = Page "Approved Asset Transfer Vouche";
-                            ToolTip = 'Executes the Approved Asset Transfer Vouchers action.';
+                                            ToolTip = 'Executes the Approved Asset Transfer Vouchers action.';
                         }
                     }
 
@@ -1292,21 +1294,21 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Disposal Quotes';
                             RunObject = Page "Disposal Quotes List";
-                            ToolTip = 'Executes the Disposal Quotes action.';
+                                            ToolTip = 'Executes the Disposal Quotes action.';
                         }
                         action("Invitation to Tender Notices")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Invitation to Tender Notices';
                             RunObject = Page "Invitation to Tender List";
-                            ToolTip = 'Executes the Invitation to Tender Notices action.';
+                                            ToolTip = 'Executes the Invitation to Tender Notices action.';
                         }
                         action("Approved Disposal Invitations")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Approved Invitation to Tender Notices';
                             RunObject = Page "Approved Disposal Invitations";
-                            ToolTip = 'Executes the Approved Invitation to Tender Notices action.';
+                                            ToolTip = 'Executes the Approved Invitation to Tender Notices action.';
                         }
                     }
                     group("Sale by Public Auction")
@@ -1318,14 +1320,14 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Asset Auction Vouchers';
                             RunObject = Page "Asset Auction Vouchers";
-                            ToolTip = 'Executes the Asset Auction Vouchers action.';
+                                            ToolTip = 'Executes the Asset Auction Vouchers action.';
                         }
                         action("Approved Asset Auction Vouchers")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Approved Asset Auction Vouchers';
                             RunObject = Page "Approved AssetAuction Voucher";
-                            ToolTip = 'Executes the Approved Asset Auction Vouchers action.';
+                                            ToolTip = 'Executes the Approved Asset Auction Vouchers action.';
                         }
                     }
                     group("Trade-in")
@@ -1337,14 +1339,14 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Asset Trade-in Vouchers';
                             RunObject = Page "Asset Trade-in Vouchers";
-                            ToolTip = 'Executes the Asset Trade-in Vouchers action.';
+                                            ToolTip = 'Executes the Asset Trade-in Vouchers action.';
                         }
                         action("Approved Asset Trade-in Voucher")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Approved Asset Trade-in Voucher';
                             RunObject = Page "Approved Asset Tradein Voucher";
-                            ToolTip = 'Executes the Approved Asset Trade-in Voucher action.';
+                                            ToolTip = 'Executes the Approved Asset Trade-in Voucher action.';
                         }
                     }
                     group("Transfer to Employee")
@@ -1356,14 +1358,14 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Asset Transfer Vouchers';
                             RunObject = Page "Asset Transfer Vouchers";
-                            ToolTip = 'Executes the Asset Transfer Vouchers action.';
+                                            ToolTip = 'Executes the Asset Transfer Vouchers action.';
                         }
                         action("Approved Asset Transfer Voucher")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Approved Asset Transfer Vouchers';
                             RunObject = Page "Approved Asset Transfer Vouche";
-                            ToolTip = 'Executes the Approved Asset Transfer Vouchers action.';
+                                            ToolTip = 'Executes the Approved Asset Transfer Vouchers action.';
                         }
                     }
                     group("Waste Disposal Management")
@@ -1375,14 +1377,14 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Asset Disposal Vouchers';
                             RunObject = Page "Asset Disposal Vouchers";
-                            ToolTip = 'Executes the Asset Disposal Vouchers action.';
+                                            ToolTip = 'Executes the Asset Disposal Vouchers action.';
                         }
                         action("Approved Asset Disposal Vouchers")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Approved Asset Disposal Vouchers';
                             RunObject = Page "Approved Asset Dispose Voucher";
-                            ToolTip = 'Executes the Approved Asset Disposal Vouchers action.';
+                                            ToolTip = 'Executes the Approved Asset Disposal Vouchers action.';
                         }
                     }
                     group("Setup")
@@ -1394,14 +1396,14 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Procurement Committee Types';
                             RunObject = Page "Procurement Committee Types";
-                            ToolTip = 'Executes the Procurement Committee Types action.';
+                                            ToolTip = 'Executes the Procurement Committee Types action.';
                         }
                         action("Disposal Types")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Disposal Types';
                             RunObject = Page "Disposal Types";
-                            ToolTip = 'Executes the Disposal Types action.';
+                                            ToolTip = 'Executes the Disposal Types action.';
                         }
                     }
                     group("Disposal Contract Management")
@@ -1413,14 +1415,14 @@ Page 70119 "Purchasing Agent Role Center1"
                             ApplicationArea = Basic;
                             Caption = 'Sales Orders';
                             RunObject = Page "Sales Order List";
-                            ToolTip = 'Executes the Sales Orders action.';
+                                            ToolTip = 'Executes the Sales Orders action.';
                         }
                         action("Posted Sales Invoices")
                         {
                             ApplicationArea = Basic;
                             Caption = 'Posted Sales Invoices';
                             RunObject = Page "Posted Sales Invoices";
-                            ToolTip = 'Executes the Posted Sales Invoices action.';
+                                            ToolTip = 'Executes the Posted Sales Invoices action.';
                         }
                     }
 
@@ -1439,14 +1441,14 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = 'Standard Contract List';
                     RunObject = Page "Contract List";
-                    ToolTip = 'Executes the Standard Contract List action.';
+                                    ToolTip = 'Executes the Standard Contract List action.';
                 }
                 action("Framework Agreements")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Framework Agreements';
                     RunObject = Page "Framework Agreement Invitation";
-                    ToolTip = 'Executes the Framework Agreements action.';
+                                    ToolTip = 'Executes the Framework Agreements action.';
                 }
                 // action("Purchase Orders")
                 // {
@@ -1459,7 +1461,7 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = 'Inspection and Acceptance Committee';
                     RunObject = Page "Inspections List";
-                    ToolTip = 'Executes the Inspection and Acceptance Committee action.';
+                                    ToolTip = 'Executes the Inspection and Acceptance Committee action.';
                 }
 
                 action("Inspection and Acceptance Comm")
@@ -1467,7 +1469,7 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = 'Inspection and Acceptance Committee';
                     RunObject = Page "Inspection Committee Appointme";
-                    ToolTip = 'Executes the Inspection and Acceptance Committee action.';
+                                    ToolTip = 'Executes the Inspection and Acceptance Committee action.';
                 }
 
                 action("Clustered IAC")
@@ -1475,27 +1477,27 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = 'Standing Inspection and Acceptance Committee';
                     RunObject = Page "Clustered IFS Tender Committee";
-                    ToolTip = 'Executes the Standing Inspection and Acceptance Committee action.';
+                                    ToolTip = 'Executes the Standing Inspection and Acceptance Committee action.';
                 }
                 action("Inspection List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Inspections List";
-                    ToolTip = 'Executes the Inspection List action.';
+                                    ToolTip = 'Executes the Inspection List action.';
                 }
                 action("PurchaseOrders")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Purchase Orders List';
                     RunObject = Page "Purchase Order List";
-                    ToolTip = 'Opens Purchase Orders List.';
+                                    ToolTip = 'Opens Purchase Orders List.';
                 }
                 action("Processed Purchase Orders")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Processed Purchase Orders';
                     RunObject = Page "Posted Purchase Orders List";
-                    ToolTip = 'Executes Processed Purchase Orders.';
+                                    ToolTip = 'Executes Processed Purchase Orders.';
                 }
             }
             group("Self Service")
@@ -1507,35 +1509,35 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = 'Imprest Request';
                     RunObject = Page "Imprest Memos";
-                    ToolTip = 'Executes the Imprest Request action.';
+                                    ToolTip = 'Executes the Imprest Request action.';
                 }
                 action(Action105)
                 {
                     ApplicationArea = Basic;
                     Caption = 'Imprest Request';
                     RunObject = Page "Imprest Requisitions";
-                    ToolTip = 'Executes the Imprest Request action.';
+                                    ToolTip = 'Executes the Imprest Request action.';
                 }
                 action("Imprest Surrender")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Imprest Surrender';
                     RunObject = Page "Imprest Surrenders";
-                    ToolTip = 'Executes the Imprest Surrender action.';
+                                    ToolTip = 'Executes the Imprest Surrender action.';
                 }
                 action("Claims Refund")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Claims Refund';
                     RunObject = Page "Staff Claims";
-                    ToolTip = 'Executes the Claims Refund action.';
+                                    ToolTip = 'Executes the Claims Refund action.';
                 }
                 action("Purchase Requisition ")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Purchase Requisition ';
                     RunObject = Page "Purchase Requisitions List";
-                    ToolTip = 'Executes the Purchase Requisition  action.';
+                                    ToolTip = 'Executes the Purchase Requisition  action.';
                 }
                 action("Store Requisition ")
                 {
@@ -1543,7 +1545,7 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Store Requisition ';
                     Image = Vendor;
                     RunObject = Page "Store Requisitions";
-                    ToolTip = 'Executes the Store Requisition  action.';
+                                    ToolTip = 'Executes the Store Requisition  action.';
                 }
                 action("Leave Application ")
                 {
@@ -1551,7 +1553,7 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Leave Application ';
                     Image = Balance;
                     RunObject = Page "Leave Applications List";
-                    ToolTip = 'Executes the Leave Application  action.';
+                                    ToolTip = 'Executes the Leave Application  action.';
                 }
                 action("Fleet Requisition")
                 {
@@ -1559,44 +1561,44 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Fleet Requisition';
                     Image = Documents;
                     RunObject = Page "Fleet Requisition List";
-                    ToolTip = 'Executes the Fleet Requisition action.';
+                                    ToolTip = 'Executes the Fleet Requisition action.';
                 }
                 action("ICT Help Desk")
                 {
                     ApplicationArea = Basic;
                     Caption = 'ICT Help Desk';
                     RunObject = Page "ICT Helpdesk Request List";
-                    ToolTip = 'Executes the ICT Help Desk action.';
+                                    ToolTip = 'Executes the ICT Help Desk action.';
                 }
                 action("My CEO Appointments")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "My CEO Appointments";
-                    ToolTip = 'Executes the My CEO Appointments action.';
+                                    ToolTip = 'Executes the My CEO Appointments action.';
                 }
                 action("My Accepted CEO Appointments")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "My Accepted CEO Appointments";
-                    ToolTip = 'Executes the My Accepted CEO Appointments action.';
+                                    ToolTip = 'Executes the My Accepted CEO Appointments action.';
                 }
                 action("My CEO Assigned Tasks")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Assigned Tasks by CEO";
-                    ToolTip = 'Executes the My CEO Assigned Tasks action.';
+                                    ToolTip = 'Executes the My CEO Assigned Tasks action.';
                 }
                 action("My Completed Tasks Assigned")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "My Completed Tasks Assigned";
-                    ToolTip = 'Executes the My Completed Tasks Assigned action.';
+                                    ToolTip = 'Executes the My Completed Tasks Assigned action.';
                 }
                 action("Suggestions Box")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Suggestions Box";
-                    ToolTip = 'Executes the Suggestions Box action.';
+                                    ToolTip = 'Executes the Suggestions Box action.';
                 }
             }
             group("Approvals ")
@@ -1609,7 +1611,7 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Approval Entries';
                     Image = Currency;
                     RunObject = Page "Approval Entries";
-                    ToolTip = 'Executes the Approval Entries action.';
+                                    ToolTip = 'Executes the Approval Entries action.';
                 }
                 action("Approval Request Entries")
                 {
@@ -1617,7 +1619,7 @@ Page 70119 "Purchasing Agent Role Center1"
                     Caption = 'Approval Request Entries';
                     Image = AccountingPeriods;
                     RunObject = Page "Approval Request Entries";
-                    ToolTip = 'Executes the Approval Request Entries action.';
+                                    ToolTip = 'Executes the Approval Request Entries action.';
                 }
             }
             group("Posted Documents & History ")
@@ -1629,49 +1631,49 @@ Page 70119 "Purchasing Agent Role Center1"
                     ApplicationArea = Basic;
                     Caption = 'Posted Purchase Receipts';
                     RunObject = Page "Posted Purchase Receipts";
-                    ToolTip = 'Executes the Posted Purchase Receipts action.';
+                                    ToolTip = 'Executes the Posted Purchase Receipts action.';
                 }
                 action("Goods Receive Note")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Goods Receive Note';
                     RunObject = report "Good Receive Note";
-                    ToolTip = 'Executes the Goods Receive Note action.';
+                                    ToolTip = 'Executes the Goods Receive Note action.';
                 }
                 action("Posted Purchase Invoices")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Posted Purchase Invoices';
                     RunObject = Page "Posted Purchase Invoices";
-                    ToolTip = 'Executes the Posted Purchase Invoices action.';
+                                    ToolTip = 'Executes the Posted Purchase Invoices action.';
                 }
                 action("Posted Return Shipments")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Posted Return Shipments';
                     RunObject = Page "Posted Return Shipments";
-                    ToolTip = 'Executes the Posted Return Shipments action.';
+                                    ToolTip = 'Executes the Posted Return Shipments action.';
                 }
                 action("Posted Purchase Credit Memos")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Posted Purchase Credit Memos';
                     RunObject = Page "Posted Purchase Credit Memos";
-                    ToolTip = 'Executes the Posted Purchase Credit Memos action.';
+                                    ToolTip = 'Executes the Posted Purchase Credit Memos action.';
                 }
                 action("Posted Assembly Orders")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Posted Assembly Orders';
                     RunObject = Page "Posted Assembly Orders";
-                    ToolTip = 'Executes the Posted Assembly Orders action.';
+                                    ToolTip = 'Executes the Posted Assembly Orders action.';
                 }
                 action("Purchase Order Archives")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Purchase Order Archives';
                     RunObject = Page "Purchase Order Archives";
-                    ToolTip = 'Executes the Purchase Order Archives action.';
+                                    ToolTip = 'Executes the Purchase Order Archives action.';
                 }
             }
             group(Correspondences)
@@ -1681,74 +1683,74 @@ Page 70119 "Purchasing Agent Role Center1"
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Correspondences Lists";
-                    ToolTip = 'Executes the Correspondences Lists action.';
+                                    ToolTip = 'Executes the Correspondences Lists action.';
                 }
                 action("Correspondences Pending Approv")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Correspondences Pending Approv";
-                    ToolTip = 'Executes the Correspondences Pending Approv action.';
+                                    ToolTip = 'Executes the Correspondences Pending Approv action.';
                 }
                 action("Approved Correspondences")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Correspondences";
-                    ToolTip = 'Executes the Approved Correspondences action.';
+                                    ToolTip = 'Executes the Approved Correspondences action.';
                 }
                 action("General Correspondences")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "General Correspondences";
-                    Caption = 'Memos';
-                    ToolTip = 'Executes the Memos action.';
+                                    Caption = 'Memos';
+                                    ToolTip = 'Executes the Memos action.';
                 }
                 action("Incoming Correspondence List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Incoming Correspondence List";
-                    ToolTip = 'Executes the Incoming Correspondence List action.';
+                                    ToolTip = 'Executes the Incoming Correspondence List action.';
                 }
                 action("Corrective Order Responses")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Corrective Order Responses";
-                    ToolTip = 'Executes the Corrective Order Responses action.';
+                                    ToolTip = 'Executes the Corrective Order Responses action.';
                 }
                 action("Correspondence Contacts")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Correspondence Contacts";
-                    ToolTip = 'Executes the Correspondence Contacts action.';
+                                    ToolTip = 'Executes the Correspondence Contacts action.';
                 }
                 action("Incoming Corrs Sources")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Incoming Corrs Sources";
-                    ToolTip = 'Executes the Incoming Corrs Sources action.';
+                                    ToolTip = 'Executes the Incoming Corrs Sources action.';
                 }
                 action("Incoming Correspondences File")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Incoming Correspondences File";
-                    ToolTip = 'Executes the Incoming Correspondences File action.';
+                                    ToolTip = 'Executes the Incoming Correspondences File action.';
                 }
                 action("Internal Correspondence - Memo")
                 {
                     ApplicationArea = Basic;
                     RunObject = Report "Internal Correspondence - Memo";
-                    ToolTip = 'Executes the Internal Correspondence - Memo action.';
+                                    ToolTip = 'Executes the Internal Correspondence - Memo action.';
                 }
                 action("Correspondence-Internal Letter")
                 {
                     ApplicationArea = Basic;
                     RunObject = Report "Correspondence-Internal Letter";
-                    ToolTip = 'Executes the Correspondence-Internal Letter action.';
+                                    ToolTip = 'Executes the Correspondence-Internal Letter action.';
                 }
                 action("Correspondence-External Letter")
                 {
                     ApplicationArea = Basic;
                     RunObject = Report "Correspondence-External Letter";
-                    ToolTip = 'Executes the Correspondence-External Letter action.';
+                                    ToolTip = 'Executes the Correspondence-External Letter action.';
                 }
             }
         }
@@ -1760,8 +1762,8 @@ Page 70119 "Purchasing Agent Role Center1"
                 Caption = 'Purchase &Order';
                 Image = Document;
                 RunObject = Page "Purchase Order";
-                RunPageMode = Create;
-                ToolTip = 'Executes the Purchase &Order action.';
+                                RunPageMode = Create;
+                                ToolTip = 'Executes the Purchase &Order action.';
             }
             action("Purchase &Return Order")
             {
@@ -1769,8 +1771,8 @@ Page 70119 "Purchasing Agent Role Center1"
                 Caption = 'Purchase &Return Order';
                 Image = ReturnOrder;
                 RunObject = Page "Purchase Return Order";
-                RunPageMode = Create;
-                ToolTip = 'Executes the Purchase &Return Order action.';
+                                RunPageMode = Create;
+                                ToolTip = 'Executes the Purchase &Return Order action.';
             }
         }
         area(processing)
@@ -1785,7 +1787,7 @@ Page 70119 "Purchasing Agent Role Center1"
                 ApplicationArea = Basic;
                 Image = Job;
                 RunObject = Page "Location List";
-                ToolTip = 'Executes the Location List  action.';
+                                ToolTip = 'Executes the Location List  action.';
             }
             action("Item &Journal")
             {
@@ -1793,7 +1795,7 @@ Page 70119 "Purchasing Agent Role Center1"
                 Caption = 'Item &Journal';
                 Image = Journals;
                 RunObject = Page "Item Journal";
-                ToolTip = 'Executes the Item &Journal action.';
+                                ToolTip = 'Executes the Item &Journal action.';
             }
             action("Physical Inventory Journal")
             {
@@ -1801,7 +1803,7 @@ Page 70119 "Purchasing Agent Role Center1"
                 Caption = 'Physical Inventory Journal';
                 Image = Addresses;
                 RunObject = Page "Phys. Inventory Journal";
-                ToolTip = 'Executes the Physical Inventory Journal action.';
+                                ToolTip = 'Executes the Physical Inventory Journal action.';
             }
             action("Order Plan&ning")
             {
@@ -1809,7 +1811,7 @@ Page 70119 "Purchasing Agent Role Center1"
                 Caption = 'Order Plan&ning';
                 Image = Planning;
                 RunObject = Page "Order Planning";
-                ToolTip = 'Executes the Order Plan&ning action.';
+                                ToolTip = 'Executes the Order Plan&ning action.';
             }
             separator(Action38)
             {
@@ -1820,9 +1822,9 @@ Page 70119 "Purchasing Agent Role Center1"
                 Caption = 'Requisition &Worksheet';
                 Image = Worksheet;
                 RunObject = Page "Req. Wksh. Names";
-                RunPageView = where("Template Type" = const("Req."),
+                                RunPageView = where("Template Type" = const("Req."),
                                     Recurring = const(false));
-                ToolTip = 'Executes the Requisition &Worksheet action.';
+                                ToolTip = 'Executes the Requisition &Worksheet action.';
             }
             // action("Pur&chase Prices")
             // {
@@ -1849,7 +1851,7 @@ Page 70119 "Purchasing Agent Role Center1"
                 Caption = 'Navi&gate';
                 Image = Navigate;
                 RunObject = Page Navigate;
-                ToolTip = 'Executes the Navi&gate action.';
+                                ToolTip = 'Executes the Navi&gate action.';
             }
         }
     }

@@ -11,11 +11,6 @@ Page 80199 "Performance Log Lines"
         {
             repeater(Group)
             {
-                field("Activity Type"; Rec."Activity Type")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Activity Type field.';
-                }
                 field("Initiative No."; Rec."Initiative No.")
                 {
                     ApplicationArea = Basic;
@@ -24,124 +19,69 @@ Page 80199 "Performance Log Lines"
                 field("Sub Intiative No"; Rec."Sub Intiative No")
                 {
                     ApplicationArea = Basic;
+                    Caption = 'Objective';
                     Editable = false;
-                    ToolTip = 'Specifies the value of the Sub Intiative No field.';
-                    Visible = false;
+                    ToolTip = 'Specifies the objective.';
                 }
                 field("Activity Decription"; Rec."Activity Decription")
                 {
                     ApplicationArea = Basic;
+                    Caption = 'Activity';
                     Editable = false;
-                    ToolTip = 'Specifies the value of the  Activity Description field.';
+                    ToolTip = 'Specifies the activity.';
                 }
-                field("Key Performance Indicator"; Rec."Key Performance Indicator")
+                field("Weight %"; Rec."Weight %")
                 {
                     ApplicationArea = Basic;
-                    Visible = true;
-                    ToolTip = 'Specifies the value of the Key Performance Indicator field.';
-                }
-                field(Outcome; Rec.Outcome)
-                {
-                    ApplicationArea = Basic;
-                }
-                field("Unit of Measure"; Rec."Unit of Measure")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Unit of Measure field.';
-                }
-                field("Planned Date"; Rec."Planned Date")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Planned Start Date';
+                    Caption = 'Objective Weight';
                     Editable = false;
-                    Visible = false;
-                    ToolTip = 'Specifies the value of the Planned Start Date field.';
-                }
-                field("Due Date"; Rec."Due Date")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Planned Due Date';
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Planned Due Date field.';
-                }
-                field("Achieved Date"; Rec."Achieved Date")
-                {
-                    ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Achieved Date field.';
+                    ToolTip = 'Specifies the objective weight.';
                 }
                 field("Target Qty"; Rec."Target Qty")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
-                    ToolTip = 'Specifies the value of the Target Qty field.';
-                }
-                field("Weight %"; Rec."Weight %")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    Visible = false;
-                    ToolTip = 'Specifies the value of the Weight % field.';
+                    ToolTip = 'Specifies the target quantity.';
                 }
                 field("Achieved Target"; Rec."Achieved Target")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Achieved Target field.';
-                    Caption = 'Achieved Target %';
+                    Caption = 'Achieved Qty';
+                    ToolTip = 'Specifies the quantity achieved.';
                 }
                 field(Comments; Rec.Comments)
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Comments field.';
-                }
-                field("Q1 Achieved Target"; Rec."Q1 Achieved Target")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Q1 Achieved Target field.';
-                    Visible = false;
-                }
-                field("Q2 Achieved Target"; Rec."Q2 Achieved Target")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Q2 Achieved Target field.';
-                    visible = false;
-                }
-                field("Q3 AchievedTarget"; Rec."Q3 AchievedTarget")
-                {
-                    ApplicationArea = Basic;
-                    Caption = 'Q3 Achieved Target';
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Q3 Achieved Target field.';
-                    visible = false;
-                }
-                field("Q4 Achieved Target"; Rec."Q4 Achieved Target")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Q4 Achieved Target field.';
-                    visible = false;
-                }
-                field("Remaining Targets"; Rec."Remaining Targets")
-                {
-                    ApplicationArea = Basic;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Remaining Targets field.';
+                    Caption = 'Employee Comments';
+                    ToolTip = 'Specifies the employee comments on achievement.';
                 }
                 field("Achieved Weight(%)"; Rec."Achieved Weight(%)")
                 {
                     ApplicationArea = Basic;
+                    Caption = 'Employee Rating';
                     Editable = false;
-                    Visible = false;
-                    ToolTip = 'Specifies the value of the Achieved Weight(%) field.';
+                    ToolTip = 'Employee rating in points, calculated by Update Activity Achievements.';
                 }
-                field(Variance; Rec.Variance)
+                field("Supervisor rating"; Rec."Supervisor rating")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Variance field.';
-
+                    Caption = 'Reviewer''s Comments';
+                    ToolTip = 'Specifies the reviewer''s comments.';
+                }
+                field("Supervisor Score"; Rec."Supervisor Score")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Reviewer''s Rating';
+                    ToolTip = 'Reviewer rating in points, cannot exceed the objective weight.';
+                }
+                field("Final Score"; Rec."Final Score")
+                {
+                    ApplicationArea = Basic;
+                    Editable = false;
+                    ToolTip = '40% employee rating plus 60% reviewer rating.';
                 }
             }
+
         }
     }
 

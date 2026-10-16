@@ -268,6 +268,24 @@ Table 80090 "Performance Diary Log"
         {
             DataClassification = ToBeClassified;
         }
+        field(41; "Self Rating"; Decimal)
+        {
+            FieldClass = FlowField;
+            CalcFormula = sum("Plog Lines"."Achieved Weight(%)" where("PLog No." = field(No)));
+            Editable = false;
+        }
+        field(42; "Supervisor Rating"; Decimal)
+        {
+            FieldClass = FlowField;
+            CalcFormula = sum("Plog Lines"."Supervisor Score" where("PLog No." = field(No)));
+            Editable = false;
+        }
+        field(43; "Total Score"; Decimal)
+        {
+            FieldClass = FlowField;
+            CalcFormula = sum("Plog Lines"."Final Score" where("PLog No." = field(No)));
+            Editable = false;
+        }
     }
 
     keys

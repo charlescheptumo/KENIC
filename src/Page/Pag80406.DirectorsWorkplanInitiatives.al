@@ -1,5 +1,5 @@
 #pragma warning disable AA0005, AA0008, AA0018, AA0021, AA0072, AA0137, AA0201, AA0206, AA0218, AA0228, AL0254, AL0424, AW0006 // ForNAV settings
-Page 80406 "Directors Workplan Initiatives"
+Page 93406 "Directors Workplan Initiatives"
 {
     Caption = 'Intiatives & Performance Indicators';
     PageType = ListPart;
@@ -16,6 +16,7 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Initiative Type field.';
+                    visible = false;
                 }
                 field("Initiative No."; Rec."Initiative No.")
                 {
@@ -69,6 +70,7 @@ Page 80406 "Directors Workplan Initiatives"
                     ApplicationArea = Basic;
                     Caption = 'Agreed Targets';
                     ToolTip = 'Specifies the value of the Agreed Targets field.';
+                    visible = false;
                 }
                 field("Assigned Weight (%)"; Rec."Assigned Weight (%)")
                 {
@@ -80,16 +82,19 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Start Date field.';
+                    Visible = false;
                 }
                 field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Due Date field.';
+                    Visible = false;
                 }
                 field("Additional Comments"; Rec."Additional Comments")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Additional Comments field.';
+                    visible = false;
                 }
                 field("Primary Directorate"; Rec."Primary Directorate")
                 {
@@ -108,12 +113,14 @@ Page 80406 "Directors Workplan Initiatives"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Primary Department field.';
+                    Visible = false;
                 }
                 field("Primary Department Name"; Rec."Primary Department Name")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Primary Department Name field.';
+                    visible = false;
                 }
                 field("Strategy Plan ID"; Rec."Strategy Plan ID")
                 {

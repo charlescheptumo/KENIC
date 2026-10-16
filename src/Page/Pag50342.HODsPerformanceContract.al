@@ -439,7 +439,10 @@ Page 50342 "HODs Performance Contract"
                                 PcLines."Q3 Target Qty" := PcLinesN."Q3 Target Qty";
                                 PcLines."Q4 Target Qty" := PcLinesN."Q4 Target Qty";
                                 PcLines."Assigned Weight (%)" := PcLinesN."Assigned Weight (%)";
+                                // PcLines."Previous Annual Target Qty" := PcLinesN."Previous Annual Target Qty";
+                                // PcLines.Insert(true);
                                 PcLines."Previous Annual Target Qty" := PcLinesN."Previous Annual Target Qty";
+                                PcLines.UpdateStrategyLinks();
                                 PcLines.Insert(true);
 
 
