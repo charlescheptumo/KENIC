@@ -326,10 +326,15 @@ Table 80060 "PC Objective"
         {
             FieldClass = FlowFilter;
         }
+        // field(53; "Framework Perspective"; Code[255])
+        // {
+
+        //     TableRelation = "Strategy Framework Perspective".Code where("Strategy Framework" = field("Strategy Framework"));
+        // }
         field(53; "Framework Perspective"; Code[255])
         {
-
-            TableRelation = "Strategy Framework Perspective".Code where("Strategy Framework" = field("Strategy Framework"));
+            Caption = 'Strategic Theme';   
+            TableRelation = "Strategic Theme"."Theme ID" where("Strategic Plan ID" = field("Strategy Plan ID"));
         }
         field(54; "Strategy Framework"; Code[10])
         {
