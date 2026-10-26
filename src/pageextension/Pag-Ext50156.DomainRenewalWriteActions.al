@@ -1,6 +1,6 @@
 namespace KENIC.KENIC;
 
-pageextension 50156 "Domain Renewal Write Actions" extends "Domain Renewals"
+pageextension 64156 "Domain Renewal Write Actions" extends "Domain Renewals"
 {
     actions
     {
