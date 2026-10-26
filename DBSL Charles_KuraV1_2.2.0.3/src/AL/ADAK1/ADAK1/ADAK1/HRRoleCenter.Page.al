@@ -2191,6 +2191,14 @@ page 60002 "HR Role Center"
                         RunObject = page "Asset Possession Items";
                         ToolTip = 'Setup of the standard items printed on the asset possession form.';
                     }
+                    action("Terminal Clearance Forms")
+                    {
+                        ApplicationArea = Basic;
+                        Caption = 'Terminal Clearance Forms';
+                        Image = Documents;
+                        RunObject = Page "Exit Form List";
+                        ToolTip = 'Terminal clearance, terminated employee/intern/casual, intern assessment and clearance certificate forms.';
+                    }
 
                     // ===== Staff Exit and Clearance Actions Moved from Pillar 3 =====
                     action("Staff Exits")
