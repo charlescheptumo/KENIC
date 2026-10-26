@@ -257,7 +257,7 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 ApplicationArea = Basic;
                 ToolTip = 'Specifies the value of the HR E-mail Address field.';
             }
-            field("CEO Email";Rec."CEO Email")
+            field("CEO Email"; Rec."CEO Email")
             {
                 ApplicationArea = Basic;
                 ToolTip = 'Specifies the value of the CEO Email field.';
@@ -847,6 +847,14 @@ PageExtension 50098 "Human Resources Setup Ext" extends "Human Resources Setup"
                 {
                     ApplicationArea = Basic;
                 }
+
+                field("Asset Possession Nos"; Rec."Asset Possession Nos")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the number series used for Asset Possession Forms.';
+                }
+
+
             }
         }
     }

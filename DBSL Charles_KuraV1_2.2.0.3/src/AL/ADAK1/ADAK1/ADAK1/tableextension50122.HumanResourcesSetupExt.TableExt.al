@@ -1057,6 +1057,13 @@ TableExtension 50122 "Human Resources Setup Ext" extends "Human Resources Setup"
          field(50103; "CEO Email"; Text[250])
         {
         }
+        field(50410; "Asset Possession Nos"; Code[20])
+        {
+            Caption = 'Asset Possession Nos';
+            DataClassification = CustomerContent;
+            TableRelation = "No. Series";
+        }
+
     }
 
     var

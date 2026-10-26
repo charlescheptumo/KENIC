@@ -1037,6 +1037,7 @@ page 60002 "HR Role Center"
                         RunObject = page "Background Checks Card";
                         ToolTip = 'Executes the Employee Background Checks Card.';
                     }
+
                 }
             }
 
@@ -2173,6 +2174,22 @@ page 60002 "HR Role Center"
                         Caption = 'Functional Hand Over Vouchers';
                         RunObject = Page "Functional Hand Over Vouchers";
                         ToolTip = 'Executes the Functional Hand Over Vouchers action.';
+                    }
+                    action("Asset Possession Forms")
+                    {
+                        ApplicationArea = BasicHR;
+                        Caption = 'Asset Possession Forms';
+                        Image = Documents;
+                        RunObject = page "Asset Possession List";
+                        ToolTip = 'Opens the asset possession forms issued to staff.';
+                    }
+                    action("Asset Possession Items")
+                    {
+                        ApplicationArea = BasicHR;
+                        Caption = 'Asset Possession Items';
+                        Image = Setup;
+                        RunObject = page "Asset Possession Items";
+                        ToolTip = 'Setup of the standard items printed on the asset possession form.';
                     }
 
                     // ===== Staff Exit and Clearance Actions Moved from Pillar 3 =====
