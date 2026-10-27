@@ -130,6 +130,7 @@ Codeunit 57000 "Payments-Post"
         else
             PostPVWithoutTaxes(PV);
     end;
+
     procedure PostAdjustmentReceipt(ReceiptRec: Record "Receipts Header1")
     var
         RcptLines: Record "Receipt Lines1";
@@ -282,35 +283,34 @@ Codeunit 57000 "Payments-Post"
                 until RcptLines.Next = 0;
             end;
  
-            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
-            GLEntry.Reset;
-            GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
-            GLEntry.SetRange(GLEntry.Reversed, false);
-            if GLEntry.FindFirst then begin
-                ReceiptRec.Posted := true;
-                ReceiptRec."Posted By" := UserId;
-                ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
-                ReceiptRec."Posted Time" := Time;
-                ReceiptRec.Modify;
+            //Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            // GLEntry.Reset;
+            // GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
+            // GLEntry.SetRange(GLEntry.Reversed, false);
+            // if GLEntry.FindFirst then begin
+            ReceiptRec.Posted := true;
+            ReceiptRec."Posted By" := UserId;
+            ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
+            ReceiptRec."Posted Time" := Time;
+            ReceiptRec.Modify;
  
-                TransferAdjustmentToDomainRegistry(ReceiptRec);
+            TransferAdjustmentToDomainRegistry(ReceiptRec);
  
-                OriginalReceiptRec.Reset();
-                OriginalReceiptRec.setrange(OriginalReceiptRec."No.", ReceiptRec."Adjustment for");
-                if OriginalReceiptRec.findfirst then begin
+            OriginalReceiptRec.Reset();
+            OriginalReceiptRec.setrange(OriginalReceiptRec."No.", ReceiptRec."Adjustment for");
+            if OriginalReceiptRec.findfirst then begin
  
-                    OriginalReceiptRec.Reversed := true;
-                    OriginalReceiptRec."Reversed By" := userid;
-                    OriginalReceiptRec."Date Reversed" := today;
-                    //OriginalReceiptRec."Time Reversed" := now;
-                end;
- 
+                OriginalReceiptRec.Reversed := true;
+                OriginalReceiptRec."Reversed By" := userid;
+                OriginalReceiptRec."Date Reversed" := today;
+                //OriginalReceiptRec."Time Reversed" := now;
             end;
  
+            //end;
+ 
         end;
-       
+ 
     end;
-
     procedure PostDomainAdjustment(ReceiptRec: Record "Domain Ledger Entry")
     var
         GenJnLine: Record "Gen. Journal Line";
@@ -321,43 +321,43 @@ Codeunit 57000 "Payments-Post"
         DocNo: Code[20];
     begin
         if Confirm(Text017, false, ReceiptRec.Id) = true then begin
- 
+
             ReceiptRec.TestField(Created);
             ReceiptRec.TestField(ClientRoid);
- 
+
             if ReceiptRec.Amount = 0 then
                 Error('Amount cannot be zero');
- 
+
             CMSetup.Get();
             CMSetup.TestField("Receipt Template");
             CMSetup.TestField("Receipt Batch Name");
- 
+
             // Determine bank account based on the receipt channel
             BankAccountNo := '';
- 
+
             CMSetup.TestField(NCBA);
-                        BankAccountNo := CMSetup.NCBA;                    
- 
+            BankAccountNo := CMSetup.NCBA;
+
             if BankAccountNo = '' then
                 Error('Unable to determine the Bank Account for receipt %1. Please check the payment channel setup.', ReceiptRec.Id);
- 
+
             DocNo := Format(ReceiptRec.Id);
- 
+
             // Delete Lines Present on the General Journal Line
             GenJnLine.Reset;
             GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
             GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
             GenJnLine.DeleteAll;
- 
+
             Batch.Init;
             Batch."Journal Template Name" := CMSetup."Receipt Template";
             Batch.Name := CMSetup."Receipt Batch Name";
             if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
                 Batch.Insert;
- 
+
             //Bank Entry
             LineNo := LineNo + 10000;
- 
+
             GenJnLine.Init;
             GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
             GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
@@ -371,10 +371,10 @@ Codeunit 57000 "Payments-Post"
             GenJnLine.Description := ReceiptRec.Description;
             GenJnLine.Amount := -ReceiptRec.Amount;
             GenJnLine.Validate(GenJnLine.Amount);
- 
+
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
- 
+
             //Customer Entry (Roid is the Customer)
             LineNo := LineNo + 10000;
             GenJnLine.Init;
@@ -390,17 +390,17 @@ Codeunit 57000 "Payments-Post"
             GenJnLine.Description := ReceiptRec.Description;
             GenJnLine.Amount := ReceiptRec.Amount;
             GenJnLine.Validate(GenJnLine.Amount);
- 
+
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
- 
+
             Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
-           
+
         end;
     end;
- 
- 
-local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts Header1")
+
+
+    local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts Header1")
     var
         DomainReceipt: Record "Domain Receipt";
         NewReceiptId: Integer;
@@ -409,14 +409,14 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
         DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
         if not DomainReceipt.IsEmpty() then
             exit;
- 
+
         NewReceiptId := ExtractNumericId(ReceiptRec."No.");
- 
+
         if DomainReceipt.Get(NewReceiptId) then
             Error('A Domain Receipt with ID %1 already exists (linked to Source Receipt No. %2). Cannot transfer receipt %3 - the numbers collide.', NewReceiptId, DomainReceipt."Source Receipt No.", ReceiptRec."No.");
- 
+
         ReceiptRec.CalcFields(Amount);
- 
+
         DomainReceipt.Init();
         DomainReceipt.ReceiptId := NewReceiptId;
         DomainReceipt.Roid := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
@@ -428,17 +428,17 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
             DomainReceipt.ChequeDate := CreateDateTime(ReceiptRec."Cheque Date", 0T);
         DomainReceipt.ChequeNumber := CopyStr(ReceiptRec."Cheque No", 1, MaxStrLen(DomainReceipt.ChequeNumber));
         DomainReceipt.Details := CopyStr(ReceiptRec."Being Payment of", 1, MaxStrLen(DomainReceipt.Details));
- 
+
         DomainReceipt.Cash := ReceiptRec."Pay Mode" = 'CASH';
         DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
         DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
         DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = 'NCBA';
         if ReceiptRec."Pay Mode" = 'MPESA' then
             DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
- 
+
         DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
         DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
- 
+
         DomainReceipt.Posted := true;
         DomainReceipt."Posted By" := ReceiptRec."Posted By";
         DomainReceipt."Posted Date" := ReceiptRec."Posted Date";
@@ -446,10 +446,10 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
         DomainReceipt."Source Receipt No." := ReceiptRec."No.";
         DomainReceipt."External Receipt No." := ReceiptRec."No.";
         DomainReceipt."IsManual Entry" := true;
- 
+
         DomainReceipt.Insert(true);
     end;
- 
+
 
     Local Procedure PostPVWithTaxes(PV: Record payments)
     var
@@ -6924,19 +6924,19 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
         CMSetup: Record "Cash Management Setup";
     begin
         if Confirm(Text017, false, ReceiptRec."No.") = true then begin
-
+ 
             if ReceiptRec.Posted = true then
                 Error(Text018, ReceiptRec."No.");
             ReceiptRec.TestField(Date);
             ReceiptRec.TestField("Bank Code");
             ReceiptRec.TestField("Received From");
             ReceiptRec.TestField("Pay Mode");
-
+ 
             if ReceiptRec."Pay Mode" = 'CHEQUE' then begin
                 ReceiptRec.TestField("Cheque No");
                 ReceiptRec.TestField("Cheque Date");
             end;
-
+ 
             ReceiptRec.CalcFields(Amount);
             //Check Lines
             if ReceiptRec.Amount = 0 then
@@ -6945,7 +6945,7 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
             RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
             if not RcptLines.FindLast then
                 Error('Receipt Lines cannot be empty');
-
+ 
             CMSetup.Get();
             CMSetup.TestField("Receipt Template");
             CMSetup.TestField("Receipt Batch Name");
@@ -6954,25 +6954,25 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
             GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
             GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
             GenJnLine.DeleteAll;
-
-
+ 
+ 
             Batch.Init;
             if CMSetup.Get() then
                 Batch."Journal Template Name" := CMSetup."Receipt Template";
             Batch.Name := CMSetup."Receipt Batch Name";
             if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
                 Batch.Insert;
-
+ 
             //Bank Entries
             LineNo := LineNo + 10000;
-
+ 
             RcptLines.Reset;
             RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
             RcptLines.Validate(Amount);
             RcptLines.CalcSums(Amount);
-
-
-
+ 
+ 
+ 
             GenJnLine.Init;
             if CMSetup.Get then
                 GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
@@ -6999,10 +6999,10 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
             GenJnLine."Shortcut Dimension 2 Code" := ReceiptRec."Shortcut Dimension 2 Code";
             GenJnLine.Validate(GenJnLine."Shortcut Dimension 2 Code");
             GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
-
+ 
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
-
+ 
             //Receipt Lines Entries
             RcptLines.Reset;
             RcptLines.SetRange(RcptLines."Receipt No.", ReceiptRec."No.");
@@ -7036,13 +7036,13 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
                     GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
                     //GenJnLine."Shortcut Dimension 3 Code":=RcptLines."Shortcut Dimension 3 Code";
                     //GenJnLine.VALIDATE(GenJnLine."Shortcut Dimension 3 Code");
-
-                    // 
-
-
+ 
+                    //
+ 
+ 
                     // IF GenJnLine."Account Type" = GenJnLine."Account Type"::Customer THEN BEGIN
                     //     // to return back cc
-                    //     // 
+                    //     //
                     //     // if hasvalue = true then
                     //     //     GenJnLine."Applies-to Doc. Type" := GenJnLine."Applies-to Doc. Type"::" "
                     //     // else
@@ -7050,31 +7050,30 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
                     //     GenJnLine."Applies-to Doc. No." := RcptLines."Applies to Doc. No";
                     //     GenJnLine.VALIDATE(GenJnLine."Applies-to Doc. No.");
                     // END;
-
+ 
                     if GenJnLine.Amount <> 0 then
                         GenJnLine.Insert;
-
+ 
                 until RcptLines.Next = 0;
             end;
-
-            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
-            GLEntry.Reset;
-            GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
-            GLEntry.SetRange(GLEntry.Reversed, false);
-            if GLEntry.FindFirst then begin
-                ReceiptRec.Posted := true;
-                ReceiptRec."Posted By" := UserId;
-                ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
-                ReceiptRec."Posted Time" := Time;
-                ReceiptRec.Modify;
-
-                TransferToDomainRegistry(ReceiptRec)
-
-            end;
-
+ 
+            // Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            // GLEntry.Reset;
+            // GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
+            // GLEntry.SetRange(GLEntry.Reversed, false);
+            // if GLEntry.FindFirst then begin
+            ReceiptRec.Posted := true;
+            ReceiptRec."Posted By" := UserId;
+            ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
+            ReceiptRec."Posted Time" := Time;
+            ReceiptRec.Modify;
+ 
+            TransferToDomainRegistry(ReceiptRec)
+ 
+            //end;
+ 
         end;
     end;
-
     local procedure ExtractNumericId(ReceiptNo: Code[20]): Integer
     var
         NumericPart: Text;
@@ -7404,18 +7403,18 @@ local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts 
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
 
-            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            // Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
 
-            GLEntry.Reset;
-            GLEntry.SetRange(GLEntry."Document No.", DocNo);
-            GLEntry.SetRange(GLEntry.Reversed, false);
-            if GLEntry.FindFirst then begin
-                ReceiptRec.Posted := true;
-                ReceiptRec."Posted By" := UserId;
-                ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
-                ReceiptRec."Posted Time" := Time;
-                ReceiptRec.Modify;
-            end;
+            // GLEntry.Reset;
+            // GLEntry.SetRange(GLEntry."Document No.", DocNo);
+            // GLEntry.SetRange(GLEntry.Reversed, false);
+            // if GLEntry.FindFirst then begin
+            //     ReceiptRec.Posted := true;
+            ReceiptRec."Posted By" := UserId;
+            ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
+            ReceiptRec."Posted Time" := Time;
+            ReceiptRec.Modify;
+            // end;
 
         end;
     end;

@@ -11,5 +11,10 @@ tableextension 50155 "Sales Header Ext" extends "Sales Header"
             Caption = '';
             DataClassification = ToBeClassified;
         }
+        field(50101; "Domain Ledger Synced"; Boolean)
+        {
+            Caption = 'Domain Ledger Synced';
+            DataClassification = ToBeClassified;
+        }
     }
 }

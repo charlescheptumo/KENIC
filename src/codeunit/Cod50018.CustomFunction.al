@@ -3738,20 +3738,20 @@ codeunit 50018 "Custom Function"
 
 
 
-    //Domain Ledger Sync
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterPostSalesDoc', '', false, false)]
-    local procedure OnAfterPostSalesDoc(var SalesHeader: Record "Sales Header"; var GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line"; SalesShptHdrNo: Code[20]; RetRcpHdrNo: Code[20]; SalesInvHdrNo: Code[20]; SalesCrMemoHdrNo: Code[20]; CommitIsSuppressed: Boolean; InvtPickPutaway: Boolean; var CustLedgerEntry: Record "Cust. Ledger Entry"; WhseShip: Boolean; WhseReceiv: Boolean; PreviewMode: Boolean)
-    var
-        SalesInvHeader: Record "Sales Invoice Header";
-        SalesCrMemoHeader: Record "Sales Cr.Memo Header";
-    begin
-        if SalesInvHdrNo <> '' then
-            if SalesInvHeader.Get(SalesInvHdrNo) then
-                SyncFromPostedSalesInvoice(SalesInvHeader);
-        if SalesCrMemoHdrNo <> '' then
-            if SalesCrMemoHeader.Get(SalesCrMemoHdrNo) then
-                SyncFromPostedSalesCrMemo(SalesCrMemoHeader);
-    end;
+    // //Domain Ledger Sync
+    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterPostSalesDoc', '', false, false)]
+    // local procedure OnAfterPostSalesDoc(var SalesHeader: Record "Sales Header"; var GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line"; SalesShptHdrNo: Code[20]; RetRcpHdrNo: Code[20]; SalesInvHdrNo: Code[20]; SalesCrMemoHdrNo: Code[20]; CommitIsSuppressed: Boolean; InvtPickPutaway: Boolean; var CustLedgerEntry: Record "Cust. Ledger Entry"; WhseShip: Boolean; WhseReceiv: Boolean; PreviewMode: Boolean)
+    // var
+    //     SalesInvHeader: Record "Sales Invoice Header";
+    //     SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+    // begin
+    //     if SalesInvHdrNo <> '' then
+    //         if SalesInvHeader.Get(SalesInvHdrNo) then
+    //             SyncFromPostedSalesInvoice(SalesInvHeader);
+    //     if SalesCrMemoHdrNo <> '' then
+    //         if SalesCrMemoHeader.Get(SalesCrMemoHdrNo) then
+    //             SyncFromPostedSalesCrMemo(SalesCrMemoHeader);
+    // end;
 
     procedure SyncFromPostedSalesInvoice(var SalesInvHeader: Record "Sales Invoice Header")
     var
@@ -3921,6 +3921,113 @@ codeunit 50018 "Custom Function"
         end;
         exit('Manual');
     end;
+ 
+procedure SyncFromSalesCrMemo(var SalesCrMemoHeader: Record "Sales Header")
+    var
+        DomainLedgerEntry: Record "Domain Ledger Entry";
+        OrigLedgerEntry: Record "Domain Ledger Entry";
+        SalesCrMemoLine: Record "Sales Line";
+        CMSetup: Record "Cash Management Setup";
+        TransTypeText: Text[50];
+    begin
+        if SalesCrMemoHeader."Domain Ledger Synced" then
+            exit;
+ 
+        DomainLedgerEntry.Reset();
+        DomainLedgerEntry.SetRange("Credit Memo No.", SalesCrMemoHeader."No.");
+        if not DomainLedgerEntry.IsEmpty() then begin
+            SalesCrMemoHeader."Domain Ledger Synced" := true;
+            SalesCrMemoHeader.Modify();
+            exit;
+        end;
+ 
+        CMSetup.Get();
+ 
+        SalesCrMemoLine.Reset();
+        SalesCrMemoLine.SetRange("Document No.", SalesCrMemoHeader."No.");
+        SalesCrMemoLine.SetRange(Type, SalesCrMemoLine.Type::Item);
+        if not SalesCrMemoLine.FindFirst() then
+            exit;
+ 
+        TransTypeText := 'Refund';
+ 
+        DomainLedgerEntry.Init();
+        DomainLedgerEntry.ID := GetNextManualLedgerId();
+        DomainLedgerEntry.ClientRoid := CopyStr(SalesCrMemoHeader."Sell-to Customer No.", 1, 50);
+        DomainLedgerEntry.TransType := TransTypeText;
+        DomainLedgerEntry.Description := CopyStr(SalesCrMemoLine.Description, 1, 250);
+        DomainLedgerEntry.Amount := -SalesCrMemoLine.Amount;
+        DomainLedgerEntry.Total := -SalesCrMemoLine."Amount Including VAT";
+        DomainLedgerEntry.Currency := SalesCrMemoHeader."Currency Code";
+        DomainLedgerEntry.Created := CreateDateTime(SalesCrMemoHeader."Posting Date", 0T);
+        DomainLedgerEntry.InvoiceCreated := true;
+        DomainLedgerEntry."Credit Memo No." := SalesCrMemoHeader."No.";
+        DomainLedgerEntry."External Sales Document No." := SalesCrMemoHeader."No.";
+ 
+        if SalesCrMemoHeader."Applies-to Doc. No." <> '' then begin
+            OrigLedgerEntry.Reset();
+            OrigLedgerEntry.SetRange("Sales Invoice No.", SalesCrMemoHeader."Applies-to Doc. No.");
+            if OrigLedgerEntry.FindFirst() then
+                DomainLedgerEntry.RefundForId := OrigLedgerEntry.ID;
+        end;
+        DomainLedgerEntry."IsManual Entry" := true;
+ 
+        DomainLedgerEntry.Insert(true);
+ 
+        SalesCrMemoHeader."Domain Ledger Synced" := true;
+        SalesCrMemoHeader.Modify();
+    end;
+ 
+procedure SyncFromSalesInvoice(var SalesInvHeader: Record "Sales Header")
+    var
+        DomainLedgerEntry: Record "Domain Ledger Entry";
+        SalesInvLine: Record "Sales Line";
+        CMSetup: Record "Cash Management Setup";
+        TransTypeText: Text[50];
+    begin
+        if SalesInvHeader."Domain Ledger Synced" then
+            exit;
+ 
+        DomainLedgerEntry.Reset();
+        DomainLedgerEntry.SetRange("Sales Invoice No.", SalesInvHeader."No.");
+        if not DomainLedgerEntry.IsEmpty() then begin
+            SalesInvHeader."Domain Ledger Synced" := true;
+            SalesInvHeader.Modify();
+            exit;
+        end;
+ 
+        if not CMSetup.Get() then
+            Error('Cash Management Setup is not configured.');
+ 
+        SalesInvLine.Reset();
+        SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
+        if not SalesInvLine.FindFirst() then
+            exit;
+ 
+        if SalesInvLine.Type = SalesInvLine.Type::Item then
+            TransTypeText := GetTransTypeFromItemNo(SalesInvLine."No.", CMSetup)
+        else
+            TransTypeText := CopyStr(SalesInvLine.Description, 1, 50);
+ 
+        DomainLedgerEntry.Init();
+        DomainLedgerEntry.ID := GetNextManualLedgerId();
+        DomainLedgerEntry.ClientRoid := CopyStr(SalesInvHeader."Sell-to Customer No.", 1, 50);
+        DomainLedgerEntry.TransType := TransTypeText;
+        DomainLedgerEntry.Description := CopyStr(SalesInvLine.Description, 1, 250);
+        DomainLedgerEntry.Amount := SalesInvLine.Amount;
+        DomainLedgerEntry.Total := SalesInvLine."Amount Including VAT";
+        DomainLedgerEntry.Currency := SalesInvHeader."Currency Code";
+        DomainLedgerEntry.Created := CreateDateTime(SalesInvHeader."Posting Date", 0T);
+        DomainLedgerEntry.InvoiceCreated := true;
+        DomainLedgerEntry."Sales Invoice No." := SalesInvHeader."No.";
+        DomainLedgerEntry."External Sales Document No." := SalesInvHeader."No.";
+        DomainLedgerEntry."IsManual Entry" := true;
+        DomainLedgerEntry.Insert(true);
+ 
+        SalesInvHeader."Domain Ledger Synced" := true;
+        SalesInvHeader.Modify();
+    end;
+ 
 
     local procedure GetNextManualLedgerId(): BigInteger
     var
@@ -3936,5 +4043,20 @@ codeunit 50018 "Custom Function"
         exit(StartId);
     end;
 
+
+ // //Domain Ledger Sync
+    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterPostSalesDoc', '', false, false)]
+    // local procedure OnAfterPostSalesDoc(var SalesHeader: Record "Sales Header"; var GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line"; SalesShptHdrNo: Code[20]; RetRcpHdrNo: Code[20]; SalesInvHdrNo: Code[20]; SalesCrMemoHdrNo: Code[20]; CommitIsSuppressed: Boolean; InvtPickPutaway: Boolean; var CustLedgerEntry: Record "Cust. Ledger Entry"; WhseShip: Boolean; WhseReceiv: Boolean; PreviewMode: Boolean)
+    // var
+    //     SalesInvHeader: Record "Sales Invoice Header";
+    //     SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+    // begin
+    //     if SalesInvHdrNo <> '' then
+    //         if SalesInvHeader.Get(SalesInvHdrNo) then
+    //             SyncFromPostedSalesInvoice(SalesInvHeader);
+    //     if SalesCrMemoHdrNo <> '' then
+    //         if SalesCrMemoHeader.Get(SalesCrMemoHdrNo) then
+    //             SyncFromPostedSalesCrMemo(SalesCrMemoHeader);
+    // end;
 }
 
