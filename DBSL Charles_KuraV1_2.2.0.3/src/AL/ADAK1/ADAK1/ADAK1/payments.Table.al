@@ -2122,17 +2122,27 @@ Table 57000 "payments"
         if ("Payment Type" = "Payment Type"::"Payment Voucher") or ("Payment Type" = "Payment Type"::"Standing Imprest Surrender") then begin
             // Always take logged-in user
             "Created By" := UserId;
-        end else begin
-            if UserSetup."Portal User" = false then begin
+        end else
+            if ("Payment Type" = "Payment Type"::"Salary Advance") and GuiAllowed() then begin
+                // Salary Advance created in Business Central: the person who created it.
+                // (Requests from the portal run without a user interface and keep the rule below.)
                 "Created By" := UserId;
             end else begin
-                UserSetup.Reset();
-                UserSetup.SetRange("Employee No.", "Account No.");
-                if UserSetup.FindFirst() then begin
-                    "Created By" := UserSetup."User ID";
+                if UserSetup."Portal User" = false then begin
+                    "Created By" := UserId;
+                end else begin
+                    // Portal request: the user linked to the employee on the document.
+                    // Without an employee, or no linked user, keep the logged-in user
+                    // (never pick a random user whose Employee No. is blank).
+                    "Created By" := UserId;
+                    if "Account No." <> '' then begin
+                        UserSetup.Reset();
+                        UserSetup.SetRange("Employee No.", "Account No.");
+                        if UserSetup.FindFirst() then
+                            "Created By" := UserSetup."User ID";
+                    end;
                 end;
             end;
-        end;
 
         // Always set Created By to the currently logged in user
         //"Created By" := UserId;

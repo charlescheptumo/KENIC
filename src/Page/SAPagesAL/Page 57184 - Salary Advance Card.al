@@ -324,6 +324,16 @@ page 57184 "Salary Advance Card"
         }
     }
 
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        // Make the new record a Salary Advance straight away, so picking the
+        // Salary Advance Memo / per diem imprest fills in the card.
+        Rec."Payment Type" := Rec."Payment Type"::"Salary Advance";
+        Rec."Document Type" := Rec."Document Type"::"Salary Advance";
+        Rec."Account Type" := Rec."Account Type"::Employee;
+        Rec.Date := TODAY;
+    end;
+
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
         Rec."Payment Type" := Rec."Payment Type"::"Salary Advance";
@@ -333,13 +343,17 @@ page 57184 "Salary Advance Card"
         Rec."Created By" := USERID;
         Rec."Account Type" := Rec."Account Type"::Employee;
 
-        Usersetup.RESET;
-        Usersetup.SETRANGE("User ID", Rec."Created By");
-        IF Usersetup.FINDSET THEN BEGIN
+        // Default the employee to the person creating it only when no employee was filled in
+        // (e.g. from the per diem imprest picked in Salary Advance Memo No).
+        if Rec."Account No." = '' then begin
+            Usersetup.RESET;
+            Usersetup.SETRANGE("User ID", Rec."Created By");
+            IF Usersetup.FINDSET THEN BEGIN
 
-            Rec."Account No." := Usersetup."Employee No.";
-            Rec."Account Name" := Usersetup."Employee Name";
-        END;
+                Rec."Account No." := Usersetup."Employee No.";
+                Rec."Account Name" := Usersetup."Employee Name";
+            END;
+        end;
 
         Employee.RESET;
         Employee.SETRANGE("No.", Rec."Account No.");
