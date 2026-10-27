@@ -155,6 +155,11 @@ Codeunit 59500 "Custom Approvals Codeunit"
         RunWorkflowOnSendPVForApprovalCode: label 'RUNWORKFLOWONSENDPVFORAPPROVAL';
         OnCancelPVApprovalRequestTxt: label 'An Approval of a Payments Document is canceled';
         RunWorkflowOnCancelPVForApprovalCode: label 'RUNWORKFLOWONCANCELPVFORAPPROVAL';
+        //Salary Advance (payments documents with Payment Type = Salary Advance)
+        OnSendSalaryAdvApprovalRequestTxt: label 'Approval of a Salary Advance is requested';
+        RunWorkflowOnSendSalaryAdvForApprovalCode: label 'RUNWORKFLOWONSENDSALARYADVFORAPPROVAL';
+        OnCancelSalaryAdvApprovalRequestTxt: label 'An Approval of a Salary Advance is canceled';
+        RunWorkflowOnCancelSalaryAdvForApprovalCode: label 'RUNWORKFLOWONCANCELSALARYADVFORAPPROVAL';
         //Employee 
         OnSendEmployeeApprovalRequestTxt: label 'Approval of a Employee  is requested';
         RunWorkflowOnSendEmployeeForApprovalCode1: label 'RUNWORKFLOWONSENDEMPLOYEEFORAPPROVAL';
@@ -592,9 +597,9 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //RFQ
             Database::"Standard Purchase Code":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendRFQForApprovalCode));
-            //PV
+            //PV (Salary Advance uses its own workflow when one is enabled)
             Database::"payments":
-                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendPVForApprovalCode));
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, PaymentsSendEventCode(Variant)));
             //Employee
             Database::"Employee":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendEmployeeForApprovalCode1));
@@ -799,6 +804,36 @@ Codeunit 59500 "Custom Approvals Codeunit"
         end;
     end;
 
+    local procedure UsesSalaryAdvanceWorkflow(var Variant: Variant): Boolean
+    var
+        Payment: Record payments;
+        RecRef: RecordRef;
+    begin
+        // A Salary Advance goes through the Salary Advance workflow once one is enabled;
+        // until then it keeps using the general payments document workflow.
+        RecRef.GetTable(Variant);
+        if RecRef.Number <> Database::payments then
+            exit(false);
+        RecRef.SetTable(Payment);
+        if Payment."Payment Type" <> Payment."Payment Type"::"Salary Advance" then
+            exit(false);
+        exit(WorkflowManagement.EnabledWorkflowExist(Database::payments, RunWorkflowOnSendSalaryAdvForApprovalCode));
+    end;
+
+    local procedure PaymentsSendEventCode(var Variant: Variant): Code[128]
+    begin
+        if UsesSalaryAdvanceWorkflow(Variant) then
+            exit(RunWorkflowOnSendSalaryAdvForApprovalCode);
+        exit(RunWorkflowOnSendPVForApprovalCode);
+    end;
+
+    local procedure PaymentsCancelEventCode(var Variant: Variant): Code[128]
+    begin
+        if UsesSalaryAdvanceWorkflow(Variant) then
+            exit(RunWorkflowOnCancelSalaryAdvForApprovalCode);
+        exit(RunWorkflowOnCancelPVForApprovalCode);
+    end;
+
     procedure CheckApprovalsWorkflowEnabledCode(var Variant: Variant; CheckApprovalsWorkflowTxt: Text): Boolean
     var
         RecRef: RecordRef;
@@ -962,6 +997,11 @@ Codeunit 59500 "Custom Approvals Codeunit"
         RunWorkflowOnSendPVForApprovalCode, Database::"Payments", OnSendPVApprovalRequestTxt, 0, false);
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelPVForApprovalCode, Database::"Payments", OnCancelPVApprovalRequestTxt, 0, false);
+        //Salary Advance
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendSalaryAdvForApprovalCode, Database::"Payments", OnSendSalaryAdvApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelSalaryAdvForApprovalCode, Database::"Payments", OnCancelSalaryAdvApprovalRequestTxt, 0, false);
         //Employee
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnSendEmployeeForApprovalCode1, Database::"Employee", OnSendEmployeeApprovalRequestTxt, 0, false);
@@ -1392,9 +1432,9 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //RFQ
             Database::"Standard Purchase Code":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendRFQForApprovalCode, Variant);
-            //PV
+            //PV (Salary Advance uses its own workflow when one is enabled)
             Database::"Payments":
-                WorkflowManagement.HandleEvent(RunWorkflowOnSendPVForApprovalCode, Variant);
+                WorkflowManagement.HandleEvent(PaymentsSendEventCode(Variant), Variant);
 
 
             Database::"Overtime Header":
@@ -1677,9 +1717,9 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //RFQ
             Database::"Standard Purchase Code":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelRFQForApprovalCode, Variant);
-            //pv
+            //pv (Salary Advance uses its own workflow when one is enabled)
             Database::"Payments":
-                WorkflowManagement.HandleEvent(RunWorkflowOnCancelPVForApprovalCode, Variant);
+                WorkflowManagement.HandleEvent(PaymentsCancelEventCode(Variant), Variant);
 
             //Overtime Header
             Database::"Overtime Header":
