@@ -19,7 +19,7 @@ page 57184 "Salary Advance Card"
                 field("Salary Advance Memo No"; Rec."Salary Advance Memo No")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Salary Advance Memo No field.', Comment = '%';
+                    ToolTip = 'Pick the approved per diem imprest (or Salary Advance Memo). The employee, amount, purpose, travel date and deduction code are filled in; enter the Recovery Start Month yourself.';
                 }
                 field("Salary Type"; Rec."Salary Type")
                 {

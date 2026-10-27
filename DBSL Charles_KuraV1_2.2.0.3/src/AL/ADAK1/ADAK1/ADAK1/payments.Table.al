@@ -227,15 +227,6 @@ Table 57000 "payments"
             Editable = false;
             OptionCaption = 'Open,Pending Approval,Pending Prepayment,Released,Rejected,,Closed';
             OptionMembers = Open,"Pending Approval","Pending Prepayment",Released,Rejected,,Closed;
-
-            trigger OnValidate()
-            var
-                PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
-            begin
-                // Per diem travelling on or after the pay date: create the Salary Advance Memo on approval.
-                if (Status = Status::Released) and "Per Diem through Payroll" then
-                    PerDiemMgt.OnPerDiemReleased(Rec);
-            end;
         }
         field(20; "Payment Type"; Option)
         {
@@ -1828,8 +1819,10 @@ Table 57000 "payments"
             // TableRelation = "Cash Management Setup"."Salary Advance Memo No";
             // TableRelation = "General Correspondence Header"."Document No" where(Status = const(Approved));
             //   TableRelation = "General Correspondence Header"."Document No" where("Sender No" = field("Account No."));
-            // Salary Advance card: pick an approved Salary Advance Memo and the card is filled from it.
-            TableRelation = "Payments"."No." where("Payment Type" = const("Salary Advance Memo"), Posted = const(false), Status = const(Released));
+            // Salary Advance card: pick an approved staff per diem imprest (or a Salary Advance Memo)
+            // and the card is filled from it. HR then enters the Recovery Start Month.
+            Caption = 'Salary Advance Memo / Per Diem Imprest No.';
+            TableRelation = "Payments"."No." where("Payment Type" = filter(Imprest | "Salary Advance Memo"), Posted = const(false), Status = const(Released));
 
             trigger OnValidate()
             var
