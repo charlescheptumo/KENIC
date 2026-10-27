@@ -1093,8 +1093,8 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                 </TablixMembers>
                               </TablixRowHierarchy>
                               <DataSetName>DataSet_Result</DataSetName>
-                              <Top>3.09225in</Top>
-                              <Left>0.21981in</Left>
+                              <Top>2.77558in</Top>
+                              <Left>0.2198in</Left>
                               <Height>0.38445cm</Height>
                               <Width>0.91592cm</Width>
                               <Visibility>
@@ -3594,8 +3594,8 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   <Value>=Fields!DocType_PurchHeader.Value</Value>
                                 </SortExpression>
                               </SortExpressions>
-                              <Top>3.09225in</Top>
-                              <Left>0.55201cm</Left>
+                              <Top>2.77558in</Top>
+                              <Left>0.55199cm</Left>
                               <Height>6.84384cm</Height>
                               <Width>7.30848in</Width>
                               <ZIndex>1</ZIndex>
@@ -5894,7 +5894,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <rd:DefaultName>Textbox30</rd:DefaultName>
                               <Top>20.42768cm</Top>
                               <Left>1.0715cm</Left>
-                              <Height>0.38806cm</Height>
+                              <Height>0.635cm</Height>
                               <Width>18.04404cm</Width>
                               <ZIndex>5</ZIndex>
                               <Style>
@@ -6481,7 +6481,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>3.06933cm</Top>
+                              <Top>2.13596cm</Top>
                               <Left>15.45637cm</Left>
                               <Height>20.92765pt</Height>
                               <Width>3.51337cm</Width>
@@ -6497,7 +6497,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>PURCHASE REQUISITION NOTE</Value>
+                                      <Value>PURCHASE REQUISITION FORM</Value>
                                       <Style>
                                         <FontFamily>Segoe UI</FontFamily>
                                         <FontSize>12pt</FontSize>
@@ -6505,16 +6505,19 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                       </Style>
                                     </TextRun>
                                   </TextRuns>
-                                  <Style />
+                                  <Style>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
                                 </Paragraph>
                               </Paragraphs>
                               <Top>1.29073in</Top>
-                              <Left>6.91662cm</Left>
-                              <Height>15.00003pt</Height>
-                              <Width>7.32329cm</Width>
+                              <Left>0.21801cm</Left>
+                              <Height>15.00015pt</Height>
+                              <Width>20.14719cm</Width>
                               <ZIndex>11</ZIndex>
                               <Style>
                                 <Border />
+                                <BackgroundColor>Green</BackgroundColor>
                                 <VerticalAlign>Middle</VerticalAlign>
                               </Style>
                             </Textbox>
@@ -6611,7 +6614,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Sizing>Fit</Sizing>
                               <Top>0.24364cm</Top>
                               <Left>0.05803in</Left>
-                              <Height>1.24499in</Height>
+                              <Height>1.13925in</Height>
                               <Width>1.52121in</Width>
                               <ZIndex>15</ZIndex>
                               <Style>
@@ -6678,61 +6681,9 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <rd:DefaultName>Textbox2</rd:DefaultName>
                               <Top>0.66037in</Top>
                               <Left>2.34203in</Left>
-                              <Height>0.125in</Height>
+                              <Height>0.19503in</Height>
                               <Width>3.35643in</Width>
                               <ZIndex>17</ZIndex>
-                              <Style>
-                                <Border>
-                                  <Style>None</Style>
-                                </Border>
-                                <PaddingLeft>2pt</PaddingLeft>
-                                <PaddingRight>2pt</PaddingRight>
-                                <PaddingTop>2pt</PaddingTop>
-                                <PaddingBottom>2pt</PaddingBottom>
-                              </Style>
-                            </Textbox>
-                            <Textbox Name="Textbox116">
-                              <CanGrow>true</CanGrow>
-                              <KeepTogether>true</KeepTogether>
-                              <Paragraphs>
-                                <Paragraph>
-                                  <TextRuns>
-                                    <TextRun>
-                                      <Value>TEL:</Value>
-                                      <Style>
-                                        <FontFamily>Segoe UI</FontFamily>
-                                        <FontSize>8pt</FontSize>
-                                        <FontWeight>Normal</FontWeight>
-                                      </Style>
-                                    </TextRun>
-                                    <TextRun>
-                                      <Value>=Fields!Phone1.Value</Value>
-                                      <Style>
-                                        <FontFamily>Segoe UI</FontFamily>
-                                        <FontSize>8pt</FontSize>
-                                        <FontWeight>Normal</FontWeight>
-                                      </Style>
-                                    </TextRun>
-                                    <TextRun>
-                                      <Value xml:space="preserve">  </Value>
-                                      <Style>
-                                        <FontFamily>Segoe UI</FontFamily>
-                                        <FontSize>8pt</FontSize>
-                                        <FontWeight>Normal</FontWeight>
-                                      </Style>
-                                    </TextRun>
-                                  </TextRuns>
-                                  <Style>
-                                    <TextAlign>Center</TextAlign>
-                                  </Style>
-                                </Paragraph>
-                              </Paragraphs>
-                              <rd:DefaultName>Textbox2</rd:DefaultName>
-                              <Top>0.84093in</Top>
-                              <Left>2.52123in</Left>
-                              <Height>0.1875in</Height>
-                              <Width>3.1193in</Width>
-                              <ZIndex>18</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -6748,7 +6699,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Left>0.21801cm</Left>
                               <Height>0in</Height>
                               <Width>7.72343in</Width>
-                              <ZIndex>19</ZIndex>
+                              <ZIndex>18</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>Solid</Style>
@@ -6757,11 +6708,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               </Style>
                             </Line>
                             <Line Name="Line6">
-                              <Top>3.07347in</Top>
-                              <Left>0.28424cm</Left>
+                              <Top>2.7568in</Top>
+                              <Left>0.28422cm</Left>
                               <Height>0in</Height>
                               <Width>7.66597in</Width>
-                              <ZIndex>20</ZIndex>
+                              <ZIndex>19</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>Solid</Style>
@@ -6785,11 +6736,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>5.85064cm</Top>
-                              <Left>1.49496cm</Left>
+                              <Top>5.04631cm</Top>
+                              <Left>1.49494cm</Left>
                               <Height>10pt</Height>
                               <Width>2.87001cm</Width>
-                              <ZIndex>21</ZIndex>
+                              <ZIndex>20</ZIndex>
                               <Style>
                                 <VerticalAlign>Middle</VerticalAlign>
                               </Style>
@@ -6814,11 +6765,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>5.84345cm</Top>
-                              <Left>4.35778cm</Left>
+                              <Top>5.03912cm</Top>
+                              <Left>4.35776cm</Left>
                               <Height>10pt</Height>
                               <Width>5.85355cm</Width>
-                              <ZIndex>22</ZIndex>
+                              <ZIndex>21</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -6842,11 +6793,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>6.34806cm</Top>
-                              <Left>1.49496cm</Left>
+                              <Top>5.54373cm</Top>
+                              <Left>1.49494cm</Left>
                               <Height>10pt</Height>
                               <Width>2.87001cm</Width>
-                              <ZIndex>23</ZIndex>
+                              <ZIndex>22</ZIndex>
                               <Style>
                                 <VerticalAlign>Middle</VerticalAlign>
                               </Style>
@@ -6871,11 +6822,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>6.30206cm</Top>
-                              <Left>4.35778cm</Left>
+                              <Top>5.49773cm</Top>
+                              <Left>4.35776cm</Left>
                               <Height>10pt</Height>
                               <Width>5.85355cm</Width>
-                              <ZIndex>24</ZIndex>
+                              <ZIndex>23</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -6899,11 +6850,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>7.31272cm</Top>
-                              <Left>1.49496cm</Left>
+                              <Top>6.50839cm</Top>
+                              <Left>1.49494cm</Left>
                               <Height>10pt</Height>
                               <Width>2.87001cm</Width>
-                              <ZIndex>25</ZIndex>
+                              <ZIndex>24</ZIndex>
                               <Style>
                                 <VerticalAlign>Middle</VerticalAlign>
                               </Style>
@@ -6928,11 +6879,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>7.26672cm</Top>
-                              <Left>4.35778cm</Left>
+                              <Top>6.46239cm</Top>
+                              <Left>4.35776cm</Left>
                               <Height>10pt</Height>
                               <Width>5.85355cm</Width>
-                              <ZIndex>26</ZIndex>
+                              <ZIndex>25</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -6956,11 +6907,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>6.82955cm</Top>
-                              <Left>1.49496cm</Left>
+                              <Top>6.02522cm</Top>
+                              <Left>1.49494cm</Left>
                               <Height>10pt</Height>
                               <Width>2.87001cm</Width>
-                              <ZIndex>27</ZIndex>
+                              <ZIndex>26</ZIndex>
                               <Style>
                                 <VerticalAlign>Middle</VerticalAlign>
                               </Style>
@@ -6985,11 +6936,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>6.78355cm</Top>
-                              <Left>4.35778cm</Left>
+                              <Top>5.97922cm</Top>
+                              <Left>4.35776cm</Left>
                               <Height>10pt</Height>
                               <Width>5.85355cm</Width>
-                              <ZIndex>28</ZIndex>
+                              <ZIndex>27</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -7019,7 +6970,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Left>13.52407cm</Left>
                               <Height>1.02787cm</Height>
                               <Width>6.05098cm</Width>
-                              <ZIndex>29</ZIndex>
+                              <ZIndex>28</ZIndex>
                               <Visibility>
                                 <Hidden>true</Hidden>
                               </Visibility>
@@ -7053,7 +7004,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Left>6.98722cm</Left>
                               <Height>10pt</Height>
                               <Width>2.64534cm</Width>
-                              <ZIndex>30</ZIndex>
+                              <ZIndex>29</ZIndex>
                               <Style>
                                 <VerticalAlign>Middle</VerticalAlign>
                               </Style>
@@ -7081,7 +7032,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Left>9.63256cm</Left>
                               <Height>10pt</Height>
                               <Width>3.74856cm</Width>
-                              <ZIndex>31</ZIndex>
+                              <ZIndex>30</ZIndex>
                               <Style>
                                 <VerticalAlign>Middle</VerticalAlign>
                               </Style>
@@ -7120,11 +7071,11 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>Textbox1</rd:DefaultName>
-                              <Top>2.75331cm</Top>
+                              <Top>2.3491cm</Top>
                               <Left>6.40394cm</Left>
                               <Height>0.52514cm</Height>
                               <Width>7.83597cm</Width>
-                              <ZIndex>32</ZIndex>
+                              <ZIndex>31</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -7158,7 +7109,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Left>0.21799cm</Left>
                               <Height>0.65264cm</Height>
                               <Width>6.61573cm</Width>
-                              <ZIndex>33</ZIndex>
+                              <ZIndex>32</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -7391,7 +7342,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Left>1.07148cm</Left>
                               <Height>1.71702cm</Height>
                               <Width>18.04405cm</Width>
-                              <ZIndex>34</ZIndex>
+                              <ZIndex>33</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -7620,7 +7571,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
                               <Left>1.07148cm</Left>
                               <Height>1.71702cm</Height>
                               <Width>18.04405cm</Width>
-                              <ZIndex>35</ZIndex>
+                              <ZIndex>34</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -7702,7 +7653,7 @@ Cstr(Fields!DocDate_PurchHeader.Value)
         <Height>29.46051cm</Height>
         <Style />
       </Body>
-      <Width>20.61677cm</Width>
+      <Width>20.44492cm</Width>
       <Page>
         <PageHeight>29.7cm</PageHeight>
         <PageWidth>21cm</PageWidth>
