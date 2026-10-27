@@ -42,11 +42,13 @@ Page 75237 "Standard Purchase Requisition"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the code of the responsibility center, such as a distribution hub, that is associated with the involved user, company, customer, or vendor.';
+                    visible = false;
                 }
                 field("Location Code"; Rec."Location Code")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies a code for the location where you want the items to be placed when they are received.';
+                    Visible = false;
                 }
                 field("Requisition Product Group"; Rec."Requisition Product Group")
                 {
@@ -57,6 +59,7 @@ Page 75237 "Standard Purchase Requisition"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Requisition Template ID field.';
+                    Visible = false;
                 }
                 field(Description; Rec.Description)
                 {
@@ -70,6 +73,7 @@ Page 75237 "Standard Purchase Requisition"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the currency that is used on the entry.';
+                    Visible = false;
                 }
                 field("Priority Level"; Rec."Priority Level")
                 {

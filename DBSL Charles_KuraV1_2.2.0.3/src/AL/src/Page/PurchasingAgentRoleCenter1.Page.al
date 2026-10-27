@@ -365,7 +365,7 @@ Page 70119 "Purchasing Agent Role Center1"
         }
         area(sections)
         {
-            group("Procurement Planning")
+            group("Procurement Set-ups")
             {
                 action("Procurement Setup")
                 {
