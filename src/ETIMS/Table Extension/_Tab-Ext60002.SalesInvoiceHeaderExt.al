@@ -3,7 +3,9 @@ tableextension 60002 "Sales Invoice Header Ext1" extends "Sales Invoice Header"
     
     fields
     {
-        field(50029; "GRN No."; Code[20])
+        // Was 50029, which clashes with "No. of Days" (Integer) on Sales Header
+        // and breaks Copy Document / Create Corrective Credit Memo.
+        field(60020; "GRN No."; Code[20])
         {
             FieldClass = Normal;
 

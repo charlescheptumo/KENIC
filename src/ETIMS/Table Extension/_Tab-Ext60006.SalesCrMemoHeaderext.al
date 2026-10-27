@@ -2,7 +2,8 @@ tableextension 60006 "Sales Cr.Memo Header ext1" extends "Sales Cr.Memo Header"
 {
     fields
     {
-        field(50029; "GRN NO"; Code[50])
+        // Was 50029, which clashes with "No. of Days" (Integer) on Sales Header.
+        field(60020; "GRN NO"; Code[50])
         {
             Caption = 'GRN NO';
             DataClassification = ToBeClassified;

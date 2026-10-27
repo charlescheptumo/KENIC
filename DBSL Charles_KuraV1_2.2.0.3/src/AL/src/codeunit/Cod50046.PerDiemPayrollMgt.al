@@ -4,7 +4,8 @@ codeunit 50650 "Per Diem Payroll Mgt."
                   tabledata "Imprest Lines" = rimd,
                   tabledata "Assignment Matrix-X" = rimd,
                   tabledata "Director Ledger Entry" = rimd,
-                  tabledata "Project Members" = rm;
+                  tabledata "Project Members" = rm,
+                  tabledata "PV Lines" = r;
 
     var
         PerDiemSetup: Record "Per Diem Setup";
@@ -23,6 +24,11 @@ codeunit 50650 "Per Diem Payroll Mgt."
         MemoUsedErr: Label '%1 is already attached to Salary Advance %2.', Comment = '%1 = memo or imprest no., %2 = salary advance no.';
         PerDiemNotReleasedErr: Label 'Per diem imprest %1 must be approved (Released) before it can be attached to a Salary Advance.', Comment = '%1 = imprest no.';
         PerDiemNoAmountErr: Label 'Per diem imprest %1 has no amount.', Comment = '%1 = imprest no.';
+        AdvanceNotPerDiemErr: Label 'Salary Advance %1 is not attached to a staff per diem imprest.', Comment = '%1 = salary advance no.';
+        RecoveryMonthMissingErr: Label 'Enter the Recovery Start Month on Salary Advance %1 first.', Comment = '%1 = salary advance no.';
+        AdvanceNotPaidErr: Label 'Salary Advance %1 has not been paid yet. Post its payment voucher first.', Comment = '%1 = salary advance no.';
+        RecoveryCreatedMsg: Label 'Recovery deductions for Salary Advance %1 are in payroll period(s): %2. Months whose payroll period is not open yet are added by the Payroll Run.', Comment = '%1 = salary advance no., %2 = periods';
+        NoOpenRecoveryPeriodMsg: Label 'No open payroll period falls in the recovery months of Salary Advance %1 yet. The Payroll Run adds the deductions when those periods are open.', Comment = '%1 = salary advance no.';
         RecoveryCodeSameAsTaxErr: Label 'The Payroll Deduction Code on Salary Advance %1 is the same as the per diem tax deduction %2. Use the paid-in-advance code (for example PD-REC).', Comment = '%1 = salary advance no., %2 = deduction code';
 
     procedure GetSetup()
@@ -305,6 +311,24 @@ codeunit 50650 "Per Diem Payroll Mgt."
     var
         SalaryAdvance: Record payments;
         Imprest: Record payments;
+    begin
+        // Paid-out Salary Advances attached to a per diem are recovered from the recovery
+        // month HR entered on the Salary Advance, one installment per month.
+        SalaryAdvance.Reset();
+        SalaryAdvance.SetRange("Payment Type", SalaryAdvance."Payment Type"::"Salary Advance");
+        SalaryAdvance.SetRange("Account Type", SalaryAdvance."Account Type"::Employee);
+        SalaryAdvance.SetRange("Account No.", Employee."No.");
+        SalaryAdvance.SetFilter("Salary Advance Memo No", '<>%1', '');
+        SalaryAdvance.SetFilter("Recovery Start Month", '<>%1', 0D);
+        if SalaryAdvance.FindSet() then
+            repeat
+                if FindPerDiemForAdvance(SalaryAdvance, Imprest) and IsAdvancePaidOut(SalaryAdvance) then
+                    AddAdvanceRecoveryLine(Employee, SalaryAdvance, PeriodStart);
+            until SalaryAdvance.Next() = 0;
+    end;
+
+    local procedure AddAdvanceRecoveryLine(Employee: Record Employee; SalaryAdvance: Record payments; PeriodStart: Date): Boolean
+    var
         AssignmentMatrix: Record "Assignment Matrix-X";
         RecoveryCode: Code[20];
         AdvanceAmount: Decimal;
@@ -314,43 +338,145 @@ codeunit 50650 "Per Diem Payroll Mgt."
         LastMonth: Date;
         ThisMonth: Date;
     begin
-        // Posted (paid out) Salary Advances attached to a per diem are recovered from the
-        // recovery month HR entered on the Salary Advance, one installment per month.
-        // A Salary Advance that is not posted was never paid out, so nothing is recovered.
+        // Installment due in PeriodStart, from the Recovery Start Month for "No of months deducted" months.
+        GetSetup();
+        Months := Round(SalaryAdvance."No of months deducted", 1, '>');
+        if Months < 1 then
+            Months := 1;
         ThisMonth := CalcDate('<-CM>', PeriodStart);
-        SalaryAdvance.Reset();
-        SalaryAdvance.SetRange("Payment Type", SalaryAdvance."Payment Type"::"Salary Advance");
-        SalaryAdvance.SetRange("Account Type", SalaryAdvance."Account Type"::Employee);
-        SalaryAdvance.SetRange("Account No.", Employee."No.");
-        SalaryAdvance.SetRange(Posted, true);
-        SalaryAdvance.SetFilter("Salary Advance Memo No", '<>%1', '');
-        SalaryAdvance.SetFilter("Recovery Start Month", '<>%1', 0D);
-        if SalaryAdvance.FindSet() then
+        FirstMonth := CalcDate('<-CM>', SalaryAdvance."Recovery Start Month");
+        LastMonth := CalcDate('<' + Format(Months - 1, 0, 9) + 'M>', FirstMonth);
+        if (ThisMonth < FirstMonth) or (ThisMonth > LastMonth) then
+            exit(false);
+        AdvanceAmount := SalaryAdvance."Amount Approved";
+        if AdvanceAmount = 0 then
+            AdvanceAmount := SalaryAdvance."Salary Advance";
+        Installment := Round(AdvanceAmount / Months, 0.01);
+        if ThisMonth = LastMonth then
+            Installment := AdvanceAmount - Installment * (Months - 1);
+        RecoveryCode := SalaryAdvance."Payroll Deduction Code";
+        if RecoveryCode = '' then
+            RecoveryCode := PerDiemSetup."PD Advance Deduction";
+        if RecoveryCode = '' then
+            PerDiemSetup.TestField("PD Advance Deduction");
+        if RecoveryCode = PerDiemSetup."PD Tax Deduction" then
+            Error(RecoveryCodeSameAsTaxErr, SalaryAdvance."No.", RecoveryCode);
+        InsertAssignmentLine(Employee, AssignmentMatrix.Type::Deduction, RecoveryCode, PeriodStart, SalaryAdvance."No.", Installment);
+        exit(true);
+    end;
+
+    procedure IsAdvancePaidOut(SalaryAdvance: Record payments): Boolean
+    var
+        PaymentVoucher: Record payments;
+        PVLine: Record "PV Lines";
+    begin
+        // Paid out = the Salary Advance itself was posted, or its payment voucher was posted.
+        if SalaryAdvance.Posted then
+            exit(true);
+        PaymentVoucher.Reset();
+        PaymentVoucher.SetRange("Payment Type", PaymentVoucher."Payment Type"::"Payment Voucher");
+        PaymentVoucher.SetRange("Applies- To Doc No.", SalaryAdvance."No.");
+        PaymentVoucher.SetRange(Posted, true);
+        if not PaymentVoucher.IsEmpty() then
+            exit(true);
+        PVLine.Reset();
+        PVLine.SetRange("S/Advance No", SalaryAdvance."No.");
+        if PVLine.FindSet() then
             repeat
-                if FindPerDiemForAdvance(SalaryAdvance, Imprest) then begin
-                    Months := Round(SalaryAdvance."No of months deducted", 1, '>');
-                    if Months < 1 then
-                        Months := 1;
-                    FirstMonth := CalcDate('<-CM>', SalaryAdvance."Recovery Start Month");
-                    LastMonth := CalcDate('<' + Format(Months - 1, 0, 9) + 'M>', FirstMonth);
-                    if (ThisMonth >= FirstMonth) and (ThisMonth <= LastMonth) then begin
-                        AdvanceAmount := SalaryAdvance."Amount Approved";
-                        if AdvanceAmount = 0 then
-                            AdvanceAmount := SalaryAdvance."Salary Advance";
-                        Installment := Round(AdvanceAmount / Months, 0.01);
-                        if ThisMonth = LastMonth then
-                            Installment := AdvanceAmount - Installment * (Months - 1);
-                        RecoveryCode := SalaryAdvance."Payroll Deduction Code";
-                        if RecoveryCode = '' then
-                            RecoveryCode := PerDiemSetup."PD Advance Deduction";
-                        if RecoveryCode = '' then
-                            PerDiemSetup.TestField("PD Advance Deduction");
-                        if RecoveryCode = PerDiemSetup."PD Tax Deduction" then
-                            Error(RecoveryCodeSameAsTaxErr, SalaryAdvance."No.", RecoveryCode);
-                        InsertAssignmentLine(Employee, AssignmentMatrix.Type::Deduction, RecoveryCode, PeriodStart, SalaryAdvance."No.", Installment);
-                    end;
+                if PaymentVoucher.Get(PVLine.No) then
+                    if PaymentVoucher.Posted then
+                        exit(true);
+            until PVLine.Next() = 0;
+        exit(false);
+    end;
+
+    procedure CreateAdvanceRecoveryLines(var SalaryAdvance: Record payments; ShowResult: Boolean; MarkPosted: Boolean)
+    var
+        Imprest: Record payments;
+        Employee: Record Employee;
+        PayrollPeriod: Record "Payroll PeriodX";
+        PeriodList: Text;
+    begin
+        // Puts the recovery deduction(s) of a paid-out per diem Salary Advance into every open
+        // payroll period in its recovery months; MarkPosted also moves it to Posted Salary Advances.
+        if SalaryAdvance."Payment Type" <> SalaryAdvance."Payment Type"::"Salary Advance" then
+            exit;
+        if not FindPerDiemForAdvance(SalaryAdvance, Imprest) then begin
+            if ShowResult then
+                Error(AdvanceNotPerDiemErr, SalaryAdvance."No.");
+            exit;
+        end;
+        if SalaryAdvance."Recovery Start Month" = 0D then begin
+            if ShowResult then
+                Error(RecoveryMonthMissingErr, SalaryAdvance."No.");
+            exit;
+        end;
+        if not IsAdvancePaidOut(SalaryAdvance) then begin
+            if ShowResult then
+                Error(AdvanceNotPaidErr, SalaryAdvance."No.");
+            exit;
+        end;
+        if not Employee.Get(SalaryAdvance."Account No.") then
+            exit;
+
+        if MarkPosted and not SalaryAdvance.Posted then begin
+            SalaryAdvance.Posted := true;
+            SalaryAdvance."Posted By" := CopyStr(UserId(), 1, MaxStrLen(SalaryAdvance."Posted By"));
+            SalaryAdvance."Posted Date" := Today;
+            SalaryAdvance.Modify();
+        end;
+
+        PayrollPeriod.Reset();
+        PayrollPeriod.SetRange(Closed, false);
+        PayrollPeriod.SetFilter("Starting Date", '%1..', CalcDate('<-CM>', SalaryAdvance."Recovery Start Month"));
+        if PayrollPeriod.FindSet() then
+            repeat
+                if AddAdvanceRecoveryLine(Employee, SalaryAdvance, PayrollPeriod."Starting Date") then begin
+                    if PeriodList <> '' then
+                        PeriodList += ', ';
+                    PeriodList += Format(PayrollPeriod."Starting Date", 0, '<Month Text,3> <Year4>');
                 end;
-            until SalaryAdvance.Next() = 0;
+            until PayrollPeriod.Next() = 0;
+
+        if ShowResult then
+            if PeriodList <> '' then
+                Message(RecoveryCreatedMsg, SalaryAdvance."No.", PeriodList)
+            else
+                Message(NoOpenRecoveryPeriodMsg, SalaryAdvance."No.");
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Line", 'OnAfterPostGenJnlLine', '', false, false)]
+    local procedure CreateRecoveryOnAdvancePayment(var GenJournalLine: Record "Gen. Journal Line")
+    var
+        Document: Record payments;
+        SalaryAdvance: Record payments;
+        PVLine: Record "PV Lines";
+    begin
+        // When a Salary Advance (or the payment voucher created from it) is posted,
+        // put its recovery deductions into the payroll straight away.
+        if GenJournalLine."Document No." = '' then
+            exit;
+        if not Document.Get(GenJournalLine."Document No.") then
+            exit;
+        case Document."Payment Type" of
+            Document."Payment Type"::"Salary Advance":
+                // Posted from the Salary Advance itself: its posting code marks it posted.
+                CreateAdvanceRecoveryLines(Document, false, false);
+            Document."Payment Type"::"Payment Voucher":
+                begin
+                    if Document."Applies- To Doc No." <> '' then
+                        if SalaryAdvance.Get(Document."Applies- To Doc No.") then
+                            CreateAdvanceRecoveryLines(SalaryAdvance, false, true);
+                    PVLine.Reset();
+                    PVLine.SetRange(No, Document."No.");
+                    PVLine.SetFilter("S/Advance No", '<>%1&<>%2', '', Document."Applies- To Doc No.");
+                    if PVLine.FindSet() then
+                        repeat
+                            if SalaryAdvance.Get(PVLine."S/Advance No") then
+                                CreateAdvanceRecoveryLines(SalaryAdvance, false, true);
+                        until PVLine.Next() = 0;
+                end;
+        end;
     end;
 
     local procedure FindPerDiemForAdvance(SalaryAdvance: Record payments; var Imprest: Record payments): Boolean
