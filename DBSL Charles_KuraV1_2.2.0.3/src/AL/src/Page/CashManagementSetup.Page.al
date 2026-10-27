@@ -187,6 +187,11 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the PV Nos field.';
                 }
+                field("PV File Numbering"; Rec."PV File Numbering")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the PV Nos field.';
+                }
                 field("Petty Cash Nos"; Rec."Petty Cash Nos")
                 {
                     ApplicationArea = Basic;
