@@ -1382,7 +1382,8 @@ codeunit 50015 "EssQueries"
                     data := data + tbl_purchaseHeader."No." + '*' + tbl_purchaseHeader.Description + '*' +
                     Format(tbl_purchaseHeader."Requisition Product Group") + '*' + Format(tbl_purchaseHeader."Priority Level") + '*' +
                      Format(tbl_purchaseHeader.Status) + '*' + tbl_purchaseHeader."PP Planning Category" + '*' +
-                      tbl_purchaseHeader."Shortcut Dimension 2 Code" + '*' + tbl_purchaseHeader."Gen. Bus. Posting Group" + '::::';
+                      tbl_purchaseHeader."Shortcut Dimension 2 Code" + '*' + tbl_purchaseHeader."Gen. Bus. Posting Group" + '*' +
+                      tbl_purchaseHeader."Location Code" + '::::';
                 until tbl_purchaseHeader.Next = 0;
             end;
             Exit(data);
