@@ -760,7 +760,7 @@ Page 75237 "Standard Purchase Requisition"
                         Rec.TestField(Description);
                         rec.TestField("PP Solicitation Type");
                         rec.TestField("PP Procurement Method");
-                        rec.TestField("PP Preference/Reservation Code");
+                        //rec.TestField("PP Preference/Reservation Code");
                         rec.CalcFields("Total PRN Amount (LCY)");
                         if Rec."PP Total Available Budget" < rec."Total PRN Amount (LCY)" then
                             Error('The total requisitioned amount exceeds the available budget.');
@@ -769,11 +769,11 @@ Page 75237 "Standard Purchase Requisition"
                         prnlines.Reset();
                         prnlines.SetRange("Document No.", rec."No.");
                         if prnlines.findset then begin
-                            prnlines.testfield("Gen. Bus. Posting Group");
+                           // prnlines.testfield("Gen. Bus. Posting Group");
                             prnlines.testfield("Unit of Measure");
-                            prnlines.testfield("Location Code");
+                           // prnlines.testfield("Location Code");
 
-                            prnlines.testfield("Gen. Prod. Posting Group");
+                           // prnlines.testfield("Gen. Prod. Posting Group");
                         end;
                         //check Budget Control
                         ProcSetup.Get;
