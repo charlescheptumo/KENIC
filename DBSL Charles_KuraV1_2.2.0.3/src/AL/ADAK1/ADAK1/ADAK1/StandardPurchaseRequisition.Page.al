@@ -171,7 +171,7 @@ Page 75237 "Standard Purchase Requisition"
                 field(Job; Rec.Job)
                 {
                     ApplicationArea = Basic;
-                    Caption = 'Project ID';
+                    Caption = 'Budget ID';
                     ShowMandatory = true;
                     ToolTip = 'Specifies the value of the Project ID field.';
                 }
