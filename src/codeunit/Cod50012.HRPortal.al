@@ -5183,8 +5183,11 @@ Codeunit 50012 "HRPortal"
                 PurchaseHeader."Requester ID" := userID;
                 PurchaseHeader."Request-By No." := employeeNo;
                 PurchaseHeader.Validate("Request-By No.");
-                PurchaseHeader."Shortcut Dimension 2 Code" := fundCode;
-                PurchaseHeader."Project Name" := fundCode;
+                // Funding source is optional: keep the employee's own Global Dimension 2 when none is given.
+                if fundCode <> '' then begin
+                    PurchaseHeader."Shortcut Dimension 2 Code" := fundCode;
+                    PurchaseHeader."Project Name" := fundCode;
+                end;
                 //PurchaseHeader."Requester ID" := username;
                 PurchaseHeader."Request-By No." := employeeNo;
                 // PurchaseHeader.VALIDATE("Job Task No.", jobTask);
@@ -5226,8 +5229,11 @@ Codeunit 50012 "HRPortal"
                     PurchaseHeader.VALIDATE("Shortcut Dimension 1 Code", Employee."Global Dimension 1 Code");
                     //PurchaseHeader.VALIDATE("Shortcut Dimension 2 Code", Employee."Global Dimension 2 Code");
                     PurchaseHeader."Request-By No." := employeeNo;
-                    PurchaseHeader."Shortcut Dimension 2 Code" := fundCode;
-                    PurchaseHeader."Project Name" := fundCode;
+                    // Funding source is optional: keep the employee's own Global Dimension 2 when none is given.
+                    if fundCode <> '' then begin
+                        PurchaseHeader."Shortcut Dimension 2 Code" := fundCode;
+                        PurchaseHeader."Project Name" := fundCode;
+                    end;
                     PurchaseHeader."Requester ID" := userID;
                     PurchaseHeader."Request-By No." := employeeNo;
                     PurchaseHeader.Validate("Request-By No.");
