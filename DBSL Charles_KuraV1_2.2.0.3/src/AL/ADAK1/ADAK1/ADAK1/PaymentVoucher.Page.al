@@ -518,9 +518,9 @@ Page 57001 "Payment Voucher"
                                 repeat
                                     pvLines.TestField(pvLines."Applies to Doc. No");
                                     pvLines.testfield(pvLines.Description);
-                                    // A salary advance (e.g. per diem) is paid to an employee:
-                                    // it has no project or contractor.
-                                    if pvLines."S/Advance No" = '' then begin
+                                    // A salary advance (e.g. per diem) or any payment to an employee
+                                    // has no project or contractor.
+                                    if (pvLines."S/Advance No" = '') and (pvLines."Account Type" <> pvLines."Account Type"::Employee) then begin
                                         pvLines.TestField("Project No");
                                         pvLines.TestField("Contractor No");
                                     end;
