@@ -121,12 +121,14 @@ Page 75237 "Standard Purchase Requisition"
                     ApplicationArea = Basic;
                     Editable = true;
                     ToolTip = 'Specifies the value of the Directorate Code field.';
+                    visible = false;
                 }
                 field("Directorate Name"; Rec."Directorate Name")
                 {
                     ApplicationArea = Basic;
                     Editable = false;
                     ToolTip = 'Specifies the value of the Directorate Name field.';
+                    visible = false;
                 }
                 field("Department Code"; Rec."Department Code")
                 {

@@ -2,7 +2,7 @@
   "id": "c3f9cd29-4332-4287-af6f-63fcf61d79ba",
   "name": "KENIC",
   "publisher": "Charles",
-  "version": "1.0.0.5",
+  "version": "1.0.0.7",
   "brief": "",
   "description": "",
   "privacyStatement": "",
@@ -22,7 +22,7 @@
   ],
   "resourceExposurePolicy": {
     "allowDebugging": true,
-    "allowDownloadingSource": true,
+    "allowDownloadingSource": false,
     "includeSourceInSymbolFile": true
   },
   "runtime": "17.0",
