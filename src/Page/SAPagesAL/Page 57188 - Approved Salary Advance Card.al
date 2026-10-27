@@ -218,6 +218,23 @@ page 57188 "Approved Salary Advance Card"
                     CreatePaymentVoucher(Rec);
                 end;
             }
+            action(CreateRecoveryDeductions)
+            {
+                Caption = 'Create Recovery Deductions';
+                Image = PayrollStatistics;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                ToolTip = 'For a per diem Salary Advance whose payment voucher is posted: puts the recovery deduction into the payroll of the Recovery Start Month (and the following months) and moves it to Posted Salary Advances.';
+
+                trigger OnAction()
+                var
+                    PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+                begin
+                    PerDiemMgt.CreateAdvanceRecoveryLines(Rec, true, true);
+                    CurrPage.Update(false);
+                end;
+            }
             action("Re-Open")
             {
                 Image = ReOpen;
@@ -303,7 +320,7 @@ page 57188 "Approved Salary Advance Card"
             // NoSeriesMgt.InitSeries(CashMgt."PV Nos", Payments."No. Series", 0D, PVNo, Payments."No. Series");
             /* IF Payments."File No."='' THEN
                 NoSeriesMgt.InitSeries(CashMgt."PV File Numbering",Payments."File No. Series",0D,FileNo,Payments."File No. Series");*/
-            Payments."No." := PVNo;
+            //Payments."No." := PVNo; // kept the number from the PV No. series (was blanking it)
             //Payments."File No.":=FileNo;
             Payments."Payment Type" := Payments."Payment Type"::"Payment Voucher";
             Payments."Document Type" := Payments."Document Type"::"Payment Voucher";

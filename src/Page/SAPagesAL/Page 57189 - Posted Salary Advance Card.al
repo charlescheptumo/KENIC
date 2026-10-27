@@ -146,6 +146,23 @@ page 57189 "Posted Salary Advance Card"
     {
         area(creation)
         {
+            action(CreateRecoveryDeductions)
+            {
+                Caption = 'Create Recovery Deductions';
+                Image = PayrollStatistics;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                ToolTip = 'Puts the recovery deduction of this per diem Salary Advance into the payroll of the Recovery Start Month (and the following months) again, if it is missing.';
+
+                trigger OnAction()
+                var
+                    PerDiemMgt: Codeunit "Per Diem Payroll Mgt.";
+                begin
+                    PerDiemMgt.CreateAdvanceRecoveryLines(Rec, true, true);
+                    CurrPage.Update(false);
+                end;
+            }
             action(Print)
             {
                 Image = PrintForm;
