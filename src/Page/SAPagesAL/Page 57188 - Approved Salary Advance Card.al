@@ -341,6 +341,8 @@ page 57188 "Approved Salary Advance Card"
             PVLines."Net Amount" := PVLines.Amount;
             PVLines."Applies to Doc. No" := AdvanceNo."No.";
             PVLines."S/Advance No" := AdvanceNo."No.";
+            if PVLines.Description = '' then
+                PVLines.Description := CopyStr('Salary advance ' + AdvanceNo."No." + ' ' + AdvanceNo."Account Name", 1, MaxStrLen(PVLines.Description));
             PVLines.INSERT;
             PAGE.RUN(57001, Rec, Payments."No.");
             /*AdvanceNo.Posted:=TRUE;
