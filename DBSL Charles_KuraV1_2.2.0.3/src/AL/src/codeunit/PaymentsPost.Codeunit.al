@@ -645,10 +645,11 @@ Codeunit 57000 "Payments-Post"
 
         if DomainReceipt.Insert(true) then begin
             message('Domain adjustment receipt sent to registry successfully');
-            ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
+            
         end else begin
             message('Error sending to registry please contact admin');
         end;
+        //ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
     end;
 
 
@@ -7520,10 +7521,11 @@ Codeunit 57000 "Payments-Post"
 
         if DomainReceipt.Insert(true) then begin
             message('Domain receipt sent to registry successfully');
-            ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
+            
         end else begin
             message('Error sending to registry please contact admin');
         end;
+        //ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
     end;
 
     procedure SyncManualReceiptsToRegistry(var SyncedCount: Integer): Integer
