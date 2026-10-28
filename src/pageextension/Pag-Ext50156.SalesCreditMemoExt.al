@@ -33,7 +33,7 @@ pageextension 50156 "Sales Credit Memo Ext" extends "Sales Credit Memo"
                         salesHeader.SetRange(salesHeader."No.", Rec."Applies-to Doc. No.");
                         if salesHeader.FindFirst then begin
 
-                            if Rec."Posting Date" - salesHeader."Posting Date" > 30 then begin
+                            if Rec."Posting Date" - salesHeader."Posting Date" < 30 then begin
 
                                 customFunction.SyncFromSalesCrMemo(Rec);
                             end else begin
