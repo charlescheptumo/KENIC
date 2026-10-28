@@ -976,6 +976,7 @@ codeunit 50042 COCCAIntegration
 
         BuildDomainReceiptPayload(DomainReceipt, PayloadObj);
         PayloadObj.WriteTo(PayloadTxt);
+        Message('PayloadObj = %1',PayloadObj);
 
         SendDomainReceiptRequest(
             PayloadTxt,

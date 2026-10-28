@@ -123,6 +123,7 @@ page 50356 "Domain Receipt List"
                 PromotedCategory = Process;
                 PromotedIsBig = true;
                 ToolTip = 'Copies posted manually-created receipts that are not yet in the Domain Receipt registry.';
+                visible = false;
 
                 trigger OnAction()
                 var
@@ -167,7 +168,12 @@ page 50356 "Domain Receipt List"
                 var
                     DomainReceiptMgt: Codeunit "Payments-post";
                 begin
-                    DomainReceiptMgt.PostReceipt(Rec);
+                    if rec.posted = false then begin
+                        DomainReceiptMgt.PostReceipt(Rec);
+                    end else begin
+                        message('The domain receipt is already processed/ is a manual entry');
+                    end;
+
                     CurrPage.Update(false);
                 end;
             }
