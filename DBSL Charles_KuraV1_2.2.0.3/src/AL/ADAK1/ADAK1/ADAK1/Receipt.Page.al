@@ -292,6 +292,7 @@ Page 57067 "Receipt"
                 Promoted = true;
                 PromotedCategory = New;
                 ToolTip = 'Executes the Post action.';
+                Caption = 'Send to Registry';
  
                 trigger OnAction()
                 begin

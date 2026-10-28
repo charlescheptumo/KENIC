@@ -38,7 +38,7 @@ pageextension 50156 "Sales Credit Memo Ext" extends "Sales Credit Memo"
                                 customFunction.SyncFromSalesCrMemo(Rec);
                             end else begin
 
-                                Error('The original invoice number %1 was raised more than 30 days ago. You cannot raise a credit memo for it', salesHeader."No.");
+                                Error('The original invoice number %1 was raised more than 30 days ago. You cannot send this credit memo to the registry', salesHeader."No.");
                             end;
 
 
