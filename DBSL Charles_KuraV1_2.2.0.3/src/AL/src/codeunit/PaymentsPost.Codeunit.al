@@ -7725,6 +7725,10 @@ Codeunit 57000 "Payments-Post"
                                 CMSetup.TestField("IM USD");
                                 BankAccountNo := CMSetup."IM USD";
                             end else
+                            if ReceiptRec.VatWithheld then begin
+                                CMSetup.TestField("VAT Withheld");
+                                BankAccountNo := CMSetup."VAT Withheld";
+                            end else
                                 if ReceiptRec.Cash then begin
                                     ReceiptRec.TestField(BankCode);
                                     BankAccountNo := ReceiptRec.BankCode;
