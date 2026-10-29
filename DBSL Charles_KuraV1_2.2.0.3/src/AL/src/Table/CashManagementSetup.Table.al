@@ -714,15 +714,20 @@ Table 57004 "Cash Management Setup"
             Caption = '5Y Membership Deferral';
             TableRelation = "Deferral Template";
         }
-         field(57101; Membership; Code[50])
+        field(57101; Membership; Code[50])
         {
             Caption = 'Membership';
             TableRelation = Item;
         }
- field(57102; "Batch EFT Voucher Nos"; Code[20])
+        field(57102; "Batch EFT Voucher Nos"; Code[20])
         {
 
             TableRelation = "No. Series";
+        }
+        field(57103; "VAT Withheld"; Code[50])
+        {
+            Caption = 'VAT Withheld Bank';
+            TableRelation = "Bank Account";
         }
     }
 

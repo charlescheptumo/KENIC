@@ -41,6 +41,10 @@ Page 57074 "Posted Receipts List"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Cheque Date field.';
                 }
+                field("Adjustment Receipt?";Rec."Adjustment Receipt?")
+                {
+                    
+                }
                 field(Amount; Rec.Amount)
                 {
                     ApplicationArea = Basic;

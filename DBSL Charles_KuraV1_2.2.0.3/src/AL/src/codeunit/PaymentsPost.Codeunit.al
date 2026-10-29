@@ -38,6 +38,7 @@ Codeunit 57000 "Payments-Post"
         Text016: label 'Actual amount spent cannot be zero';
         Text017: label 'Are you sure you want to post receipt no. %1 ?';
         Text018: label 'The receipt is already posted';
+        Text018B: label 'Are you sure you want to send receipt no. %1 to registry?';
         WText001: label 'Last Check No. must be filled in.';
         WText002: label 'Filters on %1 and %2 are not allowed.';
         WText003: label 'XXXXXXXXXXXXXXXX';
@@ -131,7 +132,7 @@ Codeunit 57000 "Payments-Post"
             PostPVWithoutTaxes(PV);
     end;
 
-    procedure PostAdjustmentReceipt(ReceiptRec: Record "Receipts Header1")
+    procedure SendAdjustmentReceipt(ReceiptRec: Record "Receipts Header1")
     var
         RcptLines: Record "Receipt Lines1";
         GenJnLine: Record "Gen. Journal Line";
@@ -144,25 +145,25 @@ Codeunit 57000 "Payments-Post"
         CMSetup: Record "Cash Management Setup";
         OriginalReceiptRec: Record "Receipts Header1";
     begin
-        if Confirm(Text017, false, ReceiptRec."No.") = true then begin
- 
+        if Confirm(Text018B, false, ReceiptRec."No.") = true then begin
+
             if ReceiptRec."Adjustment Receipt?" = false then
                 Error('Ensure the receipt number %1 is marked as adjustment receipt', ReceiptRec."No.");
- 
+
             //ReceiptRec.testfield("Adjustment for");
- 
+
             if ReceiptRec.Posted = true then
                 Error(Text018, ReceiptRec."No.");
             ReceiptRec.TestField(Date);
             ReceiptRec.TestField("Bank Code");
             ReceiptRec.TestField("Received From");
             ReceiptRec.TestField("Pay Mode");
- 
+
             if ReceiptRec."Pay Mode" = 'CHEQUE' then begin
                 ReceiptRec.TestField("Cheque No");
                 ReceiptRec.TestField("Cheque Date");
             end;
- 
+
             ReceiptRec.CalcFields(Amount);
             //Check Lines
             if ReceiptRec.Amount = 0 then
@@ -171,7 +172,7 @@ Codeunit 57000 "Payments-Post"
             RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
             if not RcptLines.FindLast then
                 Error('Receipt Lines cannot be empty');
- 
+
             CMSetup.Get();
             CMSetup.TestField("Receipt Template");
             CMSetup.TestField("Receipt Batch Name");
@@ -180,25 +181,25 @@ Codeunit 57000 "Payments-Post"
             GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
             GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
             GenJnLine.DeleteAll;
- 
- 
+
+
             Batch.Init;
             if CMSetup.Get() then
                 Batch."Journal Template Name" := CMSetup."Receipt Template";
             Batch.Name := CMSetup."Receipt Batch Name";
             if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
                 Batch.Insert;
- 
+
             //Bank Entries
             LineNo := LineNo + 10000;
- 
+
             RcptLines.Reset;
             RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
             RcptLines.Validate(Amount);
             RcptLines.CalcSums(Amount);
- 
- 
- 
+
+
+
             GenJnLine.Init;
             if CMSetup.Get then
                 GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
@@ -225,10 +226,10 @@ Codeunit 57000 "Payments-Post"
             GenJnLine."Shortcut Dimension 2 Code" := ReceiptRec."Shortcut Dimension 2 Code";
             GenJnLine.Validate(GenJnLine."Shortcut Dimension 2 Code");
             GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
- 
+
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
- 
+
             //Receipt Lines Entries
             RcptLines.Reset;
             RcptLines.SetRange(RcptLines."Receipt No.", ReceiptRec."No.");
@@ -262,10 +263,10 @@ Codeunit 57000 "Payments-Post"
                     GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
                     //GenJnLine."Shortcut Dimension 3 Code":=RcptLines."Shortcut Dimension 3 Code";
                     //GenJnLine.VALIDATE(GenJnLine."Shortcut Dimension 3 Code");
- 
+
                     //
- 
- 
+
+
                     // IF GenJnLine."Account Type" = GenJnLine."Account Type"::Customer THEN BEGIN
                     //     // to return back cc
                     //     //
@@ -276,13 +277,13 @@ Codeunit 57000 "Payments-Post"
                     //     GenJnLine."Applies-to Doc. No." := RcptLines."Applies to Doc. No";
                     //     GenJnLine.VALIDATE(GenJnLine."Applies-to Doc. No.");
                     // END;
- 
+
                     if GenJnLine.Amount <> 0 then
                         GenJnLine.Insert;
- 
+
                 until RcptLines.Next = 0;
             end;
- 
+
             //Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
             // GLEntry.Reset;
             // GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
@@ -293,24 +294,206 @@ Codeunit 57000 "Payments-Post"
             ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
             ReceiptRec."Posted Time" := Time;
             ReceiptRec.Modify;
- 
+
             TransferAdjustmentToDomainRegistry(ReceiptRec);
- 
+
             OriginalReceiptRec.Reset();
             OriginalReceiptRec.setrange(OriginalReceiptRec."No.", ReceiptRec."Adjustment for");
             if OriginalReceiptRec.findfirst then begin
- 
+
                 OriginalReceiptRec.Reversed := true;
                 OriginalReceiptRec."Reversed By" := userid;
                 OriginalReceiptRec."Date Reversed" := today;
                 //OriginalReceiptRec."Time Reversed" := now;
             end;
- 
+
             //end;
- 
+
         end;
- 
+
     end;
+
+    procedure PostAdjustmentReceipt(ReceiptRec: Record "Receipts Header1")
+    var
+        RcptLines: Record "Receipt Lines1";
+        GenJnLine: Record "Gen. Journal Line";
+        LineNo: Integer;
+        VATSetup: Record "VAT Posting Setup";
+        GLAccount: Record "G/L Account";
+        Customer: Record Customer;
+        Vendor: Record Vendor;
+        GLEntry: Record "G/L Entry";
+        CMSetup: Record "Cash Management Setup";
+        OriginalReceiptRec: Record "Receipts Header1";
+    begin
+        if Confirm(Text017, false, ReceiptRec."No.") = true then begin
+
+            if ReceiptRec."Adjustment Receipt?" = false then
+                Error('Ensure the receipt number %1 is marked as adjustment receipt', ReceiptRec."No.");
+
+            //ReceiptRec.testfield("Adjustment for");
+
+            if ReceiptRec.Posted = true then
+                Error(Text018, ReceiptRec."No.");
+            ReceiptRec.TestField(Date);
+            ReceiptRec.TestField("Bank Code");
+            ReceiptRec.TestField("Received From");
+            ReceiptRec.TestField("Pay Mode");
+
+            if ReceiptRec."Pay Mode" = 'CHEQUE' then begin
+                ReceiptRec.TestField("Cheque No");
+                ReceiptRec.TestField("Cheque Date");
+            end;
+
+            ReceiptRec.CalcFields(Amount);
+            //Check Lines
+            if ReceiptRec.Amount = 0 then
+                Error('Amount cannot be zero');
+            RcptLines.Reset;
+            RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
+            if not RcptLines.FindLast then
+                Error('Receipt Lines cannot be empty');
+
+            CMSetup.Get();
+            CMSetup.TestField("Receipt Template");
+            CMSetup.TestField("Receipt Batch Name");
+            // Delete Lines Present on the General Journal Line
+            GenJnLine.Reset;
+            GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
+            GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
+            GenJnLine.DeleteAll;
+
+
+            Batch.Init;
+            if CMSetup.Get() then
+                Batch."Journal Template Name" := CMSetup."Receipt Template";
+            Batch.Name := CMSetup."Receipt Batch Name";
+            if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
+                Batch.Insert;
+
+            //Bank Entries
+            LineNo := LineNo + 10000;
+
+            RcptLines.Reset;
+            RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
+            RcptLines.Validate(Amount);
+            RcptLines.CalcSums(Amount);
+
+
+
+            GenJnLine.Init;
+            if CMSetup.Get then
+                GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+            GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+            GenJnLine."Line No." := LineNo;
+            GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
+            GenJnLine."Account No." := ReceiptRec."Bank Code";
+            GenJnLine.Validate(GenJnLine."Account No.");
+            if ReceiptRec.Date = 0D then
+                Error('You must specify the Receipt date');
+            GenJnLine."Posting Date" := ReceiptRec."Posted Date";
+            GenJnLine."Document No." := ReceiptRec."No.";
+            GenJnLine."External Document No." := ReceiptRec."Cheque No";
+            GenJnLine."Payment Method Code" := ReceiptRec."Pay Mode";
+            GenJnLine.Description := 'Received adjustment from:' + ReceiptRec."Received From";
+            GenJnLine.Amount := -ReceiptRec.Amount;
+            GenJnLine."Currency Code" := ReceiptRec."Currency Code";
+            GenJnLine.Validate("Currency Code");
+            GenJnLine."Currency Factor" := ReceiptRec."Currency Factor";
+            GenJnLine.Validate("Currency Factor");
+            GenJnLine.Validate(GenJnLine.Amount);
+            GenJnLine."Shortcut Dimension 1 Code" := ReceiptRec."Shortcut Dimension 1 Code";
+            GenJnLine.Validate(GenJnLine."Shortcut Dimension 1 Code");
+            GenJnLine."Shortcut Dimension 2 Code" := ReceiptRec."Shortcut Dimension 2 Code";
+            GenJnLine.Validate(GenJnLine."Shortcut Dimension 2 Code");
+            GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
+
+            if GenJnLine.Amount <> 0 then
+                GenJnLine.Insert;
+
+            //Receipt Lines Entries
+            RcptLines.Reset;
+            RcptLines.SetRange(RcptLines."Receipt No.", ReceiptRec."No.");
+            if RcptLines.FindFirst then begin
+                repeat
+                    RcptLines.Validate(RcptLines.Amount);
+                    LineNo := LineNo + 10000;
+                    GenJnLine.Init;
+                    if CMSetup.Get then
+                        GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+                    GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+                    GenJnLine."Line No." := LineNo;
+                    GenJnLine."Account Type" := RcptLines."Account Type";
+                    GenJnLine."Account No." := RcptLines."Account No.";
+                    GenJnLine.Validate(GenJnLine."Account No.");
+                    GenJnLine."Posting Date" := ReceiptRec."Posted Date";
+                    GenJnLine."Document No." := ReceiptRec."No.";
+                    GenJnLine."External Document No." := ReceiptRec."Cheque No";
+                    GenJnLine."Payment Method Code" := ReceiptRec."Pay Mode";
+                    GenJnLine.Description := 'Received adjustment from:' + ReceiptRec."Received From";
+                    GenJnLine.Amount := RcptLines.Amount;
+                    GenJnLine."Currency Code" := ReceiptRec."Currency Code";
+                    GenJnLine.Validate("Currency Code");
+                    GenJnLine."Currency Factor" := ReceiptRec."Currency Factor";
+                    GenJnLine.Validate("Currency Factor");
+                    GenJnLine.Validate(GenJnLine.Amount);
+                    GenJnLine."Shortcut Dimension 1 Code" := ReceiptRec."Shortcut Dimension 1 Code";
+                    GenJnLine.Validate(GenJnLine."Shortcut Dimension 1 Code");
+                    GenJnLine."Shortcut Dimension 2 Code" := ReceiptRec."Shortcut Dimension 2 Code";
+                    GenJnLine.Validate(GenJnLine."Shortcut Dimension 2 Code");
+                    GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
+                    //GenJnLine."Shortcut Dimension 3 Code":=RcptLines."Shortcut Dimension 3 Code";
+                    //GenJnLine.VALIDATE(GenJnLine."Shortcut Dimension 3 Code");
+
+                    //
+
+
+                    // IF GenJnLine."Account Type" = GenJnLine."Account Type"::Customer THEN BEGIN
+                    //     // to return back cc
+                    //     //
+                    //     // if hasvalue = true then
+                    //     //     GenJnLine."Applies-to Doc. Type" := GenJnLine."Applies-to Doc. Type"::" "
+                    //     // else
+                    //     GenJnLine."Applies-to Doc. Type" := GenJnLine."Applies-to Doc. Type"::Invoice;
+                    //     GenJnLine."Applies-to Doc. No." := RcptLines."Applies to Doc. No";
+                    //     GenJnLine.VALIDATE(GenJnLine."Applies-to Doc. No.");
+                    // END;
+
+                    if GenJnLine.Amount <> 0 then
+                        GenJnLine.Insert;
+
+                until RcptLines.Next = 0;
+            end;
+
+            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            GLEntry.Reset;
+            GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
+            GLEntry.SetRange(GLEntry.Reversed, false);
+            if GLEntry.FindFirst then begin
+                ReceiptRec.Posted := true;
+                ReceiptRec."Posted By" := UserId;
+                ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
+                ReceiptRec."Posted Time" := Time;
+                ReceiptRec.Modify;
+
+                //TransferAdjustmentToDomainRegistry(ReceiptRec);
+
+                OriginalReceiptRec.Reset();
+                OriginalReceiptRec.setrange(OriginalReceiptRec."No.", ReceiptRec."Adjustment for");
+                if OriginalReceiptRec.findfirst then begin
+
+                    OriginalReceiptRec.Reversed := true;
+                    OriginalReceiptRec."Reversed By" := userid;
+                    OriginalReceiptRec."Date Reversed" := today;
+                    //OriginalReceiptRec."Time Reversed" := now;
+                end;
+
+            end;
+
+        end;
+
+    end;
+
     procedure PostDomainAdjustment(ReceiptRec: Record "Domain Ledger Entry")
     var
         GenJnLine: Record "Gen. Journal Line";
@@ -404,6 +587,9 @@ Codeunit 57000 "Payments-Post"
     var
         DomainReceipt: Record "Domain Receipt";
         NewReceiptId: Integer;
+        rcptLines: record "Receipt Lines1";
+        CoCCA: Codeunit CoCCAIntegration;
+        ResponseTxt: Text;
     begin
         DomainReceipt.Reset();
         DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
@@ -420,6 +606,11 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt.Init();
         DomainReceipt.ReceiptId := NewReceiptId;
         DomainReceipt.Roid := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
+        rcptLines.reset();
+        rcptLines.setrange(rcptLines."Receipt No.", ReceiptRec."No.");
+        if rcptLines.findfirst then begin
+            DomainReceipt.Roid := rcptLines."Account No.";
+        end;
         DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
         DomainReceipt.ReceiptDate := CreateDateTime(ReceiptRec.Date, 0T);
         DomainReceipt.Amount := -ReceiptRec.Amount;
@@ -433,11 +624,16 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
         DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
         DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = 'NCBA';
-        if ReceiptRec."Pay Mode" = 'MPESA' then
-            DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
-
         DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
         DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
+
+        if ReceiptRec."Pay Mode" = 'MPESA' then begin
+            DomainReceipt.BankCode := 'MPESA';
+            DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
+            DomainReceipt.ImKes := false;
+            DomainReceipt.DrawerName := 'MPESA';
+        end;
+
 
         DomainReceipt.Posted := true;
         DomainReceipt."Posted By" := ReceiptRec."Posted By";
@@ -447,7 +643,13 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt."External Receipt No." := ReceiptRec."No.";
         DomainReceipt."IsManual Entry" := true;
 
-        DomainReceipt.Insert(true);
+        if DomainReceipt.Insert(true) then begin
+            message('Domain adjustment receipt sent to registry successfully');
+            
+        end else begin
+            message('Error sending to registry please contact admin');
+        end;
+        //ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
     end;
 
 
@@ -6911,7 +7113,7 @@ Codeunit 57000 "Payments-Post"
     end;
 
 
-    procedure PostReceipt(ReceiptRec: Record "Receipts Header1")
+    procedure SendRegistryReceipt(ReceiptRec: Record "Receipts Header1")
     var
         RcptLines: Record "Receipt Lines1";
         GenJnLine: Record "Gen. Journal Line";
@@ -6923,20 +7125,20 @@ Codeunit 57000 "Payments-Post"
         GLEntry: Record "G/L Entry";
         CMSetup: Record "Cash Management Setup";
     begin
-        if Confirm(Text017, false, ReceiptRec."No.") = true then begin
- 
+        if Confirm(Text018B, false, ReceiptRec."No.") = true then begin
+
             if ReceiptRec.Posted = true then
                 Error(Text018, ReceiptRec."No.");
             ReceiptRec.TestField(Date);
             ReceiptRec.TestField("Bank Code");
             ReceiptRec.TestField("Received From");
             ReceiptRec.TestField("Pay Mode");
- 
+
             if ReceiptRec."Pay Mode" = 'CHEQUE' then begin
                 ReceiptRec.TestField("Cheque No");
                 ReceiptRec.TestField("Cheque Date");
             end;
- 
+
             ReceiptRec.CalcFields(Amount);
             //Check Lines
             if ReceiptRec.Amount = 0 then
@@ -6945,7 +7147,7 @@ Codeunit 57000 "Payments-Post"
             RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
             if not RcptLines.FindLast then
                 Error('Receipt Lines cannot be empty');
- 
+
             CMSetup.Get();
             CMSetup.TestField("Receipt Template");
             CMSetup.TestField("Receipt Batch Name");
@@ -6954,25 +7156,25 @@ Codeunit 57000 "Payments-Post"
             GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
             GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
             GenJnLine.DeleteAll;
- 
- 
+
+
             Batch.Init;
             if CMSetup.Get() then
                 Batch."Journal Template Name" := CMSetup."Receipt Template";
             Batch.Name := CMSetup."Receipt Batch Name";
             if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
                 Batch.Insert;
- 
+
             //Bank Entries
             LineNo := LineNo + 10000;
- 
+
             RcptLines.Reset;
             RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
             RcptLines.Validate(Amount);
             RcptLines.CalcSums(Amount);
- 
- 
- 
+
+
+
             GenJnLine.Init;
             if CMSetup.Get then
                 GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
@@ -6999,10 +7201,10 @@ Codeunit 57000 "Payments-Post"
             GenJnLine."Shortcut Dimension 2 Code" := ReceiptRec."Shortcut Dimension 2 Code";
             GenJnLine.Validate(GenJnLine."Shortcut Dimension 2 Code");
             GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
- 
+
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
- 
+
             //Receipt Lines Entries
             RcptLines.Reset;
             RcptLines.SetRange(RcptLines."Receipt No.", ReceiptRec."No.");
@@ -7036,10 +7238,10 @@ Codeunit 57000 "Payments-Post"
                     GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
                     //GenJnLine."Shortcut Dimension 3 Code":=RcptLines."Shortcut Dimension 3 Code";
                     //GenJnLine.VALIDATE(GenJnLine."Shortcut Dimension 3 Code");
- 
+
                     //
- 
- 
+
+
                     // IF GenJnLine."Account Type" = GenJnLine."Account Type"::Customer THEN BEGIN
                     //     // to return back cc
                     //     //
@@ -7050,13 +7252,13 @@ Codeunit 57000 "Payments-Post"
                     //     GenJnLine."Applies-to Doc. No." := RcptLines."Applies to Doc. No";
                     //     GenJnLine.VALIDATE(GenJnLine."Applies-to Doc. No.");
                     // END;
- 
+
                     if GenJnLine.Amount <> 0 then
                         GenJnLine.Insert;
- 
+
                 until RcptLines.Next = 0;
             end;
- 
+
             // Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
             // GLEntry.Reset;
             // GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
@@ -7067,13 +7269,178 @@ Codeunit 57000 "Payments-Post"
             ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
             ReceiptRec."Posted Time" := Time;
             ReceiptRec.Modify;
- 
+
             TransferToDomainRegistry(ReceiptRec)
- 
+
             //end;
- 
+
         end;
     end;
+
+    procedure PostReceipt(ReceiptRec: Record "Receipts Header1")
+    var
+        RcptLines: Record "Receipt Lines1";
+        GenJnLine: Record "Gen. Journal Line";
+        LineNo: Integer;
+        VATSetup: Record "VAT Posting Setup";
+        GLAccount: Record "G/L Account";
+        Customer: Record Customer;
+        Vendor: Record Vendor;
+        GLEntry: Record "G/L Entry";
+        CMSetup: Record "Cash Management Setup";
+    begin
+        if Confirm(Text017, false, ReceiptRec."No.") = true then begin
+
+            if ReceiptRec.Posted = true then
+                Error(Text018, ReceiptRec."No.");
+            ReceiptRec.TestField(Date);
+            ReceiptRec.TestField("Bank Code");
+            ReceiptRec.TestField("Received From");
+            ReceiptRec.TestField("Pay Mode");
+
+            if ReceiptRec."Pay Mode" = 'CHEQUE' then begin
+                ReceiptRec.TestField("Cheque No");
+                ReceiptRec.TestField("Cheque Date");
+            end;
+
+            ReceiptRec.CalcFields(Amount);
+            //Check Lines
+            if ReceiptRec.Amount = 0 then
+                Error('Amount cannot be zero');
+            RcptLines.Reset;
+            RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
+            if not RcptLines.FindLast then
+                Error('Receipt Lines cannot be empty');
+
+            CMSetup.Get();
+            CMSetup.TestField("Receipt Template");
+            CMSetup.TestField("Receipt Batch Name");
+            // Delete Lines Present on the General Journal Line
+            GenJnLine.Reset;
+            GenJnLine.SetRange(GenJnLine."Journal Template Name", CMSetup."Receipt Template");
+            GenJnLine.SetRange(GenJnLine."Journal Batch Name", CMSetup."Receipt Batch Name");
+            GenJnLine.DeleteAll;
+
+
+            Batch.Init;
+            if CMSetup.Get() then
+                Batch."Journal Template Name" := CMSetup."Receipt Template";
+            Batch.Name := CMSetup."Receipt Batch Name";
+            if not Batch.Get(Batch."Journal Template Name", Batch.Name) then
+                Batch.Insert;
+
+            //Bank Entries
+            LineNo := LineNo + 10000;
+
+            RcptLines.Reset;
+            RcptLines.SetRange("Receipt No.", ReceiptRec."No.");
+            RcptLines.Validate(Amount);
+            RcptLines.CalcSums(Amount);
+
+
+
+            GenJnLine.Init;
+            if CMSetup.Get then
+                GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+            GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+            GenJnLine."Line No." := LineNo;
+            GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
+            GenJnLine."Account No." := ReceiptRec."Bank Code";
+            GenJnLine.Validate(GenJnLine."Account No.");
+            if ReceiptRec.Date = 0D then
+                Error('You must specify the Receipt date');
+            GenJnLine."Posting Date" := ReceiptRec."Posted Date";
+            GenJnLine."Document No." := ReceiptRec."No.";
+            GenJnLine."External Document No." := ReceiptRec."Cheque No";
+            GenJnLine."Payment Method Code" := ReceiptRec."Pay Mode";
+            GenJnLine.Description := 'Received from:' + ReceiptRec."Received From";
+            GenJnLine.Amount := ReceiptRec.Amount;
+            GenJnLine."Currency Code" := ReceiptRec."Currency Code";
+            GenJnLine.Validate("Currency Code");
+            GenJnLine."Currency Factor" := ReceiptRec."Currency Factor";
+            GenJnLine.Validate("Currency Factor");
+            GenJnLine.Validate(GenJnLine.Amount);
+            GenJnLine."Shortcut Dimension 1 Code" := ReceiptRec."Shortcut Dimension 1 Code";
+            GenJnLine.Validate(GenJnLine."Shortcut Dimension 1 Code");
+            GenJnLine."Shortcut Dimension 2 Code" := ReceiptRec."Shortcut Dimension 2 Code";
+            GenJnLine.Validate(GenJnLine."Shortcut Dimension 2 Code");
+            GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
+
+            if GenJnLine.Amount <> 0 then
+                GenJnLine.Insert;
+
+            //Receipt Lines Entries
+            RcptLines.Reset;
+            RcptLines.SetRange(RcptLines."Receipt No.", ReceiptRec."No.");
+            if RcptLines.FindFirst then begin
+                repeat
+                    RcptLines.Validate(RcptLines.Amount);
+                    LineNo := LineNo + 10000;
+                    GenJnLine.Init;
+                    if CMSetup.Get then
+                        GenJnLine."Journal Template Name" := CMSetup."Receipt Template";
+                    GenJnLine."Journal Batch Name" := CMSetup."Receipt Batch Name";
+                    GenJnLine."Line No." := LineNo;
+                    GenJnLine."Account Type" := RcptLines."Account Type";
+                    GenJnLine."Account No." := RcptLines."Account No.";
+                    GenJnLine.Validate(GenJnLine."Account No.");
+                    GenJnLine."Posting Date" := ReceiptRec."Posted Date";
+                    GenJnLine."Document No." := ReceiptRec."No.";
+                    GenJnLine."External Document No." := ReceiptRec."Cheque No";
+                    GenJnLine."Payment Method Code" := ReceiptRec."Pay Mode";
+                    GenJnLine.Description := 'Received from:' + ReceiptRec."Received From";
+                    GenJnLine.Amount := -RcptLines.Amount;
+                    GenJnLine."Currency Code" := ReceiptRec."Currency Code";
+                    GenJnLine.Validate("Currency Code");
+                    GenJnLine."Currency Factor" := ReceiptRec."Currency Factor";
+                    GenJnLine.Validate("Currency Factor");
+                    GenJnLine.Validate(GenJnLine.Amount);
+                    GenJnLine."Shortcut Dimension 1 Code" := ReceiptRec."Shortcut Dimension 1 Code";
+                    GenJnLine.Validate(GenJnLine."Shortcut Dimension 1 Code");
+                    GenJnLine."Shortcut Dimension 2 Code" := ReceiptRec."Shortcut Dimension 2 Code";
+                    GenJnLine.Validate(GenJnLine."Shortcut Dimension 2 Code");
+                    GenJnLine."Dimension Set ID" := ReceiptRec."Dimension Set ID";
+                    //GenJnLine."Shortcut Dimension 3 Code":=RcptLines."Shortcut Dimension 3 Code";
+                    //GenJnLine.VALIDATE(GenJnLine."Shortcut Dimension 3 Code");
+
+                    //
+
+
+                    // IF GenJnLine."Account Type" = GenJnLine."Account Type"::Customer THEN BEGIN
+                    //     // to return back cc
+                    //     //
+                    //     // if hasvalue = true then
+                    //     //     GenJnLine."Applies-to Doc. Type" := GenJnLine."Applies-to Doc. Type"::" "
+                    //     // else
+                    //     GenJnLine."Applies-to Doc. Type" := GenJnLine."Applies-to Doc. Type"::Invoice;
+                    //     GenJnLine."Applies-to Doc. No." := RcptLines."Applies to Doc. No";
+                    //     GenJnLine.VALIDATE(GenJnLine."Applies-to Doc. No.");
+                    // END;
+
+                    if GenJnLine.Amount <> 0 then
+                        GenJnLine.Insert;
+
+                until RcptLines.Next = 0;
+            end;
+
+            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            GLEntry.Reset;
+            GLEntry.SetRange(GLEntry."Document No.", ReceiptRec."No.");
+            GLEntry.SetRange(GLEntry.Reversed, false);
+            if GLEntry.FindFirst then begin
+                ReceiptRec.Posted := true;
+                ReceiptRec."Posted By" := UserId;
+                ReceiptRec."Posted Date" := ReceiptRec."Posted Date";
+                ReceiptRec."Posted Time" := Time;
+                ReceiptRec.Modify;
+
+                //TransferToDomainRegistry(ReceiptRec)
+
+            end;
+
+        end;
+    end;
+
     local procedure ExtractNumericId(ReceiptNo: Code[20]): Integer
     var
         NumericPart: Text;
@@ -7096,6 +7463,9 @@ Codeunit 57000 "Payments-Post"
     var
         DomainReceipt: Record "Domain Receipt";
         NewReceiptId: Integer;
+        rcptLines: record "Receipt Lines1";
+        CoCCA: Codeunit CoCCAIntegration;
+        ResponseTxt: Text;
     begin
         DomainReceipt.Reset();
         DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
@@ -7112,6 +7482,11 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt.Init();
         DomainReceipt.ReceiptId := NewReceiptId;
         DomainReceipt.Roid := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
+        rcptLines.reset();
+        rcptLines.setrange(rcptLines."Receipt No.", ReceiptRec."No.");
+        if rcptLines.findfirst then begin
+            DomainReceipt.Roid := rcptLines."Account No.";
+        end;
         DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
         DomainReceipt.ReceiptDate := CreateDateTime(ReceiptRec.Date, 0T);
         DomainReceipt.Amount := ReceiptRec.Amount;
@@ -7125,11 +7500,16 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
         DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
         DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = 'NCBA';
-        if ReceiptRec."Pay Mode" = 'MPESA' then
-            DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
-
         DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
         DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
+        if ReceiptRec."Pay Mode" = 'MPESA' then begin
+            DomainReceipt.BankCode := 'MPESA';
+            DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
+            DomainReceipt.DrawerName := 'MPESA';
+            DomainReceipt.ImKes := false;
+        end;
+
+
 
         DomainReceipt.Posted := true;
         DomainReceipt."Posted By" := ReceiptRec."Posted By";
@@ -7139,7 +7519,13 @@ Codeunit 57000 "Payments-Post"
         DomainReceipt."External Receipt No." := ReceiptRec."No.";
         DomainReceipt."IsManual Entry" := true;
 
-        DomainReceipt.Insert(true);
+        if DomainReceipt.Insert(true) then begin
+            message('Domain receipt sent to registry successfully');
+            
+        end else begin
+            message('Error sending to registry please contact admin');
+        end;
+        //ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
     end;
 
     procedure SyncManualReceiptsToRegistry(var SyncedCount: Integer): Integer
@@ -7339,6 +7725,10 @@ Codeunit 57000 "Payments-Post"
                                 CMSetup.TestField("IM USD");
                                 BankAccountNo := CMSetup."IM USD";
                             end else
+                            if ReceiptRec.VatWithheld then begin
+                                CMSetup.TestField("VAT Withheld");
+                                BankAccountNo := CMSetup."VAT Withheld";
+                            end else
                                 if ReceiptRec.Cash then begin
                                     ReceiptRec.TestField(BankCode);
                                     BankAccountNo := ReceiptRec.BankCode;
@@ -7403,18 +7793,18 @@ Codeunit 57000 "Payments-Post"
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
 
-            // Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+             Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
 
-            // GLEntry.Reset;
-            // GLEntry.SetRange(GLEntry."Document No.", DocNo);
-            // GLEntry.SetRange(GLEntry.Reversed, false);
-            // if GLEntry.FindFirst then begin
-            //     ReceiptRec.Posted := true;
+             GLEntry.Reset;
+             GLEntry.SetRange(GLEntry."Document No.", DocNo);
+             GLEntry.SetRange(GLEntry.Reversed, false);
+             if GLEntry.FindFirst then begin
+                 ReceiptRec.Posted := true;
             ReceiptRec."Posted By" := UserId;
             ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
             ReceiptRec."Posted Time" := Time;
             ReceiptRec.Modify;
-            // end;
+             end;
 
         end;
     end;

@@ -425,6 +425,10 @@ Page 57008 "Cash Management Setup"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the IM USD field.';
                 }
+                field("VAT Withheld";Rec."VAT Withheld")
+                {
+
+                }
                 field("Domain registration"; Rec."Domain registration")
                 {
                     ApplicationArea = Basic;
