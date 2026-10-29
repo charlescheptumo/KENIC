@@ -285,6 +285,47 @@ Page 57067 "Receipt"
 
             //     end;
             // }
+            action(SendRegistry)
+            {
+                ApplicationArea = Basic;
+                Image = PostSendTo;
+                Promoted = true;
+                PromotedCategory = New;
+                ToolTip = 'Executes the send action.';
+                Caption = 'Send to Registry';
+ 
+                trigger OnAction()
+                begin
+                    /*
+                    usersetup.GET(USERID);
+                    IF usersetup."Post Receipts"=FALSE THEN
+                    ERROR(Text0001);
+                    usersetup.RESET;
+                    IF usersetup."User ID"=Cashier THEN
+                     ERROR('You cannot create and post the receipt, Alternative Cashier should post');
+                     */
+ 
+                    Rec.TestField("Received From");
+                    Rec.TestField("On Behalf Of");
+ 
+                    //if Rec."Receipt Status" = Rec."Receipt Status"::Released then
+                    if Rec."Adjustment Receipt?" = false then begin
+ 
+                        PaymentPost.SendRegistryReceipt(Rec);
+ 
+                    end else begin
+ 
+                        PaymentPost.SendAdjustmentReceipt(Rec);
+                    end;
+                   
+ 
+                    //else
+                    // error('Receipt Must Be Fully Released.');
+                    CurrPage.Close;
+ 
+ 
+                end;
+            }
             action(Post)
             {
                 ApplicationArea = Basic;
@@ -292,7 +333,8 @@ Page 57067 "Receipt"
                 Promoted = true;
                 PromotedCategory = New;
                 ToolTip = 'Executes the Post action.';
-                Caption = 'Send to Registry';
+                Caption = 'Post';
+                visible = false;
  
                 trigger OnAction()
                 begin
