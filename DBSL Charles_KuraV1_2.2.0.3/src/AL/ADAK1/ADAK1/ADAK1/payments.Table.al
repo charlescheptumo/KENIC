@@ -1822,7 +1822,8 @@ Table 57000 "payments"
             // Salary Advance card: pick an approved staff per diem imprest (or a Salary Advance Memo)
             // and the card is filled from it. HR then enters the Recovery Start Month.
             Caption = 'Salary Advance Memo / Per Diem Imprest No.';
-            TableRelation = "Payments"."No." where("Payment Type" = filter(Imprest | "Salary Advance Memo"), Posted = const(false), Status = const(Released));
+            // Only imprests not paid through payroll can be picked (Paul, 29 Oct).
+            TableRelation = "Payments"."No." where("Payment Type" = filter(Imprest | "Salary Advance Memo"), Posted = const(false), Status = const(Released), "Per Diem through Payroll" = const(false));
 
             trigger OnValidate()
             var
