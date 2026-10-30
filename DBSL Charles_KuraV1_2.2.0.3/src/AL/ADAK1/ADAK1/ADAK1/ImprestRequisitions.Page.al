@@ -10,6 +10,7 @@ Page 57011 "Imprest Requisitions"
                             Status = filter(Open | "Pending Approval"),
                             "Archive Document" = filter(false));
     UsageCategory = Lists;
+    Caption = 'Per Diem Requisitions';
 
     layout
     {

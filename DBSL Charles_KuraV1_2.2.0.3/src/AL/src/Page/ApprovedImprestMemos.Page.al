@@ -15,7 +15,7 @@ Page 57038 "Approved Imprest Memos"
                             Posted = const(false),
                             Archived = filter(false));
     UsageCategory = Lists;
-    Caption = 'Approved Activity Budgets';
+    Caption = 'Approved Per Diem Claim Requests';
 
     layout
     {
