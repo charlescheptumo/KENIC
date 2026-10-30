@@ -4433,7 +4433,9 @@ Codeunit 70100 eprocurement
         if RfqResponse.FindSet then begin
             RecRef.GetTable(RfqResponse);
             Report.SaveAs(Report::"RFQ", '', ReportFormat::Pdf, OutStr, RecRef);
-            FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('RFQ_%1.Pdf', RfqResponse.Code), TRUE);
+            // Removed: BLOBExport(..., TRUE) downloads to a browser; the portal calls this as a
+            // web service (no browser), so it failed and the portal could not download the report.
+            // FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('RFQ_%1.Pdf', RfqResponse.Code), TRUE);
             TempBlob_lRec.CreateInstream(InStr, TEXTENCODING::UTF8);
             BaseImage := Base64Convert.ToBase64(InStr);
         end;
@@ -4471,7 +4473,9 @@ Codeunit 70100 eprocurement
         if RFIResponse.FindSet then begin
             RecRef.GetTable(RFIResponse);
             Report.SaveAs(Report::"Prequalification Response", '', ReportFormat::Pdf, OutStr, RecRef);
-            FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('prequalification_%1.Pdf', RFIResponse."Document No."), TRUE);
+            // Removed: BLOBExport(..., TRUE) downloads to a browser; the portal calls this as a
+            // web service (no browser), so it failed and the portal could not download the report.
+            // FileManagement_lCdu.BLOBExport(TempBlob_lRec, STRSUBSTNO('prequalification_%1.Pdf', RFIResponse."Document No."), TRUE);
             TempBlob_lRec.CreateInstream(InStr, TEXTENCODING::UTF8);
             BaseImage := Base64Convert.ToBase64(InStr);
         end;
