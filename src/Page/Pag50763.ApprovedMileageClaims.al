@@ -1,19 +1,18 @@
 page 50763 "Approved Mileage Claims"
 {
-    // Employee Mileage Reimbursement Form: approved, waiting to be posted (opens the Approved Staff Claim card, which posts it).
+    // Approved mileage forms. On approval each form becomes a Staff Claim (see "Staff Claim
+    // No.", paid from Approved Staff Claims) and the form itself is closed.
     Caption = 'Approved Mileage Claims';
     ApplicationArea = Basic;
-    CardPageID = "Aprroved Staff Claim";
+    CardPageID = "Employee Mileage Claim";
     DeleteAllowed = false;
     Editable = false;
     PageType = List;
     SourceTable = payments;
     SourceTableView = sorting("No.") order(descending) where("Payment Type" = const("Staff Claim"),
                             "Mileage Claim" = const(true),
-                            Status = filter(Released),
-                            Posted = const(false),
-                            banked = const(false),
-                            "Archive Document" = const(false));
+                            Status = filter(Closed),
+                            Posted = const(false));
     UsageCategory = Lists;
 
     layout
@@ -57,7 +56,7 @@ page 50763 "Approved Mileage Claims"
                     ApplicationArea = Basic;
                     Caption = 'Total Reimbursement';
                 }
-                field(Status; Rec.Status)
+                field("Staff Claim No."; Rec."Staff Claim No.")
                 {
                     ApplicationArea = Basic;
                 }
@@ -69,6 +68,26 @@ page 50763 "Approved Mileage Claims"
     {
         area(processing)
         {
+            action(OpenStaffClaim)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Open Staff Claim';
+                Image = Document;
+                Promoted = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    StaffClaim: Record payments;
+                begin
+                    Rec.TestField("Staff Claim No.");
+                    StaffClaim.Get(Rec."Staff Claim No.");
+                    if StaffClaim.Posted then
+                        Page.Run(Page::"Posted Staff Claim", StaffClaim)
+                    else
+                        Page.Run(Page::"Aprroved Staff Claim", StaffClaim);
+                end;
+            }
             action(PrintForm)
             {
                 ApplicationArea = Basic;

@@ -527,12 +527,19 @@ Page 69043 "Payroll Admin Role Center"
                     RunObject = Page "Approved Mileage Claims";
                     ToolTip = 'Approved mileage reimbursement forms waiting to be posted.';
                 }
+                action("Approved Staff Claims")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Approved Staff Claims';
+                    RunObject = Page "Approved Staff Claims";
+                    ToolTip = 'Staff claims (including those created from approved mileage forms) waiting to be paid.';
+                }
                 action("Posted Mileage Claims")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Posted Mileage Claims';
                     RunObject = Page "Posted Mileage Claims";
-                    ToolTip = 'Posted mileage reimbursement forms.';
+                    ToolTip = 'Posted staff claims that came from mileage forms.';
                 }
             }
             group("Management Approvals")

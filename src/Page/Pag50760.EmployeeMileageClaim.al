@@ -74,32 +74,47 @@ page 50760 "Employee Mileage Claim"
             group(Vehicle)
             {
                 Caption = 'Vehicle';
-                Editable = IsOpen;
                 field("Vehicle Model"; Rec."Vehicle Model")
                 {
                     ApplicationArea = Basic;
+                    Editable = IsOpen;
                     ShowMandatory = true;
                 }
                 field("Vehicle Engine CC"; Rec."Vehicle Engine CC")
                 {
                     ApplicationArea = Basic;
+                    Editable = IsOpen;
                     ShowMandatory = true;
                 }
                 field("Vehicle Reg. No."; Rec."Vehicle Reg. No.")
                 {
                     ApplicationArea = Basic;
+                    Editable = IsOpen;
                     ShowMandatory = true;
                 }
                 field("Mileage Rate"; Rec."Mileage Rate")
                 {
+                    // Entered by the approver (open the record from Approval Entries /
+                    // Requests to Approve), then Approve.
                     ApplicationArea = Basic;
-                    ShowMandatory = true;
+                    Editable = RateEditable;
+                    ShowMandatory = RateEditable;
+
+                    trigger OnValidate()
+                    begin
+                        CurrPage.Update(true);
+                    end;
                 }
                 field("Total Amount"; Rec."Total Amount")
                 {
                     ApplicationArea = Basic;
                     Caption = 'Total Reimbursement';
                     Editable = false;
+                }
+                field("Staff Claim No."; Rec."Staff Claim No.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'The Staff Claim created for payment when this form was approved.';
                 }
             }
             part(MileageLines; "Employee Mileage Claim Lines")
@@ -166,6 +181,59 @@ page 50760 "Employee Mileage Claim"
                 begin
                     VarVariant := Rec;
                     CustomApprovalsMgmt.OnCancelDocApprovalRequest(VarVariant);
+                end;
+            }
+            action(Approve)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Approve';
+                Image = Approve;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Visible = OpenApprovalEntriesExistForCurrUser;
+                ToolTip = 'Approve. The final approver must have entered the Mileage Rate.';
+
+                trigger OnAction()
+                var
+                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                begin
+                    CurrPage.SaveRecord();
+                    ApprovalsMgmt.ApproveRecordApprovalRequest(Rec.RecordId);
+                    CurrPage.Update(false);
+                end;
+            }
+            action(Reject)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Reject';
+                Image = Reject;
+                Promoted = true;
+                PromotedCategory = Process;
+                Visible = OpenApprovalEntriesExistForCurrUser;
+
+                trigger OnAction()
+                var
+                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                begin
+                    ApprovalsMgmt.RejectRecordApprovalRequest(Rec.RecordId);
+                    CurrPage.Update(false);
+                end;
+            }
+            action(Delegate)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Delegate';
+                Image = Delegate;
+                Promoted = true;
+                PromotedCategory = Process;
+                Visible = OpenApprovalEntriesExistForCurrUser;
+
+                trigger OnAction()
+                var
+                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                begin
+                    ApprovalsMgmt.DelegateRecordApprovalRequest(Rec.RecordId);
                 end;
             }
             action(Approvals)
@@ -258,7 +326,9 @@ page 50760 "Employee Mileage Claim"
 
     var
         OpenApprovalEntriesExist: Boolean;
+        OpenApprovalEntriesExistForCurrUser: Boolean;
         IsOpen: Boolean;
+        RateEditable: Boolean;
         NoTripsErr: Label 'Enter at least one trip with kilometres before sending the mileage form for approval.';
         NoVoteItemErr: Label 'Trip %1 (%2) has no Vote Item. Enter the Vote Item the mileage is charged to.', Comment = '%1 = trip date, %2 = description';
         BalanceErr: Label 'This employee %1 has an outstanding balance of %2. Please contact your immediate supervisor.', Comment = '%1 = employee no., %2 = balance';
@@ -268,7 +338,10 @@ page 50760 "Employee Mileage Claim"
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
     begin
         OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RecordId);
+        OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RecordId);
         IsOpen := Rec.Status = Rec.Status::Open;
+        // The approver types the Mileage Rate while the form is with them.
+        RateEditable := IsOpen or ((Rec.Status = Rec.Status::"Pending Approval") and OpenApprovalEntriesExistForCurrUser);
     end;
 
     local procedure CheckBeforeApproval()
@@ -283,7 +356,7 @@ page 50760 "Employee Mileage Claim"
         Rec.TestField("Vehicle Model");
         Rec.TestField("Vehicle Engine CC");
         Rec.TestField("Vehicle Reg. No.");
-        Rec.TestField("Mileage Rate");
+        // Mileage Rate is entered by the approver.
         Rec.TestField("Payment Narration");
         Rec.TestField("Shortcut Dimension 1 Code");
 

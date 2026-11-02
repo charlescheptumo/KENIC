@@ -1,6 +1,6 @@
 page 50764 "Posted Mileage Claims"
 {
-    // Employee Mileage Reimbursement Form: posted.
+    // Posted Staff Claims that were created from approved mileage forms.
     Caption = 'Posted Mileage Claims';
     ApplicationArea = Basic;
     CardPageID = "Posted Staff Claim";
@@ -9,8 +9,7 @@ page 50764 "Posted Mileage Claims"
     PageType = List;
     SourceTable = payments;
     SourceTableView = sorting("No.") order(descending) where("Payment Type" = const("Staff Claim"),
-                            "Mileage Claim" = const(true),
-                            Status = filter(Released),
+                            "Mileage Claim No." = filter(<> ''),
                             Posted = const(true));
     UsageCategory = History;
 
@@ -38,15 +37,7 @@ page 50764 "Posted Mileage Claims"
                     ApplicationArea = Basic;
                     Caption = 'Director/Employee Name';
                 }
-                field("Vehicle Reg. No."; Rec."Vehicle Reg. No.")
-                {
-                    ApplicationArea = Basic;
-                }
-                field("Mileage Period From"; Rec."Mileage Period From")
-                {
-                    ApplicationArea = Basic;
-                }
-                field("Mileage Period To"; Rec."Mileage Period To")
+                field("Mileage Claim No."; Rec."Mileage Claim No.")
                 {
                     ApplicationArea = Basic;
                 }
@@ -80,7 +71,8 @@ page 50764 "Posted Mileage Claims"
                 var
                     MileageClaim: Record payments;
                 begin
-                    MileageClaim.SetRange("No.", Rec."No.");
+                    Rec.TestField("Mileage Claim No.");
+                    MileageClaim.SetRange("No.", Rec."Mileage Claim No.");
                     Report.Run(Report::"Employee Mileage Reimbursement", true, false, MileageClaim);
                 end;
             }

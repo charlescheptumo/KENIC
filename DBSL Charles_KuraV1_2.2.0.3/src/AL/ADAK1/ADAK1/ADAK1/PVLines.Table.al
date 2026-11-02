@@ -1639,12 +1639,11 @@ Table 57006 "PV Lines"
             var
                 MileageHeader: Record payments;
             begin
-                // Amount (KES) = Kilometres x the claim's Mileage Rate.
+                // Amount (KES) = Kilometres x the claim's Mileage Rate. The approver
+                // enters the rate, so until then the amount stays 0.
                 if MileageHeader.Get(No) then
-                    if MileageHeader."Mileage Claim" then begin
-                        MileageHeader.TestField("Mileage Rate");
+                    if MileageHeader."Mileage Claim" then
                         Validate(Amount, Round(Kilometres * MileageHeader."Mileage Rate", 0.01));
-                    end;
             end;
         }
     }

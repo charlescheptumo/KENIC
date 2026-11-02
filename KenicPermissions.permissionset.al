@@ -9279,5 +9279,6 @@ permissionset 50001 KenicPermissions
         page "Employee Mileage Claims"=X,
         page "Approved Mileage Claims"=X,
         page "Posted Mileage Claims"=X,
-        report "Employee Mileage Reimbursement"=X;
+        report "Employee Mileage Reimbursement"=X,
+        codeunit "Mileage Claim Mgt."=X;
 }

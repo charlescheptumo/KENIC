@@ -2070,6 +2070,20 @@ Table 57000 "payments"
                     FieldError("Mileage Period To", 'cannot be before Pay Period From');
             end;
         }
+        field(70217; "Staff Claim No."; Code[20])
+        {
+            // On an approved mileage form: the Staff Claim created from it for payment.
+            Caption = 'Staff Claim No.';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(70218; "Mileage Claim No."; Code[20])
+        {
+            // On a Staff Claim: the mileage form it was created from.
+            Caption = 'Mileage Claim No.';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
 
 
     }
