@@ -9273,5 +9273,11 @@ permissionset 50001 KenicPermissions
         page "Asset Possession List"=X,
         page "Exit Form Card"=X,
         page "Exit Form Lines Subform"=X,
-        page "Exit Form List"=X;
+        page "Exit Form List"=X,
+        page "Employee Mileage Claim"=X,
+        page "Employee Mileage Claim Lines"=X,
+        page "Employee Mileage Claims"=X,
+        page "Approved Mileage Claims"=X,
+        page "Posted Mileage Claims"=X,
+        report "Employee Mileage Reimbursement"=X;
 }
