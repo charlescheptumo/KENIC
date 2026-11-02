@@ -97,7 +97,7 @@ page 50760 "Employee Mileage Claim"
                     // Entered by the approver (open the record from Approval Entries /
                     // Requests to Approve), then Approve.
                     ApplicationArea = Basic;
-                    Editable = RateEditable;
+                    Editable = True;
                     ShowMandatory = RateEditable;
 
                     trigger OnValidate()
