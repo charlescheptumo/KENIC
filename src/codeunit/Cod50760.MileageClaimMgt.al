@@ -128,7 +128,14 @@ codeunit 50760 "Mileage Claim Mgt."
                 'Staff Claim <b>' + MileageClaim."Staff Claim No." + '</b> has been created for payment.<br><br>' +
                 'Regards,<br>' + CompanyName();
         EmailMessage.Create(ToAddress, StrSubstNo(EmailSubjectTxt, MileageClaim."No."), Body, true);
-        // Queued, so a mail problem never blocks the approval.
-        Email.Enqueue(EmailMessage, Enum::"Email Scenario"::Default);
+        // Was: always Email.Enqueue, which schedules a background task. Users whose licence or
+        // permissions do not allow scheduled tasks then got "You do not have permission to
+        // create or run scheduled tasks" and could not approve. Queue it when the approver may
+        // schedule tasks; otherwise send it now. A failed send is kept in the Email Outbox and
+        // never stops the approval.
+        if TaskScheduler.CanCreateTask() then
+            Email.Enqueue(EmailMessage, Enum::"Email Scenario"::Default)
+        else
+            if not Email.Send(EmailMessage, Enum::"Email Scenario"::Default) then;
     end;
 }
