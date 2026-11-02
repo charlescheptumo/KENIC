@@ -3930,8 +3930,10 @@ codeunit 50018 "Custom Function"
         CMSetup: Record "Cash Management Setup";
         TransTypeText: Text[50];
     begin
-        if SalesCrMemoHeader."Domain Ledger Synced" then
+        if SalesCrMemoHeader."Domain Ledger Synced" then begin
+            message('Sales credit memo for this document already exists in the registry');
             exit;
+        end;
 
         DomainLedgerEntry.Reset();
         DomainLedgerEntry.SetRange("Credit Memo No.", SalesCrMemoHeader."No.");
@@ -3990,8 +3992,10 @@ codeunit 50018 "Custom Function"
         CMSetup: Record "Cash Management Setup";
         TransTypeText: Text[50];
     begin
-        if SalesInvHeader."Domain Ledger Synced" then
+        if SalesInvHeader."Domain Ledger Synced" then begin
+            message('Sales Invoice for this document already exists in the registry');
             exit;
+        end;
 
         DomainLedgerEntry.Reset();
         DomainLedgerEntry.SetRange("Sales Invoice No.", SalesInvHeader."No.");
