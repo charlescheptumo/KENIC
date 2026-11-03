@@ -47,10 +47,10 @@ codeunit 50112 ETimsWebService
         jsonResponse: JsonObject;
         jsonValue: JsonValue;
         evironmentInfo: Codeunit "Environment Information";
-        testMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        prodMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        testETIMSUrl: Label 'http://135.220.97.93:8088/';
-        prodETIMSUrl: Label 'http://135.220.97.93:8088/';
+        testMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        prodMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        testETIMSUrl: Label 'http://41.90.10.39:8088/';
+        prodETIMSUrl: Label 'http://41.90.10.39:8088/';
         lastreqDate: Text;
         ReqDate: Text;
         ETIMSDeviceInfo: Record "eTims-Branch Info";
@@ -77,7 +77,6 @@ codeunit 50112 ETimsWebService
         company.Get();
         if (company."Company Tin" = '') or (company."Branch ID" = '') or (company."ETIMS CMC Key" = '') then
             exit('Missing ETIMS config: Tin/Branch ID/CMC Key');
-
         if evironmentInfo.GetEnvironmentName().ToLower().Contains('production') then
             exit('{"pin": "' + company."Company Tin" + '", "branchId": "' + company."Branch ID" + '"}')
         else
@@ -114,12 +113,10 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Add('Content-Type', 'application/json');
         HttpContent.GetHeaders(ContentHeaders);
         RequestMessage.Content(HttpContent);
-
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             Error('Failed to reach ETIMS service');
 
         ResponseMessage.Content.ReadAs(ResponseText);
-
         if not ResponseMessage.IsSuccessStatusCode then
             Error('ETIMS request failed: %1', ResponseText);
 
@@ -147,12 +144,10 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Add('Content-Type', 'application/json');
         HttpContent.GetHeaders(ContentHeaders);
         RequestMessage.Content(HttpContent);
-
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             Error('Failed to reach ETIMS service');
 
         ResponseMessage.Content.ReadAs(ResponseText);
-
         if not ResponseMessage.IsSuccessStatusCode then
             Error('ETIMS request failed: %1', ResponseText);
 
@@ -188,7 +183,6 @@ codeunit 50112 ETimsWebService
             Error('Missing data node in ETIMS response');
 
         DataObj := JsonToken.AsObject();
-
         if not DataObj.Get('info', JsonToken) then
             Error('Missing info node in ETIMS response');
 
@@ -355,7 +349,6 @@ codeunit 50112 ETimsWebService
                 saledate := FORMAT(SalesInvHeader."Document Date", 0, '<Year4>-<Month,2>-<Day,2>');
                 HeaderJsonObject.Add('SaleDate', saledate);
                 HeaderJsonObject.Add('PostStockMovement', 'N');
-
                 if SalesInvHeader."Currency Code" = '' then
                     currency := 'KES' else
                     currency := SalesInvHeader."Currency Code";
@@ -393,7 +386,6 @@ codeunit 50112 ETimsWebService
                             LinesJsonObject.Add('DiscountAmount', Round(SalesInvLines."Line Discount Amount", 0.01));
                             LinesJsonArray.Add(LinesJsonObject);
                         end;
-
                     until SalesInvLines.Next() = 0;
                 HeaderJsonObject.Add('itemList', LinesJsonArray);
 
@@ -426,7 +418,6 @@ codeunit 50112 ETimsWebService
                         eTimsPushCredit.Json := Response;
                         if eTimsPushCredit.Insert() = false then
                             eTimsPushCredit.Modify();
-
                         if jsonResponse.ReadFrom(Response) then
                             if Response.Contains('9020') then begin
                                 SalesInvHeader."Posted to Etims" := false;
@@ -463,7 +454,6 @@ codeunit 50112 ETimsWebService
                                 QRCodeUrl := rtnToken.AsValue().AsText();
 
                                 updateInvoiceReport(SalesInvHeader."No.", intrlData, rcptSign, sdcId, CUInvoiceNo, QRCodeUrl, mydateTime);
-
                             end;
                     end else begin
                         SalesInvHeader."Posted to Etims" := false;
@@ -476,7 +466,6 @@ codeunit 50112 ETimsWebService
                         if eTimsPushCredit.Insert() = false then
                             eTimsPushCredit.Modify();
                     end;
-
                 end;
             until SalesInvHeader.Next() = 0;
     end;
@@ -549,7 +538,6 @@ codeunit 50112 ETimsWebService
         saledate := FORMAT(SalesInvHeader."Document Date", 0, '<Year4>-<Month,2>-<Day,2>');
         HeaderJsonObject.Add('SaleDate', saledate);
         HeaderJsonObject.Add('PostStockMovement', 'N');
-
         if SalesInvHeader."Currency Code" = '' then
             currency := 'KES' else
             currency := SalesInvHeader."Currency Code";
@@ -587,7 +575,6 @@ codeunit 50112 ETimsWebService
                     LinesJsonObject.Add('DiscountAmount', Round(SalesInvLines."Line Discount Amount", 0.01));
                     LinesJsonArray.Add(LinesJsonObject);
                 end;
-
             until SalesInvLines.Next() = 0;
         HeaderJsonObject.Add('itemList', LinesJsonArray);
 
@@ -620,7 +607,6 @@ codeunit 50112 ETimsWebService
                 eTimsPushCredit.Json := Response;
                 if eTimsPushCredit.Insert() = false then
                     eTimsPushCredit.Modify();
-
                 if jsonResponse.ReadFrom(Response) then
                     if Response.Contains('9020') then begin
                         SalesInvHeader."Posted to Etims" := false;
@@ -669,7 +655,6 @@ codeunit 50112 ETimsWebService
                 if eTimsPushCredit.Insert() = false then
                     eTimsPushCredit.Modify();
             end;
-
         end;
     end;
 
@@ -710,7 +695,6 @@ codeunit 50112 ETimsWebService
             Commit();
         end;
         SalesInvHeader.Get(DocumentNo);
-
         if SalesInvHeader."Posted to Etims" then
             Error('Invoice %1 already posted to ETIMS', SalesInvHeader."No.");
 
@@ -888,7 +872,6 @@ codeunit 50112 ETimsWebService
                     ItemArray.Add(ItemObj);
                     LineNo += 1;
                 end;
-
             until SalesInvLine.Next() = 0;
 
         HeaderObj.Add('itemList', ItemArray);
@@ -959,12 +942,10 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Remove('Content-Type');
         ContentHeaders.Add('Content-Type', 'application/json');
         RequestMessage.Content(HttpContent);
-
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             Error('Failed to send invoice to ETIMS');
 
         ResponseMessage.Content.ReadAs(JsonTxt);
-
         if not ResponseMessage.IsSuccessStatusCode then
             Error('ETIMS rejected invoice: %1', JsonTxt);
 
@@ -1038,7 +1019,6 @@ codeunit 50112 ETimsWebService
         if SalesInvLine.FindSet() then
             repeat
                 Clear(ItemObj);
-
                 if ItemRec.Get(SalesInvLine."No.") then begin
                     if ItemRec."Etims Item Code" = '' then
                         Error('Generate ETIMS Item Code for item %1. It cannot be empty.', ItemRec."No.");
@@ -1122,12 +1102,10 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Remove('Content-Type');
         ContentHeaders.Add('Content-Type', 'application/json');
         RequestMessage.Content(HttpContent);
-
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             Error('Failed to send stock in/out to ETIMS');
 
         ResponseMessage.Content.ReadAs(JsonTxt);
-
         if not ResponseMessage.IsSuccessStatusCode then
             Error('ETIMS rejected stock in/out: %1', JsonTxt);
 
@@ -1151,29 +1129,24 @@ codeunit 50112 ETimsWebService
     begin
         if not RootObj.ReadFrom(ResponseText) then
             Error('Invalid JSON returned from ETIMS');
-
         if RootObj.Get('statusCode', JsonTok) then
             StatusCode := JsonTok.AsValue().AsInteger()
         else
             Error('Missing statusCode in response');
-
         if RootObj.Get('success', JsonTok) then
             Success := JsonTok.AsValue().AsBoolean()
         else
             Error('Missing success in response');
-
         if (not Success) or (StatusCode <> 200) then begin
             if RootObj.Get('error', JsonTok) then
                 ErrorTxt := JsonTok.AsValue().AsText()
             else
                 ErrorTxt := '';
-
             if ErrorTxt <> '' then
                 Error(ErrorTxt);
 
             Error('ETIMS returned an error');
         end;
-
         if RootObj.Get('result', JsonTok) then
             ResultTxt := JsonTok.AsValue().AsText()
         else
@@ -1186,7 +1159,6 @@ codeunit 50112 ETimsWebService
         else
             if StrLen(ResultTxt) >= 3 then
                 ResultCd := CopyStr(ResultTxt, 1, 3);
-
         if ResultCd <> '000' then begin
             if ResultTxt <> '' then
                 Error(ResultTxt);
@@ -1229,7 +1201,6 @@ codeunit 50112 ETimsWebService
         // Parse root
         if not RootObj.ReadFrom(Response) then
             Error('Invalid ETIMS response');
-
         if RootObj.Get('success', Token) then
             if not Token.AsValue().AsBoolean() then begin
                 if RootObj.Get('error', Token) then
@@ -1338,7 +1309,8 @@ codeunit 50112 ETimsWebService
             SIH."Receipt Signature" := rcptSign;
             SIH.QRCodeUrl := QRCodeUrl;
             SIH."Posted to Etims" := true;
-            if SIH.Modify() then GenerateBarcode(QRCodeUrl, SIH);
+            if SIH.Modify() then
+                GenerateBarcode(QRCodeUrl, SIH);
             Msg := 'Success';
         end;
     end;
@@ -1386,7 +1358,6 @@ codeunit 50112 ETimsWebService
         end;
 
         PurchInvHeader.Get(DocumentNo);
-
         if PurchInvHeader."Posted to Etims" then
             Error('Purchase Invoice %1 already posted to ETIMS', PurchInvHeader."No.");
 
@@ -1526,7 +1497,6 @@ codeunit 50112 ETimsWebService
                 item.Reset();
                 if not item.Get(PurchInvLine."No.") then
                     Error('Item %1 not found for purchase invoice %2', PurchInvLine."No.", PurchInvHeader."No.");
-
                 if item."Etims Item Code" = '' then
                     Error('Generate ETIMS Item Code for item %1. It cannot be empty.', item."No.");
 
@@ -1654,7 +1624,6 @@ codeunit 50112 ETimsWebService
             Error('Failed to send purchase invoice to ETIMS');
 
         ResponseMessage.Content.ReadAs(JsonTxt);
-
         if not ResponseMessage.IsSuccessStatusCode then
             Error('ETIMS rejected purchase invoice: %1', JsonTxt);
 
@@ -1691,12 +1660,10 @@ codeunit 50112 ETimsWebService
             StatusCode := JsonTok.AsValue().AsInteger()
         else
             Error('Missing statusCode in response');
-
         if RootObj.Get('success', JsonTok) then
             Success := JsonTok.AsValue().AsBoolean()
         else
             Error('Missing success in response');
-
         if (not Success) or (StatusCode <> 200) then begin
             if RootObj.Get('error', JsonTok) then
                 ErrorTxt := JsonTok.AsValue().AsText()
@@ -1721,7 +1688,6 @@ codeunit 50112 ETimsWebService
         else
             if StrLen(ResultTxt) >= 3 then
                 ResultCd := CopyStr(ResultTxt, 1, 3);
-
         if ResultCd <> '000' then begin
             if ResultTxt <> '' then
                 Error(ResultTxt);
@@ -2127,7 +2093,6 @@ codeunit 50112 ETimsWebService
         saledate := FORMAT(SalesCreditHeader."Document Date", 0, '<Year4>-<Month,2>-<Day,2>');
         HeaderJsonObject.Add('SaleDate', saledate);
         HeaderJsonObject.Add('PostStockMovement', 'N');
-
         if SalesCreditHeader."Currency Code" = '' then
             currency := 'KES' else
             currency := SalesCreditHeader."Currency Code";
@@ -2171,7 +2136,6 @@ codeunit 50112 ETimsWebService
                     LinesJsonObject.Add('DiscountAmount', Round(SalesCreditLines."Line Discount Amount", 0.01));
                     LinesJsonArray.Add(LinesJsonObject);
                 end;
-
             until SalesCreditLines.Next() = 0;
         HeaderJsonObject.Add('itemList', LinesJsonArray);
 
@@ -2204,8 +2168,6 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Add('Content-Type', 'application/json');
         HttpContent.GetHeaders(ContentHeaders);
         RequestMessage.Content(HttpContent);
-
-
         if HttpClient.Send(RequestMessage, ResponseMessage) then begin
             ResponseMessage.Content.ReadAs(Response);
             if ResponseMessage.IsSuccessStatusCode then begin
@@ -2218,7 +2180,6 @@ codeunit 50112 ETimsWebService
                 eTimsPushCredit.Code := SalesCreditHeader."No.";
                 eTimsPushCredit.Json := Response;
                 eTimsPushCredit.Insert();
-
                 if jsonResponse.ReadFrom(Response) then
                     if not (Response.Contains('data')) then begin
                         SalesCreditHeader."Posted to Etims" := false;
@@ -2354,7 +2315,6 @@ codeunit 50112 ETimsWebService
                                 Msg := 'A';
                 end
         end
-
     end;
 
     procedure PushCreditNote(DocumentNo: Code[20]): Text
@@ -2386,7 +2346,6 @@ codeunit 50112 ETimsWebService
             Commit();
         end;
         CrHeader.Get(DocumentNo);
-
         if CrHeader."Posted to Etims" then
             Error('Credit Note %1 already posted to ETIMS', CrHeader."No.");
 
@@ -2476,7 +2435,6 @@ codeunit 50112 ETimsWebService
         // if SalesCrHeader."Applies-to Doc. No." = '' then
         //     Error('Applies-to Doc. No. accnot be empty.');
         SalesInvHeader.Get(SalesCrHeader."Applies-to Doc. No.");
-
         if SalesInvHeader."Posted To Etims" = false then
             Error('The original invoice %1 was not sent to KRA. Please ensure it is posted to eTIMS before proceeding.', SalesInvHeader."No.");
 
@@ -2671,7 +2629,6 @@ codeunit 50112 ETimsWebService
 
         ResultObj.Get('resultMsg', Token);
         ResultMsg := Token.AsValue().AsText();
-
         if ResultCd <> '000' then
             Error('%1: %2', ResultCd, ResultMsg);
 
@@ -2737,7 +2694,6 @@ codeunit 50112 ETimsWebService
             QrCodeUrl,
             SdcDateTimeVal
         );
-
         if Msg <> 'Success' then
             Error('Failed to update credit note %1 after ETIMS response', CreditNoteNo);
     end;
@@ -2786,8 +2742,6 @@ codeunit 50112 ETimsWebService
             end else begin
                 Message('Request failed!: %1', Response);
             end;
-
-
         end;
     end;
 
@@ -2880,41 +2834,45 @@ codeunit 50112 ETimsWebService
                 SIH.Modify();
             end
             else begin
-                if (SIH."Invoice Number" > 0) then Msg := SIH."Invoice Number";
+                if (SIH."Invoice Number" > 0) then
+                    Msg := SIH."Invoice Number";
             end;
         end
-        else if not SIH.FindFirst() then begin
-            creditNote.Reset();
-            creditNote.SetRange("No.", Num);
-            if creditNote.FindFirst() then begin
-                if (creditNote."Invoice Number" < 1) then begin
-                    Msg := company."Sales Invoice Number" + 1;
-                    company."Sales Invoice Number" := Msg;
-                    company.Modify();
-                    creditNote."Invoice Number" := Msg;
-                    creditNote.Modify();
-                end
-                else begin
-                    if (creditNote."Invoice Number" > 0) then Msg := creditNote."Invoice Number";
-                end;
-            end
-            else begin
-                postedPurchase.Reset();
-                postedPurchase.SetRange("No.", Num);
-                if postedPurchase.FindFirst() then begin
-                    if (postedPurchase."Invoice Number" < 1) then begin
+        else
+            if not SIH.FindFirst() then begin
+                creditNote.Reset();
+                creditNote.SetRange("No.", Num);
+                if creditNote.FindFirst() then begin
+                    if (creditNote."Invoice Number" < 1) then begin
                         Msg := company."Sales Invoice Number" + 1;
                         company."Sales Invoice Number" := Msg;
                         company.Modify();
-                        postedPurchase."Invoice Number" := Msg;
-                        postedPurchase.Modify();
+                        creditNote."Invoice Number" := Msg;
+                        creditNote.Modify();
                     end
                     else begin
-                        if (postedPurchase."Invoice Number" > 0) then Msg := postedPurchase."Invoice Number";
+                        if (creditNote."Invoice Number" > 0) then
+                            Msg := creditNote."Invoice Number";
                     end;
                 end
+                else begin
+                    postedPurchase.Reset();
+                    postedPurchase.SetRange("No.", Num);
+                    if postedPurchase.FindFirst() then begin
+                        if (postedPurchase."Invoice Number" < 1) then begin
+                            Msg := company."Sales Invoice Number" + 1;
+                            company."Sales Invoice Number" := Msg;
+                            company.Modify();
+                            postedPurchase."Invoice Number" := Msg;
+                            postedPurchase.Modify();
+                        end
+                        else begin
+                            if (postedPurchase."Invoice Number" > 0) then
+                                Msg := postedPurchase."Invoice Number";
+                        end;
+                    end
+                end;
             end;
-        end;
     end;
 
     procedure getItemDetails(itemNum: Text) Msg: Text
@@ -2978,7 +2936,8 @@ codeunit 50112 ETimsWebService
         invCreditLine.Reset();
         invCreditLine.SetRange("No.", itemNum);
         invCreditLine.SetRange("Document No.", docNum);
-        if invCreditLine."VAT Prod. Posting Group" = '' then type := 'A';
+        if invCreditLine."VAT Prod. Posting Group" = '' then
+            type := 'A';
         vatpg.Reset();
         vatpg.SetRange("Tax Type Code", type);
         if vatpg.FindFirst() then begin
@@ -3110,7 +3069,8 @@ codeunit 50112 ETimsWebService
             creditNote."Receipt Signature" := rcptSign;
             creditNote.QRCodeUrl := QRCodeUrl;
             creditNote."Posted to Etims" := true;
-            if creditNote.Modify() then GenerateBarcodeCr(QRCodeUrl, creditNote);
+            if creditNote.Modify() then
+                GenerateBarcodeCr(QRCodeUrl, creditNote);
             Msg := 'Success';
         end;
     end;
@@ -3234,7 +3194,6 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Add('Content-Type', 'application/json');
         HttpContent.GetHeaders(ContentHeaders);
         RequestMessage.Content(HttpContent);
-
         if HttpClient.Send(RequestMessage, ResponseMessage) then
             if ResponseMessage.Content.ReadAs(Response) then
                 if ResponseMessage.IsSuccessStatusCode then begin
@@ -3280,9 +3239,9 @@ codeunit 50112 ETimsWebService
                             useYn := rtnToken.AsValue().AsText();
 
                             yn := 2;
-                            if useYn = 'Y' then yn := 1;
+                            if useYn = 'Y' then
+                                yn := 1;
                             updateRefundReason(cd, cdNm, cdDesc, srtOrd, yn);
-
                         end;
 
                         //Banks
@@ -3304,7 +3263,8 @@ codeunit 50112 ETimsWebService
                             useYn := rtnToken.AsValue().AsText();
 
                             yn := 2;
-                            if useYn = 'Y' then yn := 1;
+                            if useYn = 'Y' then
+                                yn := 1;
                             updateBanks(cd, cdNm, cdNm, yn, srtOrd);
                         end;
 
@@ -3327,7 +3287,8 @@ codeunit 50112 ETimsWebService
                             useYn := rtnToken.AsValue().AsText();
 
                             yn := 2;
-                            if useYn = 'Y' then yn := 1;
+                            if useYn = 'Y' then
+                                yn := 1;
                             updateLocale(cd, cdNm, cdNm, yn, srtOrd);
                         end;
 
@@ -3633,7 +3594,6 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Add('Content-Type', 'application/json');
         HttpContent.GetHeaders(ContentHeaders);
         RequestMessage.Content(HttpContent);
-
         if HttpClient.Send(RequestMessage, ResponseMessage) then begin
             ResponseMessage.Content.ReadAs(Response);
             if ResponseMessage.IsSuccessStatusCode then begin
@@ -3672,7 +3632,8 @@ codeunit 50112 ETimsWebService
                         useYn := rtnToken.AsValue().AsText();
 
                         yn := 2;
-                        if useYn = 'Y' then yn := 1;
+                        if useYn = 'Y' then
+                            yn := 1;
 
                         updateClass(true, yn, itemClsCd, itemClsLvl, itemClsNm, false, taxTyCdText)
                     end;
@@ -3704,7 +3665,6 @@ codeunit 50112 ETimsWebService
         BusinesssID := 'Test';
 
         SendETIMSGetRequest('Branch/GetClassificationCodes', Token, BusinesssID, HttpStatus, ResponseTxt, ErrTxt);
-
         if ErrTxt <> '' then
             exit(StrSubstNo('SelectItems failed. %1', ErrTxt));
 
@@ -3750,14 +3710,12 @@ codeunit 50112 ETimsWebService
             Error('Missing "success" in response');
 
         Success := SuccessTok.AsValue().AsBoolean();
-
         if not Success then begin
             // error (preferred)
             ErrorMsg := '';
             if RootObj.Get('error', ErrorTok) then
                 if not ErrorTok.AsValue().IsNull() then
                     ErrorMsg := ErrorTok.AsValue().AsText();
-
             if ErrorMsg = '' then
                 ErrorMsg := 'ETIMS request failed (success=false).';
 
@@ -3769,7 +3727,6 @@ codeunit 50112 ETimsWebService
             Error('Missing "result" in response');
 
         ResultArray := ResultTok.AsArray();
-
         foreach ItemTok in ResultArray do begin
             ItemObj := ItemTok.AsObject();
 
@@ -3838,7 +3795,6 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Add('Content-Type', 'application/json');
         HttpContent.GetHeaders(ContentHeaders);
         RequestMessage.Content(HttpContent);
-
         if HttpClient.Send(RequestMessage, ResponseMessage) then begin
             ResponseMessage.Content.ReadAs(Response);
             if ResponseMessage.IsSuccessStatusCode then begin
@@ -3892,7 +3848,8 @@ codeunit 50112 ETimsWebService
                         useYn := rtnToken.AsValue().AsText();
 
                         yn := false;
-                        if useYn = 'Y' then yn := true;
+                        if useYn = 'Y' then
+                            yn := true;
 
                         insertBranches(bhfId, bhfNm, bhfSttsCd, yn, mgrEmail, mgrNm, mgrTelNo, locDescText, tin, dstrtNm);
                     end;
@@ -3955,7 +3912,8 @@ codeunit 50112 ETimsWebService
                     CustomerJsonObject.Add('email', customer."E-Mail");
                     CustomerJsonObject.Add('faxNo', customer."Fax No.");
                     useYn := 'N';
-                    if customer.useYn = 0 then useYn := 'Y';
+                    if customer.useYn = 0 then
+                        useYn := 'Y';
                     CustomerJsonObject.Add('useYn', useYn);
                     CustomerJsonObject.Add('remark', '');
                     users.Reset();
@@ -3981,7 +3939,6 @@ codeunit 50112 ETimsWebService
                     ContentHeaders.Add('Content-Type', 'application/json');
                     HttpContent.GetHeaders(ContentHeaders);
                     RequestMessage.Content(HttpContent);
-
                     if HttpClient.Send(RequestMessage, ResponseMessage) then begin
                         ResponseMessage.Content.ReadAs(Response);
                         if ResponseMessage.IsSuccessStatusCode then begin
@@ -4035,7 +3992,6 @@ codeunit 50112 ETimsWebService
                 SendETIMSRequest('Branch/SaveBranchCustomer', Token, PayloadTxt, HttpStatus, ResponseTxt, ErrTxt);
 
                 HandleBranchCustomerResponse(ResponseTxt, CustomerRec);
-
             until CustomerRec.Next() = 0;
 
         exit(StrSubstNo('SaveBranchCustomers completed. Success=%1, Failed=%2', OkCount, FailCount));
@@ -4143,12 +4099,10 @@ codeunit 50112 ETimsWebService
             StatusCode := JsonTok.AsValue().AsInteger()
         else
             Error('Missing statusCode in response');
-
         if RootObj.Get('success', JsonTok) then
             Success := JsonTok.AsValue().AsBoolean()
         else
             Error('Missing success in response');
-
         if (not Success) or (StatusCode <> 200) then begin
             if RootObj.Get('error', JsonTok) then
                 ErrorTxt := JsonTok.AsValue().AsText()
@@ -4173,7 +4127,6 @@ codeunit 50112 ETimsWebService
         else
             if StrLen(ResultTxt) >= 3 then
                 ResultCd := CopyStr(ResultTxt, 1, 3);
-
         if ResultCd <> '000' then begin
             if ResultTxt <> '' then
                 Error(ResultTxt);
@@ -4232,7 +4185,6 @@ codeunit 50112 ETimsWebService
                 ContentHeaders.Add('Content-Type', 'application/json');
                 HttpContent.GetHeaders(ContentHeaders);
                 RequestMessage.Content(HttpContent);
-
                 if HttpClient.Send(RequestMessage, ResponseMessage) then begin
                     ResponseMessage.Content.ReadAs(Response);
                     if ResponseMessage.IsSuccessStatusCode then begin
@@ -4250,7 +4202,6 @@ codeunit 50112 ETimsWebService
                         Message('Request failed!: %1', Response);
                     end;
                 end;
-
             until EtimsUser.Next() = 0;
     end;
 
@@ -4275,10 +4226,8 @@ codeunit 50112 ETimsWebService
 
         EtimsUser.Reset();
         EtimsUser.SetRange(Synched, false);
-
         if not EtimsUser.FindSet() then
             exit('SaveBranchUsers completed. No unsynched users found.');
-
         repeat
             Clear(PayloadTxt);
             Clear(ResponseTxt);
@@ -4288,7 +4237,6 @@ codeunit 50112 ETimsWebService
             BuildSaveBranchUserPayload(EtimsUser, PayloadTxt);
 
             SendETIMSRequest('Branch/saveBranchUser', Token, PayloadTxt, HttpStatus, ResponseTxt, ErrTxt);
-
             if ErrTxt <> '' then begin
                 FailCount += 1;
                 LastErr := ErrTxt;
@@ -4299,9 +4247,7 @@ codeunit 50112 ETimsWebService
                 MarkUserSynched(EtimsUser);
                 OkCount += 1;
             end;
-
         until EtimsUser.Next() = 0;
-
         if FailCount > 0 then
             exit(StrSubstNo('SaveBranchUsers completed. Success=%1, Failed=%2. LastError=%3', OkCount, FailCount, LastErr));
 
@@ -4337,7 +4283,6 @@ codeunit 50112 ETimsWebService
     begin
         Users.Reset();
         Users.SetRange("User Security ID", CreatedByGuid);
-
         if Users.FindFirst() then begin
             J.Add('registrationId', Users."User Name");
             J.Add('registrationNm', Users."Full Name");
@@ -4376,7 +4321,6 @@ codeunit 50112 ETimsWebService
 
         StatusCode := _ETIMSHelperFunctions.GetJsonIntRequired(RootObj, 'statusCode');
         Success := _ETIMSHelperFunctions.GetJsonBoolRequired(RootObj, 'success');
-
         if (not Success) or (StatusCode <> 200) then begin
             ErrorTxt := _ETIMSHelperFunctions.GetJsonTextNullable(RootObj, 'error'); // returns '' for missing/null
             if ErrorTxt <> '' then
@@ -4387,13 +4331,11 @@ codeunit 50112 ETimsWebService
         ResultTxt := _ETIMSHelperFunctions.GetJsonTextNullable(RootObj, 'result'); // e.g. "000: Successful"
         ResultCd := '';
         ColonPos := StrPos(ResultTxt, ':');
-
         if ColonPos > 1 then
             ResultCd := CopyStr(ResultTxt, 1, ColonPos - 1)
         else
             if StrLen(ResultTxt) >= 3 then
                 ResultCd := CopyStr(ResultTxt, 1, 3);
-
         if ResultCd <> '000' then begin
             if ResultTxt <> '' then
                 Error(ResultTxt);
@@ -4537,7 +4479,6 @@ codeunit 50112 ETimsWebService
                 ContentHeaders.Add('Content-Type', 'application/json');
                 HttpContent.GetHeaders(ContentHeaders);
                 RequestMessage.Content(HttpContent);
-
                 if HttpClient.Send(RequestMessage, ResponseMessage) then begin
                     ResponseMessage.Content.ReadAs(Response);
                     if ResponseMessage.IsSuccessStatusCode then begin
@@ -4553,7 +4494,6 @@ codeunit 50112 ETimsWebService
                         Message('Request failed!: %1', Response);
                     end;
                 end;
-
             until glAccount.Next() = 0;
     end;
 
@@ -4584,7 +4524,6 @@ codeunit 50112 ETimsWebService
                 SendETIMSRequest('Item/SaveItem', Token, PayloadTxt, HttpStatus, ResponseTxt, ErrTxt);
 
                 HandleSaveItemsResponse(ResponseTxt, ItemRec);
-
             until ItemRec.Next() = 0;
 
         exit(StrSubstNo('SaveItems completed. Success=%1, Failed=%2', OkCount, FailCount));
@@ -4708,7 +4647,6 @@ codeunit 50112 ETimsWebService
         ContentHeaders.Add('Content-Type', 'application/json');
 
         Request.Content(Content);
-
         if not Client.Send(Request, Response) then begin
             ErrTxt := 'EtimsDown: HTTP send failed.';
             exit;
@@ -4716,7 +4654,6 @@ codeunit 50112 ETimsWebService
 
         HttpStatus := Response.HttpStatusCode();
         Response.Content.ReadAs(ResponseTxt);
-
         if not Response.IsSuccessStatusCode() then
             ErrTxt := StrSubstNo('HTTP %1: %2', HttpStatus, ResponseTxt);
     end;
@@ -4743,7 +4680,6 @@ codeunit 50112 ETimsWebService
         Request.GetHeaders(ReqHeaders);
         // ReqHeaders.Add('Authorization', 'Bearer ' + Token);
         ReqHeaders.Add('Accept', 'application/json');
-
         if not Client.Send(Request, Response) then begin
             ErrTxt := 'EtimsDown: HTTP GET send failed.';
             exit;
@@ -4751,7 +4687,6 @@ codeunit 50112 ETimsWebService
 
         HttpStatus := Response.HttpStatusCode();
         Response.Content.ReadAs(ResponseTxt);
-
         if not Response.IsSuccessStatusCode() then
             ErrTxt := StrSubstNo('HTTP %1: %2', HttpStatus, ResponseTxt);
     end;
@@ -4779,12 +4714,10 @@ codeunit 50112 ETimsWebService
             StatusCode := JsonTok.AsValue().AsInteger()
         else
             Error('Missing statusCode in response');
-
         if RootObj.Get('success', JsonTok) then
             Success := JsonTok.AsValue().AsBoolean()
         else
             Error('Missing success in response');
-
         if (not Success) or (StatusCode <> 200) then begin
             if RootObj.Get('error', JsonTok) then
                 ErrorTxt := JsonTok.AsValue().AsText()
@@ -4809,7 +4742,6 @@ codeunit 50112 ETimsWebService
         else
             if StrLen(ResultTxt) >= 3 then
                 ResultCd := CopyStr(ResultTxt, 1, 3);
-
         if ResultCd <> '000' then begin
             if ResultTxt <> '' then
                 Error(ResultTxt);
@@ -4840,7 +4772,6 @@ codeunit 50112 ETimsWebService
     begin
         Token := GetEtimsToken();
         Company.Get();
-
         if not ItemRec.Get(ItemNo) then
             Error('Item %1 not found.', ItemNo);
 
@@ -4856,7 +4787,6 @@ codeunit 50112 ETimsWebService
         BuildSaveStockMasterPayload(ItemRec, PayloadTxt);
 
         SendETIMSRequest('Stock/SaveStockMaster', Token, PayloadTxt, HttpStatus, ResponseTxt, ErrTxt);
-
         if ErrTxt <> '' then
             Error(ErrTxt);
 
@@ -4943,29 +4873,24 @@ codeunit 50112 ETimsWebService
     begin
         if not RootObj.ReadFrom(ResponseText) then
             Error('Invalid JSON returned from ETIMS');
-
         if RootObj.Get('statusCode', JsonTok) then
             StatusCode := JsonTok.AsValue().AsInteger()
         else
             Error('Missing statusCode in response');
-
         if RootObj.Get('success', JsonTok) then
             Success := JsonTok.AsValue().AsBoolean()
         else
             Error('Missing success in response');
-
         if (not Success) or (StatusCode <> 200) then begin
             if RootObj.Get('error', JsonTok) then
                 ErrorTxt := JsonTok.AsValue().AsText()
             else
                 ErrorTxt := '';
-
             if ErrorTxt <> '' then
                 Error(ErrorTxt);
 
             Error('ETIMS returned an error');
         end;
-
         if RootObj.Get('result', JsonTok) then
             ResultTxt := JsonTok.AsValue().AsText()
         else
@@ -4978,7 +4903,6 @@ codeunit 50112 ETimsWebService
         else
             if StrLen(ResultTxt) >= 3 then
                 ResultCd := CopyStr(ResultTxt, 1, 3);
-
         if ResultCd <> '000' then begin
             if ResultTxt <> '' then
                 Error(ResultTxt);
