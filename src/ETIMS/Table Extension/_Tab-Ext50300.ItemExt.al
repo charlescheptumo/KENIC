@@ -98,17 +98,17 @@ tableextension 50300 ItemExt extends Item
         NoSeriesMgt: Codeunit "No. Series";
         NextTimsNo: Text;
     begin
-        // if "Etims Item Code" = '' then begin
-        //     "Country of Origin" := 'KE';
-        //     "Service Type" := '3';
-        //     "Packaging Unit code" := 'OU';
-        //     "Quantity Unit Code" := 'NO';
-        //     SalesReceivablesSetup.Get();
-        //     SalesReceivablesSetup.TestField("Etims Nos.");
-        //     NextTimsNo := NoSeriesMgt.GetNextNo(SalesReceivablesSetup."Etims Nos.", 0D, TRUE);
+        if "Etims Item Code" = '' then begin
+            // "Country of Origin" := 'KE';
+            // "Service Type" := '3';
+            // "Packaging Unit code" := 'OU';
+            // "Quantity Unit Code" := 'NO';
+            SalesReceivablesSetup.Get();
+            SalesReceivablesSetup.TestField("Etims Nos.");
+            NextTimsNo := NoSeriesMgt.GetNextNo(SalesReceivablesSetup."Etims Nos.", 0D, TRUE);
 
-        //     "Etims Item Code" := "Country of Origin" + "Service Type" + "Packaging Unit code" + "Quantity Unit Code" + NextTimsNo;
-        //     Rec.Modify();
-        // end
+            "Etims Item Code" := "Country of Origin" + "Service Type" + "Packaging Unit code" + "Quantity Unit Code" + NextTimsNo;
+            Rec.Modify();
+        end
     end;
 }

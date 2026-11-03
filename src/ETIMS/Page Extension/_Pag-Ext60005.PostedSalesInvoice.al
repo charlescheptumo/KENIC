@@ -1,4 +1,4 @@
-pageextension 60005 "Posted Sales Invoice" extends "Posted Sales Invoice"
+pageextension 60005 "Posted Sales Invoice" extends "Posted Authentication Sales"
 {
     layout
     {
@@ -69,22 +69,22 @@ pageextension 60005 "Posted Sales Invoice" extends "Posted Sales Invoice"
 
     actions
     {
-        addafter("Update Document")
-        {
-            action("ResendToetims")
-            {
-                ApplicationArea = Basic, Suite;
-                Caption = 'Resend to Etims';
-                Image = "Invoicing-MDL-Send";
+        // addafter("Update Document")
+        // {
+        //     action("ResendToetims")
+        //     {
+        //         ApplicationArea = Basic, Suite;
+        //         Caption = 'Resend to Etims';
+        //         Image = "Invoicing-MDL-Send";
 
-                trigger OnAction()
-                var
-                    WebService: Codeunit ETimsWebService;
-                begin
-                    WebService.PushSalesInvoice(Rec."No.");
-                end;
-            }
-        }
+        //         trigger OnAction()
+        //         var
+        //             WebService: Codeunit ETimsWebService;
+        //         begin
+        //             WebService.PushSalesInvoice(Rec."No.");
+        //         end;
+        //     }
+        // }
 
         addafter(Email)
         {
@@ -183,7 +183,6 @@ pageextension 60005 "Posted Sales Invoice" extends "Posted Sales Invoice"
                     Confirmed: Boolean;
                 begin
                     Confirmed := Confirm('Are you sure you want to post this Invoice to Etims?', false);
-
                     if Confirmed then begin
                         ProgressDialog.Open('Syncing To Etims, Please wait...');
                         EtimsCodeunit.PushSalesInvoice(Rec."No.");
