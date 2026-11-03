@@ -471,7 +471,7 @@ Page 69043 "Payroll Admin Role Center"
         }
         area(sections)
         {
-            group("Salary Advance")
+            group("Per Diem Advance")
             {
                 action("Salary Advance List Memos")
                 {
