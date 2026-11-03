@@ -510,6 +510,38 @@ Page 69043 "Payroll Admin Role Center"
                     ToolTip = 'Executes the Posted  Salary Advance List action.';
                 }
             }
+            group("Staff Claims")
+            {
+                Caption = 'Staff Claims';
+                action("Employee Mileage Reimbursement")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Employee Mileage Reimbursement';
+                    RunObject = Page "Employee Mileage Claims";
+                    ToolTip = 'Mileage reimbursement forms that are open or pending approval.';
+                }
+                action("Approved Mileage Claims")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Approved Mileage Claims';
+                    RunObject = Page "Approved Mileage Claims";
+                    ToolTip = 'Approved mileage reimbursement forms waiting to be posted.';
+                }
+                action("Approved Staff Claims")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Approved Staff Claims';
+                    RunObject = Page "Approved Staff Claims";
+                    ToolTip = 'Staff claims (including those created from approved mileage forms) waiting to be paid.';
+                }
+                action("Posted Mileage Claims")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Posted Mileage Claims';
+                    RunObject = Page "Posted Mileage Claims";
+                    ToolTip = 'Posted staff claims that came from mileage forms.';
+                }
+            }
             group("Management Approvals")
             {
                 Caption = 'Management Approvals';

@@ -687,13 +687,13 @@ page 60002 "HR Role Center"
                             ToolTip = 'Executes the Pre-Screening Templates action.';
                         }
 
-                        action("Interview Questions")
-                        {
-                            ApplicationArea = BasicHR;
-                            Caption = 'Interview Questions';
-                            RunObject = page "Question Categories";
-                            ToolTip = 'Executes the Interview Questions action.';
-                        }
+                        // action("Interview Questions")
+                        // {
+                        //     ApplicationArea = BasicHR;
+                        //     Caption = 'Interview Questions';
+                        //     RunObject = page "Question Categories";
+                        //     ToolTip = 'Executes the Interview Questions action.';
+                        // }
 
                         // action("Interview Scoresheet Questions")
                         // {
@@ -792,6 +792,20 @@ page 60002 "HR Role Center"
                             RunObject = page "Recruitment Req Requirement";
                             ToolTip = 'Executes the Recruitment Req Requirement action.';
                         }
+                        action("Interview Questions")
+                        {
+                            ApplicationArea = BasicHR;
+                            Caption = 'Interview Questions';
+                            RunObject = page "Question Categories";
+                            ToolTip = 'Executes the Interview Questions action.';
+                        }
+                        action("Interview Scoresheet Templates")
+                            {
+                                ApplicationArea = BasicHR;
+                                Caption = 'Interview Scoresheet Templates';
+                                RunObject = page "Interview Scoresheet Templates";
+                                ToolTip = 'Executes the Interview Scoresheet Templates action.';
+                            }
                         action("Shortlist Vouchers")
                         {
                             ApplicationArea = BasicHR;
@@ -901,13 +915,13 @@ page 60002 "HR Role Center"
                                 RunObject = page "Ability Responses";
                                 ToolTip = 'Executes the Ability Test Responses action.';
                             }
-                            action("Interview Scoresheet Templates")
-                            {
-                                ApplicationArea = BasicHR;
-                                Caption = 'Interview Scoresheet Templates';
-                                RunObject = page "Interview Scoresheet Templates";
-                                ToolTip = 'Executes the Interview Scoresheet Templates action.';
-                            }
+                            // action("Interview Scoresheet Templates")
+                            // {
+                            //     ApplicationArea = BasicHR;
+                            //     Caption = 'Interview Scoresheet Templates';
+                            //     RunObject = page "Interview Scoresheet Templates";
+                            //     ToolTip = 'Executes the Interview Scoresheet Templates action.';
+                            // }
                             action("Medical History Setup")
                             {
                                 ApplicationArea = BasicHR;

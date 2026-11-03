@@ -9,6 +9,7 @@ Page 57015 "Approved Imprest Requisition"
     SourceTableView = where("Payment Type" = const(Imprest),
                             Status = filter(Released));
     ApplicationArea = All;
+    Caption = 'Approved Per Diem Requisition';
 
     layout
     {

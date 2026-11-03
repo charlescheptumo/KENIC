@@ -675,7 +675,8 @@ Table 70101 "Procurement Plan Entry"
         field(70031; Items; Code[150])
         {
             DataClassification = ToBeClassified;
-            TableRelation = item."No." where("Procurement Category" = field("Planning Category"));
+            TableRelation = item."No.";
+             // where("Procurement Category" = field("Planning Category"));
             trigger onvalidate()
             var
                 item: record Item;

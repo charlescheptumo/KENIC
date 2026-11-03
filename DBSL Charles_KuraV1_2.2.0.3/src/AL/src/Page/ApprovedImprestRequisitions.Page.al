@@ -14,6 +14,7 @@ Page 57014 "Approved Imprest Requisitions"
                             banked = const(false),
                             "Archive Document" = const(false));
     UsageCategory = Lists;
+    Caption = 'Approved Per Diem Requisitions';
 
     layout
     {
