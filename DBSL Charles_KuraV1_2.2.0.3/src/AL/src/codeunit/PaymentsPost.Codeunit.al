@@ -645,7 +645,8 @@ Codeunit 57000 "Payments-Post"
 
         if DomainReceipt.Insert(true) then begin
             message('Domain adjustment receipt sent to registry successfully');
-            
+            ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
+
         end else begin
             message('Error sending to registry please contact admin');
         end;
@@ -7521,11 +7522,12 @@ Codeunit 57000 "Payments-Post"
 
         if DomainReceipt.Insert(true) then begin
             message('Domain receipt sent to registry successfully');
-            
+            ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
+
         end else begin
             message('Error sending to registry please contact admin');
         end;
-        //ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
+
     end;
 
     procedure SyncManualReceiptsToRegistry(var SyncedCount: Integer): Integer
@@ -7725,17 +7727,17 @@ Codeunit 57000 "Payments-Post"
                                 CMSetup.TestField("IM USD");
                                 BankAccountNo := CMSetup."IM USD";
                             end else
-                            if ReceiptRec.VatWithheld then begin
-                                CMSetup.TestField("VAT Withheld");
-                                BankAccountNo := CMSetup."VAT Withheld";
-                            end else
-                                if ReceiptRec.Cash then begin
-                                    ReceiptRec.TestField(BankCode);
-                                    BankAccountNo := ReceiptRec.BankCode;
-                                end else begin
-                                    ReceiptRec.TestField(BankCode);
-                                    BankAccountNo := ReceiptRec.BankCode;
-                                end;
+                                if ReceiptRec.VatWithheld then begin
+                                    CMSetup.TestField("VAT Withheld");
+                                    BankAccountNo := CMSetup."VAT Withheld";
+                                end else
+                                    if ReceiptRec.Cash then begin
+                                        ReceiptRec.TestField(BankCode);
+                                        BankAccountNo := ReceiptRec.BankCode;
+                                    end else begin
+                                        ReceiptRec.TestField(BankCode);
+                                        BankAccountNo := ReceiptRec.BankCode;
+                                    end;
 
             if BankAccountNo = '' then
                 Error('Unable to determine the Bank Account for receipt %1. Please check the payment channel setup.', ReceiptRec.ReceiptId);
@@ -7793,18 +7795,18 @@ Codeunit 57000 "Payments-Post"
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
 
-             Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
 
-             GLEntry.Reset;
-             GLEntry.SetRange(GLEntry."Document No.", DocNo);
-             GLEntry.SetRange(GLEntry.Reversed, false);
-             if GLEntry.FindFirst then begin
-                 ReceiptRec.Posted := true;
-            ReceiptRec."Posted By" := UserId;
-            ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
-            ReceiptRec."Posted Time" := Time;
-            ReceiptRec.Modify;
-             end;
+            GLEntry.Reset;
+            GLEntry.SetRange(GLEntry."Document No.", DocNo);
+            GLEntry.SetRange(GLEntry.Reversed, false);
+            if GLEntry.FindFirst then begin
+                ReceiptRec.Posted := true;
+                ReceiptRec."Posted By" := UserId;
+                ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
+                ReceiptRec."Posted Time" := Time;
+                ReceiptRec.Modify;
+            end;
 
         end;
     end;

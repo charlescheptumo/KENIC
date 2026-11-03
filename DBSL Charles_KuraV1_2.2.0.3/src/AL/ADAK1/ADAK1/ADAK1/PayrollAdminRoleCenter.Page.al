@@ -478,36 +478,42 @@ Page 69043 "Payroll Admin Role Center"
                     ApplicationArea = Basic;
                     RunObject = Page "Salary Advance Memos";
                     ToolTip = 'Executes the Salary Advance List Memos action.';
+                    Caption = 'Per Diem Advance List Memos';
                 }
                 action("Approved Salary Advance List Memos")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Salary Advance Memos";
                     ToolTip = 'Executes the Approved Salary Advance List Memos action.';
+                    Caption = 'Approved Per Diem Advance List Memos';
                 }
                 action("Posted  Salary Advance List Memos")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Posted Salary Advance Memos";
                     ToolTip = 'Executes the Posted  Salary Advance List Memos action.';
+                    Caption = 'Posted Per Diem Advance List Memos';
                 }
                 action("Salary Advance List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Salary Advance List";
                     ToolTip = 'Executes the Salary Advance List action.';
+                    Caption = 'Per Diem Advance List';
                 }
                 action("Approved Salary Advance List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Salary Advance List";
                     ToolTip = 'Executes the Approved Salary Advance List action.';
+                    Caption = 'Approved Per Diem Advance List';
                 }
-                action("Posted  Salary Advance List")
+                action("Posted Per Diem Advance List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Posted  Salary Advance List";
                     ToolTip = 'Executes the Posted  Salary Advance List action.';
+                    Caption = 'Posted Per Diem Advance List';
                 }
             }
             group("Staff Claims")
