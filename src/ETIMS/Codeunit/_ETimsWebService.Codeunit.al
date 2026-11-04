@@ -3075,7 +3075,7 @@ codeunit 50112 ETimsWebService
         end;
     end;
 
-    local procedure GenerateBarcode(urlforqr: Text; RecSalesInvoice: Record "Sales Invoice Header")
+    procedure GenerateBarcode(urlforqr: Text; RecSalesInvoice: Record "Sales Invoice Header")
     var
         Client: HttpClient;
         Content: HttpContent;
@@ -3116,7 +3116,7 @@ codeunit 50112 ETimsWebService
             end;
     end;
 
-    local procedure GenerateBarcodeCr(urlforqr: Text; RecSalesInvoice: Record "Sales Cr.Memo Header")
+    procedure GenerateBarcodeCr(urlforqr: Text; RecSalesInvoice: Record "Sales Cr.Memo Header")
     var
         Client: HttpClient;
         Content: HttpContent;

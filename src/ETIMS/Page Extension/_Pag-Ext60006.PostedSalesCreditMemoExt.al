@@ -60,17 +60,25 @@ pageextension 60006 "Posted Sales Credit Memo Ext" extends "Posted Sales Credit 
                     Caption = 'Kra QR Code';
                     Editable = false;
                 }
+                field("QRCodeUrl"; Rec."QRCodeUrl")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'KRA QR Code URL';
+                    Editable = false;
+                    ExtendedDatatype = URL;
+
+                }
+                // group(EtimsResponse)
+                // {
+                //     Caption = 'Etims Responses';
+                //     part(eTimsPushCredit; EtimsResponses)
+                //     {
+                //         Caption = 'Etims Responses';
+                //         ApplicationArea = Basic, Suite;
+                //         SubPageLink = Code = field("No.");
+                //     }
+                // }
             }
-            // group(EtimsResponse)
-            // {
-            //     Caption = 'Etims Responses';
-            //     part(eTimsPushCredit; EtimsResponses)
-            //     {
-            //         Caption = 'Etims Responses';
-            //         ApplicationArea = Basic, Suite;
-            //         SubPageLink = Code = field("No.");
-            //     }
-            // }
         }
     }
     actions
@@ -147,6 +155,51 @@ pageextension 60006 "Posted Sales Credit Memo Ext" extends "Posted Sales Credit 
                     end;
                     //();//(Rec."No.")
                     //SendToKRA(Rec."No.");
+                end;
+            }
+            action("Re-Generate KRA QR Code")
+            {
+                ApplicationArea = Basic, Suite;
+                Caption = 'Re-Generate KRA QR Code';
+                Image = BarCode;
+                Promoted = true;
+                PromotedCategory = Report;
+                Visible = true;
+
+                trigger OnAction()
+                var
+                    SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+                    Confirmed: Boolean;
+                    EtimsCodeunit: Codeunit ETimsWebService;
+                begin
+                    SalesCrMemoHeader.Reset();
+                    SalesCrMemoHeader.SetRange("No.", Rec."No.");
+                    if not SalesCrMemoHeader.FindFirst() then
+                        Error('Sales Credit Memo %1 was not found.', Rec."No.");
+
+                    // Check whether credit memo has been posted to KRA
+                    if not SalesCrMemoHeader."Posted To Etims" then
+                        Error('This credit memo has not been posted to KRA.');
+
+                    // Check whether QR Code already exists
+                    SalesCrMemoHeader.CalcFields("Kra QR Code");
+                    if SalesCrMemoHeader."Kra QR Code".HasValue() then
+                        Error('A KRA QR Code already exists for this credit memo.');
+                    if SalesCrMemoHeader."QRCodeUrl" = '' then
+                        Error('KRA QR Code URL is missing. Please synchronize with eTIMS first.');
+
+                    Confirmed := Confirm(
+                        'Generate KRA QR Code for credit memo %1?',
+                        false,
+                        Rec."No.");
+                    if not Confirmed then
+                        exit;
+
+                    EtimsCodeunit.GenerateBarcodeCr(
+                        SalesCrMemoHeader."QRCodeUrl",
+                        SalesCrMemoHeader);
+
+                    Message('KRA QR Code generation completed.');
                 end;
             }
         }
