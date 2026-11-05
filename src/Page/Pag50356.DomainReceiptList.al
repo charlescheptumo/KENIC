@@ -83,7 +83,7 @@ page 50356 "Domain Receipt List"
                     if ReceiptRec.FindSet() then
                         repeat
                             Commit();
-                            if DomainReceiptMgt.PostReceipt(ReceiptRec) then
+                            if DomainReceiptMgt.createDomainReceipt(ReceiptRec) then
                                 PostedCount += 1
                             else begin
                                 PostingLog.Init();
@@ -142,23 +142,11 @@ page 50356 "Domain Receipt List"
                         PostedCount - SyncedCount);
                 end;
             }
+            
             action(CreateTransaction)
             {
                 ApplicationArea = All;
                 Caption = 'Create Transaction';
-                Image = Refresh;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-
-                trigger OnAction()
-                begin
-                end;
-            }
-            action(PostReceipt)
-            {
-                ApplicationArea = All;
-                Caption = 'Post';
                 Image = Post;
                 Promoted = true;
                 PromotedCategory = Process;
@@ -167,11 +155,20 @@ page 50356 "Domain Receipt List"
                 trigger OnAction()
                 var
                     DomainReceiptMgt: Codeunit "Payments-post";
+                    RcptHeader: Record "Receipts Header1";
                 begin
                     if rec.posted = false then begin
-                        DomainReceiptMgt.PostReceipt(Rec);
+                        //DomainReceiptMgt.PostReceipt(Rec);
+                        DomainReceiptMgt.createDomainReceipt(Rec);
+
+                         RcptHeader.Reset();
+                        RcptHeader.setrange(RcptHeader."No.", Format(Rec.ReceiptID));
+                        if RcptHeader.findfirst then begin
+                            Page.Run(Page::Receipt, RcptHeader);
+                            DomainReceiptMgt.PostReceipt(RcptHeader);
+                        end;
                     end else begin
-                        message('The domain receipt is already processed/ is a manual entry');
+                        message('The domain receipt is already processed');
                     end;
 
                     CurrPage.Update(false);

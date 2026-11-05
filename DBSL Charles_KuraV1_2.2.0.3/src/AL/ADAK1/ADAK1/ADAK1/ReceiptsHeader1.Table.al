@@ -384,6 +384,7 @@ Table 56007 "Receipts Header1"
         //insert today's date as default
         Date := Today;
         Cashier := UserId;
+        CashMgt.Get;
         CashMgt.TestField("Current Budget");
         "Current Budget" := CashMgt."Current Budget";
 
