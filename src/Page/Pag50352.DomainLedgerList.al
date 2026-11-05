@@ -262,6 +262,7 @@ page 50352 "Domain Ledger List"
                     RefundDomainLengthYears: Integer;
                     PostedSalesInvHeader: Record "Sales Invoice Header";
                     PostedSalesCrMemoHeader: Record "Sales Cr.Memo Header";
+                    ReceiptsHeader: Record "Receipts Header1";
                 begin
                     if not (Rec.TransType in ['Adjustment', 'Registration', 'Renewal', 'AutoRenewal', 'Application', 'Restoration', 'Transfer', 'Refund', 'AccessFee']) then
                         Error('Create Invoice is not available for transaction type: %1.', Rec.TransType);
@@ -270,7 +271,15 @@ page 50352 "Domain Ledger List"
                         Error('A document has already been created for this entry (%1).', Rec."Sales Invoice No.");
 
                     if Rec.TransType = 'Adjustment' then begin
-                        DomainReceiptMgt.PostDomainAdjustment(Rec);
+                        DomainReceiptMgt.createDomainAdjustment(Rec);
+                        
+                        ReceiptsHeader.Reset();
+                        ReceiptsHeader.setrange(ReceiptsHeader."No.", Format(Rec.ID));
+                        if ReceiptsHeader.findfirst then begin
+                            Page.Run(Page::Receipt, ReceiptsHeader);
+                            DomainReceiptMgt.PostAdjustmentReceipt(ReceiptsHeader);
+                        end;
+
                         Rec.InvoiceCreated := true;
                         Rec.Modify();
                         Commit();

@@ -3922,6 +3922,33 @@ codeunit 50018 "Custom Function"
         exit('Manual');
     end;
 
+     procedure newSyncFromSalesCrMemo(var SalesCrMemoHeader: Record "Sales Header")
+    var
+        DomainLedgerEntry: Record "CoCCA Write Request";
+        OrigLedgerEntry: Record "Domain Ledger Entry";
+        SalesCrMemoLine: Record "Sales Line";
+        CMSetup: Record "Cash Management Setup";
+        TransTypeText: Text[50];
+         CoCCA: Codeunit CoCCAIntegration;
+    begin
+
+        DomainLedgerEntry.init;
+        DomainLedgerEntry.Operation := DomainLedgerEntry.Operation::Reversal;
+        Evaluate(DomainLedgerEntry."Target Ledger ID", SalesCrMemoHeader."Applies-to Doc. No.");
+        //DomainLedgerEntry."Target Ledger ID" := SalesCrMemoHeader."Applies-to Doc. No.";
+         DomainLedgerEntry."Requested By" := UserID;
+         DomainLedgerEntry."BC Reference" := SalesCrMemoHeader."No.";
+         if DomainLedgerEntry.insert(true) then begin
+
+         CoCCA.PostCoCCAWriteRequest(DomainLedgerEntry."Entry No.");
+
+        end else begin
+            message('Error sending to registry please contact admin');
+        end;
+
+
+    end;
+
     procedure SyncFromSalesCrMemo(var SalesCrMemoHeader: Record "Sales Header")
     var
         DomainLedgerEntry: Record "Domain Ledger Entry";
