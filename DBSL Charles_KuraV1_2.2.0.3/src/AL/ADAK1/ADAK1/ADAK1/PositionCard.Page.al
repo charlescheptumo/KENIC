@@ -5,6 +5,7 @@ Page 69601 "Position Card"
     PageType = Card;
     SourceTable = "Company Positions";
     ApplicationArea = All;
+    Caption = 'Job Profile';
 
     layout
     {
@@ -47,6 +48,7 @@ Page 69601 "Position Card"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Designation Group field.';
+                    Visible = false;
                 }
                 field("Job Grade ID"; Rec."Job Grade ID")
                 {
@@ -57,6 +59,7 @@ Page 69601 "Position Card"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Overall Appointment Authority field.';
+                    Visible = false;
                 }
                 field("Seniority Level"; Rec."Seniority Level")
                 {
@@ -107,24 +110,28 @@ Page 69601 "Position Card"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Minimum Academic Qualification field.';
+                    Visible = false;
                 }
                 field("Academic Hierarchy Code"; Rec."Academic Hierarchy Code")
                 {
                     ApplicationArea = Basic;
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Academic Hierarchy Code field.';
+                    Visible = false;
                 }
                 field("Minimum Work Experience"; Rec."Minimum Work Experience")
                 {
                     ApplicationArea = Basic;
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Minimum Work Experience field.';
+                    Visible = false;
                 }
                 field("Minimum Mngmnt Experience"; Rec."Minimum Mngmnt Experience")
                 {
                     ApplicationArea = Basic;
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Minimum Management Experience field.';
+                    Visible = false;
                 }
                 field("Default Duty Station"; Rec."Default Duty Station")
                 {
@@ -137,11 +144,13 @@ Page 69601 "Position Card"
                     ApplicationArea = Basic;
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Effective Date field.';
+                    Visible = false;
                 }
                 field("Direct Hire Unit Cost"; Rec."Direct Hire Unit Cost")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Direct Hire Unit Cost field.';
+                    Visible = false;
                 }
                 field("Average Monthly Salary (LCY)"; Rec."Average Monthly Salary (LCY)")
                 {
