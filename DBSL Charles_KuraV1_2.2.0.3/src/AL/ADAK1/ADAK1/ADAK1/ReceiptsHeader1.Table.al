@@ -358,6 +358,11 @@ Table 56007 "Receipts Header1"
             DataClassification = ToBeClassified;
             TableRelation = "Receipts Header1"."No." where(Posted = const(true));
         }
+        field(503; "Cocca No."; Code[50])
+        {
+            DataClassification = ToBeClassified;
+            //TableRelation = "Receipts Header1"."No." where(Posted = const(true));
+        }
     }
 
     keys

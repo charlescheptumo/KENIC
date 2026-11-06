@@ -191,7 +191,7 @@ Page 57075 "Posted Receipt"
                     NewReceipt."Posted Date" := 0D;
                     NewReceipt."Posted Time" := 0T;
 
-                    NewReceipt.Validate("Adjustment for", Rec."No.");
+                    NewReceipt."Adjustment for" := Rec."Cocca No.";
 
                     NewReceipt.Insert(true);
 
