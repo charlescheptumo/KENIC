@@ -7855,6 +7855,7 @@ Codeunit 57000 "Payments-Post"
         NewReceipt."Posted By" := '';
         NewReceipt."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
         NewReceipt."Posted Time" := 0T;
+        NewReceipt."Cocca No." := Format(ReceiptRec.ReceiptId);
 
         //BankAccountNo := '';
         if ReceiptRec.Mpesa then begin
@@ -7913,6 +7914,7 @@ Codeunit 57000 "Payments-Post"
         NewReceiptLine."Account No." := ReceiptRec.Roid;
         NewReceiptLine.Validate("Account No.");
         NewReceiptLine.Amount := ReceiptRec.Amount;
+        NewReceiptLine.description := 'Account top up';
         NewReceiptLine.Insert(true);
 
 
