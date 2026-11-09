@@ -180,6 +180,11 @@ Page 69601 "Position Card"
             {
                 SubPageLink = "Position ID" = field("Position ID");
             }
+            part(Benefits; "Position Benefits")
+            {
+                ApplicationArea = All;
+                SubPageLink = "Position ID" = field("Position ID");
+            }
             group("Special Work Conditions")
             {
                 field("Travel Frequency"; Rec."Travel Frequency")
