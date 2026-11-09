@@ -142,7 +142,7 @@ page 50356 "Domain Receipt List"
                         PostedCount - SyncedCount);
                 end;
             }
-            
+
             action(CreateTransaction)
             {
                 ApplicationArea = All;
@@ -161,10 +161,10 @@ page 50356 "Domain Receipt List"
                         //DomainReceiptMgt.PostReceipt(Rec);
                         DomainReceiptMgt.createDomainReceipt(Rec);
 
-                         RcptHeader.Reset();
+                        RcptHeader.Reset();
                         RcptHeader.setrange(RcptHeader."No.", Format(Rec.ReceiptID));
                         if RcptHeader.findfirst then begin
-                            Page.Run(Page::Receipt, RcptHeader);
+                            //Page.Run(Page::Receipt, RcptHeader);
                             DomainReceiptMgt.PostReceipt(RcptHeader);
                         end;
                     end else begin
