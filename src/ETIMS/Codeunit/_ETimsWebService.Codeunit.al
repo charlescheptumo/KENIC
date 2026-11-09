@@ -360,8 +360,8 @@ codeunit 50112 ETimsWebService
                 users.Reset();
                 users.SetRange("User Security ID", SalesInvHeader.SystemCreatedBy);
                 if users.FindFirst() then begin
-                    HeaderJsonObject.Add('CreatedBy', users."User Name");
-                    HeaderJsonObject.Add('CreatedByName', users."Full Name");
+                    HeaderJsonObject.Add('CreatedBy', CopyStr(Users."User Name", 1, 20));
+                    HeaderJsonObject.Add('CreatedByName', CopyStr(Users."Full Name", 1, 20));
                 end;
 
                 //Create Lines
@@ -549,8 +549,8 @@ codeunit 50112 ETimsWebService
         users.Reset();
         users.SetRange("User Security ID", SalesInvHeader.SystemCreatedBy);
         if users.FindFirst() then begin
-            HeaderJsonObject.Add('CreatedBy', users."User Name");
-            HeaderJsonObject.Add('CreatedByName', users."Full Name");
+            HeaderJsonObject.Add('CreatedBy', CopyStr(Users."User Name", 1, 20));
+            HeaderJsonObject.Add('CreatedByName', CopyStr(Users."Full Name", 1, 20));
         end;
 
         //Create Lines
@@ -2110,8 +2110,8 @@ codeunit 50112 ETimsWebService
         users.Reset();
         users.SetRange("User Security ID", SalesCreditHeader.SystemCreatedBy);
         if users.FindFirst() then begin
-            HeaderJsonObject.Add('CreatedBy', users."User Name");
-            HeaderJsonObject.Add('CreatedByName', users."Full Name");
+            HeaderJsonObject.Add('CreatedBy', CopyStr(Users."User Name", 1, 20));
+            HeaderJsonObject.Add('CreatedByName', CopyStr(Users."Full Name", 1, 20));
         end;
 
         //Create Lines
@@ -3919,10 +3919,10 @@ codeunit 50112 ETimsWebService
                     users.Reset();
                     users.SetRange("User Security ID", customer.SystemCreatedBy);
                     if users.FindFirst() then begin
-                        CustomerJsonObject.Add('regrId', users."User Name");
-                        CustomerJsonObject.Add('regrNm', users."Full Name");
-                        CustomerJsonObject.Add('modrNm', users."Full Name");
-                        CustomerJsonObject.Add('modrId', users."User Name");
+                        CustomerJsonObject.Add('regrId', CopyStr(Users."User Name", 1, 20));
+                        CustomerJsonObject.Add('regrNm', CopyStr(Users."Full Name", 1, 20));
+                        CustomerJsonObject.Add('modrNm', CopyStr(Users."Full Name", 1, 20));
+                        CustomerJsonObject.Add('modrId', CopyStr(Users."User Name", 1, 20));
                     end;
 
                     Clear(RequestMessage);
@@ -4065,10 +4065,10 @@ codeunit 50112 ETimsWebService
         Users.Reset();
         Users.SetRange("User Security ID", CustomerRec.SystemCreatedBy);
         if Users.FindFirst() then begin
-            J.Add('registrationId', Users."User Name");
-            J.Add('registrationNm', Users."Full Name");
+            J.Add('registrationId', CopyStr(Users."User Name", 1, 20));
+            J.Add('registrationNm', CopyStr(Users."Full Name", 1, 20));
             J.Add('modifierId', Users."User Name");
-            J.Add('modifierNm', Users."Full Name");
+            J.Add('modifierNm', CopyStr(Users."Full Name", 1, 20));
         end else begin
             J.Add('registrationId', '');
             J.Add('registrationNm', '');
@@ -4165,10 +4165,10 @@ codeunit 50112 ETimsWebService
                 users.Reset();
                 users.SetRange("User Security ID", EtimsUser.SystemCreatedBy);
                 if users.FindFirst() then begin
-                    branchUserJsonObject.Add('regrId', users."User Name");
-                    branchUserJsonObject.Add('regrNm', users."Full Name");
-                    branchUserJsonObject.Add('modrNm', users."Full Name");
-                    branchUserJsonObject.Add('modrId', users."User Name");
+                    branchUserJsonObject.Add('regrId', CopyStr(Users."User Name", 1, 20));
+                    branchUserJsonObject.Add('regrNm', CopyStr(Users."Full Name", 1, 20));
+                    branchUserJsonObject.Add('modrNm', CopyStr(Users."Full Name", 1, 20));
+                    branchUserJsonObject.Add('modrId', CopyStr(Users."User Name", 1, 20));
                 end;
 
                 Clear(RequestMessage);
@@ -4284,10 +4284,10 @@ codeunit 50112 ETimsWebService
         Users.Reset();
         Users.SetRange("User Security ID", CreatedByGuid);
         if Users.FindFirst() then begin
-            J.Add('registrationId', Users."User Name");
-            J.Add('registrationNm', Users."Full Name");
-            J.Add('modifierNm', Users."Full Name");
-            J.Add('modifierId', Users."User Name");
+            J.Add('registrationId', CopyStr(Users."User Name", 1, 20));
+            J.Add('registrationNm', CopyStr(Users."Full Name", 1, 20));
+            J.Add('modifierNm', CopyStr(Users."Full Name", 1, 20));
+            J.Add('modifierId', CopyStr(Users."User Name", 1, 20));
         end else begin
             J.Add('registrationId', '');
             J.Add('registrationNm', '');
@@ -4458,10 +4458,10 @@ codeunit 50112 ETimsWebService
                 users.Reset();
                 users.SetRange("User Security ID", glAccount.SystemCreatedBy);
                 if users.FindFirst() then begin
-                    HeaderJsonObject.Add('regrId', users."User Name");
-                    HeaderJsonObject.Add('regrNm', users."Full Name");
-                    HeaderJsonObject.Add('modrNm', users."Full Name");
-                    HeaderJsonObject.Add('modrId', users."User Name");
+                    HeaderJsonObject.Add('regrId', CopyStr(Users."User Name", 1, 20));
+                    HeaderJsonObject.Add('regrNm', CopyStr(Users."Full Name", 1, 20));
+                    HeaderJsonObject.Add('modrNm', CopyStr(Users."Full Name", 1, 20));
+                    HeaderJsonObject.Add('modrId', CopyStr(Users."User Name", 1, 20));
                 end;
                 HeaderJsonObject.Add('useYn', 'Y');
 
@@ -4609,10 +4609,10 @@ codeunit 50112 ETimsWebService
         Users.Reset();
         Users.SetRange("User Security ID", CreatedByGuid);
         if Users.FindFirst() then begin
-            J.Add('regId', Users."User Name");
-            J.Add('regName', Users."Full Name");
-            J.Add('modifierId', Users."User Name");
-            J.Add('modifierName', Users."Full Name");
+            J.Add('regId', CopyStr(Users."User Name", 1, 20));
+            J.Add('regName', CopyStr(Users."Full Name", 1, 20));
+            J.Add('modifierId', CopyStr(Users."User Name", 1, 20));
+            J.Add('modifierName', CopyStr(Users."Full Name", 1, 20));
         end else begin
             J.Add('regId', '');
             J.Add('regName', '');
@@ -4842,10 +4842,10 @@ codeunit 50112 ETimsWebService
         Users.Reset();
         Users.SetRange("User Security ID", CreatedByGuid);
         if Users.FindFirst() then begin
-            J.Add('registrationId', Users."User Name");
-            J.Add('registrationName', Users."Full Name");
-            J.Add('modifierId', Users."User Name");
-            J.Add('modifierName', Users."Full Name");
+            J.Add('registrationId', CopyStr(Users."User Name", 1, 20));
+            J.Add('registrationName', CopyStr(Users."Full Name", 1, 20));
+            J.Add('modifierId', CopyStr(Users."User Name", 1, 20));
+            J.Add('modifierName', CopyStr(Users."Full Name", 1, 20));
         end else begin
             J.Add('registrationId', '');
             J.Add('registrationName', '');
