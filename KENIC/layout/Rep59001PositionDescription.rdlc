@@ -158,7 +158,6 @@
             <ZIndex>6</ZIndex>
             <Style />
           </Textbox>
-
           <!-- JOB SUMMARY SECTION -->
           <Textbox Name="SummaryHeader">
             <Paragraphs>
@@ -701,7 +700,6 @@
               </Border>
             </Style>
           </Tablix>
-
           <!-- JOB PURPOSE SECTION -->
           <Textbox Name="PurposeHeader">
             <Paragraphs>
@@ -767,7 +765,6 @@
               <BackgroundColor>#f8f9fa</BackgroundColor>
             </Style>
           </Textbox>
-
           <!-- MAIN DUTIES SECTION -->
           <Textbox Name="DutiesHeader">
             <Paragraphs>
@@ -958,7 +955,6 @@
               </Border>
             </Style>
           </Tablix>
-
           <!-- RESPONSIBILITIES SECTION -->
           <Textbox Name="ResponsibilitiesHeader">
             <Paragraphs>
@@ -1149,7 +1145,6 @@
               </Border>
             </Style>
           </Tablix>
-
           <!-- EDUCATION & EXPERIENCE SECTION -->
           <Textbox Name="EducationHeader">
             <Paragraphs>
@@ -1435,7 +1430,6 @@
               </Border>
             </Style>
           </Tablix>
-
           <!-- REQUIRED COMPETENCIES SECTION -->
           <Textbox Name="CompetenciesHeader">
             <Paragraphs>
