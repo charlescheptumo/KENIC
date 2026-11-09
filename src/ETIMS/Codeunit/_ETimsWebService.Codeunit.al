@@ -910,8 +910,8 @@ codeunit 50112 ETimsWebService
         HeaderObj.Add('remark', 'Sales Invoice');
         HeaderObj.Add('registrationId', company."Company Tin");
         HeaderObj.Add('registrationName', company.Name);
-        HeaderObj.Add('modifierId', UserId);
-        HeaderObj.Add('modifierName', UserId);
+        HeaderObj.Add('modifierId', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('modifierName', CopyStr(UserId, 1, 20));
 
         // --- Receipt ---
         ReceiptObj.Add('customerPin', SalesInvHeader."VAT Registration No.");
@@ -1005,10 +1005,10 @@ codeunit 50112 ETimsWebService
         HeaderObj.Add('occurredDateTime', _ETIMSHelperFunctions.FormatETIMSDateOnly(SalesInvHeader."Posting Date"));
 
         HeaderObj.Add('remark', 'Stock released to customer');
-        HeaderObj.Add('registrationId', UserId);
-        HeaderObj.Add('registrationName', UserId);
-        HeaderObj.Add('modifierId', UserId);
-        HeaderObj.Add('modifierName', UserId);
+        HeaderObj.Add('registrationId', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('registrationName', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('modifierId', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('modifierName', CopyStr(UserId, 1, 20));
 
         // =====================
         // Lines -> itemList[]
@@ -1584,8 +1584,8 @@ codeunit 50112 ETimsWebService
         HeaderObj.Add('remark', 'Purchase Invoice');
         HeaderObj.Add('registrationId', company.Name);
         HeaderObj.Add('registrationNm', company.Name);
-        HeaderObj.Add('modifierId', UserId);
-        HeaderObj.Add('modifierName', UserId);
+        HeaderObj.Add('modifierId', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('modifierName', CopyStr(UserId, 1, 20));
 
         HeaderObj.Add('itemList', ItemArray);
 
@@ -1760,10 +1760,10 @@ codeunit 50112 ETimsWebService
 
         // HeaderObj.Add('totalItemCount', 0); // filled later
         HeaderObj.Add('remark', 'Stock received from vendor');
-        HeaderObj.Add('registrationId', UserId);
-        HeaderObj.Add('registrationName', UserId);
-        HeaderObj.Add('modifierId', UserId);
-        HeaderObj.Add('modifierName', UserId);
+        HeaderObj.Add('registrationId', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('registrationName', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('modifierId', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('modifierName', CopyStr(UserId, 1, 20));
 
         // ---------------------
         // Lines -> itemList
@@ -2573,8 +2573,8 @@ codeunit 50112 ETimsWebService
         HeaderObj.Add('remark', 'Sales Credit Note');
         HeaderObj.Add('registrationId', company."Company Tin");
         HeaderObj.Add('registrationName', company.Name);
-        HeaderObj.Add('modifierId', UserId);
-        HeaderObj.Add('modifierName', UserId);
+        HeaderObj.Add('modifierId', CopyStr(UserId, 1, 20));
+        HeaderObj.Add('modifierName', CopyStr(UserId, 1, 20));
 
         // =====================
         // Receipt
