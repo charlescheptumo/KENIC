@@ -324,7 +324,7 @@ Page 69601 "Position Card"
                 trigger OnAction()
                 begin
                     Rec.SetRange("Position ID", Rec."Position ID");
-                    Report.Run(69602, true, false, Rec);
+                    Report.Run(59931, true, false, Rec);
                 end;
             }
             action(Dimensions)
