@@ -10,6 +10,7 @@ Page 57012 "Imprest Requisition"
                             Status = filter(Open | "Pending Approval"),
                             "Archive Document" = filter(false));
     ApplicationArea = All;
+    Caption = 'Per Diem Requisition';
 
     layout
     {

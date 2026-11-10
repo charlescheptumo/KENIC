@@ -1822,7 +1822,8 @@ Table 57000 "payments"
             // Salary Advance card: pick an approved staff per diem imprest (or a Salary Advance Memo)
             // and the card is filled from it. HR then enters the Recovery Start Month.
             Caption = 'Salary Advance Memo / Per Diem Imprest No.';
-            TableRelation = "Payments"."No." where("Payment Type" = filter(Imprest | "Salary Advance Memo"), Posted = const(false), Status = const(Released));
+            // Only imprests not paid through payroll can be picked (Paul, 29 Oct).
+            TableRelation = "Payments"."No." where("Payment Type" = filter(Imprest | "Salary Advance Memo"), Posted = const(false), Status = const(Released), "Per Diem through Payroll" = const(false));
 
             trigger OnValidate()
             var
@@ -2005,6 +2006,81 @@ Table 57000 "payments"
         field(70206; "PD Salary Adv. Memo No."; Code[20])
         {
             Caption = 'Per Diem Salary Advance Memo No.';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        // Employee Mileage Reimbursement Form (a Staff Claim with Mileage Claim = true).
+        field(70210; "Mileage Claim"; Boolean)
+        {
+            Caption = 'Mileage Claim';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(70211; "Vehicle Model"; Text[100])
+        {
+            Caption = 'Vehicle Model (Saloon/4WD, Petrol/Diesel)';
+            DataClassification = CustomerContent;
+        }
+        field(70212; "Vehicle Engine CC"; Integer)
+        {
+            Caption = 'Vehicle Engine CC';
+            DataClassification = CustomerContent;
+            MinValue = 0;
+        }
+        field(70213; "Vehicle Reg. No."; Code[20])
+        {
+            Caption = 'Vehicle Reg. No.';
+            DataClassification = CustomerContent;
+        }
+        field(70214; "Mileage Rate"; Decimal)
+        {
+            Caption = 'Mileage Rate (KES per Km)';
+            DataClassification = CustomerContent;
+            DecimalPlaces = 2 : 2;
+            MinValue = 0;
+
+            trigger OnValidate()
+            var
+                MileageLine: Record "PV Lines";
+            begin
+                // A new rate recalculates every trip: Amount = Kilometres x Mileage Rate.
+                MileageLine.Reset();
+                MileageLine.SetRange(No, "No.");
+                MileageLine.SetFilter(Kilometres, '<>%1', 0);
+                if MileageLine.FindSet() then
+                    repeat
+                        MileageLine.Validate(Amount, Round(MileageLine.Kilometres * "Mileage Rate", 0.01));
+                        MileageLine.Modify();
+                    until MileageLine.Next() = 0;
+            end;
+        }
+        field(70215; "Mileage Period From"; Date)
+        {
+            Caption = 'Pay Period From';
+            DataClassification = CustomerContent;
+        }
+        field(70216; "Mileage Period To"; Date)
+        {
+            Caption = 'Pay Period To';
+            DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            begin
+                if ("Mileage Period From" <> 0D) and ("Mileage Period To" <> 0D) and ("Mileage Period To" < "Mileage Period From") then
+                    FieldError("Mileage Period To", 'cannot be before Pay Period From');
+            end;
+        }
+        field(70217; "Staff Claim No."; Code[20])
+        {
+            // On an approved mileage form: the Staff Claim created from it for payment.
+            Caption = 'Staff Claim No.';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(70218; "Mileage Claim No."; Code[20])
+        {
+            // On a Staff Claim: the mileage form it was created from.
+            Caption = 'Mileage Claim No.';
             DataClassification = CustomerContent;
             Editable = false;
         }

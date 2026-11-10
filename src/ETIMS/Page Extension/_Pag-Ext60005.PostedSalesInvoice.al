@@ -51,6 +51,14 @@ pageextension 60005 "Posted Sales Invoice" extends "Posted Sales Invoice"
                     Caption = 'Kra QR Code';
                     Editable = false;
                 }
+                field("QRCodeUrl"; Rec."QRCodeUrl")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'KRA QR Code URL';
+                    Editable = false;
+                    ExtendedDatatype = URL;
+
+                }
             }
 
             // group(EtimsResponse)
@@ -69,22 +77,22 @@ pageextension 60005 "Posted Sales Invoice" extends "Posted Sales Invoice"
 
     actions
     {
-        addafter("Update Document")
-        {
-            action("ResendToetims")
-            {
-                ApplicationArea = Basic, Suite;
-                Caption = 'Resend to Etims';
-                Image = "Invoicing-MDL-Send";
+        // addafter("Update Document")
+        // {
+        //     action("ResendToetims")
+        //     {
+        //         ApplicationArea = Basic, Suite;
+        //         Caption = 'Resend to Etims';
+        //         Image = "Invoicing-MDL-Send";
 
-                trigger OnAction()
-                var
-                    WebService: Codeunit ETimsWebService;
-                begin
-                    WebService.PushSalesInvoice(Rec."No.");
-                end;
-            }
-        }
+        //         trigger OnAction()
+        //         var
+        //             WebService: Codeunit ETimsWebService;
+        //         begin
+        //             WebService.PushSalesInvoice(Rec."No.");
+        //         end;
+        //     }
+        // }
 
         addafter(Email)
         {
@@ -183,7 +191,6 @@ pageextension 60005 "Posted Sales Invoice" extends "Posted Sales Invoice"
                     Confirmed: Boolean;
                 begin
                     Confirmed := Confirm('Are you sure you want to post this Invoice to Etims?', false);
-
                     if Confirmed then begin
                         ProgressDialog.Open('Syncing To Etims, Please wait...');
                         EtimsCodeunit.PushSalesInvoice(Rec."No.");
@@ -191,6 +198,51 @@ pageextension 60005 "Posted Sales Invoice" extends "Posted Sales Invoice"
                         ProgressDialog.Close();
                         Message('Syncing Complete');
                     end;
+                end;
+            }
+            action("Re-Generate KRA QR Code")
+            {
+                ApplicationArea = Basic, Suite;
+                Caption = 'Re-Generate KRA QR Code';
+                Image = BarCode;
+                Promoted = true;
+                PromotedCategory = Report;
+                Visible = true;
+
+                trigger OnAction()
+                var
+                    SalesInvHeader: Record "Sales Invoice Header";
+                    Confirmed: Boolean;
+                    EtimsCodeunit: Codeunit ETimsWebService;
+                begin
+                    SalesInvHeader.Reset();
+                    SalesInvHeader.SetRange("No.", Rec."No.");
+                    if not SalesInvHeader.FindFirst() then
+                        Error('Sales Invoice %1 was not found.', Rec."No.");
+
+                    // Check whether invoice has been posted to KRA
+                    if not SalesInvHeader."Posted To Etims" then
+                        Error('This invoice has not been posted to KRA.');
+
+                    // Check whether QR Code already exists
+                    SalesInvHeader.CalcFields("Kra QR Code");
+                    if SalesInvHeader."Kra QR Code".HasValue() then
+                        Error('A KRA QR Code already exists for this invoice.');
+                    if SalesInvHeader."QRCodeUrl" = '' then
+                        Error('KRA QR Code URL is missing. Please synchronize with eTIMS first.');
+
+                    Confirmed := Confirm(
+                        'Generate KRA QR Code for invoice %1?',
+                        false,
+                        Rec."No.");
+                    if not Confirmed then
+                        exit;
+
+                    EtimsCodeunit.GenerateBarcode(
+                        SalesInvHeader."QRCodeUrl",
+                        SalesInvHeader);
+
+                    Message('KRA QR Code generation completed.');
                 end;
             }
         }

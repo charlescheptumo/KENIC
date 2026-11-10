@@ -3922,6 +3922,33 @@ codeunit 50018 "Custom Function"
         exit('Manual');
     end;
 
+     procedure newSyncFromSalesCrMemo(var SalesCrMemoHeader: Record "Sales Header")
+    var
+        DomainLedgerEntry: Record "CoCCA Write Request";
+        OrigLedgerEntry: Record "Domain Ledger Entry";
+        SalesCrMemoLine: Record "Sales Line";
+        CMSetup: Record "Cash Management Setup";
+        TransTypeText: Text[50];
+         CoCCA: Codeunit CoCCAIntegration;
+    begin
+
+        DomainLedgerEntry.init;
+        DomainLedgerEntry.Operation := DomainLedgerEntry.Operation::Reversal;
+        Evaluate(DomainLedgerEntry."Target Ledger ID", SalesCrMemoHeader."Applies-to Doc. No.");
+        //DomainLedgerEntry."Target Ledger ID" := SalesCrMemoHeader."Applies-to Doc. No.";
+         DomainLedgerEntry."Requested By" := UserID;
+         DomainLedgerEntry."BC Reference" := SalesCrMemoHeader."No.";
+         if DomainLedgerEntry.insert(true) then begin
+
+         CoCCA.PostCoCCAWriteRequest(DomainLedgerEntry."Entry No.");
+
+        end else begin
+            message('Error sending to registry please contact admin');
+        end;
+
+
+    end;
+
     procedure SyncFromSalesCrMemo(var SalesCrMemoHeader: Record "Sales Header")
     var
         DomainLedgerEntry: Record "Domain Ledger Entry";
@@ -3930,8 +3957,10 @@ codeunit 50018 "Custom Function"
         CMSetup: Record "Cash Management Setup";
         TransTypeText: Text[50];
     begin
-        if SalesCrMemoHeader."Domain Ledger Synced" then
+        if SalesCrMemoHeader."Domain Ledger Synced" then begin
+            message('Sales credit memo for this document already exists in the registry');
             exit;
+        end;
 
         DomainLedgerEntry.Reset();
         DomainLedgerEntry.SetRange("Credit Memo No.", SalesCrMemoHeader."No.");
@@ -3990,8 +4019,10 @@ codeunit 50018 "Custom Function"
         CMSetup: Record "Cash Management Setup";
         TransTypeText: Text[50];
     begin
-        if SalesInvHeader."Domain Ledger Synced" then
+        if SalesInvHeader."Domain Ledger Synced" then begin
+            message('Sales Invoice for this document already exists in the registry');
             exit;
+        end;
 
         DomainLedgerEntry.Reset();
         DomainLedgerEntry.SetRange("Sales Invoice No.", SalesInvHeader."No.");

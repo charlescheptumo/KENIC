@@ -36,7 +36,7 @@ pageextension 50156 "Sales Credit Memo Ext" extends "Sales Credit Memo"
                         //if DT2Date(Rec."Created Date Time") - salesHeader."Posting Date" < 30 then begin
                         if Today - salesHeader."Posting Date" < 30 then begin
 
-                            customFunction.SyncFromSalesCrMemo(Rec);
+                            customFunction.newSyncFromSalesCrMemo(Rec);
                         end else begin
 
                             Error('The original invoice number %1 was raised on date %2. You can only send credit memos raised within 30 days of the invoice date', salesHeader."No.", salesHeader."Posting Date");

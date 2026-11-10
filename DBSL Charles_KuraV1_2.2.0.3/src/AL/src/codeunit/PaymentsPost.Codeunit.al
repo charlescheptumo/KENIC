@@ -494,6 +494,54 @@ Codeunit 57000 "Payments-Post"
 
     end;
 
+    procedure createDomainAdjustment(ReceiptRec: Record "Domain Ledger Entry")
+    var
+        GenJnLine: Record "Gen. Journal Line";
+        LineNo: Integer;
+        GLEntry: Record "G/L Entry";
+        CMSetup: Record "Cash Management Setup";
+        BankAccountNo: Code[20];
+        DocNo: Code[20];
+        NewReceipt: Record "Receipts Header1";
+        ReceiptLine: Record "Receipt Lines1";
+        NewReceiptLine: Record "Receipt Lines1";
+        existingReceipt: Record "Receipts Header1";
+    begin
+        // Create Header
+        NewReceipt.Init();
+        //NewReceipt.TransferFields(Rec);
+
+        NewReceipt."No." := Format(ReceiptRec.ID);
+        NewReceipt."Pay Mode" := 'BANK';
+        NewReceipt."Bank Code" := '3235';
+        NewReceipt."Posting Date" := DT2Date(ReceiptRec.Created);
+        NewReceipt."Date" := DT2Date(ReceiptRec.Created);
+        NewReceipt."Adjustment Receipt?" := true;
+        NewReceipt.Posted := false;
+        NewReceipt."Posted By" := '';
+        NewReceipt."Posted Date" := DT2Date(ReceiptRec.Created);
+        NewReceipt."Posted Time" := 0T;
+
+        NewReceipt."Adjustment for" := Format(ReceiptRec.DocumentNumber);
+
+        NewReceipt.Insert(true);
+
+        // Copy Lines
+
+        NewReceiptLine.Init();
+        // NewReceiptLine.TransferFields(ReceiptLine);
+        // Point to new receipt
+        NewReceiptLine.Validate("Receipt No.", NewReceipt."No.");
+        NewReceiptLine."Account Type" := NewReceiptLine."Account Type"::Customer;
+        NewReceiptLine."Account No." := ReceiptRec.ClientROID;
+        NewReceiptLine.Validate("Account No.");
+        NewReceiptLine.Amount := ReceiptRec.Amount;
+        NewReceiptLine.Insert(true);
+
+
+    end;
+
+
     procedure PostDomainAdjustment(ReceiptRec: Record "Domain Ledger Entry")
     var
         GenJnLine: Record "Gen. Journal Line";
@@ -585,71 +633,118 @@ Codeunit 57000 "Payments-Post"
 
     local procedure TransferAdjustmentToDomainRegistry(ReceiptRec: Record "Receipts Header1")
     var
-        DomainReceipt: Record "Domain Receipt";
+        DomainReceipt: Record "CoCCA Write Request";
+        DomainReceipt2: Record "CoCCA Write Request";
         NewReceiptId: Integer;
         rcptLines: record "Receipt Lines1";
         CoCCA: Codeunit CoCCAIntegration;
         ResponseTxt: Text;
+        ReceiptRec2: Record "Receipts Header1";
+        newEntryNo: integer;
     begin
-        DomainReceipt.Reset();
-        DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
-        if not DomainReceipt.IsEmpty() then
-            exit;
+        //Nzvki commented out controls
+        // DomainReceipt.Reset();
+        // DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
+        // if not DomainReceipt.IsEmpty() then
+        //     exit;
 
-        NewReceiptId := ExtractNumericId(ReceiptRec."No.");
+        // NewReceiptId := ExtractNumericId(ReceiptRec."No.");
 
-        if DomainReceipt.Get(NewReceiptId) then
-            Error('A Domain Receipt with ID %1 already exists (linked to Source Receipt No. %2). Cannot transfer receipt %3 - the numbers collide.', NewReceiptId, DomainReceipt."Source Receipt No.", ReceiptRec."No.");
+        // if DomainReceipt.Get(NewReceiptId) then
+        //     Error('A Domain Receipt with ID %1 already exists (linked to Source Receipt No. %2). Cannot transfer receipt %3 - the numbers collide.', NewReceiptId, DomainReceipt."Source Receipt No.", ReceiptRec."No.");
 
         ReceiptRec.CalcFields(Amount);
 
         DomainReceipt.Init();
-        DomainReceipt.ReceiptId := NewReceiptId;
+        //DomainReceipt.ReceiptId := NewReceiptId;
+        DomainReceipt.Operation := DomainReceipt.Operation::Adjustment;
+        DomainReceipt."Requested By" := UserID;
+        Evaluate(DomainReceipt."Target Ledger ID", ReceiptRec."Adjustment For");
+        Evaluate(DomainReceipt."Transaction ID", ReceiptRec."Adjustment For");
         DomainReceipt.Roid := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
+        DomainReceipt.Details := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Details));
+        DomainReceipt.Narration := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
         rcptLines.reset();
         rcptLines.setrange(rcptLines."Receipt No.", ReceiptRec."No.");
         if rcptLines.findfirst then begin
             DomainReceipt.Roid := rcptLines."Account No.";
+            if rcptLines.Description <> '' then begin
+                DomainReceipt.Narration := rcptLines.Description;
+                DomainReceipt.Details := rcptLines.Description;
+            end;
         end;
-        DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
-        DomainReceipt.ReceiptDate := CreateDateTime(ReceiptRec.Date, 0T);
-        DomainReceipt.Amount := -ReceiptRec.Amount;
-        DomainReceipt.BankCode := CopyStr(ReceiptRec."Bank Code", 1, MaxStrLen(DomainReceipt.BankCode));
+        //DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
+        DomainReceipt."Posting DateTime" := CreateDateTime(ReceiptRec.Date, 0T);
+        DomainReceipt.Amount := ReceiptRec.Amount;
+        // DomainReceipt.BankCode := CopyStr(ReceiptRec."Bank Code", 1, MaxStrLen(DomainReceipt.BankCode));
         if ReceiptRec."Cheque Date" <> 0D then
-            DomainReceipt.ChequeDate := CreateDateTime(ReceiptRec."Cheque Date", 0T);
-        DomainReceipt.ChequeNumber := CopyStr(ReceiptRec."Cheque No", 1, MaxStrLen(DomainReceipt.ChequeNumber));
-        DomainReceipt.Details := CopyStr(ReceiptRec."Being Payment of", 1, MaxStrLen(DomainReceipt.Details));
+            DomainReceipt."Cheque DateTime" := CreateDateTime(ReceiptRec."Cheque Date", 0T);
+        DomainReceipt."Cheque Number" := CopyStr(ReceiptRec."Cheque No", 1, MaxStrLen(DomainReceipt."Cheque Number"));
 
-        DomainReceipt.Cash := ReceiptRec."Pay Mode" = 'CASH';
-        DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
-        DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
-        DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = 'NCBA';
-        DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
-        DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
+
+        // DomainReceipt.Cash := ReceiptRec."Pay Mode" = 'CASH';
+        // DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
+        // DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
+        // DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = '3200';
+        // DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
+        // DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
+
+        //Nzvki domain receipt bank validations
+        if ReceiptRec."Currency Code" in ['', 'KES'] = true then begin
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::IMKES;
+            //DomainReceipt.DrawerName := 'im_kes';
+        end else if ReceiptRec."Bank Code" = '3200' then begin
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::NCBAKES;
+            //DomainReceipt.DrawerName := 'ncba_kes';
+        end else if ReceiptRec."Pay Mode" = 'IPAY' then begin
+            //DomainReceipt.BankCode := 'Ipay';
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::Ipay;
+        end else if ReceiptRec."Currency Code" = 'USD' then begin
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::IMUSD;
+            //DomainReceipt.DrawerName := 'im_usd';
+        end else if ReceiptRec."Pay Mode" = 'CASH' then begin
+            //DomainReceipt.BankCode := 'cash';
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::Cash;
+        end;
+
+
+
+        // newEntryNo := 0;
+        //         DomainReceipt2.reset();
+        //         if DomainReceipt2.FindLast() then begin
+        //             DomainReceipt."Transaction ID" := DomainReceipt2."Entry No." + 1;
+        //             //newEntryNo := DomainReceipt2."Entry No." + 1;
+        //         end else begin
+        //             DomainReceipt."Transaction ID" := 1;
+        //             //newEntryNo := 1;
+
+        //         end;
 
         if ReceiptRec."Pay Mode" = 'MPESA' then begin
-            DomainReceipt.BankCode := 'MPESA';
-            DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
-            DomainReceipt.ImKes := false;
-            DomainReceipt.DrawerName := 'MPESA';
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::Mpesa;
+            DomainReceipt."Mpesa Transaction ID" := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt."Mpesa Transaction ID"));
+            //DomainReceipt.DrawerName := 'MPESA';
+            //DomainReceipt.ImKes := false;
         end;
 
 
-        DomainReceipt.Posted := true;
-        DomainReceipt."Posted By" := ReceiptRec."Posted By";
-        DomainReceipt."Posted Date" := ReceiptRec."Posted Date";
-        DomainReceipt."Posted Time" := ReceiptRec."Posted Time";
-        DomainReceipt."Source Receipt No." := ReceiptRec."No.";
-        DomainReceipt."External Receipt No." := ReceiptRec."No.";
-        DomainReceipt."IsManual Entry" := true;
+
+        // DomainReceipt.Posted := true;
+        // DomainReceipt."Posted By" := ReceiptRec."Posted By";
+        // DomainReceipt."Posted Date" := ReceiptRec."Posted Date";
+        // DomainReceipt."Posted Time" := ReceiptRec."Posted Time";
+        // DomainReceipt."Source Receipt No." := ReceiptRec."No.";
+        // DomainReceipt."External Receipt No." := ReceiptRec."No.";
+        // DomainReceipt."IsManual Entry" := true;
 
         if DomainReceipt.Insert(true) then begin
-            message('Domain adjustment receipt sent to registry successfully');
-            
+            //message('Domain receipt sent to registry successfully');
+            CoCCA.PostCoCCAWriteRequest(DomainReceipt."Entry No.");
+
         end else begin
             message('Error sending to registry please contact admin');
         end;
-        //ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
+
     end;
 
 
@@ -7461,71 +7556,123 @@ Codeunit 57000 "Payments-Post"
 
     local procedure TransferToDomainRegistry(ReceiptRec: Record "Receipts Header1")
     var
-        DomainReceipt: Record "Domain Receipt";
+        DomainReceipt: Record "CoCCA Write Request";
+        DomainReceipt2: Record "CoCCA Write Request";
         NewReceiptId: Integer;
         rcptLines: record "Receipt Lines1";
         CoCCA: Codeunit CoCCAIntegration;
         ResponseTxt: Text;
+        ReceiptRec2: Record "Receipts Header1";
+        newEntryNo: integer;
+
     begin
-        DomainReceipt.Reset();
-        DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
-        if not DomainReceipt.IsEmpty() then
-            exit;
+        //Nzvki commented out controls
+        // DomainReceipt.Reset();
+        // DomainReceipt.SetRange("Source Receipt No.", ReceiptRec."No.");
+        // if not DomainReceipt.IsEmpty() then
+        //     exit;
 
-        NewReceiptId := ExtractNumericId(ReceiptRec."No.");
+        // NewReceiptId := ExtractNumericId(ReceiptRec."No.");
 
-        if DomainReceipt.Get(NewReceiptId) then
-            Error('A Domain Receipt with ID %1 already exists (linked to Source Receipt No. %2). Cannot transfer receipt %3 - the numbers collide.', NewReceiptId, DomainReceipt."Source Receipt No.", ReceiptRec."No.");
+        // if DomainReceipt.Get(NewReceiptId) then
+        //     Error('A Domain Receipt with ID %1 already exists (linked to Source Receipt No. %2). Cannot transfer receipt %3 - the numbers collide.', NewReceiptId, DomainReceipt."Source Receipt No.", ReceiptRec."No.");
 
         ReceiptRec.CalcFields(Amount);
 
         DomainReceipt.Init();
-        DomainReceipt.ReceiptId := NewReceiptId;
+        //DomainReceipt.ReceiptId := NewReceiptId;
+        DomainReceipt.Operation := DomainReceipt.Operation::Receipt;
+        DomainReceipt."Requested By" := UserID;
         DomainReceipt.Roid := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.Roid));
         rcptLines.reset();
         rcptLines.setrange(rcptLines."Receipt No.", ReceiptRec."No.");
         if rcptLines.findfirst then begin
             DomainReceipt.Roid := rcptLines."Account No.";
+            if rcptLines.Description <> '' then begin
+                DomainReceipt.Narration := rcptLines.Description;
+                DomainReceipt.Details := rcptLines.Description;
+            end;
         end;
-        DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
-        DomainReceipt.ReceiptDate := CreateDateTime(ReceiptRec.Date, 0T);
+        //DomainReceipt.DrawerName := CopyStr(ReceiptRec."Received From", 1, MaxStrLen(DomainReceipt.DrawerName));
+        DomainReceipt."Posting DateTime" := CreateDateTime(ReceiptRec.Date, 0T);
         DomainReceipt.Amount := ReceiptRec.Amount;
-        DomainReceipt.BankCode := CopyStr(ReceiptRec."Bank Code", 1, MaxStrLen(DomainReceipt.BankCode));
+        // DomainReceipt.BankCode := CopyStr(ReceiptRec."Bank Code", 1, MaxStrLen(DomainReceipt.BankCode));
         if ReceiptRec."Cheque Date" <> 0D then
-            DomainReceipt.ChequeDate := CreateDateTime(ReceiptRec."Cheque Date", 0T);
-        DomainReceipt.ChequeNumber := CopyStr(ReceiptRec."Cheque No", 1, MaxStrLen(DomainReceipt.ChequeNumber));
+            DomainReceipt."Cheque DateTime" := CreateDateTime(ReceiptRec."Cheque Date", 0T);
+        DomainReceipt."Cheque Number" := CopyStr(ReceiptRec."Cheque No", 1, MaxStrLen(DomainReceipt."Cheque Number"));
         DomainReceipt.Details := CopyStr(ReceiptRec."Being Payment of", 1, MaxStrLen(DomainReceipt.Details));
 
-        DomainReceipt.Cash := ReceiptRec."Pay Mode" = 'CASH';
-        DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
-        DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
-        DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = 'NCBA';
-        DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
-        DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
+        // DomainReceipt.Cash := ReceiptRec."Pay Mode" = 'CASH';
+        // DomainReceipt.Mpesa := ReceiptRec."Pay Mode" = 'MPESA';
+        // DomainReceipt.IPay := ReceiptRec."Pay Mode" = 'IPAY';
+        // DomainReceipt.NcbaKes := ReceiptRec."Bank Code" = '3200';
+        // DomainReceipt.ImKes := ReceiptRec."Currency Code" in ['', 'KES'];
+        // DomainReceipt.ImUsd := ReceiptRec."Currency Code" = 'USD';
+
+        //Nzvki domain receipt bank validations
+        if ReceiptRec."Currency Code" in ['', 'KES'] = true then begin
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::IMKES;
+            //DomainReceipt.DrawerName := 'im_kes';
+        end else if ReceiptRec."Bank Code" = '3200' then begin
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::NCBAKES;
+            //DomainReceipt.DrawerName := 'ncba_kes';
+        end else if ReceiptRec."Pay Mode" = 'IPAY' then begin
+            //DomainReceipt.BankCode := 'Ipay';
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::Ipay;
+        end else if ReceiptRec."Currency Code" = 'USD' then begin
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::IMUSD;
+            //DomainReceipt.DrawerName := 'im_usd';
+        end else if ReceiptRec."Pay Mode" = 'CASH' then begin
+            //DomainReceipt.BankCode := 'cash';
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::Cash;
+        end;
+
+        newEntryNo := 0;
+        DomainReceipt2.reset();
+        if DomainReceipt2.FindLast() then begin
+            DomainReceipt."Mpesa API ID" := DomainReceipt2."Entry No." + 1;
+            newEntryNo := DomainReceipt2."Entry No." + 1;
+        end else begin
+            DomainReceipt."Mpesa API ID" := 1;
+            newEntryNo := 1;
+
+        end;
+        ReceiptRec2.reset();
+        ReceiptRec2.setrange(ReceiptRec2."No.", ReceiptRec."No.");
+        if ReceiptRec2.findfirst then begin
+
+            ReceiptRec2."Cocca No." := Format(newEntryNo);
+            ReceiptRec2.Modify();
+
+        end;
+
         if ReceiptRec."Pay Mode" = 'MPESA' then begin
-            DomainReceipt.BankCode := 'MPESA';
-            DomainReceipt.MpesaTrxId := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt.MpesaTrxId));
-            DomainReceipt.DrawerName := 'MPESA';
-            DomainReceipt.ImKes := false;
+            DomainReceipt."Payment Channel" := DomainReceipt."Payment Channel"::Mpesa;
+            DomainReceipt."Mpesa Transaction ID" := CopyStr(ReceiptRec."Payment Reference", 1, MaxStrLen(DomainReceipt."Mpesa Transaction ID"));
+            //DomainReceipt.DrawerName := 'MPESA';
+            //DomainReceipt.ImKes := false;
         end;
 
 
 
-        DomainReceipt.Posted := true;
-        DomainReceipt."Posted By" := ReceiptRec."Posted By";
-        DomainReceipt."Posted Date" := ReceiptRec."Posted Date";
-        DomainReceipt."Posted Time" := ReceiptRec."Posted Time";
-        DomainReceipt."Source Receipt No." := ReceiptRec."No.";
-        DomainReceipt."External Receipt No." := ReceiptRec."No.";
-        DomainReceipt."IsManual Entry" := true;
+        // DomainReceipt.Posted := true;
+        // DomainReceipt."Posted By" := ReceiptRec."Posted By";
+        // DomainReceipt."Posted Date" := ReceiptRec."Posted Date";
+        // DomainReceipt."Posted Time" := ReceiptRec."Posted Time";
+        // DomainReceipt."Source Receipt No." := ReceiptRec."No.";
+        // DomainReceipt."External Receipt No." := ReceiptRec."No.";
+        // DomainReceipt."IsManual Entry" := true;
 
         if DomainReceipt.Insert(true) then begin
-            message('Domain receipt sent to registry successfully');
-            
+            //message('Domain receipt sent to registry successfully');
+            CoCCA.PostCoCCAWriteRequest(DomainReceipt."Entry No.");
+
+
+
         end else begin
             message('Error sending to registry please contact admin');
         end;
-        //ResponseTxt := CoCCA.PushDomainReceipt(DomainReceipt.ReceiptId);
+
     end;
 
     procedure SyncManualReceiptsToRegistry(var SyncedCount: Integer): Integer
@@ -7682,6 +7829,97 @@ Codeunit 57000 "Payments-Post"
     //     PostReceipt(ReceiptRec, false);
     // end;
 
+    procedure createDomainReceipt(ReceiptRec: Record "Domain Receipt")
+    var
+        GenJnLine: Record "Gen. Journal Line";
+        LineNo: Integer;
+        GLEntry: Record "G/L Entry";
+        CMSetup: Record "Cash Management Setup";
+        BankAccountNo: Code[20];
+        DocNo: Code[20];
+        NewReceipt: Record "Receipts Header1";
+        ReceiptLine: Record "Receipt Lines1";
+        NewReceiptLine: Record "Receipt Lines1";
+        existingReceipt: Record "Receipts Header1";
+    begin
+        CMSetup.get();
+        // Create Header
+        NewReceipt.Init();
+        //NewReceipt.TransferFields(Rec);
+
+        NewReceipt."No." := Format(ReceiptRec.ReceiptId);
+        NewReceipt."Posting Date" := DT2Date(ReceiptRec.ReceiptDate);
+        NewReceipt."Date" := DT2Date(ReceiptRec.ReceiptDate);
+        NewReceipt."Adjustment Receipt?" := false;
+        NewReceipt.Posted := false;
+        NewReceipt."Posted By" := '';
+        NewReceipt."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
+        NewReceipt."Posted Time" := 0T;
+        NewReceipt."Cocca No." := Format(ReceiptRec.ReceiptId);
+
+        //BankAccountNo := '';
+        if ReceiptRec.Mpesa then begin
+            CMSetup.TestField(Mpesa);
+            NewReceipt."Pay Mode" := 'MPESA';
+            NewReceipt."Bank Code" := CMSetup.Mpesa;
+        end else
+            if ReceiptRec.IPay then begin
+                CMSetup.TestField(IPay);
+                NewReceipt."Pay Mode" := 'IPAY';
+                NewReceipt."Bank Code" := CMSetup.IPay;
+            end else
+                if ReceiptRec.NcbaKes then begin
+                    CMSetup.TestField(NCBA);
+                    NewReceipt."Pay Mode" := 'BANK';
+                    NewReceipt."Bank Code" := CMSetup.NCBA;
+                end else
+                    if ReceiptRec.ImKes then begin
+                        CMSetup.TestField("IM KES");
+                        NewReceipt."Pay Mode" := 'BANK';
+                        NewReceipt."Bank Code" := CMSetup."IM KES";
+                    end else
+                        if ReceiptRec.ImUsd then begin
+                            CMSetup.TestField("IM USD");
+                            NewReceipt."Currency Code" := 'USD';
+                            NewReceipt.validate("Currency Code");
+                            NewReceipt."Pay Mode" := 'BANK';
+                            NewReceipt."Bank Code" := CMSetup."IM USD";
+                        end else
+                            if ReceiptRec.VatWithheld then begin
+                                CMSetup.TestField("VAT Withheld");
+                                NewReceipt."Pay Mode" := 'BANK';
+                                NewReceipt."Bank Code" := CMSetup."VAT Withheld";
+                            end else
+                                if ReceiptRec.Cash then begin
+                                    ReceiptRec.TestField(BankCode);
+                                    NewReceipt."Pay Mode" := 'CASH';
+                                    NewReceipt."Bank Code" := ReceiptRec.BankCode;
+                                end else begin
+                                    ReceiptRec.TestField(BankCode);
+                                    NewReceipt."Pay Mode" := '';
+                                    NewReceipt."Bank Code" := ReceiptRec.BankCode;
+                                end;
+
+        //NewReceipt."Adjustment for" := Format(ReceiptRec.DocumentNumber);
+
+        NewReceipt.Insert(true);
+
+        // Copy Lines
+
+        NewReceiptLine.Init();
+        // NewReceiptLine.TransferFields(ReceiptLine);
+        // Point to new receipt
+        NewReceiptLine.Validate("Receipt No.", NewReceipt."No.");
+        NewReceiptLine."Account Type" := NewReceiptLine."Account Type"::Customer;
+        NewReceiptLine."Account No." := ReceiptRec.Roid;
+        NewReceiptLine.Validate("Account No.");
+        NewReceiptLine.Amount := ReceiptRec.Amount;
+        NewReceiptLine.description := 'Account top up';
+        NewReceiptLine.Insert(true);
+
+
+    end;
+
     procedure PostReceipt(ReceiptRec: Record "Domain Receipt")
     var
         GenJnLine: Record "Gen. Journal Line";
@@ -7725,17 +7963,17 @@ Codeunit 57000 "Payments-Post"
                                 CMSetup.TestField("IM USD");
                                 BankAccountNo := CMSetup."IM USD";
                             end else
-                            if ReceiptRec.VatWithheld then begin
-                                CMSetup.TestField("VAT Withheld");
-                                BankAccountNo := CMSetup."VAT Withheld";
-                            end else
-                                if ReceiptRec.Cash then begin
-                                    ReceiptRec.TestField(BankCode);
-                                    BankAccountNo := ReceiptRec.BankCode;
-                                end else begin
-                                    ReceiptRec.TestField(BankCode);
-                                    BankAccountNo := ReceiptRec.BankCode;
-                                end;
+                                if ReceiptRec.VatWithheld then begin
+                                    CMSetup.TestField("VAT Withheld");
+                                    BankAccountNo := CMSetup."VAT Withheld";
+                                end else
+                                    if ReceiptRec.Cash then begin
+                                        ReceiptRec.TestField(BankCode);
+                                        BankAccountNo := ReceiptRec.BankCode;
+                                    end else begin
+                                        ReceiptRec.TestField(BankCode);
+                                        BankAccountNo := ReceiptRec.BankCode;
+                                    end;
 
             if BankAccountNo = '' then
                 Error('Unable to determine the Bank Account for receipt %1. Please check the payment channel setup.', ReceiptRec.ReceiptId);
@@ -7793,18 +8031,18 @@ Codeunit 57000 "Payments-Post"
             if GenJnLine.Amount <> 0 then
                 GenJnLine.Insert;
 
-             Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
+            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnLine);
 
-             GLEntry.Reset;
-             GLEntry.SetRange(GLEntry."Document No.", DocNo);
-             GLEntry.SetRange(GLEntry.Reversed, false);
-             if GLEntry.FindFirst then begin
-                 ReceiptRec.Posted := true;
-            ReceiptRec."Posted By" := UserId;
-            ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
-            ReceiptRec."Posted Time" := Time;
-            ReceiptRec.Modify;
-             end;
+            GLEntry.Reset;
+            GLEntry.SetRange(GLEntry."Document No.", DocNo);
+            GLEntry.SetRange(GLEntry.Reversed, false);
+            if GLEntry.FindFirst then begin
+                ReceiptRec.Posted := true;
+                ReceiptRec."Posted By" := UserId;
+                ReceiptRec."Posted Date" := DT2Date(ReceiptRec.ReceiptDate);
+                ReceiptRec."Posted Time" := Time;
+                ReceiptRec.Modify;
+            end;
 
         end;
     end;

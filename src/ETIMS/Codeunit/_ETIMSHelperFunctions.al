@@ -46,10 +46,10 @@ codeunit 50110 ETIMSHelperFunctions
         jsonResponse: JsonObject;
         jsonValue: JsonValue;
         evironmentInfo: Codeunit "Environment Information";
-        testMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        prodMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        testETIMSUrl: Label 'http://135.220.97.93:8088/';
-        prodETIMSUrl: Label 'http://135.220.97.93:8088/';
+        testMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        prodMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        testETIMSUrl: Label 'http://41.90.10.39:8088/';
+        prodETIMSUrl: Label 'http://41.90.10.39:8088/';
         lastreqDate: Text;
         ReqDate: Text;
         ETIMSDeviceInfo: Record "eTims-Branch Info";
@@ -59,7 +59,6 @@ codeunit 50110 ETIMSHelperFunctions
         Band: Text;
     begin
         Band := UpperCase(DelChr(Format(RawTaxType), '=', ' '));
-
         if (Band = 'A') or (Band = 'B') or (Band = 'C') or (Band = 'D') or (Band = 'E') then
             exit(Band);
 
@@ -72,7 +71,6 @@ codeunit 50110 ETIMSHelperFunctions
     begin
         if TaxBand = '' then
             exit(0);
-
         if TaxTypeSetup.Get(TaxBand) then
             exit(TaxTypeSetup.Rate);
 
@@ -130,7 +128,6 @@ codeunit 50110 ETIMSHelperFunctions
     begin
         if not Obj.Get(FieldName, Tok) then
             Error(StrSubstNo('Missing %1 in response item', FieldName));
-
         if Tok.AsValue().IsNull() then
             Error(StrSubstNo('%1 is null in response item', FieldName));
 
@@ -143,7 +140,6 @@ codeunit 50110 ETIMSHelperFunctions
     begin
         if not Obj.Get(FieldName, Tok) then
             exit('');
-
         if Tok.AsValue().IsNull() then
             exit('');
 

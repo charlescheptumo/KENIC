@@ -412,61 +412,22 @@ Yours faithfully,</Value>
                 </TextRuns>
                 <Style />
               </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox54</rd:DefaultName>
-            <Top>2.65216in</Top>
-            <Left>0.11189in</Left>
-            <Height>5.0381in</Height>
-            <Width>7.62092in</Width>
-            <ZIndex>6</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox1">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Fields!DocumentDate_BidTabulationHeader.Value</Value>
+                    <Value />
                     <Style>
+                      <FontStyle>Normal</FontStyle>
                       <FontFamily>Gill Sans MT</FontFamily>
                       <FontSize>11pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
+                      <FontWeight>Normal</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                      <Color>#000000</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>0.56667in</Top>
-            <Left>0.11189in</Left>
-            <Height>0.25in</Height>
-            <Width>2.78326in</Width>
-            <ZIndex>7</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox2">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
@@ -692,32 +653,47 @@ Yours faithfully,</Value>
                   <TextAlign>Left</TextAlign>
                 </Style>
               </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox54</rd:DefaultName>
+            <Top>2.65216in</Top>
+            <Left>0.11189in</Left>
+            <Height>5.0381in</Height>
+            <Width>7.62092in</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox1">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value />
+                    <Value>=Fields!DocumentDate_BidTabulationHeader.Value</Value>
                     <Style>
-                      <FontStyle>Normal</FontStyle>
                       <FontFamily>Gill Sans MT</FontFamily>
                       <FontSize>11pt</FontSize>
-                      <FontWeight>Normal</FontWeight>
-                      <TextDecoration>None</TextDecoration>
-                      <Color>#000000</Color>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                  <LineHeight>12pt</LineHeight>
-                </Style>
+                <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox2</rd:DefaultName>
-            <Top>7.73193in</Top>
-            <Left>0.10131in</Left>
-            <Height>1.52296in</Height>
-            <Width>7.6315in</Width>
-            <ZIndex>8</ZIndex>
+            <rd:DefaultName>Textbox1</rd:DefaultName>
+            <Top>0.56667in</Top>
+            <Left>0.11189in</Left>
+            <Height>0.25in</Height>
+            <Width>2.78326in</Width>
+            <ZIndex>7</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -729,7 +705,7 @@ Yours faithfully,</Value>
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>9.42156in</Height>
+        <Height>7.69026in</Height>
         <Style>
           <Border>
             <Style>Solid</Style>
@@ -759,7 +735,7 @@ Yours faithfully,</Value>
       <Width>7.86697in</Width>
       <Page>
         <PageHeader>
-          <Height>1.68in</Height>
+          <Height>1.505in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -780,9 +756,8 @@ Yours faithfully,</Value>
             </Image>
             <Line Name="Line1">
               <Top>1.47167in</Top>
-              <Left>0.10131in</Left>
               <Height>0in</Height>
-              <Width>7.6315in</Width>
+              <Width>7.86697in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>

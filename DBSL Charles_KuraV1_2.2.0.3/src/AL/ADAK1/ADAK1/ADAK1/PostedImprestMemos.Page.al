@@ -10,7 +10,7 @@ Page 57040 "Posted Imprest Memos"
     SourceTableView = where(Posted = const(true),
                             Status = filter(Released),Archived=const(false));
     UsageCategory = History;
-    Caption = 'Posted Activity Budgets';
+    Caption = 'Posted Per Diem Claim Requests';
 
     layout
     {

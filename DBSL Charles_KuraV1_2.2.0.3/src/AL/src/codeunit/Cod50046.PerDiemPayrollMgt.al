@@ -18,7 +18,8 @@ codeunit 50650 "Per Diem Payroll Mgt."
         PerDiemSurrenderErr: Label 'Imprest %1 is paid through payroll and cannot be surrendered.', Comment = '%1 = imprest no.';
         NoRateErr: Label 'No resource cost is set up for work type %1.', Comment = '%1 = work type';
         NotDirectorAppErr: Label 'Per diem application %1 does not belong to board member %2.', Comment = '%1 = application no., %2 = director no.';
-        NotStaffPerDiemErr: Label 'Imprest %1 is not a staff per diem paid through payroll.', Comment = '%1 = imprest no.';
+        NotStaffPerDiemErr: Label 'Imprest %1 is paid through payroll. A Salary Advance can only be raised for an imprest that is not paid through payroll.', Comment = '%1 = imprest no.';
+        NotStaffImprestErr: Label 'Imprest %1 is not for an employee.', Comment = '%1 = imprest no.';
         SAMemoPurposeTxt: Label 'Per diem %1 %2', Locked = true;
         NotSAMemoErr: Label '%1 is neither a Salary Advance Memo nor a staff per diem imprest.', Comment = '%1 = document no.';
         MemoUsedErr: Label '%1 is already attached to Salary Advance %2.', Comment = '%1 = memo or imprest no., %2 = salary advance no.';
@@ -490,7 +491,9 @@ codeunit 50650 "Per Diem Payroll Mgt."
         if Imprest."Payment Type" = Imprest."Payment Type"::"Salary Advance Memo" then
             if not Imprest.Get(Imprest."Reference No.") then
                 exit(false);
-        exit((Imprest."Payment Type" = Imprest."Payment Type"::Imprest) and Imprest."Per Diem through Payroll");
+        // Advances are now raised for imprests NOT paid through payroll (Paul, 29 Oct); older
+        // ones point to per diems paid through payroll. Both are recovered the same way.
+        exit(Imprest."Payment Type" = Imprest."Payment Type"::Imprest);
     end;
 
     procedure CalcPerDiemTax(TotalAmount: Decimal; NoOfDays: Decimal): Decimal
@@ -535,9 +538,14 @@ codeunit 50650 "Per Diem Payroll Mgt."
     var
         Employee: Record Employee;
     begin
-        // HR picks the approved per diem imprest; everything except the recovery month is filled in.
-        if (not Imprest."Per Diem through Payroll") or (Imprest."Account Type" <> Imprest."Account Type"::Employee) then
+        // HR picks the approved imprest; everything except the recovery month is filled in.
+        // Only imprests NOT paid through payroll (Paul, 29 Oct): one paid through payroll is
+        // already paid in the payroll, so an advance on it would pay it twice.
+        // Was: if (not Imprest."Per Diem through Payroll") or (...) then Error(NotStaffPerDiemErr, ...)
+        if Imprest."Per Diem through Payroll" then
             Error(NotStaffPerDiemErr, Imprest."No.");
+        if Imprest."Account Type" <> Imprest."Account Type"::Employee then
+            Error(NotStaffImprestErr, Imprest."No.");
         if Imprest.Status <> Imprest.Status::Released then
             Error(PerDiemNotReleasedErr, Imprest."No.");
         CheckNotAttachedElsewhere(SalaryAdvance, Imprest."No.");
