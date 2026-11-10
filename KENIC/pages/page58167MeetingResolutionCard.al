@@ -30,11 +30,12 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                     Editable = not Rec."Posted";
-                    ValuesAllowed = Election, Approval;
+                    ValuesAllowed = Election, Approval, "Candidate Election";
 
                     trigger OnValidate()
                     begin
                         SetControlStates();
+                        CurrPage.Update(true);
                     end;
                 }
                 // field(ControlCommitteeId; Rec."Committee Id")
@@ -69,10 +70,21 @@ page 58167 "Meeting Resolution Card"
             {
                 Caption = 'Voting';
 
+                field(ControlSeats; Rec."Seats")
+                {
+                    ApplicationArea = All;
+                    Editable = not Rec."Posted";
+                    Visible = IsElection;
+                }
+                field(ControlHideVoteCount; Rec."Hide Vote Count")
+                {
+                    ApplicationArea = All;
+                }
                 field(ControlMajorityType; Rec."Majority Type")
                 {
                     ApplicationArea = All;
                     Editable = not Rec."Posted";
+                    Visible = not IsElection;
 
                     trigger OnValidate()
                     begin
@@ -83,6 +95,7 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                     Editable = SpecialMajorityEditable;
+                    Visible = not IsElection;
                 }
                 field(ControlVotingStatus; Rec."Voting Status")
                 {
@@ -104,25 +117,48 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                 }
+                field(ControlBallotsCast; Rec."Ballots Cast")
+                {
+                    ApplicationArea = All;
+                    Visible = IsElection;
+                }
                 field(ControlForVotes; Rec."For Votes")
                 {
                     ApplicationArea = All;
+                    Visible = not IsElection;
                 }
                 field(ControlAgainstVotes; Rec."Against Votes")
                 {
                     ApplicationArea = All;
+                    Visible = not IsElection;
                 }
                 field(ControlAbstainVotes; Rec."Abstain Votes")
                 {
                     ApplicationArea = All;
+                    Visible = not IsElection;
                 }
                 field(ControlOutcome; Rec."Outcome")
                 {
                     ApplicationArea = All;
                 }
+                field(ControlElectedCandidates; Rec."Elected Candidates")
+                {
+                    ApplicationArea = All;
+                    Visible = IsElection;
+                    MultiLine = true;
+                    Style = Favorable;
+                }
 
             }
 
+            part(Candidates; "Resolution Candidates Subform")
+            {
+                Caption = 'Candidates';
+                ApplicationArea = All;
+                SubPageLink = "Resolution No." = field("No.");
+                Visible = IsElection;
+                UpdatePropagation = Both;
+            }
             part(History; "Resolution Actions Subform")
             {
                 Caption = 'History';
@@ -209,6 +245,36 @@ page 58167 "Meeting Resolution Card"
                     CurrPage.Update(false);
                 end;
             }
+            action(HideVoteCount)
+            {
+                Caption = 'Hide Vote Count';
+                ApplicationArea = All;
+                Image = Reject;
+                Enabled = not Rec."Hide Vote Count";
+                ToolTip = 'Members on the portal will no longer see vote counts for this resolution or election.';
+
+                trigger OnAction()
+                begin
+                    Rec.Validate("Hide Vote Count", true);
+                    Rec.Modify(true);
+                    CurrPage.Update(false);
+                end;
+            }
+            action(ShowVoteCount)
+            {
+                Caption = 'Show Vote Count';
+                ApplicationArea = All;
+                Image = View;
+                Enabled = Rec."Hide Vote Count";
+                ToolTip = 'Members on the portal can see vote counts for this resolution or election.';
+
+                trigger OnAction()
+                begin
+                    Rec.Validate("Hide Vote Count", false);
+                    Rec.Modify(true);
+                    CurrPage.Update(false);
+                end;
+            }
             action(CloseVoting)
             {
                 Caption = 'Close Voting';
@@ -291,6 +357,8 @@ page 58167 "Meeting Resolution Card"
                         ]);
 
         SpecialMajorityEditable := (Rec."Majority Type" = Rec."Majority Type"::"Special Majority") and not Rec."Posted";
+
+        IsElection := Rec.IsCandidateElection();
     end;
 
     var
@@ -299,4 +367,5 @@ page 58167 "Meeting Resolution Card"
         CanWithdraw: Boolean;
         CanMarkNoted: Boolean;
         SpecialMajorityEditable: Boolean;
+        IsElection: Boolean;
 }

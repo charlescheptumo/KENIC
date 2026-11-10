@@ -6,4 +6,5 @@ enum 58151 "Resolution Typess"
     value(1; Selection) { Caption = 'Selection'; }
     value(2; Information) { Caption = 'Information'; }
     value(3; Approval) { Caption = 'Approval'; }
+    value(4; "Candidate Election") { Caption = 'Candidate Election'; }
 }

@@ -56,6 +56,42 @@ table 58161 "Resolution Votes"
             DataClassification = ToBeClassified;
             Editable = false;
         }
+        field(6; "Election Voted"; Boolean)
+        {
+            Caption = 'Ballot Cast';
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(10; "IP Address"; Text[50])
+        {
+            Caption = 'IP Address';
+            DataClassification = EndUserPseudonymousIdentifiers;
+            Editable = false;
+        }
+        field(11; "Browser"; Text[100])
+        {
+            Caption = 'Browser';
+            DataClassification = EndUserPseudonymousIdentifiers;
+            Editable = false;
+        }
+        field(12; "Operating System"; Text[100])
+        {
+            Caption = 'Operating System';
+            DataClassification = EndUserPseudonymousIdentifiers;
+            Editable = false;
+        }
+        field(13; "Device Type"; Text[30])
+        {
+            Caption = 'Device Type';
+            DataClassification = EndUserPseudonymousIdentifiers;
+            Editable = false;
+        }
+        field(14; "User Agent"; Text[500])
+        {
+            Caption = 'User Agent';
+            DataClassification = EndUserPseudonymousIdentifiers;
+            Editable = false;
+        }
     }
 
     keys

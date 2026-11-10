@@ -63,6 +63,15 @@ page 58159 "Meeting Plan Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Poll Deadline"; Rec."Poll Deadline")
+                {
+                    ApplicationArea = All;
+                    Editable = Rec."Voting Status" <> Rec."Voting Status"::Closed;
+                }
+                field("Hide Vote Count"; Rec."Hide Vote Count")
+                {
+                    ApplicationArea = All;
+                }
                 field("Poll Opened At"; Rec."Poll Opened At")
                 {
                     ApplicationArea = All;
@@ -124,6 +133,36 @@ page 58159 "Meeting Plan Card"
                 trigger OnAction()
                 begin
                     Rec.ClosePoll();
+                    CurrPage.Update(false);
+                end;
+            }
+            action(HideVoteCount)
+            {
+                Caption = 'Hide Vote Count';
+                ApplicationArea = All;
+                Image = Reject;
+                Enabled = not Rec."Hide Vote Count";
+                ToolTip = 'Members on the portal will no longer see how many votes each date has.';
+
+                trigger OnAction()
+                begin
+                    Rec.Validate("Hide Vote Count", true);
+                    Rec.Modify(true);
+                    CurrPage.Update(false);
+                end;
+            }
+            action(ShowVoteCount)
+            {
+                Caption = 'Show Vote Count';
+                ApplicationArea = All;
+                Image = View;
+                Enabled = Rec."Hide Vote Count";
+                ToolTip = 'Members on the portal can see how many votes each date has.';
+
+                trigger OnAction()
+                begin
+                    Rec.Validate("Hide Vote Count", false);
+                    Rec.Modify(true);
                     CurrPage.Update(false);
                 end;
             }
@@ -194,4 +233,10 @@ page 58159 "Meeting Plan Card"
 }
         }
     }
+    trigger OnOpenPage()
+    var
+        DeadlineEnforcer: Codeunit "Resolution Deadline Enforcer";
+    begin
+        DeadlineEnforcer.CloseOverdueMeetingPlans();
+    end;
 }

@@ -32,6 +32,27 @@ page 58161 "Meeting Date Polls Subform"
                 {
                     ApplicationArea = All;
                 }
+                field("Browser"; Rec."Browser")
+                {
+                    ApplicationArea = All;
+                }
+                field("Operating System"; Rec."Operating System")
+                {
+                    ApplicationArea = All;
+                }
+                field("Device Type"; Rec."Device Type")
+                {
+                    ApplicationArea = All;
+                }
+                field("IP Address"; Rec."IP Address")
+                {
+                    ApplicationArea = All;
+                }
+                field("User Agent"; Rec."User Agent")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
             }
         }
     }
