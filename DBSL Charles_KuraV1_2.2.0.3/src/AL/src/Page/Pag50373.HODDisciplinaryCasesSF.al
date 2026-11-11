@@ -93,9 +93,7 @@ page 50374 "HOD Disciplinary Cases SF"
                 {
                     ApplicationArea = Basic;
                     Image = Reminder;
-                    Promoted = true;
-                    PromotedIsBig = true;
-
+                   
                     trigger OnAction()
                     var
                         DocumentCount: integer;

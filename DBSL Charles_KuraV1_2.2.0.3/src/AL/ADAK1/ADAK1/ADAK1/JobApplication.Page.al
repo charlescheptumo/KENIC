@@ -34,7 +34,7 @@ Page 69672 "Job Application"
 
                     trigger OnValidate()
                     begin
-                        CopyLinksFromCandidate();
+                        CopyLinksFromCandidate1();
                     end;
                 }
                 field("Vacancy Id"; Rec."Vacancy Id")
@@ -653,7 +653,7 @@ Page 69672 "Job Application"
 
     end;
 
-    procedure CopyLinksFromCandidate()
+    procedure CopyLinksFromCandidate1()
     var
         SourceRecordLink: Record "Record Link";
         TargetRecordLink: Record "Record Link";

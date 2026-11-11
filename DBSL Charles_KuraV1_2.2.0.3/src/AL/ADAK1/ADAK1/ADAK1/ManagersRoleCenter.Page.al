@@ -25,7 +25,6 @@ Page 65131 "Manager's  Role Center"
                 //  AccessByPermission = TableData "Assisted Setu = "=I;
                 ApplicationArea = Basic, Suite;
                 Caption = '';
-                ToolTip = 'Specifies the view of your business assistance';
             }
             part(Control7; "My Accounts")
             {

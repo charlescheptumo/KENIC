@@ -1669,7 +1669,6 @@ page 60002 "HR Role Center"
                     group("Welfare Management")
                     {
                         Caption = 'Welfare Management';
-                        Image = HumanResources;
                         action("Request Welfare Membership")
                         {
                             ApplicationArea = Basic;

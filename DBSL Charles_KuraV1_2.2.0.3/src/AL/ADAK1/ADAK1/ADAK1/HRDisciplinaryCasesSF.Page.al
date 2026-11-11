@@ -502,9 +502,7 @@ Page 69203 "HR Disciplinary Cases SF"
                     ApplicationArea = All;
                     Caption = 'Attach Document';
                     Image = Attach;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
+                  
                     ToolTip = 'Upload supporting documents for this disciplinary case to SharePoint.';
 
                     trigger OnAction()

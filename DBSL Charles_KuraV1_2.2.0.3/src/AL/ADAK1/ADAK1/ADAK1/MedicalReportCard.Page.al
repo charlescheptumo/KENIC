@@ -11,7 +11,7 @@ Page 69760 "Medical Report Card"
         {
             group(General)
             {
-                Editable = Editable;
+               // Editable = Editable;
                 field("Document No."; Rec."Document No.")
                 {
                     ApplicationArea = Basic;

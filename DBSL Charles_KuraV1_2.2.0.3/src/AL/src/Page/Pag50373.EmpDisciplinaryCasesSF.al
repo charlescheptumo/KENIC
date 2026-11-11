@@ -105,8 +105,7 @@ page 50373 "Emp Disciplinary Cases SF"
                 {
                     ApplicationArea = Basic;
                     Image = Reminder;
-                    Promoted = true;
-                    PromotedIsBig = true;
+
                     Caption = 'Send Response to HR';
 
                     trigger OnAction()
@@ -138,8 +137,7 @@ page 50373 "Emp Disciplinary Cases SF"
                 {
                     ApplicationArea = Basic;
                     Image = Close;
-                    Promoted = true;
-                    PromotedIsBig = true;
+
                     Caption = 'Appeal Internally';
 
                     trigger OnAction()
@@ -181,8 +179,6 @@ page 50373 "Emp Disciplinary Cases SF"
                 {
                     ApplicationArea = Basic;
                     Image = Close;
-                    Promoted = true;
-                    PromotedIsBig = true;
                     Caption = 'Appeal Externally';
 
                     trigger OnAction()
