@@ -307,7 +307,7 @@ Page 65131 "Manager's  Role Center"
                     ApplicationArea = Basic, Suite;
                     Caption = 'Balance Sheet';
                     Image = "Report";
-                    RunObject = Codeunit "Run Template Balance Sheet";
+                    RunObject = Page "Financial Reports"; // BC 29: Run Template codeunits removed
                     ToolTip = 'Open a spreadsheet that shows your company''s assets, liabilities, and equity.';
                 }
                 action(ExcelTemplateIncomeStmt)
@@ -315,7 +315,7 @@ Page 65131 "Manager's  Role Center"
                     ApplicationArea = Basic, Suite;
                     Caption = 'Income Statement';
                     Image = "Report";
-                    RunObject = Codeunit "Run Template Income Stmt.";
+                    RunObject = Page "Financial Reports"; // BC 29: Run Template codeunits removed
                     ToolTip = 'Open a spreadsheet that shows your company''s income and expenses.';
                 }
                 action(ExcelTemplateCashFlowStmt)
@@ -323,7 +323,7 @@ Page 65131 "Manager's  Role Center"
                     ApplicationArea = Basic, Suite;
                     Caption = 'Cash Flow Statement';
                     Image = "Report";
-                    RunObject = Codeunit "Run Template CashFlow Stmt.";
+                    RunObject = Page "Financial Reports"; // BC 29: Run Template codeunits removed
                     ToolTip = 'Open a spreadsheet that shows how changes in balance sheet accounts and income affect the company''s cash holdings.';
                 }
                 action(ExcelTemplateTrialBalance)

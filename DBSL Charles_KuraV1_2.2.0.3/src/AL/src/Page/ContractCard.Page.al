@@ -489,13 +489,32 @@ Page 75284 "Contract Card"
                     PromotedIsBig = true;
                     ShortCutKey = 'F7';
                     ToolTip = 'View statistical information, such as the value of posted entries, for the record.';
+                    RunObject = Page "Purchase Order Statistics";
+                    RunPageOnRec = true;
 
-                    trigger OnAction()
-                    begin
-                        Rec.OpenPurchaseOrderStatistics;
-                        PurchCalcDiscByType.ResetRecalculateInvoiceDisc(Rec);
-                    end;
+                    // trigger OnAction()
+                    // begin
+                    //     Rec.OpenPurchaseOrderStatistics;
+                    //     PurchCalcDiscByType.ResetRecalculateInvoiceDisc(Rec);
+                    // end;
                 }
+                // action(Statistics)
+                // {
+                //     ApplicationArea = Suite;
+                //     Caption = 'Statistics';
+                //     Image = Statistics;
+                //     Promoted = true;
+                //     PromotedCategory = Category8;
+                //     PromotedIsBig = true;
+                //     ShortCutKey = 'F7';
+                //     ToolTip = 'View statistical information, such as the value of posted entries, for the record.';
+
+                //     trigger OnAction()
+                //     begin
+                //         Rec.OpenPurchaseOrderStatistics;
+                //         PurchCalcDiscByType.ResetRecalculateInvoiceDisc(Rec);
+                //     end;
+                // }
                 action(Card)
                 {
                     ApplicationArea = Suite;
