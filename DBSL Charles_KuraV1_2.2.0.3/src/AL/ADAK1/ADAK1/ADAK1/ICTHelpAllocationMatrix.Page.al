@@ -63,7 +63,7 @@ Page 56219 "ICT Help Allocation Matrix"
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies if a user is a time sheet administrator. A time sheet administrator can access any time sheet and then edit, change, or delete it.';
                 }
-                field("Employee No."; Rec."Employee No.")
+                field("Employee No."; Rec."Employee No")
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Employee No. field.';
