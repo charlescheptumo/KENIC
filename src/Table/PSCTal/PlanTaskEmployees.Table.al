@@ -26,7 +26,7 @@ Table 80268 "Plan Task Employees"
                 UserSetup.SetRange("User ID", UserId);
                 if UserSetup.FindFirst then
                     Employees.Reset;
-                Employees.SetRange("No.", UserSetup."Employee No.");
+                Employees.SetRange("No.", UserSetup."Employee No");
                 Employees.SetRange("Chief Executive Officer", true);
                 if not Employees.FindFirst then begin
 

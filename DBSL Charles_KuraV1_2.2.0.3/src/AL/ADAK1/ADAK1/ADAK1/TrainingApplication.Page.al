@@ -452,7 +452,7 @@ Page 69283 "Training Application"
                 //             ImprestReq."Shortcut Dimension 2 Code":=TrainingPart."Global Dimension 2 Code";
                 //             ImprestReq."Payment Narration":=TrainingRequest.Description;
                 //             UserSetup.Reset;
-                //             UserSetup.SetRange("Employee No.",ImprestReq."Account No.");
+                //             UserSetup.SetRange("Employee No",ImprestReq."Account No.");
                 //             if UserSetup.FindSet then begin
                 //               ImprestReq."Created By":=UserSetup."User ID";
                 //             end;
@@ -472,7 +472,7 @@ Page 69283 "Training Application"
                 //         until TrainingPart.Next=0;
                 //         Message(Text001);
                 //         UserSetup.Reset;
-                //         UserSetup.SetRange("Employee No.",TrainingPart."Employee Code");
+                //         UserSetup.SetRange("Employee No",TrainingPart."Employee Code");
                 //         if UserSetup.FindSet then
                 //          Email:=UserSetup."E-Mail";
 

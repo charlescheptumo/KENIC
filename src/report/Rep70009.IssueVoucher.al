@@ -459,7 +459,7 @@ Report 70009 "Issue Voucher"
                             if UserSetup.Get(Approver1[1]) then begin
                                 UserSetup.CalcFields(Picture);
 
-                                ENo := UserSetup."Employee No.";
+                                ENo := UserSetup."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 JOBID.Reset;
@@ -472,7 +472,7 @@ Report 70009 "Issue Voucher"
                             ApproverDate[2] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup1.Get(Approver1[2]) then begin
                                 UserSetup1.CalcFields(Picture);
-                                ENo := UserSetup1."Employee No.";
+                                ENo := UserSetup1."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 HODDesignation := Emp."Job Title";
@@ -487,7 +487,7 @@ Report 70009 "Issue Voucher"
                             ApproverDate[3] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup2.Get(Approver1[3]) then begin
                                 UserSetup2.CalcFields(Picture);
-                                ENo := UserSetup2."Employee No.";
+                                ENo := UserSetup2."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 JOBID.Reset;
@@ -501,7 +501,7 @@ Report 70009 "Issue Voucher"
                             ApproverDate[4] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup3.Get(Approver1[4]) then begin
                                 UserSetup3.CalcFields(Picture);
-                                ENo := UserSetup3."Employee No.";
+                                ENo := UserSetup3."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 JOBID.Reset;
@@ -533,7 +533,7 @@ Report 70009 "Issue Voucher"
                 // if UserSetup5.Find('-') then begin
                 //     UserSetup5.CalcFields(Picture);
                 //     PostedByName := UserSetup5."Employee Name";
-                //     if Emp.Get(UserSetup5."Employee No.") then
+                //     if Emp.Get(UserSetup5."Employee No") then
                 //     IssueDesgination := Emp."Job Title";
                 // end;    
                 UserSetup5.Reset;
@@ -541,7 +541,7 @@ Report 70009 "Issue Voucher"
                 if UserSetup5.Find('-') then begin
                     UserSetup5.CalcFields(Picture);
                     PostedByName := UserSetup5."Employee Name";
-                    if Emp.Get(UserSetup5."Employee No.") then
+                    if Emp.Get(UserSetup5."Employee No") then
                         IssueDesgination := Emp."Job Title";
                 end;
             end;

@@ -340,7 +340,7 @@ table 57118 "Compliance Obligation"
 
 
         if UserSetup.Get(UserId()) then
-            if Employee.Get(UserSetup."Employee No.") then begin
+            if Employee.Get(UserSetup."Employee No") then begin
                 Rec."Assigned By Employee No." := Employee."No.";
                 Rec."Assigned By Employee Name" := Employee.FullName();
                 Rec."Assigned By Email" := Employee."E-Mail";

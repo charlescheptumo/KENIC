@@ -276,7 +276,7 @@
 //         Usersetup.SetRange("User ID", Rec."Created By");
 //         if Usersetup.FindSet then begin
 
-//             Rec."Account No." := Usersetup."Employee No.";
+//             Rec."Account No." := Usersetup."Employee No";
 //             Rec."Account Name" := Usersetup."Employee Name";
 //         end;
 

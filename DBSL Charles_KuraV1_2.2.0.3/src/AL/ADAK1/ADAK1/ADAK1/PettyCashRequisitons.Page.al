@@ -443,7 +443,7 @@ Page 57146 "Petty Cash Requisitons"
         Rec."Document Type" := Rec."document type"::"Petty Cash";
 
         if USersetup.Get(UserId) then begin
-            Rec."Account No." := USersetup."Employee No.";
+            Rec."Account No." := USersetup."Employee No";
             Rec."Account Name" := USersetup."Employee Name";
             Rec.Payee := Rec."Account Name";
         end;

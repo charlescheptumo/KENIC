@@ -2213,7 +2213,7 @@ Table 57000 "payments"
                     "Created By" := UserId;
                     if "Account No." <> '' then begin
                         UserSetup.Reset();
-                        UserSetup.SetRange("Employee No.", "Account No.");
+                        UserSetup.SetRange("Employee No", "Account No.");
                         if UserSetup.FindFirst() then
                             "Created By" := UserSetup."User ID";
                     end;
@@ -2260,7 +2260,7 @@ Table 57000 "payments"
                 Error('%1 is not defined under the User Setup, Please check!', UserId);
             if UserSetup.Get(UserId) then begin
                 UserSetup.TestField(UserSetup."Resource No");
-                UserSetup.TestField(UserSetup."Employee No.");
+                UserSetup.TestField(UserSetup."Employee No");
                 UserSetup.TestField(UserSetup."Imprest Account");
                 UserSetup.TestField(UserSetup."Employee Name");
                 //"Account Type":="Account Type"::Customer;
@@ -2277,11 +2277,11 @@ Table 57000 "payments"
                 Error('%1 is not defined under the User Setup, Please check!', UserId);
             if UserSetup.Get(UserId) then begin
                 //UserSetup.TESTFIELD(UserSetup."Resource No");
-                //UserSetup.TESTFIELD(UserSetup."Employee No.");
+                //UserSetup.TESTFIELD(UserSetup."Employee No");
                 //UserSetup.TESTFIELD(UserSetup."Imprest Account");
                 //UserSetup.TESTFIELD(UserSetup."Employee Name");
                 //"Account Type":="Account Type"::Employee;
-                //"Account No.":=UserSetup."Employee No.";
+                //"Account No.":=UserSetup."Employee No";
 
                 EmployeePaymentInformation.Reset;
                 EmployeePaymentInformation.SetRange(EmployeePaymentInformation."Employee No", "Account No.");

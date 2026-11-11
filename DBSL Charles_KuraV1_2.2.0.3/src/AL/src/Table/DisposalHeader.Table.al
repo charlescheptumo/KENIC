@@ -202,12 +202,12 @@ Table 70047 "Disposal Header"
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then
             "Created By" := UserId;
-        "Employee No" := UserSetup."Employee No.";
+        "Employee No" := UserSetup."Employee No";
         "Employee Name" := UserSetup."Employee Name";
         "Created Date" := Today;
         Date := Today;
         Employees.Reset;
-        Employees.SetRange("No.", UserSetup."Employee No.");
+        Employees.SetRange("No.", UserSetup."Employee No");
         if Employees.FindSet then
             "Global Dimension 1 Code" := Employees."Global Dimension 1 Code";
         "Global Dimension 2 Code" := Employees."Global Dimension 2 Code";

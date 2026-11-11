@@ -194,7 +194,7 @@ Table 69164 "Employee Absentism"
 
         /*IF UserSetup.GET(USERID) THEN
         BEGIN
-         "Employee No":=UserSetup."Employee No.";
+         "Employee No":=UserSetup."Employee No";
           VALIDATE("Employee No");
         END;
         FindMaturityDate;

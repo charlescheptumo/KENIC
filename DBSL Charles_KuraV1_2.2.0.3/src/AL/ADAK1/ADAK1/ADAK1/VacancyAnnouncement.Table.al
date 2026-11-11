@@ -287,9 +287,9 @@ Table 69630 "Vacancy Announcement"
         "Created Time" := Time;
         UserSetup.Reset;
         if UserSetup.Get(UserId) then begin
-            UserSetup.TestField("Employee No.");
+            UserSetup.TestField("Employee No");
             Employee.Reset;
-            Employee.SetRange("No.", UserSetup."Employee No.");
+            Employee.SetRange("No.", UserSetup."Employee No");
             if Employee.FindFirst then begin
                 "Staff Name" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
                 "HR Officer Staff No." := Employee."No.";
@@ -305,7 +305,7 @@ Table 69630 "Vacancy Announcement"
             UserSetup.RESET;
             UserSetup.SETRANGE("User ID",USERID);
             IF UserSetup.FINDFIRST THEN BEGIN
-              "HR Officer Staff No.":=UserSetup."Employee No.";
+              "HR Officer Staff No.":=UserSetup."Employee No";
               "Staff Name":=UserSetup."Employee Name";
               Department:=UserSetup."Responsibility Center";
               Region:=UserSetup."Region Code";

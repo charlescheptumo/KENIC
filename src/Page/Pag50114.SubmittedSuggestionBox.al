@@ -99,7 +99,7 @@ page 50114 "Submitted Suggestion Box"
                     if UserSet.Find('-') then begin
                         Rec."Admin Email" := UserSet."E-Mail";
                         if Rec."Admin Email" = '' then
-                            Error('Kindly insert the email for the employee', UserSet."Employee No.");
+                            Error('Kindly insert the email for the employee', UserSet."Employee No");
                     end;
                     Recepient := Rec."Admin Email";
 

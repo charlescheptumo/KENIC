@@ -753,7 +753,7 @@ Report 57097 "Good Receive Note"
                 ApproverDate[1]:=ApprovalEntries."Date-Time Sent for Approval";
                  IF UserSetup.GET(Approver1[1]) THEN
                     UserSetup.CALCFIELDS(Picture);
-                       ENo1:=UserSetup."Employee No.";
+                       ENo1:=UserSetup."Employee No";
                         IF Emp.GET(ENo1) THEN
                           DesignationID1:=Emp."Job ID";
                             IF JOBID.GET(DesignationID1) THEN
@@ -763,7 +763,7 @@ Report 57097 "Good Receive Note"
                 ApproverDate[2]:=ApprovalEntries."Last Date-Time Modified";
                  IF UserSetup1.GET(Approver2[2]) THEN
                     UserSetup1.CALCFIELDS(Picture);
-                    ENo2:=UserSetup1."Employee No.";
+                    ENo2:=UserSetup1."Employee No";
                         IF Emp.GET(ENo2) THEN
                           DesignationID2:=Emp."Job ID";
                             IF JOBID.GET(DesignationID2) THEN
@@ -775,7 +775,7 @@ Report 57097 "Good Receive Note"
                 ApproverDate[3]:=ApprovalEntries."Last Date-Time Modified";
                  IF UserSetup2.GET(Approver2[3]) THEN
                     UserSetup2.CALCFIELDS(Picture);
-                    ENo3:=UserSetup2."Employee No.";
+                    ENo3:=UserSetup2."Employee No";
                         IF Emp.GET(ENo3) THEN
                           DesignationID3:=Emp."Job ID";
                             IF JOBID.GET(DesignationID3) THEN
@@ -787,7 +787,7 @@ Report 57097 "Good Receive Note"
                 ApproverDate[4]:=ApprovalEntries."Last Date-Time Modified";
                  IF UserSetup3.GET(Approver2[4]) THEN
                     UserSetup3.CALCFIELDS(Picture);
-                    ENo4:=UserSetup3."Employee No.";
+                    ENo4:=UserSetup3."Employee No";
                         IF Emp.GET(ENo4) THEN
                           DesignationID4:=Emp."Job ID";
                             IF JOBID.GET(DesignationID4) THEN
@@ -814,7 +814,7 @@ Report 57097 "Good Receive Note"
                             if UserSetup.Get(Approver1[1]) then begin
                                 UserSetup.CalcFields(Picture);
 
-                                ENo := UserSetup."Employee No.";
+                                ENo := UserSetup."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 /*JOBID.RESET;
@@ -827,7 +827,7 @@ Report 57097 "Good Receive Note"
                             ApproverDate[2] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup1.Get(Approver1[2]) then begin
                                 UserSetup1.CalcFields(Picture);
-                                ENo := UserSetup1."Employee No.";
+                                ENo := UserSetup1."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 /*JOBID.RESET;
@@ -841,7 +841,7 @@ Report 57097 "Good Receive Note"
                             ApproverDate[3] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup2.Get(Approver1[3]) then begin
                                 UserSetup2.CalcFields(Picture);
-                                ENo := UserSetup2."Employee No.";
+                                ENo := UserSetup2."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 /*JOBID.RESET;
@@ -855,7 +855,7 @@ Report 57097 "Good Receive Note"
                             ApproverDate[4] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup3.Get(Approver1[4]) then begin
                                 UserSetup3.CalcFields(Picture);
-                                ENo := UserSetup3."Employee No.";
+                                ENo := UserSetup3."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 /* JOBID.RESET;

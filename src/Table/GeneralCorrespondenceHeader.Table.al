@@ -201,7 +201,7 @@ Table 50080 "General Correspondence Header"
                 UserSetup.Reset();
                 UserSetup.SetRange("User ID", "Created By");
                 if UserSetup.find('-') then begin
-                    "Creator No" := UserSetup."Employee No.";
+                    "Creator No" := UserSetup."Employee No";
                 end;
             end;
         }
@@ -786,9 +786,9 @@ Table 50080 "General Correspondence Header"
         UserSetup.SETRANGE(UserSetup."User ID","Created By");
         IF UserSetup.FINDFIRST THEN BEGIN
           IF NOT UserSetup."Portal User" THEN BEGIN
-          UserSetup.TESTFIELD("Employee No.");
+          UserSetup.TESTFIELD("Employee No");
           Employee.RESET;
-          Employee.SETRANGE(Employee."No.",UserSetup."Employee No.");
+          Employee.SETRANGE(Employee."No.",UserSetup."Employee No");
           IF Employee.FINDFIRST THEN BEGIN
             "Sender No":=Employee."No.";
             "Sender Name":=Employee."First Name"+' ' +Employee."Middle Name"+' '+Employee."Last Name";
@@ -806,9 +806,9 @@ Table 50080 "General Correspondence Header"
         UserSetup.SetRange(UserSetup."User ID", "Created By");
         if UserSetup.FindFirst() then begin
             if not UserSetup."Portal User" then begin
-                UserSetup.TestField("Employee No.");
+                UserSetup.TestField("Employee No");
                 Employee.Reset;
-                Employee.SetRange(Employee."No.", UserSetup."Employee No.");
+                Employee.SetRange(Employee."No.", UserSetup."Employee No");
                 if Employee.FindFirst() then begin
                     "Creator No" := Employee."No.";
                     "Creator Name" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
@@ -823,12 +823,12 @@ Table 50080 "General Correspondence Header"
         end else begin
             UserSetup.Reset;
             UserSetup.SetRange("Portal User", true);
-            UserSetup.SetRange("Employee No.", "Sender No");
+            UserSetup.SetRange("Employee No", "Sender No");
             if UserSetup.FindFirst() then begin
                 begin
-                    UserSetup.TestField("Employee No.");
+                    UserSetup.TestField("Employee No");
                     Employee.Reset;
-                    Employee.SetRange(Employee."No.", UserSetup."Employee No.");
+                    Employee.SetRange(Employee."No.", UserSetup."Employee No");
                     if Employee.FindFirst() then begin
                         "Creator No" := Employee."No.";
                         "Creator Name" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";

@@ -99,7 +99,7 @@ Page 60094 "Escalated Tickets List"
         if UserSetup.FindFirst then begin
             if UserSetup."System Admin" = true or UserSetup."DCS Accreditation" = true or UserSetup."Authorize Tickets" = true then
                 exit else
-                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No.");
+                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No");
         end;
     end;
 
@@ -120,7 +120,7 @@ Page 60094 "Escalated Tickets List"
         if UserSetup.FindFirst then begin
             if UserSetup."System Admin" = true or UserSetup."DCS Accreditation" = true or UserSetup."Authorize Tickets" = true then
                 exit else
-                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No.");
+                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No");
         end;
     end;
 

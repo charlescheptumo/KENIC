@@ -84,7 +84,7 @@ Page 60095 "Assigned General List"
         // UserSetup.RESET;
         // UserSetup.SETRANGE("User ID",USERID);
         // IF UserSetup.FINDFIRST THEN
-        // SETRANGE("Assigned Officer No.",UserSetup."Employee No.");
+        // SETRANGE("Assigned Officer No.",UserSetup."Employee No");
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -102,7 +102,7 @@ Page 60095 "Assigned General List"
         // UserSetup.RESET;
         // UserSetup.SETRANGE("User ID",USERID);
         // IF UserSetup.FINDFIRST THEN
-        // SETRANGE("Assigned Officer No.",UserSetup."Employee No.");
+        // SETRANGE("Assigned Officer No.",UserSetup."Employee No");
     end;
 
     var

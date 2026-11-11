@@ -130,13 +130,15 @@ TableExtension 50018 "User Setup Ext" extends "User Setup"
         field(50030; "Unlimited PV Amount Approval"; Boolean)
         {
         }
-        field(57000; "Employee No."; Code[20])
+        field(57000; "Employee No"; Code[20])
         {
+            // renamed from "Employee No." (BC 29: a Microsoft app now adds "Employee No." to User Setup)
+            Caption = 'Employee No.';
             TableRelation = Employee;
 
             trigger OnValidate()
             begin
-                Emp.Get("Employee No.");
+                Emp.Get("Employee No");
                 "Employee Name" := Emp."First Name" + ' ' + Emp."Last Name";
                 Modify;
             end;
@@ -363,7 +365,7 @@ TableExtension 50018 "User Setup Ext" extends "User Setup"
         }
         field(70026; WorkStation; Text[50])
         {
-            CalcFormula = lookup(Employee.Workstation where("No." = field("Employee No.")));
+            CalcFormula = lookup(Employee.Workstation where("No." = field("Employee No")));
             FieldClass = FlowField;
             Editable = false;
         }

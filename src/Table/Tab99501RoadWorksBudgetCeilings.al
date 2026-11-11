@@ -224,7 +224,7 @@ table 99501 "Road Works Budget Ceilings"
         UserSetup.RESET;
         UserSetup.SETRANGE(UserSetup."User ID", "Created By");
         IF UserSetup.FINDSET THEN BEGIN
-            "Employee No" := UserSetup."Employee No.";
+            "Employee No" := UserSetup."Employee No";
             "Employee Name" := UserSetup."Employee Name";
             "Region Code" := UserSetup."Region Code";
         END;

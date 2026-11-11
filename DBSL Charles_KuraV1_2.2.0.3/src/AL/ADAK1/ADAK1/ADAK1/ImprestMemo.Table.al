@@ -991,7 +991,7 @@ Table 57008 "Imprest Memo"
             if UserSetup.Get(UserId) then
                 if UserSetup."Portal User" then begin
                     UserSetup1.reset();
-                    UserSetup1.SetRange("Employee No.", Rec.Requestor);
+                    UserSetup1.SetRange("Employee No", Rec.Requestor);
                     if UserSetup1.FindFirst() then
                         if not UserSetup1."Allow Create Imprest" then
                             error(Text005);
@@ -1076,7 +1076,7 @@ Table 57008 "Imprest Memo"
         //     ERROR('%1 is not defined under the User Setup, Please check!', USERID);
         // IF UserSetup.GET(USERID) THEN BEGIN
         //     UserSetup.TESTFIELD(UserSetup."Resource No");
-        //     UserSetup.TESTFIELD(UserSetup."Employee No.");
+        //     UserSetup.TESTFIELD(UserSetup."Employee No");
         //     //UserSetup.TESTFIELD(UserSetup."Imprest Account");
         //     //UserSetup.TESTFIELD(UserSetup."Employee Name");
         //     "User ID" := USERID;

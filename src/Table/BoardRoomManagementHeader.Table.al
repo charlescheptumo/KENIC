@@ -114,7 +114,7 @@ Table 50030 "Board Room Management Header"
         "Requestor ID" := UserId;
         // if UserId <> 'CUEHQ\ADMINISTRATOR' then begin
         //     if Usersetup.Get(UserId) then begin
-        //         Rec.Validate("Employee No", Usersetup."Employee No.");
+        //         Rec.Validate("Employee No", Usersetup."Employee No");
         //     end;
         // end;
     end;

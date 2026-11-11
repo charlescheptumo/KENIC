@@ -61,7 +61,7 @@ Table 72378 "Project Approval Setup Matrix"
                 UserSetup.Reset;
                 UserSetup.SetRange(UserSetup."User ID", "Approver ID");
                 if UserSetup.FindSet then begin
-                    "Employee No." := UserSetup."Employee No.";
+                    "Employee No." := UserSetup."Employee No";
                     Validate("Employee No.");
                 end;
             end;

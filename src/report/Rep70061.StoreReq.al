@@ -437,7 +437,7 @@ Report 70061 "Store Req"
                             if UserSetup.Get(Approver1[1]) then begin
                                 UserSetup.CalcFields(Picture);
 
-                                ENo := UserSetup."Employee No.";
+                                ENo := UserSetup."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 JOBID.Reset;
@@ -450,7 +450,7 @@ Report 70061 "Store Req"
                             ApproverDate[2] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup1.Get(Approver1[2]) then begin
                                 UserSetup1.CalcFields(Picture);
-                                ENo := UserSetup1."Employee No.";
+                                ENo := UserSetup1."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 JOBID.Reset;
@@ -464,7 +464,7 @@ Report 70061 "Store Req"
                             ApproverDate[3] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup2.Get(Approver1[3]) then begin
                                 UserSetup2.CalcFields(Picture);
-                                ENo := UserSetup2."Employee No.";
+                                ENo := UserSetup2."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 JOBID.Reset;
@@ -478,7 +478,7 @@ Report 70061 "Store Req"
                             ApproverDate[4] := ApprovalEntries."Last Date-Time Modified";
                             if UserSetup3.Get(Approver1[4]) then begin
                                 UserSetup3.CalcFields(Picture);
-                                ENo := UserSetup3."Employee No.";
+                                ENo := UserSetup3."Employee No";
                                 if Emp.Get(ENo) then
                                     DesignationID := Emp."Job ID";
                                 JOBID.Reset;

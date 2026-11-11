@@ -4375,9 +4375,9 @@ Codeunit 72000 "RMS Management"
         UserSetup.RESET;
         UserSetup.SETRANGE(UserSetup."User ID", RAMWorkplanHeader."Assign To");
         IF UserSetup.FINDSET THEN BEGIN
-            UserSetup.TESTFIELD("Employee No.");
+            UserSetup.TESTFIELD("Employee No");
             Employee.RESET;
-            Employee.SETRANGE(Employee."No.", UserSetup."Employee No.");
+            Employee.SETRANGE(Employee."No.", UserSetup."Employee No");
             IF Employee.FINDSET THEN BEGIN
                 RequesterName := (Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name");
                 CustEmail := Employee."Company E-Mail";
@@ -4464,9 +4464,9 @@ Codeunit 72000 "RMS Management"
         UserSetup.RESET;
         UserSetup.SETRANGE(UserSetup."User ID", RAMWorkplanHeader."Created By");
         IF UserSetup.FINDSET THEN BEGIN
-            UserSetup.TESTFIELD("Employee No.");
+            UserSetup.TESTFIELD("Employee No");
             Employee.RESET;
-            Employee.SETRANGE(Employee."No.", UserSetup."Employee No.");
+            Employee.SETRANGE(Employee."No.", UserSetup."Employee No");
             IF Employee.FINDSET THEN BEGIN
                 RequesterName := (Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name");
                 CustEmail := Employee."Company E-Mail";
@@ -5443,7 +5443,7 @@ Codeunit 72000 "RMS Management"
         UserSetup.SETRANGE(UserSetup."User ID", InternalCorrespondenceHeader."Created By");
         IF UserSetup.FINDSET THEN BEGIN
             Emp.RESET;
-            Emp.SETRANGE(Emp."No.", UserSetup."Employee No.");
+            Emp.SETRANGE(Emp."No.", UserSetup."Employee No");
             IF Emp.FINDSET THEN
                 EmpName := Emp."First Name" + ' ' + Emp."Middle Name" + ' ' + Emp."Last Name";
             SentMail := Emp."E-Mail";
@@ -5830,7 +5830,7 @@ Codeunit 72000 "RMS Management"
         UserSetup.SETRANGE(UserSetup."User ID", InternalCorrespondenceHeader."Created By");
         IF UserSetup.FINDSET THEN BEGIN
             Emp.RESET;
-            Emp.SETRANGE(Emp."No.", UserSetup."Employee No.");
+            Emp.SETRANGE(Emp."No.", UserSetup."Employee No");
             IF Emp.FINDSET THEN
                 EmpName := Emp."First Name" + ' ' + Emp."Middle Name" + ' ' + Emp."Last Name";
             SentMail := Emp."E-Mail";
@@ -6083,9 +6083,9 @@ Codeunit 72000 "RMS Management"
         UserSetup.RESET;
         UserSetup.SETRANGE(UserSetup."User ID", IncomingCorrespondenceHeader."Assign To");
         IF UserSetup.FINDSET THEN BEGIN
-            UserSetup.TESTFIELD("Employee No.");
+            UserSetup.TESTFIELD("Employee No");
             Employee.RESET;
-            Employee.SETRANGE(Employee."No.", UserSetup."Employee No.");
+            Employee.SETRANGE(Employee."No.", UserSetup."Employee No");
             IF Employee.FINDSET THEN BEGIN
                 RequesterName := (Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name");
                 CustEmail := Employee."Company E-Mail";
@@ -6137,9 +6137,9 @@ Codeunit 72000 "RMS Management"
         UserSetup.RESET;
         UserSetup.SETRANGE(UserSetup."User ID", IncomingCorrespondenceHeader."Assigned By");
         IF UserSetup.FINDSET THEN BEGIN
-            UserSetup.TESTFIELD("Employee No.");
+            UserSetup.TESTFIELD("Employee No");
             Employee.RESET;
-            Employee.SETRANGE(Employee."No.", UserSetup."Employee No.");
+            Employee.SETRANGE(Employee."No.", UserSetup."Employee No");
             IF Employee.FINDSET THEN BEGIN
                 RequesterName := (Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name");
                 CustEmail := Employee."Company E-Mail";

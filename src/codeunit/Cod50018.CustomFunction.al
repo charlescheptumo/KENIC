@@ -90,10 +90,10 @@ codeunit 50018 "Custom Function"
         if usersetup.get(UserId) then begin
             if not usersetup."Portal User" then begin
                 PurchaseHeader.Region := usersetup."Region Code";
-                PurchaseHeader."Request-By No." := usersetup."Employee No.";
+                PurchaseHeader."Request-By No." := usersetup."Employee No";
                 PurchaseHeader."Request-By Name" := usersetup."Employee Name";
                 PurchaseHeader."Location Code" := usersetup."Responsibility Center";
-                if Emp.Get(usersetup."Employee No.") then begin
+                if Emp.Get(usersetup."Employee No") then begin
                     PurchaseHeader.Validate("Directorate Code", Emp."Directorate Code");
                     PurchaseHeader.Validate("Department Code", Emp."Department Code");
                 end

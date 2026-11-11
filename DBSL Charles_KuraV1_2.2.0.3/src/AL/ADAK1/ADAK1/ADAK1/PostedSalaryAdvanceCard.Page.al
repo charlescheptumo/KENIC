@@ -141,7 +141,7 @@
 //         if Usersetup.FindSet then
 //         begin
 
-//           "Account No."  := Usersetup."Employee No.";
+//           "Account No."  := Usersetup."Employee No";
 //           "Account Name" := Usersetup."Employee Name";
 //         end;
 

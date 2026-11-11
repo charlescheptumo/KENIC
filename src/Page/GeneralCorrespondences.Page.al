@@ -101,7 +101,7 @@ Page 50185 "General Correspondences"
         /*IF UserSetup.GET("Created By") THEN BEGIN
           IF UserSetup."Portal User" THEN BEGIN
             IF UserSetup1.GET(USERID) THEN BEGIN
-             SETRANGE("Creator No",UserSetup1."Employee No.");
+             SETRANGE("Creator No",UserSetup1."Employee No");
               END;
             END;
           END;*/
@@ -113,7 +113,7 @@ Page 50185 "General Correspondences"
         /*IF UserSetup.GET("Created By") THEN BEGIN
           IF UserSetup."Portal User" THEN BEGIN
             IF UserSetup1.GET(USERID) THEN BEGIN
-             SETRANGE("Creator No",UserSetup1."Employee No.");
+             SETRANGE("Creator No",UserSetup1."Employee No");
               END;
             END;
           END;*/
@@ -125,7 +125,7 @@ Page 50185 "General Correspondences"
         /*IF UserSetup.GET("Created By") THEN BEGIN
           IF UserSetup."Portal User" THEN BEGIN
             IF UserSetup1.GET(USERID) THEN BEGIN
-             SETRANGE("Creator No",UserSetup1."Employee No.");
+             SETRANGE("Creator No",UserSetup1."Employee No");
               END;
             END;
           END;*/

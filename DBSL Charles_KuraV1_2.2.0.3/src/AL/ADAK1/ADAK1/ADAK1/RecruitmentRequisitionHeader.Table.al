@@ -440,9 +440,9 @@ Table 69619 "Recruitment Requisition Header"
 
         UserSetup.Reset;
         if UserSetup.Get(UserId) then begin
-            UserSetup.TestField("Employee No.");
+            UserSetup.TestField("Employee No");
             Employee.Reset;
-            Employee.SetRange("No.", UserSetup."Employee No.");
+            Employee.SetRange("No.", UserSetup."Employee No");
             if Employee.FindFirst then begin
                 "Requester Name" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
                 "Requester Staff No" := Employee."No.";

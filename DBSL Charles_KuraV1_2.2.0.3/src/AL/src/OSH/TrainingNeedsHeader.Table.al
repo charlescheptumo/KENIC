@@ -224,7 +224,7 @@ Table 69194 "Training Needs Header"
         UserSetup.Reset;
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindFirst then begin
-            "Employee No" := UserSetup."Employee No.";
+            "Employee No" := UserSetup."Employee No";
             Validate("Employee No");
             "Employee Name" := UserSetup."Employee Name";
         end

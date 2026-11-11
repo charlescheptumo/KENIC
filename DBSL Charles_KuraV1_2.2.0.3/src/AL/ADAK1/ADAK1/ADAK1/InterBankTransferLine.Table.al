@@ -200,7 +200,7 @@ Table 57025 "Inter Bank Transfer Line"
         // IF UserSetup.GET(USERID) THEN BEGIN
         // UserSetup.TESTFIELD(UserSetup."Purchase Resp. Ctr. Filter");
         // "Responsibility Center":=UserSetup."Purchase Resp. Ctr. Filter";
-        // IF Emp.GET(UserSetup."Employee No.") THEN BEGIN
+        // IF Emp.GET(UserSetup."Employee No") THEN BEGIN
         //  "Shortcut Dimension 1 Code":=Emp."Global Dimension 1 Code";
         //  //VALIDATE("Region Code");
         //  "Shortcut Dimension 2 Code":=Emp."Global Dimension 2 Code";
@@ -222,7 +222,7 @@ Table 57025 "Inter Bank Transfer Line"
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then begin
             Emp.Reset;
-            Emp.SetRange(Emp."No.", UserSetup."Employee No.");
+            Emp.SetRange(Emp."No.", UserSetup."Employee No");
             "Department Code" := Emp.Department;
             //MESSAGE("Department Code");
             if Emp.FindSet then begin

@@ -82,7 +82,7 @@ Page 50016 "Active Approval Delegations"
                         if UserSetup.Get(Rec."Current Approver ID") then begin
                             UserSetup.TestField("E-Mail");
                             SenderAddress := UserSetup."E-Mail";
-                            if Employee.Get(UserSetup."Employee No.") then
+                            if Employee.Get(UserSetup."Employee No") then
                                 SenderName := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
                         end;
 

@@ -452,8 +452,8 @@ Table 59003 "Transport Requisition"
         END;
     //
     IF UserSetup.GET(USERID) THEN BEGIN
-      "Requested By" := UserSetup."Employee No.";
-      "Employee No" := UserSetup."Employee No.";
+      "Requested By" := UserSetup."Employee No";
+      "Employee No" := UserSetup."Employee No";
       VALIDATE("Requested By");
       VALIDATE("Employee No");
     END

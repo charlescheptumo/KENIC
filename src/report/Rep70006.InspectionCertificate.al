@@ -222,7 +222,7 @@ Report 70006 "Inspection Certificate"
 
                 dataitem("User Setup"; "User Setup")
                 {
-                    DataItemLink = "Employee No." = field("Member No.");
+                    DataItemLink = "Employee No" = field("Member No.");
                     DataItemLinkReference = "IFS Tender Committee Member";
                     column(UserSignature; Picture)
                     {
@@ -301,7 +301,7 @@ Report 70006 "Inspection Certificate"
                     i := i + 1;
                     if i = 1 then begin
                         UserSetup1.RESET;
-                        UserSetup1.SETRANGE("Employee No.", "IFS Tender Committee Member"."Member No.");
+                        UserSetup1.SETRANGE("Employee No", "IFS Tender Committee Member"."Member No.");
                         if UserSetup1.FindSet then BEGIN
                             user1 := usersetup1."User ID";
                             if usersetup1.get(user1) then
@@ -313,7 +313,7 @@ Report 70006 "Inspection Certificate"
                     end;
                     if i = 2 then begin
                         UserSetup1.RESET;
-                        UserSetup1.SETRANGE("Employee No.", "IFS Tender Committee Member"."Member No.");
+                        UserSetup1.SETRANGE("Employee No", "IFS Tender Committee Member"."Member No.");
                         if UserSetup1.FindSet then BEGIN
                             user1 := usersetup1."User ID";
                             if usersetup1.get(user1) then
@@ -337,7 +337,7 @@ Report 70006 "Inspection Certificate"
             //                     i := i + 1;
             //                     if i = 1 then begin
             //                         UserSetup1.RESET;
-            //                         UserSetup1.SETRANGE("Employee No.", "IFS Tender Committee Member"."Member No.");
+            //                         UserSetup1.SETRANGE("Employee No", "IFS Tender Committee Member"."Member No.");
             //                         if UserSetup1.FindSet then BEGIN
             //                             user1 := usersetup1."User ID";
             //                             if usersetup1.get(user1) then

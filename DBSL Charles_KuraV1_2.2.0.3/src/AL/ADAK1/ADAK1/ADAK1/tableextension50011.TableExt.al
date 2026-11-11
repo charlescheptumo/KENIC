@@ -105,7 +105,7 @@ TableExtension 50011 "tableextension50011" extends "Sales Line"
     //Insert Employee Deatails
     IF UserSetup.GET(USERID) THEN  BEGIN
       Employee.RESET;
-      Employee.SETRANGE(Employee."No.",UserSetup."Employee No." );
+      Employee.SETRANGE(Employee."No.",UserSetup."Employee No" );
       IF Employee.FINDSET THEN BEGIN
           "Shortcut Dimension 2 Code":=Employee."Global Dimension 2 Code";
           "Shortcut Dimension 3 Code":=Employee."Department Code";

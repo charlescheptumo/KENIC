@@ -6,7 +6,7 @@ Query 55031 "HelpDeskAssignee"
     {
         dataitem(User_Setup; "User Setup")
         {
-            column(Employee_No; "Employee No.")
+            column(Employee_No; "Employee No")
             {
             }
             dataitem(ICT_Officers_Category_Mapping; "ICT Officers Category Mapping")

@@ -269,7 +269,7 @@ Page 80537 "Dept Workplan Rev Alignment"
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then begin
             Employee.Reset;
-            Employee.SetRange("No.", UserSetup."Employee No.");
+            Employee.SetRange("No.", UserSetup."Employee No");
             if Employee.FindSet then begin
                 Directorate := Employee."Directorate Code";
                 Department := Employee."Department Code";
@@ -298,7 +298,7 @@ Page 80537 "Dept Workplan Rev Alignment"
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then begin
             Employee.Reset;
-            Employee.SetRange("No.", UserSetup."Employee No.");
+            Employee.SetRange("No.", UserSetup."Employee No");
             if Employee.FindSet then begin
                 Directorate := Employee."Directorate Code";
                 Department := Employee."Department Code";

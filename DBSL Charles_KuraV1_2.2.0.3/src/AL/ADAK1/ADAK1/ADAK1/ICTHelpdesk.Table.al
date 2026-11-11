@@ -45,7 +45,7 @@ Table 56050 "ICT Helpdesk"
 
             //     if UserSetup.Get("Assigned To") then begin
             //         HrLeave.Reset;
-            //         HrLeave.SetRange(HrLeave."Employee No", UserSetup."Employee No.");
+            //         HrLeave.SetRange(HrLeave."Employee No", UserSetup."Employee No");
             //         HrLeave.SetFilter(HrLeave."Start Date", '<=%1', Today);
             //         //HrLeave.SETRANGE(HrLeave.Status,HrLeave.Status::Released);
             //         HrLeave.SetFilter(HrLeave."End Date", '>%1', Today);
@@ -474,7 +474,7 @@ Table 56050 "ICT Helpdesk"
             UserSetup.SetRange(UserSetup."User ID", UpperCase(UserId));
             if UserSetup.Find('-') then begin
                 Employee.Reset;
-                Employee.SetRange(Employee."No.", UserSetup."Employee No.");
+                Employee.SetRange(Employee."No.", UserSetup."Employee No");
                 if Employee.Find('-') then begin
                     // "Employee No" := Employee."No.";
                     "Requesting Officer" := UpperCase(UserId);

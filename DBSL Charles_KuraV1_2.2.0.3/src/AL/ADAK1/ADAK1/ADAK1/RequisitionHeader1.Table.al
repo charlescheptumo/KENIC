@@ -320,7 +320,7 @@ Table 70019 "Requisition Header1"
         "Raised by" := UserId;
         "Date of Use" := Today;
         if UsersRec.Get(UserId) then begin
-            if Empl.Get(UsersRec."Employee No.") then begin
+            if Empl.Get(UsersRec."Employee No") then begin
                 "Employee Code" := Empl."No.";
                 "Employee Name" := Empl."First Name" + ' ' + Empl."Last Name";
                 "Global Dimension 1 Code" := Empl."Global Dimension 1 Code";

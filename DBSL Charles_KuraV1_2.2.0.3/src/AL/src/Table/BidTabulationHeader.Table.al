@@ -459,7 +459,7 @@ Table 70181 "Bid Tabulation Header"
                 UserSetup.Reset;
                 UserSetup.SetRange("User ID", UserId);
                 if UserSetup.FindSet then
-                    "Raised By" := UserSetup."Employee No.";
+                    "Raised By" := UserSetup."Employee No";
                 Name := UserSetup."Employee Name";
             end;
         }

@@ -115,7 +115,7 @@ Page 60068 "HOD Tickets List"
                 //IF UserSetup."Authorize Tickets" = TRUE THEN
                 //OR UserSetup."DCS Accreditation"= TRUE
                 exit else
-                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No.");
+                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No");
 
         end;
     end;
@@ -138,7 +138,7 @@ Page 60068 "HOD Tickets List"
           IF UserSetup."System Admin" = TRUE OR UserSetup."DCS Accreditation"= TRUE OR UserSetup."Authorize Tickets" = TRUE THEN
             EXIT ELSE
         
-        SETRANGE("Assigned Officer No.",UserSetup."Employee No.");
+        SETRANGE("Assigned Officer No.",UserSetup."Employee No");
           END;
           */
 
@@ -149,7 +149,7 @@ Page 60068 "HOD Tickets List"
                 //IF UserSetup."Authorize Tickets" = TRUE THEN
                 //OR UserSetup."DCS Accreditation"= TRUE
                 exit else
-                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No.");
+                Rec.SetRange("Assigned Officer No.", UserSetup."Employee No");
 
         end;
 

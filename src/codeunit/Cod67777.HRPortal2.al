@@ -5075,7 +5075,7 @@ Codeunit 67777 "HRPortal2"
     //       helpdesk."Assigned Date":=Today();
     //       helpdesk."Assigned Time":=Time;
     //       helpdesk.Status:= helpdesk.Status::Assigned;
-    //       helpdesk."Assigned To EmpNo":= UserSetup."Employee No.";
+    //       helpdesk."Assigned To EmpNo":= UserSetup."Employee No";
 
 
     //       if helpdesk.Modify(true) then begin
@@ -5138,7 +5138,7 @@ Codeunit 67777 "HRPortal2"
     //       helpdesk.Status:= helpdesk.Status::Escalated;
     //       helpdesk."Escalated By":= helpdesk."Assigned To";
     //       helpdesk."Ascalation Details":= description;
-    //       helpdesk."Escalated To EmpNo":= UserSetup."Employee No.";
+    //       helpdesk."Escalated To EmpNo":= UserSetup."Employee No";
     //       if helpdesk.Modify(true) then begin
     //         //Notify the requester that the issue has been escalated
     //      ObjComInfo.Get;

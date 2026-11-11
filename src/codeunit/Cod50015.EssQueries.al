@@ -131,7 +131,7 @@ codeunit 50015 "EssQueries"
         tbl_userSetup.Reset();
         tbl_userSetup.SetRange("User ID", loginId);
         if tbl_userSetup.findset(true) then begin
-            data += 'success*' + tbl_userSetup."Employee No.";
+            data += 'success*' + tbl_userSetup."Employee No";
         end else begin
             data += 'danger*Sorry, we could not proceed. Request the system administrator to set you up in the user setup...';
 
@@ -144,7 +144,7 @@ codeunit 50015 "EssQueries"
         tbl_userSetup.Reset();
         if tbl_userSetup.findset() then begin
             repeat
-                data += Format(tbl_userSetup."User ID") + '*' + tbl_userSetup."Employee No." + '::::';
+                data += Format(tbl_userSetup."User ID") + '*' + tbl_userSetup."Employee No" + '::::';
             until tbl_userSetup.Next() = 0;
         end;
         exit(data);
@@ -392,7 +392,7 @@ codeunit 50015 "EssQueries"
         tbl_userSetup.SetRange("E-Mail", email);
         tbl_userSetup.SetRange("Blocked from ESS", false);
         if tbl_userSetup.FindFirst() then begin
-            data += 'success*' + tbl_userSetup."Employee No.";
+            data += 'success*' + tbl_userSetup."Employee No";
         end else begin
             data += 'danger*Sorry, we could not proceed. Request the system administrator to set you up in the user setup...';
         end;

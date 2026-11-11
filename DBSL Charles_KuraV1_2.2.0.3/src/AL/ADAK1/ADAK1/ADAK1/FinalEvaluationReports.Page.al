@@ -212,7 +212,7 @@ Page 75469 "Final Evaluation  Reports"
         if UserSetup.Get(UserId) then begin
             BidEvaluationCommittee.Reset;
             BidEvaluationCommittee.SetRange("Document No.", Rec.Code);
-            BidEvaluationCommittee.SetRange("Member No.", UserSetup."Employee No.");
+            BidEvaluationCommittee.SetRange("Member No.", UserSetup."Employee No");
             BidEvaluationCommittee.SetRange("Role Type", BidEvaluationCommittee."role type"::Chairperson);
             if BidEvaluationCommittee.FindSet then begin
                 Rec.FilterGroup(2);
@@ -228,7 +228,7 @@ Page 75469 "Final Evaluation  Reports"
         if UserSetup.Get(UserId) then begin
             BidEvaluationCommittee.Reset;
             BidEvaluationCommittee.SetRange("Document No.", Rec.Code);
-            BidEvaluationCommittee.SetRange("Member No.", UserSetup."Employee No.");
+            BidEvaluationCommittee.SetRange("Member No.", UserSetup."Employee No");
             BidEvaluationCommittee.SetRange("Role Type", BidEvaluationCommittee."role type"::Chairperson);
             if BidEvaluationCommittee.FindSet then begin
                 Rec.FilterGroup(2);

@@ -262,7 +262,7 @@ page 50159 "Salary Advance Memo"
         Usersetup.SETRANGE("User ID", Rec."Created By");
         IF Usersetup.FINDSET THEN BEGIN
 
-            Rec."Account No." := Usersetup."Employee No.";
+            Rec."Account No." := Usersetup."Employee No";
             Rec."Account Name" := Usersetup."Employee Name";
         END;
 

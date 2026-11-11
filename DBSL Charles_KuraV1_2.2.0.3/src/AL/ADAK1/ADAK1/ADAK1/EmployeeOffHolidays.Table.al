@@ -159,7 +159,7 @@ Table 69133 "Employee Off/Holidays"
         //commented by serem
         /*IF UserSetup.GET(USERID) THEN
         BEGIN
-         "Employee No":=UserSetup."Employee No.";
+         "Employee No":=UserSetup."Employee No";
          VALIDATE("Employee No");
         END;*/
         FindMaturityDate;

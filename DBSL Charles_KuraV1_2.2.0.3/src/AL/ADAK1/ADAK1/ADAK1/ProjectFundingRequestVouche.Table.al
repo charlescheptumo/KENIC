@@ -201,7 +201,7 @@ Table 72038 "Project Funding Request Vouche"
         ///////
 
         if UserSetup.Get(UserId) then begin
-            if Employee.Get(UserSetup."Employee No.") then begin
+            if Employee.Get(UserSetup."Employee No") then begin
                 Region := Employee."Global Dimension 1 Code";
                 "Constituency Code" := Employee."Global Dimension 2 Code";
                 Directorate := Employee."Directorate Code";

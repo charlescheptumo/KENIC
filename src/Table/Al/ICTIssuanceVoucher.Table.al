@@ -18,10 +18,10 @@ Table 56061 "ICT Issuance Voucher"
                 UserSetup.Reset;
                 UserSetup.SetRange("User ID", "Issued To User ID");
                 if UserSetup.FindSet then
-                    "Issued To No." := UserSetup."Employee No.";
+                    "Issued To No." := UserSetup."Employee No";
                 "Issued Date" := Today;
                 Employee.Reset;
-                Employee.SetRange("No.", UserSetup."Employee No.");
+                Employee.SetRange("No.", UserSetup."Employee No");
                 if Employee.FindSet then begin
                     Name := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
                     "Shortcut Dimension 1 Code" := Employee."Global Dimension 1 Code";
@@ -152,10 +152,10 @@ Table 56061 "ICT Issuance Voucher"
                 ICTHelpdesk.SetRange("Job No.", "Helpdesk No.");
                 if ICTHelpdesk.FindSet then
                     UserSetup.Reset;
-                UserSetup.SetRange("Employee No.", ICTHelpdesk."Employee No");
+                UserSetup.SetRange("Employee No", ICTHelpdesk."Employee No");
                 if UserSetup.FindSet then
                     "Issued To User ID" := UserSetup."User ID";
-                "Issued To No." := UserSetup."Employee No.";
+                "Issued To No." := UserSetup."Employee No";
                 "Issued Date" := Today;
                 Employee.Reset;
                 Employee.SetRange("No.", ICTHelpdesk."Employee No");

@@ -641,13 +641,13 @@ Codeunit 50004 "Email Notifications"
             if UserSetup.Get(CustApprovalEntry."Approver ID") then begin
                 repeat
                     Header := 'APPROVAL NOTIFICATION:  ' + CustApprovalEntry."Project ID";
-                    UserSetup.TestField("Employee No.");
+                    UserSetup.TestField("Employee No");
                     if SMTPSetup.Get() then begin
                         SenderEmail := SMTPSetup."Email Address";
                         SenderName := SMTPSetup."Email Address";
                     end;
                     Emp.Reset;
-                    Emp.SetRange(Emp."No.", UserSetup."Employee No.");
+                    Emp.SetRange(Emp."No.", UserSetup."Employee No");
                     if Emp.FindSet then begin
                         if Emp."E-Mail" <> '' then begin
 
@@ -686,13 +686,13 @@ Codeunit 50004 "Email Notifications"
     begin
         if UserSetup.Get(CustApprovalEntry."Sender ID") then begin
             Header := 'APPROVAL CANCELLATION:  ';
-            UserSetup.TestField("Employee No.");
+            UserSetup.TestField("Employee No");
             if SMTPSetup.Get() then begin
                 SenderEmail := SMTPSetup."Email Address";
                 SenderName := SMTPSetup."Email Address";
             end;
             Emp.Reset;
-            Emp.SetRange(Emp."No.", UserSetup."Employee No.");
+            Emp.SetRange(Emp."No.", UserSetup."Employee No");
             if Emp.FindSet then begin
                 if Emp."E-Mail" <> '' then begin
                     //SMTPMail.CreateMessage(SenderName, SenderEmail, Emp."E-Mail", Header, '', true);
@@ -728,13 +728,13 @@ Codeunit 50004 "Email Notifications"
     begin
         if UserSetup.Get(CustApprovalEntry."Sender ID") then begin
             Header := 'APPROVAL REJECTION:  ';
-            UserSetup.TestField("Employee No.");
+            UserSetup.TestField("Employee No");
             if SMTPSetup.Get() then begin
                 SenderEmail := SMTPSetup."Email Address";
                 SenderName := SMTPSetup."Email Address";
             end;
             Emp.Reset;
-            Emp.SetRange(Emp."No.", UserSetup."Employee No.");
+            Emp.SetRange(Emp."No.", UserSetup."Employee No");
             if Emp.FindSet then begin
                 if Emp."E-Mail" <> '' then begin
                     // //SMTPMail.CreateMessage(SenderName, SenderEmail, Emp."E-Mail", Header, '', true);
@@ -770,13 +770,13 @@ Codeunit 50004 "Email Notifications"
     begin
         if UserSetup.Get(CustApprovalEntry."Sender ID") then begin
             Header := 'APPROVAL DOCUMENT REVIEW:  ';
-            UserSetup.TestField("Employee No.");
+            UserSetup.TestField("Employee No");
             if SMTPSetup.Get() then begin
                 SenderEmail := SMTPSetup."Email Address";
                 SenderName := SMTPSetup."Email Address";
             end;
             Emp.Reset;
-            Emp.SetRange(Emp."No.", UserSetup."Employee No.");
+            Emp.SetRange(Emp."No.", UserSetup."Employee No");
             if Emp.FindSet then begin
                 if Emp."E-Mail" <> '' then begin
                     //  SMTPMail.CreateMessage(SenderName, SenderEmail, Emp."E-Mail", Header, '', true);

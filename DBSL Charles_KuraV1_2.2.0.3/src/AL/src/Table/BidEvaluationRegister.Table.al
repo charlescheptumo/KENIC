@@ -380,7 +380,7 @@ Table 70178 "Bid Evaluation Register"
                                 "Evaluation Lead Name" := BidCommitte."Member Name";
                             end;
                         end else begin
-                            "Evaluation Lead" := UserSetup."Employee No.";
+                            "Evaluation Lead" := UserSetup."Employee No";
                             "Evaluation Lead Name" := UserSetup."Employee Name";
                         end;
                         BidCommitte.Designation := IFSTenderCommitte.Designation;

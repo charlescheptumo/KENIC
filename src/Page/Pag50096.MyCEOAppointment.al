@@ -145,7 +145,7 @@ page 50096 "My CEO Appointment"
     trigger OnAfterGetRecord()
     begin
         UserSet.Get(UserId);
-        Rec."Requested by Employee No" := UserSet."Employee No.";
+        Rec."Requested by Employee No" := UserSet."Employee No";
         Rec."Requested by Employee Name" := UserSet."Employee Name";
         if Rec."Requested By Employee Name" = '' then begin
             // Rec."Requested By" := UserSet.UserName;
