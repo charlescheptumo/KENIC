@@ -121,8 +121,25 @@ pageextension 58120 "Acc RoleCenter Ext" extends "Accountant Role Center"
             }
             group("EFT Voucher")
             {
-                Caption = 'EFT Vouchers';
+                Caption = 'Payments';
                 // ToolTip = 'Manage .';
+                 
+                action("Payment Vouchers List")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Payment Voucher List';
+                    Image = Payment;
+                    RunObject = Page "Payments Vouchers";
+                    ToolTip = 'Executes the Payment Voucher List action.';
+                }
+                action("Approved PVs")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Caption = 'Approved Payment Voucher List';
+                    Image = Payment;
+                    RunObject = Page "Approved Payment Vouchers";
+                    ToolTip = 'Executes the Approved Payment Voucher List action.';
+                }
                 action("Posted EFT Vouchers")
                 {
                     ApplicationArea = All;

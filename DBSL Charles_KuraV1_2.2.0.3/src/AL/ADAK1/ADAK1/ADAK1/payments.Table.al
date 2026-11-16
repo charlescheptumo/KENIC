@@ -2311,18 +2311,18 @@ Table 57000 "payments"
         end;
 
         //Fred RC Implementation
-        if UserSetup.Get(UserId) then begin
-            if UserSetup."Portal User" = false then begin
-                UserSetup.TestField(UserSetup."Purchase Resp. Ctr. Filter");
-                "Responsibility Center" := UserSetup."Purchase Resp. Ctr. Filter";
-            end;
-        end;
+        // if UserSetup.Get(UserId) then begin
+        //     if UserSetup."Portal User" = false then begin
+        //         UserSetup.TestField(UserSetup."Purchase Resp. Ctr. Filter");
+        //         "Responsibility Center" := UserSetup."Purchase Resp. Ctr. Filter";
+        //     end;
+        // end;
 
-        //Retention ====Fred
-        if UserSetup.Get(UserId) then begin
-            "Access Retention Account" := UserSetup."Access Retention Account";
-            "Retention Donor" := UserSetup."Retention Donor";
-        end;
+        // //Retention ====Fred
+        // if UserSetup.Get(UserId) then begin
+        //     "Access Retention Account" := UserSetup."Access Retention Account";
+        //     "Retention Donor" := UserSetup."Retention Donor";
+        // end;
         //Retention ====Fred
 
     end;
