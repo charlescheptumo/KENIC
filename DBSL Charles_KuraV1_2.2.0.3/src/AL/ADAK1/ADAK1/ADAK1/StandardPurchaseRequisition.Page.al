@@ -32,6 +32,7 @@ Page 75237 "Standard Purchase Requisition"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the PRN Type field.';
+                    Visible = False;
                 }
                 field("Document Date"; Rec."Document Date")
                 {
