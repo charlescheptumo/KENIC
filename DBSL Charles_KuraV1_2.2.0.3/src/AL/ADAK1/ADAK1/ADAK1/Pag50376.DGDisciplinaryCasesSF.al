@@ -118,8 +118,6 @@ page 50376 "DG Disciplinary Cases SF"
                 {
                     ApplicationArea = Basic;
                     Image = Reminder;
-                    Promoted = true;
-                    PromotedIsBig = true;
                     Caption = 'Notify HR on Response';
 
                     trigger OnAction()

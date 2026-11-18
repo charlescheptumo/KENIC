@@ -29,7 +29,7 @@ table 50103 "Store Returns Header"
                 UserSetup.Reset();
                 UserSetup.SetRange("User ID", Rec."Requestor ID");
                 if UserSetup.FindFirst() then begin
-                    "Requestor No." := UserSetup."Employee No.";
+                    "Requestor No." := UserSetup."Employee No";
                     Rec.Validate("Requestor No.");
                 end;
             end;

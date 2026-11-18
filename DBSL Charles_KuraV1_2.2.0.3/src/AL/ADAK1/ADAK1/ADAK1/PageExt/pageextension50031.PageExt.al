@@ -23,7 +23,7 @@ PageExtension 50031 "pageextension50031" extends "User Setup"
         }
         addafter("Time Sheet Admin.")
         {
-            field("Employee No."; Rec."Employee No.")
+            field("KENIC Employee No"; Rec."Employee No")
             {
                 ApplicationArea = Basic;
                 ToolTip = 'Specifies the value of the Employee No. field.';

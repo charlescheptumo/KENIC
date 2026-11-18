@@ -314,7 +314,7 @@ Report 70062 "RFQ"
 
                 begin
                     if UserSetup.Get("Created by") then begin
-                        if Emp2.Get(UserSetup."Employee No.") then
+                        if Emp2.Get(UserSetup."Employee No") then
                             PreparedBy := Emp2.FullName();
                     end;
 
@@ -324,7 +324,7 @@ Report 70062 "RFQ"
                     if RespCenter.FindFirst() then begin
                         HeadofSCM := RespCenter."Current Head Name";
                         UserSetupa.Reset();
-                        UserSetupa.SetRange("Employee No.", RespCenter."Current Head");
+                        UserSetupa.SetRange("Employee No", RespCenter."Current Head");
                         if UserSetupa.FindFirst() then begin
                             UserSetupa.CalcFields(Picture);
                         end;
@@ -334,7 +334,7 @@ Report 70062 "RFQ"
                     if RespCenter.FindFirst() then begin
                         DirectorGeneral := RespCenter."Current Head Name";
                         UserSetupb.Reset();
-                        UserSetupb.SetRange("Employee No.", RespCenter."Current Head");
+                        UserSetupb.SetRange("Employee No", RespCenter."Current Head");
                         if UserSetupb.FindFirst() then begin
                             UserSetupb.CalcFields(Picture);
                         end;
@@ -354,7 +354,7 @@ Report 70062 "RFQ"
                      IF UserSetup.GET(Approver1[1]) THEN BEGIN
                         UserSetup.CALCFIELDS(Picture);
                     
-                           ENo:=UserSetup."Employee No.";
+                           ENo:=UserSetup."Employee No";
                             IF Emp.GET(ENo) THEN
                               DesignationID:=Emp."Job Title";
                               {JOBID.RESET;
@@ -367,7 +367,7 @@ Report 70062 "RFQ"
                     ApproverDate[2]:=ApprovalEntries."Last Date-Time Modified";
                      IF UserSetup1.GET(Approver1[2]) THEN BEGIN
                         UserSetup1.CALCFIELDS(Picture);
-                        ENo:=UserSetup1."Employee No.";
+                        ENo:=UserSetup1."Employee No";
                             IF Emp.GET(ENo) THEN
                               DesignationID:=Emp."Job Title";
                                 {JOBID.RESET;
@@ -382,7 +382,7 @@ Report 70062 "RFQ"
                     ApproverDate[3]:=ApprovalEntries."Last Date-Time Modified";
                      IF UserSetup2.GET(Approver1[3]) THEN BEGIN
                         UserSetup2.CALCFIELDS(Picture);
-                        ENo:=UserSetup2."Employee No.";
+                        ENo:=UserSetup2."Employee No";
                             IF Emp.GET(ENo) THEN
                               DesignationID:=Emp."Job Title";
                                 {JOBID.RESET;
@@ -397,7 +397,7 @@ Report 70062 "RFQ"
                     ApproverDate[4]:=ApprovalEntries."Last Date-Time Modified";
                      IF UserSetup3.GET(Approver1[4]) THEN BEGIN
                         UserSetup3.CALCFIELDS(Picture);
-                        ENo:=UserSetup3."Employee No.";
+                        ENo:=UserSetup3."Employee No";
                             IF Emp.GET(ENo) THEN
                               DesignationID:=Emp."Job Title";
                                { JOBID.RESET;

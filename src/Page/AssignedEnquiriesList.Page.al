@@ -83,7 +83,7 @@ Page 60039 "Assigned Enquiries List"
         UserSetup.Reset;
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindFirst then
-            Rec.SetRange("Assigned Officer No.", UserSetup."Employee No.");
+            Rec.SetRange("Assigned Officer No.", UserSetup."Employee No");
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -101,7 +101,7 @@ Page 60039 "Assigned Enquiries List"
         UserSetup.Reset;
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindFirst then
-            Rec.SetRange("Assigned Officer No.", UserSetup."Employee No.");
+            Rec.SetRange("Assigned Officer No.", UserSetup."Employee No");
     end;
 
     var

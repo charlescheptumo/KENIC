@@ -374,11 +374,11 @@ Table 70141 "IFS Tender Committee"
         if UserSetup.FindSet then begin
             "Raised By" := UserId;
             Name := UserSetup."Employee Name";
-            "Staff Id" := UserSetup."Employee No.";
+            "Staff Id" := UserSetup."Employee No";
             "Primary Region" := UserSetup."Region Code";
             "Responsibility Center" := UserSetup."Responsibility Center";
             Emp.Reset;
-            Emp.SetRange("No.", UserSetup."Employee No.");
+            Emp.SetRange("No.", UserSetup."Employee No");
             if Emp.FindSet then
                 "Primary Department" := Emp."Department Code";
             "Primary Directorate" := Emp."Directorate Code";

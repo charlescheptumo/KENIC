@@ -780,13 +780,23 @@ Page 56015 "Authentication Devices Card"
                     ShortCutKey = 'F7';
                     ToolTip = 'View statistical information, such as the value of posted entries, for the record.';
 
+                    // trigger OnAction()
+                    // var
+                    //     Handled: Boolean;
+                    // begin
+                    //     OnBeforeStatisticsAction(Rec, Handled);
+                    //     if not Handled then begin
+                    //         Rec.OpenSalesOrderStatistics;
+                    //         SalesCalcDiscountByType.ResetRecalculateInvoiceDisc(Rec);
+                    //     end
+                    // end;
                     trigger OnAction()
                     var
                         Handled: Boolean;
                     begin
                         OnBeforeStatisticsAction(Rec, Handled);
                         if not Handled then begin
-                            Rec.OpenSalesOrderStatistics;
+                            Page.RunModal(Page::"Sales Order Statistics", Rec);
                             SalesCalcDiscountByType.ResetRecalculateInvoiceDisc(Rec);
                         end
                     end;
@@ -1296,7 +1306,7 @@ Page 56015 "Authentication Devices Card"
                         DemandOverview: Page "Demand Overview";
                     begin
                         DemandOverview.SetCalculationParameter(true);
-                      //cc  DemandOverview.Initialize(0D, 1, Rec."No.", '', '');
+                        //cc  DemandOverview.Initialize(0D, 1, Rec."No.", '', '');
                         DemandOverview.RunModal;
                     end;
                 }

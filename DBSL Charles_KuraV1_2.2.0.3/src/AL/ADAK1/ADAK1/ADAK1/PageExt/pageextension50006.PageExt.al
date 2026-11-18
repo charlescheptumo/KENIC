@@ -25,11 +25,7 @@ PageExtension 50006 "pageextension50006" extends "General Ledger Entries"
         }
         addafter("External Document No.")
         {
-            field("Transaction No."; Rec."Transaction No.")
-            {
-                ApplicationArea = Basic;
-                ToolTip = 'Specifies the value of the Transaction No. field.';
-            }
+            // "Transaction No." is shown by Business Central itself since BC 29
         }
     }
 

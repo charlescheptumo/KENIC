@@ -115,8 +115,6 @@ Page 75287 "Purchase Contract Payment Term"
                     ApplicationArea = Basic;
                     Caption = 'Contract Milestones';
                     Image = PlanningWorksheet;
-                    Promoted = true;
-                    PromotedCategory = Category4;
                     RunObject = Page "Purchase Contract Milestone";
                     RunPageLink = "No." = field("No."),
                                   "Payment Instalment Code" = field("Instalment Code");

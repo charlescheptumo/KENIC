@@ -4,6 +4,7 @@ page 57184 "Salary Advance Card"
     PageType = Card;
     SourceTable = 57000;
     ApplicationArea = All;
+    Caption = 'Per Diem Advance';
 
     layout
     {
@@ -83,6 +84,7 @@ page 57184 "Salary Advance Card"
                     ApplicationArea = All;
                     Caption = 'Basic Pay';
                     ToolTip = 'Specifies the value of the Basic Pay field.';
+                    Visible = false;
                 }
                 field("Salary Advance"; Rec."Salary Advance")
                 {
@@ -350,7 +352,7 @@ page 57184 "Salary Advance Card"
             Usersetup.SETRANGE("User ID", Rec."Created By");
             IF Usersetup.FINDSET THEN BEGIN
 
-                Rec."Account No." := Usersetup."Employee No.";
+                Rec."Account No." := Usersetup."Employee No";
                 Rec."Account Name" := Usersetup."Employee Name";
             END;
         end;

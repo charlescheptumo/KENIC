@@ -302,7 +302,7 @@ Page 69284 "Closed Training Application"
     //        NoSeriesManagement.InitSeries(PurchasesPayablesSetup."Purchase Requisition Nos.",PurchaseHeader."No. Series",0D,PurchaseHeader."No.",PurchaseHeader."No. Series");
     //        PurchaseHeader."Document Type":=PurchaseHeader."document type"::"Purchase Requisition";
     //        PurchaseHeader."Requester ID":=UserId;
-    //        PurchaseHeader."Request-By No.":=UserSetup."Employee No.";
+    //        PurchaseHeader."Request-By No.":=UserSetup."Employee No";
     //        PurchaseHeader."Document Date":=Today;
     //        PurchaseHeader."Buy-from Vendor No.":=TrainingRequest.Provider;
     //        PurchaseHeader.Validate("Request-By No.");
@@ -377,7 +377,7 @@ Page 69284 "Closed Training Application"
     //               UserSetup.Reset;
     //               UserSetup.SetRange("User ID",UserId);
     //               if UserSetup.FindSet then begin
-    //                 ImprestReq.Requestor:=UserSetup."Employee No.";
+    //                 ImprestReq.Requestor:=UserSetup."Employee No";
     //               end;
     //               ImprestReq.Validate(Requestor);
     //               ImprestReq.Date:=Today;
@@ -404,7 +404,7 @@ Page 69284 "Closed Training Application"
     //                       ProjectMembers.Insert;
     //                 //notify every employee
     //                         UserSetup.Reset;
-    //                         UserSetup.SetRange("Employee No.",TrainingPart."Employee Code");
+    //                         UserSetup.SetRange("Employee No",TrainingPart."Employee Code");
     //                         if UserSetup.FindSet then begin
     //                             Email:=UserSetup."E-Mail";
     //                             //send notification email

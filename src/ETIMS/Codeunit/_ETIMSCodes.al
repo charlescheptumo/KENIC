@@ -50,10 +50,10 @@ codeunit 50100 ETIMSCodes
         jsonValue: JsonValue;
 
         evironmentInfo: Codeunit "Environment Information";
-        testMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        prodMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        testETIMSUrl: Label 'http://135.220.97.93:8088/';
-        prodETIMSUrl: Label 'http://135.220.97.93:8088/';
+        testMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        prodMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        testETIMSUrl: Label 'http://41.90.10.39:8088/';
+        prodETIMSUrl: Label 'http://41.90.10.39:8088/';
 
         lastreqDate: Text;
         ReqDate: Text;
@@ -119,7 +119,6 @@ codeunit 50100 ETIMSCodes
         configTin := company."Company Tin";
         configBranchId := company."Branch ID";
         configCmcKey := company."ETIMS CMC Key";
-
         if (configTin = '') or (configBranchId = '') or (configCmcKey = '') then
             exit('Missing ETIMS config: Tin/Branch ID/CMC Key');
 
@@ -161,10 +160,8 @@ codeunit 50100 ETIMSCodes
         // --------------------------
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             exit('Request failed: HttpClient.Send returned false');
-
         if not ResponseMessage.Content.ReadAs(Response) then
             exit('Request failed: could not read response');
-
         if not ResponseMessage.IsSuccessStatusCode then
             exit(StrSubstNo('Request failed: HTTP %1. Body: %2', ResponseMessage.HttpStatusCode(), CopyStr(Response, 1, 250)));
 
@@ -184,7 +181,6 @@ codeunit 50100 ETIMSCodes
             resultCd := tok.AsValue().AsText();
         if jsonResponse.Get('resultMsg', tok) then
             resultMsg := tok.AsValue().AsText();
-
         if resultCd <> '000' then
             exit(StrSubstNo('ETIMS error %1: %2', resultCd, resultMsg));
 
@@ -193,7 +189,6 @@ codeunit 50100 ETIMSCodes
         // --------------------------
         if not jsonResponse.Get('data', dataTok) then
             exit('Invalid response: missing data');
-
         if not dataTok.AsObject().Get('clsList', clsTok) then
             exit('Invalid response: missing data.clsList');
 
@@ -205,11 +200,9 @@ codeunit 50100 ETIMSCodes
         foreach clsTok in clsArray do begin
             clsObj := clsTok.AsObject();
             cdCls := _ETIMSHelperFunctions.GetTextOrEmpty(clsObj, 'cdCls');
-
             if cdCls <> '' then begin
                 if clsObj.Get('dtlList', dtlTok) then begin
                     dtlArray := dtlTok.AsArray();
-
                     case cdCls of
                         '04':
                             ProcessTaxationType(dtlArray);

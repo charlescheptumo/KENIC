@@ -2009,6 +2009,81 @@ Table 57000 "payments"
             DataClassification = CustomerContent;
             Editable = false;
         }
+        // Employee Mileage Reimbursement Form (a Staff Claim with Mileage Claim = true).
+        field(70210; "Mileage Claim"; Boolean)
+        {
+            Caption = 'Mileage Claim';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(70211; "Vehicle Model"; Text[100])
+        {
+            Caption = 'Vehicle Model (Saloon/4WD, Petrol/Diesel)';
+            DataClassification = CustomerContent;
+        }
+        field(70212; "Vehicle Engine CC"; Integer)
+        {
+            Caption = 'Vehicle Engine CC';
+            DataClassification = CustomerContent;
+            MinValue = 0;
+        }
+        field(70213; "Vehicle Reg. No."; Code[20])
+        {
+            Caption = 'Vehicle Reg. No.';
+            DataClassification = CustomerContent;
+        }
+        field(70214; "Mileage Rate"; Decimal)
+        {
+            Caption = 'Mileage Rate (KES per Km)';
+            DataClassification = CustomerContent;
+            DecimalPlaces = 2 : 2;
+            MinValue = 0;
+
+            trigger OnValidate()
+            var
+                MileageLine: Record "PV Lines";
+            begin
+                // A new rate recalculates every trip: Amount = Kilometres x Mileage Rate.
+                MileageLine.Reset();
+                MileageLine.SetRange(No, "No.");
+                MileageLine.SetFilter(Kilometres, '<>%1', 0);
+                if MileageLine.FindSet() then
+                    repeat
+                        MileageLine.Validate(Amount, Round(MileageLine.Kilometres * "Mileage Rate", 0.01));
+                        MileageLine.Modify();
+                    until MileageLine.Next() = 0;
+            end;
+        }
+        field(70215; "Mileage Period From"; Date)
+        {
+            Caption = 'Pay Period From';
+            DataClassification = CustomerContent;
+        }
+        field(70216; "Mileage Period To"; Date)
+        {
+            Caption = 'Pay Period To';
+            DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            begin
+                if ("Mileage Period From" <> 0D) and ("Mileage Period To" <> 0D) and ("Mileage Period To" < "Mileage Period From") then
+                    FieldError("Mileage Period To", 'cannot be before Pay Period From');
+            end;
+        }
+        field(70217; "Staff Claim No."; Code[20])
+        {
+            // On an approved mileage form: the Staff Claim created from it for payment.
+            Caption = 'Staff Claim No.';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(70218; "Mileage Claim No."; Code[20])
+        {
+            // On a Staff Claim: the mileage form it was created from.
+            Caption = 'Mileage Claim No.';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
 
 
     }
@@ -2138,7 +2213,7 @@ Table 57000 "payments"
                     "Created By" := UserId;
                     if "Account No." <> '' then begin
                         UserSetup.Reset();
-                        UserSetup.SetRange("Employee No.", "Account No.");
+                        UserSetup.SetRange("Employee No", "Account No.");
                         if UserSetup.FindFirst() then
                             "Created By" := UserSetup."User ID";
                     end;
@@ -2185,7 +2260,7 @@ Table 57000 "payments"
                 Error('%1 is not defined under the User Setup, Please check!', UserId);
             if UserSetup.Get(UserId) then begin
                 UserSetup.TestField(UserSetup."Resource No");
-                UserSetup.TestField(UserSetup."Employee No.");
+                UserSetup.TestField(UserSetup."Employee No");
                 UserSetup.TestField(UserSetup."Imprest Account");
                 UserSetup.TestField(UserSetup."Employee Name");
                 //"Account Type":="Account Type"::Customer;
@@ -2202,11 +2277,11 @@ Table 57000 "payments"
                 Error('%1 is not defined under the User Setup, Please check!', UserId);
             if UserSetup.Get(UserId) then begin
                 //UserSetup.TESTFIELD(UserSetup."Resource No");
-                //UserSetup.TESTFIELD(UserSetup."Employee No.");
+                //UserSetup.TESTFIELD(UserSetup."Employee No");
                 //UserSetup.TESTFIELD(UserSetup."Imprest Account");
                 //UserSetup.TESTFIELD(UserSetup."Employee Name");
                 //"Account Type":="Account Type"::Employee;
-                //"Account No.":=UserSetup."Employee No.";
+                //"Account No.":=UserSetup."Employee No";
 
                 EmployeePaymentInformation.Reset;
                 EmployeePaymentInformation.SetRange(EmployeePaymentInformation."Employee No", "Account No.");
@@ -2236,18 +2311,18 @@ Table 57000 "payments"
         end;
 
         //Fred RC Implementation
-        if UserSetup.Get(UserId) then begin
-            if UserSetup."Portal User" = false then begin
-                UserSetup.TestField(UserSetup."Purchase Resp. Ctr. Filter");
-                "Responsibility Center" := UserSetup."Purchase Resp. Ctr. Filter";
-            end;
-        end;
+        // if UserSetup.Get(UserId) then begin
+        //     if UserSetup."Portal User" = false then begin
+        //         UserSetup.TestField(UserSetup."Purchase Resp. Ctr. Filter");
+        //         "Responsibility Center" := UserSetup."Purchase Resp. Ctr. Filter";
+        //     end;
+        // end;
 
-        //Retention ====Fred
-        if UserSetup.Get(UserId) then begin
-            "Access Retention Account" := UserSetup."Access Retention Account";
-            "Retention Donor" := UserSetup."Retention Donor";
-        end;
+        // //Retention ====Fred
+        // if UserSetup.Get(UserId) then begin
+        //     "Access Retention Account" := UserSetup."Access Retention Account";
+        //     "Retention Donor" := UserSetup."Retention Donor";
+        // end;
         //Retention ====Fred
 
     end;

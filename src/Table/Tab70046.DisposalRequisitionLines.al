@@ -500,7 +500,7 @@ Table 70046 "Disposal Requisition Lines"
         PRHeader."Requisition Type" := PRHeader."requisition type"::"Purchase Requisition";
         PRHeader."No." := NoSeriesMgt.GetNextNo(PPSetup."Purchase Req No", Today, true);
         if UsersRec.Get(UserId) then begin
-            if Emp.Get(UsersRec."Employee No.") then begin
+            if Emp.Get(UsersRec."Employee No") then begin
                 PRHeader."Employee Code" := Emp."No.";
                 PRHeader."Employee Name" := Emp."First Name" + ' ' + Emp."Last Name";
                 PRHeader."Global Dimension 1 Code" := Emp."Global Dimension 1 Code";

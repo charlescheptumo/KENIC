@@ -59,7 +59,7 @@ page 50095 "My CEO Appointments"
          UserSetup.Reset;
          UserSetup.SetRange("User ID", UserId);
          if UserSetup.Findfirst then begin
-         Rec.SetRange("Requested by Employee No",UserSetup."Employee No.");
+         Rec.SetRange("Requested by Employee No",UserSetup."Employee No");
     end;  
     end;
 }

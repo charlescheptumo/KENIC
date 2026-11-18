@@ -1617,6 +1617,35 @@ Table 57006 "PV Lines"
             DataClassification = ToBeClassified;
             TableRelation = Vendor;
         }
+        // Employee Mileage Reimbursement Form: one line per trip.
+        field(50080; "Start Location"; Text[100])
+        {
+            Caption = 'Start Location';
+            DataClassification = CustomerContent;
+        }
+        field(50081; "End Location"; Text[100])
+        {
+            Caption = 'End Location';
+            DataClassification = CustomerContent;
+        }
+        field(50082; Kilometres; Decimal)
+        {
+            Caption = 'Total Kilometres';
+            DataClassification = CustomerContent;
+            DecimalPlaces = 0 : 2;
+            MinValue = 0;
+
+            trigger OnValidate()
+            var
+                MileageHeader: Record payments;
+            begin
+                // Amount (KES) = Kilometres x the claim's Mileage Rate. The approver
+                // enters the rate, so until then the amount stays 0.
+                if MileageHeader.Get(No) then
+                    if MileageHeader."Mileage Claim" then
+                        Validate(Amount, Round(Kilometres * MileageHeader."Mileage Rate", 0.01));
+            end;
+        }
     }
 
     keys

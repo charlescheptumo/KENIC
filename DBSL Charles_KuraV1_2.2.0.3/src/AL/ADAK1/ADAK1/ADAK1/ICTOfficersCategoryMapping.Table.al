@@ -49,7 +49,7 @@ Table 56054 "ICT Officers Category Mapping"
         field(8; "Employee No"; Text[100])
         {
             DataClassification = ToBeClassified;
-            TableRelation = "User Setup"."Employee No.";
+            TableRelation = "User Setup"."Employee No";
         }
     }
 

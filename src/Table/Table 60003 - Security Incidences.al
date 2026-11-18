@@ -160,7 +160,7 @@ table 60003 "Security Incidences"
         "Date Reported" := WORKDATE;
         IF UserSetup.GET(USERID) THEN BEGIN
             IF UserSetup."User ID" <> 'CUEHQ\ADMINISTRATOR' THEN BEGIN
-                Rec.VALIDATE("Reporter Number", UserSetup."Employee No.");
+                Rec.VALIDATE("Reporter Number", UserSetup."Employee No");
             END;
         END;
     end;

@@ -385,7 +385,7 @@ page 99022 "BManager Role Center"
                         ApplicationArea = Basic, Suite;
                         Caption = 'Balance Sheet';
                         Image = "Report";
-                        RunObject = Codeunit "Run Template Balance Sheet";
+                        RunObject = Page "Financial Reports"; // BC 29: Run Template codeunits removed
                         ToolTip = 'Open a spreadsheet that shows your company''s assets, liabilities, and equity.';
                         ObsoleteReason = 'This report is deprecated and will be removed in a future release.';
                         ObsoleteState = Pending;
@@ -396,7 +396,7 @@ page 99022 "BManager Role Center"
                         ApplicationArea = Basic, Suite;
                         Caption = 'Income Statement';
                         Image = "Report";
-                        RunObject = Codeunit "Run Template Income Stmt.";
+                        RunObject = Page "Financial Reports"; // BC 29: Run Template codeunits removed
                         ToolTip = 'Open a spreadsheet that shows your company''s income and expenses.';
                         ObsoleteReason = 'This report is deprecated and will be removed in a future release.';
                         ObsoleteState = Pending;
@@ -407,7 +407,7 @@ page 99022 "BManager Role Center"
                         ApplicationArea = Basic, Suite;
                         Caption = 'Cash Flow Statement';
                         Image = "Report";
-                        RunObject = Codeunit "Run Template CashFlow Stmt.";
+                        RunObject = Page "Financial Reports"; // BC 29: Run Template codeunits removed
                         ToolTip = 'Open a spreadsheet that shows how changes in balance sheet accounts and income affect the company''s cash holdings.';
                         ObsoleteReason = 'This report is deprecated and will be removed in a future release.';
                         ObsoleteState = Pending;
@@ -418,7 +418,7 @@ page 99022 "BManager Role Center"
                         ApplicationArea = Basic, Suite;
                         Caption = 'Retained Earnings Statement';
                         Image = "Report";
-                        RunObject = Codeunit "Run Template Retained Earn.";
+                        RunObject = Page "Financial Reports"; // BC 29: Run Template codeunits removed
                         ToolTip = 'Open a spreadsheet that shows your company''s changes in retained earnings based on net income from the other financial statements.';
                         ObsoleteReason = 'This report is deprecated and will be removed in a future release.';
                         ObsoleteState = Pending;

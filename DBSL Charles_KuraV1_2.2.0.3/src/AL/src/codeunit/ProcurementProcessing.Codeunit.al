@@ -17809,9 +17809,9 @@ Codeunit 70000 "Procurement Processing"
         UserSetup.Reset;
         UserSetup.SetFilter(UserSetup."User ID", '%1|%2|%3|%4|%5', PurchaseHeader."First Approver ID", PurchaseHeader."Second Approver ID", PurchaseHeader."Third Approver ID", PurchaseHeader."Fourth Approver ID", PurchaseHeader."Fifth Approver ID");
         if UserSetup.FindSet then begin
-            UserSetup.TestField("Employee No.");
+            UserSetup.TestField("Employee No");
             ObjEmployee.Reset;
-            ObjEmployee.SetRange(ObjEmployee."No.", UserSetup."Employee No.");
+            ObjEmployee.SetRange(ObjEmployee."No.", UserSetup."Employee No");
             if ObjEmployee.FindSet then begin
                 ObjEmployee.TestField("Company E-Mail");
                 CustEmail := ObjEmployee."Company E-Mail";

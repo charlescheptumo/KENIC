@@ -471,43 +471,81 @@ Page 69043 "Payroll Admin Role Center"
         }
         area(sections)
         {
-            group("Salary Advance")
+            group("Per Diem Advance")
             {
                 action("Salary Advance List Memos")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Salary Advance Memos";
                     ToolTip = 'Executes the Salary Advance List Memos action.';
+                    Caption = 'Per Diem Advance List Memos';
                 }
                 action("Approved Salary Advance List Memos")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Salary Advance Memos";
                     ToolTip = 'Executes the Approved Salary Advance List Memos action.';
+                    Caption = 'Approved Per Diem Advance List Memos';
                 }
                 action("Posted  Salary Advance List Memos")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Posted Salary Advance Memos";
                     ToolTip = 'Executes the Posted  Salary Advance List Memos action.';
+                    Caption = 'Posted Per Diem Advance List Memos';
                 }
                 action("Salary Advance List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Salary Advance List";
                     ToolTip = 'Executes the Salary Advance List action.';
+                    Caption = 'Per Diem Advance List';
                 }
                 action("Approved Salary Advance List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Approved Salary Advance List";
                     ToolTip = 'Executes the Approved Salary Advance List action.';
+                    Caption = 'Approved Per Diem Advance List';
                 }
-                action("Posted  Salary Advance List")
+                action("Posted Per Diem Advance List")
                 {
                     ApplicationArea = Basic;
                     RunObject = Page "Posted  Salary Advance List";
                     ToolTip = 'Executes the Posted  Salary Advance List action.';
+                    Caption = 'Posted Per Diem Advance List';
+                }
+            }
+            group("Staff Claims")
+            {
+                Caption = 'Staff Claims';
+                action("Employee Mileage Reimbursement")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Employee Mileage Reimbursement';
+                    RunObject = Page "Employee Mileage Claims";
+                    ToolTip = 'Mileage reimbursement forms that are open or pending approval.';
+                }
+                action("Approved Mileage Claims")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Approved Mileage Claims';
+                    RunObject = Page "Approved Mileage Claims";
+                    ToolTip = 'Approved mileage reimbursement forms waiting to be posted.';
+                }
+                action("Approved Staff Claims")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Approved Staff Claims';
+                    RunObject = Page "Approved Staff Claims";
+                    ToolTip = 'Staff claims (including those created from approved mileage forms) waiting to be paid.';
+                }
+                action("Posted Mileage Claims")
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Posted Mileage Claims';
+                    RunObject = Page "Posted Mileage Claims";
+                    ToolTip = 'Posted staff claims that came from mileage forms.';
                 }
             }
             group("Management Approvals")

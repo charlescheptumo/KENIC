@@ -246,9 +246,6 @@ Page 69723 "Interview Lines"
             {
                 ApplicationArea = Basic;
                 Image = SelectEntries;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
                 ToolTip = 'Opens the interview panel members assigned to score this candidate.';
                 RunObject = Page "Candidate Shortlist Committee";
                 trigger OnAction()

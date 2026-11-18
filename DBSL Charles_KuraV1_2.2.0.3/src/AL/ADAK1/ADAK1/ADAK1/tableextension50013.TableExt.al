@@ -1243,10 +1243,10 @@ TableExtension 50013 tableextension50013 extends "Purchase Line"
         if usersetup.get(UserId) then begin
             if not usersetup."Portal User" then begin
                 //Rec.Region := usersetup."Region Code";
-                Rec.Validate("Request-By No.", usersetup."Employee No.");
+                Rec.Validate("Request-By No.", usersetup."Employee No");
                 Rec."Request-By Name" := usersetup."Employee Name";
                 Rec."Location Code" := usersetup."Responsibility Center";
-                if Emp.Get(usersetup."Employee No.") then begin
+                if Emp.Get(usersetup."Employee No") then begin
                     Rec.Validate("Directorate Code", Emp."Directorate Code");
                     Rec.Validate("Department Code", Emp."Department Code");
                 end

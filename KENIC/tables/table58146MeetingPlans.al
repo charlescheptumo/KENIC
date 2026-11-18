@@ -149,6 +149,25 @@ table 58146 "Meeting Plans"
             Editable = false;
             TableRelation = "Board Meetings".No;
         }
+        field(20; "Poll Deadline"; DateTime)
+        {
+            Caption = 'Poll Deadline';
+            DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            begin
+                if Rec."Voting Status" = Rec."Voting Status"::Closed then
+                    Error(CannotChangeDeadlineAfterClosedErr);
+
+                if (Rec."Poll Deadline" <> 0DT) and (Rec."Poll Deadline" <= CurrentDateTime()) then
+                    Error(DeadlineMustBeFutureErr);
+            end;
+        }
+        field(21; "Hide Vote Count"; Boolean)
+        {
+            Caption = 'Hide Vote Count from Members';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
@@ -278,6 +297,9 @@ table 58146 "Meeting Plans"
         DateOption.SetRange("Meeting Plan Id", Rec."Id");
         if DateOption.Count() < 2 then
             Error(NeedAtLeastTwoDatesErr);
+
+        if (Rec."Poll Deadline" <> 0DT) and (Rec."Poll Deadline" <= CurrentDateTime()) then
+            Error(DeadlineMustBeFutureErr);
 
         Rec."Voting Status" := Rec."Voting Status"::Open;
         Rec."Poll Opened At" := CurrentDateTime();
@@ -432,5 +454,7 @@ table 58146 "Meeting Plans"
         PollNotOpenErr: Label 'The poll is not currently open.';
         MustCloseFirstErr: Label 'The poll must be closed before a winning date can be selected.';
         OptionNotFoundErr: Label 'The selected date option does not belong to this Meeting Plan.';
+        CannotChangeDeadlineAfterClosedErr: Label 'You cannot change the poll deadline after the poll has closed.';
+        DeadlineMustBeFutureErr: Label 'The poll deadline must be in the future.';
         TieDetectedMsg: Label 'Two or more dates received the same highest number of votes. Please use Select Winning Date to resolve the tie.';
 }

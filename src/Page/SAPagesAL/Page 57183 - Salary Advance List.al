@@ -6,6 +6,7 @@ page 57183 "Salary Advance List"
     SourceTableView = WHERE("Payment Type" = FILTER("Salary Advance"),
                             Status = FILTER(Open | "Pending Approval"));
     ApplicationArea = All;
+    Caption = 'Per Diem Advance List';
 
     layout
     {

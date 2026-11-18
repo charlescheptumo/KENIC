@@ -589,7 +589,7 @@ Page 75426 "Disposal Committee Card"
         UserSetup.Reset;
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then begin
-            ImprestReq.Requestor := UserSetup."Employee No.";
+            ImprestReq.Requestor := UserSetup."Employee No";
         end;
         ImprestReq.Validate(Requestor);
         ImprestReq.Date := Today;
@@ -621,7 +621,7 @@ Page 75426 "Disposal Committee Card"
             //notify every employee
             /*
                     UserSetup.RESET;
-                    UserSetup.SETRANGE("Employee No.",TrainingPart."Employee Code");
+                    UserSetup.SETRANGE("Employee No",TrainingPart."Employee Code");
                     IF UserSetup.FINDSET THEN BEGIN
                         Email:=UserSetup."E-Mail";
                         //send notification email

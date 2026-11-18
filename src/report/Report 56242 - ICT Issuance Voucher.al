@@ -159,7 +159,7 @@ report 56242 "ICT Issuance Voucher"
                             IF UserSetup.GET(Approver1[1]) THEN BEGIN
                                 UserSetup.CALCFIELDS(Picture);
 
-                                ENo := UserSetup."Employee No.";
+                                ENo := UserSetup."Employee No";
                                 IF Emp.GET(ENo) THEN
                                     DesignationID := Emp."Job ID";
                                 JOBID.RESET;
@@ -172,7 +172,7 @@ report 56242 "ICT Issuance Voucher"
                             ApproverDate[2] := ApprovalEntries."Last Date-Time Modified";
                             IF UserSetup1.GET(Approver1[2]) THEN BEGIN
                                 UserSetup1.CALCFIELDS(Picture);
-                                ENo := UserSetup1."Employee No.";
+                                ENo := UserSetup1."Employee No";
                                 IF Emp.GET(ENo) THEN
                                     DesignationID := Emp."Job ID";
                                 JOBID.RESET;
@@ -186,7 +186,7 @@ report 56242 "ICT Issuance Voucher"
                             ApproverDate[3] := ApprovalEntries."Last Date-Time Modified";
                             IF UserSetup2.GET(Approver1[3]) THEN BEGIN
                                 UserSetup2.CALCFIELDS(Picture);
-                                ENo := UserSetup2."Employee No.";
+                                ENo := UserSetup2."Employee No";
                                 IF Emp.GET(ENo) THEN
                                     DesignationID := Emp."Job ID";
                                 JOBID.RESET;
@@ -200,7 +200,7 @@ report 56242 "ICT Issuance Voucher"
                             ApproverDate[4] := ApprovalEntries."Last Date-Time Modified";
                             IF UserSetup3.GET(Approver1[4]) THEN BEGIN
                                 UserSetup3.CALCFIELDS(Picture);
-                                ENo := UserSetup3."Employee No.";
+                                ENo := UserSetup3."Employee No";
                                 IF Emp.GET(ENo) THEN
                                     DesignationID := Emp."Job ID";
                                 JOBID.RESET;

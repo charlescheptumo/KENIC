@@ -441,7 +441,7 @@ Page 70052 "Contract Management Header"
         PPSetup.TestField("Legal Dept Code");
 
         if UserRec.Get(UserId) then
-            if Emp.Get(UserRec."Employee No.") then
+            if Emp.Get(UserRec."Employee No") then
                 if UserRec."Global Dimension 1 Code" <> PPSetup."Legal Dept Code" then
                     Error('You are not allowed to modify this record');
 

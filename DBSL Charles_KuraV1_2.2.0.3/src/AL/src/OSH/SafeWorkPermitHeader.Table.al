@@ -257,7 +257,7 @@ Table 69441 "Safe Work Permit Header"
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then
             Employee.Reset;
-        Employee.SetRange("No.", UserSetup."Employee No.");
+        Employee.SetRange("No.", UserSetup."Employee No");
         if Employee.FindSet then begin
             "Region ID" := UserSetup."Region Code";
             "Directorate ID" := Employee."Directorate Code";

@@ -228,7 +228,7 @@
 //         UserSetup.SetRange("User ID",UserId);
 //         if UserSetup.FindSet then  begin
 //           Employee.Reset;
-//           Employee.SetRange("No.",UserSetup."Employee No.");
+//           Employee.SetRange("No.",UserSetup."Employee No");
 //           if Employee.FindSet then begin
 //             Directorate:=Employee."Directorate Code";
 //             Department:=Employee."Department Code";
@@ -257,7 +257,7 @@
 //         UserSetup.SetRange("User ID",UserId);
 //         if UserSetup.FindSet then  begin
 //           Employee.Reset;
-//           Employee.SetRange("No.",UserSetup."Employee No.");
+//           Employee.SetRange("No.",UserSetup."Employee No");
 //           if Employee.FindSet then begin
 //             Directorate:=Employee."Directorate Code";
 //             Department:=Employee."Department Code";

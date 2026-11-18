@@ -178,7 +178,7 @@ Table 72366 "Survey Request Header"
             UserSetup.SetRange(UserSetup."User ID", UpperCase(UserId));
             if UserSetup.Find('-') then begin
                 Employee.Reset;
-                Employee.SetRange(Employee."No.", UserSetup."Employee No.");
+                Employee.SetRange(Employee."No.", UserSetup."Employee No");
                 if Employee.Find('-') then begin
                     "Requestor No" := Employee."No.";
                     "Requestor Name" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";

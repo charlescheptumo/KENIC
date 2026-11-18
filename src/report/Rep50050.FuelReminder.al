@@ -24,7 +24,7 @@ report 50050 "Fuel Reminder"
                         if UserSetup.findset() then begin
                             repeat
                                 Recepient := UserSetup."E-Mail";
-                                EmployeeNo := UserSetup."Employee No.";
+                                EmployeeNo := UserSetup."Employee No";
                                 EmployeeName := UserSetup."Employee Name";
 
                                 Subject := 'Reminder to refill the Fuel Card ' + FuelCardNo;

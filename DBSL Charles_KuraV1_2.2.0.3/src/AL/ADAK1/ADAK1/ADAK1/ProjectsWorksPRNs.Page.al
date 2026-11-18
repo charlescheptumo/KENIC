@@ -1375,7 +1375,7 @@ Page 75066 "Projects Works PRNs"
         if usersetup.get(UserId) then begin
             rec.Region := usersetup."Region Code";
             Rec."Shortcut Dimension 1 Code" := UserSetup."Region Code";
-            rec."Request-By No." := usersetup."Employee No.";
+            rec."Request-By No." := usersetup."Employee No";
             rec."Request-By Name" := usersetup."Employee Name"
             ;
 
@@ -1402,10 +1402,10 @@ Page 75066 "Projects Works PRNs"
         if usersetup.get(UserId) then begin
             rec.Region := usersetup."Region Code";
             Rec."Shortcut Dimension 1 Code" := UserSetup."Region Code";
-            rec."Request-By No." := usersetup."Employee No.";
+            rec."Request-By No." := usersetup."Employee No";
             rec."Request-By Name" := usersetup."Employee Name"
             ;
-            if emp.get(UserSetup."Employee No.") then begin
+            if emp.get(UserSetup."Employee No") then begin
                 rec."Directorate Code" := emp."Directorate Code";
                 rec."Department Code" := emp."Department Code";
             end;
@@ -1429,10 +1429,10 @@ Page 75066 "Projects Works PRNs"
         if usersetup.get(UserId) then begin
             rec.Region := usersetup."Region Code";
             Rec."Shortcut Dimension 1 Code" := UserSetup."Region Code";
-            rec."Request-By No." := usersetup."Employee No.";
+            rec."Request-By No." := usersetup."Employee No";
             rec."Request-By Name" := usersetup."Employee Name"
             ;
-            if emp.get(UserSetup."Employee No.") then begin
+            if emp.get(UserSetup."Employee No") then begin
                 rec."Directorate Code" := emp."Directorate Code";
                 rec."Department Code" := emp."Department Code";
             end;
@@ -1464,10 +1464,10 @@ Page 75066 "Projects Works PRNs"
         if usersetup.get(UserId) then begin
             rec.Region := usersetup."Region Code";
             Rec."Shortcut Dimension 1 Code" := UserSetup."Region Code";
-            rec."Request-By No." := usersetup."Employee No.";
+            rec."Request-By No." := usersetup."Employee No";
             rec."Request-By Name" := usersetup."Employee Name"
             ;
-            if emp.get(UserSetup."Employee No.") then begin
+            if emp.get(UserSetup."Employee No") then begin
                 rec."Directorate Code" := emp."Directorate Code";
                 rec."Department Code" := emp."Department Code";
             end;

@@ -132,7 +132,7 @@ Page 57075 "Posted Receipt"
 
                 trigger OnAction()
                 begin
-                   // PaymentPost.PostReceipt(Rec);
+                    // PaymentPost.PostReceipt(Rec);
                 end;
             }
             action("Print report")
@@ -148,7 +148,7 @@ Page 57075 "Posted Receipt"
                     Report.Run(56003, true, true, Rec);
                 end;
             }
-          action(AdjustTransaction)
+            action(AdjustTransaction)
             {
                 ApplicationArea = Basic, Suite;
                 Caption = 'Adjust Receipt';
@@ -157,52 +157,63 @@ Page 57075 "Posted Receipt"
                 Scope = Repeater;
                 ToolTip = 'Adjust a posted manual receipt.';
                 enabled = True;
- 
+
                 trigger OnAction()
                 var
                     NewReceipt: Record "Receipts Header1";
                     ReceiptLine: Record "Receipt Lines1";
                     NewReceiptLine: Record "Receipt Lines1";
+                    existingReceipt: Record "Receipts Header1";
                 begin
-                    if not Confirm(
-                        'Do you want to create an adjustment receipt for Receipt %1?',
-                        false,
-                        Rec."No.")
-                    then
+                    if not Confirm('Do you want to create an adjustment receipt for Receipt %1?', false, Rec."No.") then
                         exit;
- 
+
+                    //Ensure we don't adjust another adjustment
+                    if Rec."Adjustment Receipt?" = true then begin
+                        Error('Error: You can only adjust receipts that have not ticked Adjustment Receipt');
+                    end;
+
+                    //Ensure we don't create multiple adjustment receipts for same receipt
+                    existingReceipt.Reset();
+                    existingReceipt.SetRange(existingReceipt."Adjustment for", Rec."No.");
+                    if existingReceipt.FindFirst() then begin
+                        Error('Error: This receipt has already been adjusted check receipt %1', existingReceipt."No.");
+                    end;
+
                     // Create Header
                     NewReceipt.Init();
                     NewReceipt.TransferFields(Rec);
- 
+
                     NewReceipt."No." := '';
                     NewReceipt."Adjustment Receipt?" := true;
                     NewReceipt.Posted := false;
                     NewReceipt."Posted By" := '';
                     NewReceipt."Posted Date" := 0D;
                     NewReceipt."Posted Time" := 0T;
- 
-                    NewReceipt.Validate("Adjustment for", Rec."No.");
- 
+
+                    NewReceipt."Adjustment for" := Rec."Cocca No.";
+
                     NewReceipt.Insert(true);
- 
+
                     // Copy Lines
                     ReceiptLine.SetRange("Receipt No.", Rec."No.");
                     if ReceiptLine.FindSet() then
                         repeat
                             NewReceiptLine.Init();
                             NewReceiptLine.TransferFields(ReceiptLine);
- 
+
                             // Point to new receipt
                             NewReceiptLine.Validate("Receipt No.", NewReceipt."No.");
- 
+
                             // If line no. is auto-generated clear it
                             // NewReceiptLine."Line No." := 0;
- 
+
                             NewReceiptLine.Insert(true);
                         until ReceiptLine.Next() = 0;
- 
-                    Message('Adjustment Receipt %1 has been created for Receipt %2.', NewReceipt."No.", Rec."No.");
+
+                    Message('Success: Adjustment Receipt %1 has been created for Receipt %2.', NewReceipt."No.", Rec."No.");
+                    Page.Run(Page::Receipt, NewReceipt);
+                    PaymentPost.SendAdjustmentReceipt(NewReceipt);
                 end;
             }
 
@@ -246,7 +257,7 @@ Page 57075 "Posted Receipt"
                 Image = ReverseRegister;
                 Scope = Repeater;
                 ToolTip = 'Reverse a posted general ledger entry.';
-                Enabled =false;
+                Enabled = false;
 
 
                 trigger OnAction()

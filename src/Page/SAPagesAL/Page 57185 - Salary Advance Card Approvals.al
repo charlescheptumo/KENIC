@@ -150,7 +150,7 @@ page 57185 "Salary Advance Card Approvals"
         Usersetup.SETRANGE("User ID", Rec."Created By");
         IF Usersetup.FINDSET THEN BEGIN
 
-            Rec."Account No." := Usersetup."Employee No.";
+            Rec."Account No." := Usersetup."Employee No";
             Rec."Account Name" := Usersetup."Employee Name";
         END;
 

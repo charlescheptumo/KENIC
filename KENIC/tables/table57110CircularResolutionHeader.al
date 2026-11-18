@@ -229,8 +229,8 @@ table 57110 "Circular Resolution Header"
 
         // Auto-populate Department Code from User Setup's Employee
         if "Department Code" = '' then begin
-            if UserSetup.Get(UserId) and (UserSetup."Employee No." <> '') then begin
-                Emp.SetRange("No.", UserSetup."Employee No.");
+            if UserSetup.Get(UserId) and (UserSetup."Employee No" <> '') then begin
+                Emp.SetRange("No.", UserSetup."Employee No");
                 if Emp.FindFirst() then
                     "Department Code" := Emp."Department Code";
             end;

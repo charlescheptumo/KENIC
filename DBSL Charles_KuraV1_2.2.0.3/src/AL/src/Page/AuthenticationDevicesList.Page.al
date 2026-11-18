@@ -316,11 +316,8 @@ Page 56014 "Authentication Devices  List"
                     PromotedCategory = Process;
                     ShortCutKey = 'F7';
                     ToolTip = 'Executes the Statistics action.';
-
-                    trigger OnAction()
-                    begin
-                        Rec.OpenSalesOrderStatistics;
-                    end;
+                    RunObject = Page "Sales Order Statistics";
+                    RunPageOnRec = true;
                 }
                 action(Approvals)
                 {

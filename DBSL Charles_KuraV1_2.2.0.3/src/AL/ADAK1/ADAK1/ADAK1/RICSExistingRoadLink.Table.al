@@ -242,7 +242,7 @@ Table 72118 "RICS Existing Road Link"
 
         if UserSetup.Get(UserId) then begin
             Employee.Reset;
-            Employee.SetRange(Employee."No.", UserSetup."Employee No.");
+            Employee.SetRange(Employee."No.", UserSetup."Employee No");
             if Employee.FindSet then begin
                 "Region Code" := Employee."Global Dimension 1 Code";
                 "Department Code" := Employee."Department Code";

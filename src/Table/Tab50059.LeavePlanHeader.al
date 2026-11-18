@@ -263,7 +263,7 @@ table 50059 "Leave Plan Header"
             CheckEmployeePrivacyBlocked(Employee);
             Employee.TestField(Disabled, false);
             UserSetup.Get("Employee No.");
-            if UserSetup."Employee No." <> '' then
+            if UserSetup."Employee No" <> '' then
                 AddToMyLeavePlans(Employee."User ID");
         end;
     end;

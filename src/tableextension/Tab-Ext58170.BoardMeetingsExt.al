@@ -6,6 +6,7 @@ tableextension 58170 "Board Meetings Ext" extends "Board Meetings"
         {
             Caption = 'Convener No.';
             TableRelation = "Board Members"."Personal No";
+
             DataClassification = ToBeClassified;
         }
     }

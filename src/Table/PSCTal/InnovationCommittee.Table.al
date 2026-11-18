@@ -222,9 +222,9 @@ Table 80257 "Innovation Committee"
         if UserSetup.FindSet then begin
             "Raised By" := UserId;
             Name := UserSetup."Employee Name";
-            "Staff Id" := UserSetup."Employee No.";
+            "Staff Id" := UserSetup."Employee No";
             Emp.Reset;
-            Emp.SetRange("No.", UserSetup."Employee No.");
+            Emp.SetRange("No.", UserSetup."Employee No");
             if Emp.FindSet then
                 Designation := Emp."Job Title";
             "Primary Department" := Emp."Department Code";

@@ -6,7 +6,7 @@ PageExtension 50063 "pageextension50063" extends "Approval User Setup"
     {
         addafter("Approval Administrator")
         {
-            field("Employee No."; Rec."Employee No.")
+            field("Employee No."; Rec."Employee No")
             {
                 ApplicationArea = Basic;
                 ToolTip = 'Specifies the value of the Employee No. field.';

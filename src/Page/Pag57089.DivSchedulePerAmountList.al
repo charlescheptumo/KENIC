@@ -5,7 +5,7 @@ Page 57089 "Div Schedule  Per Amount List"
     Caption = 'Div Schedule  Per Amount List';
     CardPageID = "Div Schedule Per Amount";
     Editable = false;
-    PageType = List;
+    PageType = ListPart;
     SourceTable = "Budget Commitment";
     UsageCategory = Tasks;
 

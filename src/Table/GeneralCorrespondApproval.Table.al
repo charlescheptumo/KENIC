@@ -36,8 +36,8 @@ Table 50085 "General Correspond Approval"
                 UserSetup.Reset;
                 UserSetup.SetRange(UserSetup."User ID", "User ID");
                 if UserSetup.FindSet then begin
-                    UserSetup.TestField("Employee No.");
-                    "Employee No" := UserSetup."Employee No.";
+                    UserSetup.TestField("Employee No");
+                    "Employee No" := UserSetup."Employee No";
                     "Employee Email" := UserSetup."E-Mail";
                     Validate("Employee No");
 

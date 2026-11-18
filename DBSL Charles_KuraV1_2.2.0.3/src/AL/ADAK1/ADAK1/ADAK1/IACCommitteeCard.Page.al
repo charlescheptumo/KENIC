@@ -583,7 +583,7 @@ Page 75303 "IAC Committee Card"
     //            UserSetup.Reset;
     //     //     UserSetup.SetRange("User I D",UserId);
     //     //     if UserSetup.FindSet then begin
-    //     //         ImprestReq.Reques := r:=UserSetup."Employee No.";
+    //     //         ImprestReq.Reques := r:=UserSetup."Employee No";
     //     //  end;
     //            ImprestReq.Validate(Requestor);
     //     //     ImprestReq.D := Today;
@@ -620,7 +620,7 @@ Page 75303 "IAC Committee Card"
     //     //      //notify every employee
     //             /*
     //                     UserSetup.RESET;
-    //                     UserSetup.SETRANGE("Employee No.",TrainingPart."Employee Code");
+    //                     UserSetup.SETRANGE("Employee No",TrainingPart."Employee Code");
     //                     IF UserSetup.FINDSET THEN BEGIN
     //                         Email:=UserSetup."E-Mail";
     //                         //send notification email

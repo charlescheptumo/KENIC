@@ -46,7 +46,7 @@ page 50115 "Suggestions Box"
     trigger OnAfterGetRecord()
     begin
         // UserSetup.Get(Rec."Assign to Employee No");
-        // if UserSetup."Employee No." <> '' then
+        // if UserSetup."Employee No" <> '' then
         //     IsAssignedUser := true;
     end;
 
@@ -54,9 +54,9 @@ page 50115 "Suggestions Box"
     begin
         // IsAssignedUser := false;
         // UserSetup.Get(Rec."Requested By");
-        // if UserSetup."Employee No." <> '' then
+        // if UserSetup."Employee No" <> '' then
         //     IsAssignedUser := true;
-        Rec.SetFilter(Rec."Requested By", UserSetup."Employee No.");
+        Rec.SetFilter(Rec."Requested By", UserSetup."Employee No");
     end;
 
     var

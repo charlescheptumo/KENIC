@@ -47,10 +47,10 @@ codeunit 50101 ETIMSGets
         jsonResponse: JsonObject;
         jsonValue: JsonValue;
         evironmentInfo: Codeunit "Environment Information";
-        testMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        prodMiddlewareUrl: Label 'http://135.220.97.93:8087/api/';
-        testETIMSUrl: Label 'http://135.220.97.93:8088/';
-        prodETIMSUrl: Label 'http://135.220.97.93:8088/';
+        testMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        prodMiddlewareUrl: Label 'http://41.90.10.39:9057/api/';
+        testETIMSUrl: Label 'http://41.90.10.39:8088/';
+        prodETIMSUrl: Label 'http://41.90.10.39:8088/';
         lastreqDate: Text;
         ReqDate: Text;
         ETIMSDeviceInfo: Record "eTims-Branch Info";
@@ -118,7 +118,6 @@ codeunit 50101 ETIMSGets
         configTin := company."Company Tin";
         configBranchId := company."Branch ID";
         configCmcKey := company."ETIMS CMC Key";
-
         if (configTin = '') or (configBranchId = '') or (configCmcKey = '') then
             exit('Missing ETIMS config: Tin/Branch ID/CMC Key');
 
@@ -166,10 +165,8 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             exit('Request failed: HttpClient.Send returned false');
-
         if not ResponseMessage.Content.ReadAs(Response) then
             exit('Request failed: could not read response');
-
         if not ResponseMessage.IsSuccessStatusCode then
             exit(StrSubstNo('Request failed: HTTP %1. Body: %2',
                 ResponseMessage.HttpStatusCode(),
@@ -191,13 +188,10 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         resultCd := '';
         resultMsg := '';
-
         if jsonResponse.Get('resultCd', tok) then
             resultCd := tok.AsValue().AsText();
-
         if jsonResponse.Get('resultMsg', tok) then
             resultMsg := tok.AsValue().AsText();
-
         if resultCd <> '000' then
             exit(StrSubstNo('ETIMS error %1: %2', resultCd, resultMsg));
 
@@ -207,7 +201,6 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not jsonResponse.Get('data', dataTok) then
             exit('Invalid response: missing data');
-
         if not dataTok.AsObject().Get('custList', custTok) then
             exit('Invalid response: missing data.custList');
 
@@ -235,7 +228,6 @@ codeunit 50101 ETIMSGets
             //----------------------------------
             EtimsCustomer.Reset();
             EtimsCustomer.SetRange("TIN", tin);
-
             if not EtimsCustomer.FindFirst() then begin
                 EtimsCustomer.Init();
                 EtimsCustomer."TIN" := tin;
@@ -249,11 +241,9 @@ codeunit 50101 ETIMSGets
             EtimsCustomer."Location Description" := locDesc;
 
             EtimsCustomer.Modify(true);
-
         end;
 
         exit('Customer update successful');
-
     end;
 
     procedure SelectETIMSNotices(): Text
@@ -298,7 +288,6 @@ codeunit 50101 ETIMSGets
         configTin := company."Company Tin";
         configBranchId := company."Branch ID";
         configCmcKey := company."ETIMS CMC Key";
-
         if (configTin = '') or (configBranchId = '') or (configCmcKey = '') then
             exit('Missing ETIMS config');
 
@@ -334,7 +323,6 @@ codeunit 50101 ETIMSGets
         HttpContent.WriteFrom(Format(JsonBodyObj));
 
         HttpContent.GetHeaders(ContentHeaders);
-
         if ContentHeaders.Contains('Content-Type') then
             ContentHeaders.Remove('Content-Type');
 
@@ -348,10 +336,8 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             exit('Request failed');
-
         if not ResponseMessage.Content.ReadAs(Response) then
             exit('Cannot read response');
-
         if not ResponseMessage.IsSuccessStatusCode then
             exit(StrSubstNo(
                 'HTTP %1 %2',
@@ -365,7 +351,6 @@ codeunit 50101 ETIMSGets
         Response := _ETIMSHelperFunctions.NormalizeJsonResponse(Response);
 
         Clear(jsonResponse);
-
         if not jsonResponse.ReadFrom(Response) then
             exit('Invalid JSON');
 
@@ -375,13 +360,10 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         resultCd := '';
         resultMsg := '';
-
         if jsonResponse.Get('resultCd', tok) then
             resultCd := tok.AsValue().AsText();
-
         if jsonResponse.Get('resultMsg', tok) then
             resultMsg := tok.AsValue().AsText();
-
         if resultCd <> '000' then
             exit(StrSubstNo('ETIMS error %1 %2', resultCd, resultMsg));
 
@@ -391,7 +373,6 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not jsonResponse.Get('data', dataTok) then
             exit('Missing data');
-
         if not dataTok.AsObject().Get('noticeList', noticeTok) then
             exit('Missing noticeList');
 
@@ -418,7 +399,6 @@ codeunit 50101 ETIMSGets
             //----------------------------------
             EtimsNotice.Reset();
             EtimsNotice.SetRange("Notice No", noticeNo);
-
             if not EtimsNotice.FindFirst() then begin
                 EtimsNotice.Init();
                 EtimsNotice."Notice No" := noticeNo;
@@ -431,11 +411,9 @@ codeunit 50101 ETIMSGets
             EtimsNotice."Register Date" := regDt;
 
             EtimsNotice.Modify(true);
-
         end;
 
         exit('Notice update successful');
-
     end;
 
     procedure SelectETIMSItems(): Text
@@ -483,7 +461,6 @@ codeunit 50101 ETIMSGets
         configTin := company."Company Tin";
         configBranchId := company."Branch ID";
         configCmcKey := company."ETIMS CMC Key";
-
         if (configTin = '') or (configBranchId = '') or (configCmcKey = '') then
             exit('Missing ETIMS config');
 
@@ -519,7 +496,6 @@ codeunit 50101 ETIMSGets
         HttpContent.WriteFrom(Format(JsonBodyObj));
 
         HttpContent.GetHeaders(ContentHeaders);
-
         if ContentHeaders.Contains('Content-Type') then
             ContentHeaders.Remove('Content-Type');
 
@@ -533,10 +509,8 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             exit('Request failed');
-
         if not ResponseMessage.Content.ReadAs(Response) then
             exit('Cannot read response');
-
         if not ResponseMessage.IsSuccessStatusCode then
             exit('HTTP error');
 
@@ -547,7 +521,6 @@ codeunit 50101 ETIMSGets
         Response := _ETIMSHelperFunctions.NormalizeJsonResponse(Response);
 
         Clear(jsonResponse);
-
         if not jsonResponse.ReadFrom(Response) then
             exit('Invalid JSON');
 
@@ -557,10 +530,8 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if jsonResponse.Get('resultCd', tok) then
             resultCd := tok.AsValue().AsText();
-
         if jsonResponse.Get('resultMsg', tok) then
             resultMsg := tok.AsValue().AsText();
-
         if resultCd <> '000' then
             exit(resultMsg);
 
@@ -570,7 +541,6 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not jsonResponse.Get('data', dataTok) then
             exit('Missing data');
-
         if not dataTok.AsObject().Get('itemList', itemTok) then
             exit('Missing itemList');
 
@@ -603,7 +573,6 @@ codeunit 50101 ETIMSGets
             //----------------------------------
             EtimsItem.Reset();
             EtimsItem.SetRange("Item Code", itemCd);
-
             if not EtimsItem.FindFirst() then begin
                 EtimsItem.Init();
                 EtimsItem."Item Code" := itemCd;
@@ -622,11 +591,9 @@ codeunit 50101 ETIMSGets
             EtimsItem."Use YN" := useYn;
 
             EtimsItem.Modify(true);
-
         end;
 
         exit('Items updated');
-
     end;
 
     procedure SelectETIMSImportItems(): Text
@@ -681,7 +648,6 @@ codeunit 50101 ETIMSGets
         configTin := company."Company Tin";
         configBranchId := company."Branch ID";
         configCmcKey := company."ETIMS CMC Key";
-
         if (configTin = '') or (configBranchId = '') or (configCmcKey = '') then
             exit('Missing ETIMS config');
 
@@ -718,7 +684,6 @@ codeunit 50101 ETIMSGets
         HttpContent.WriteFrom(Format(JsonBodyObj));
 
         HttpContent.GetHeaders(ContentHeaders);
-
         if ContentHeaders.Contains('Content-Type') then
             ContentHeaders.Remove('Content-Type');
 
@@ -732,10 +697,8 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             exit('Request failed');
-
         if not ResponseMessage.Content.ReadAs(Response) then
             exit('Cannot read response');
-
         if not ResponseMessage.IsSuccessStatusCode then
             exit('HTTP error');
 
@@ -746,7 +709,6 @@ codeunit 50101 ETIMSGets
         Response := _ETIMSHelperFunctions.NormalizeJsonResponse(Response);
 
         Clear(jsonResponse);
-
         if not jsonResponse.ReadFrom(Response) then
             exit('Invalid JSON');
 
@@ -756,10 +718,8 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if jsonResponse.Get('resultCd', tok) then
             resultCd := tok.AsValue().AsText();
-
         if jsonResponse.Get('resultMsg', tok) then
             resultMsg := tok.AsValue().AsText();
-
         if resultCd <> '000' then
             exit(resultMsg);
 
@@ -769,7 +729,6 @@ codeunit 50101 ETIMSGets
         //----------------------------------
         if not jsonResponse.Get('data', dataTok) then
             exit('Missing data');
-
         if not dataTok.AsObject().Get('itemList', itemTok) then
             exit('Missing itemList');
 
@@ -811,7 +770,6 @@ codeunit 50101 ETIMSGets
             ImportItem.Reset();
             ImportItem.SetRange("Task Code", taskCd);
             ImportItem.SetRange("Item Seq", itemSeq);
-
             if not ImportItem.FindFirst() then begin
                 ImportItem.Init();
                 ImportItem."Task Code" := taskCd;
@@ -838,11 +796,9 @@ codeunit 50101 ETIMSGets
             ImportItem."Exchange Rate" := exRate;
 
             ImportItem.Modify(true);
-
         end;
 
         exit('Import items updated');
-
     end;
 
     procedure SelectETIMSPurchases(): Text
@@ -910,8 +866,6 @@ codeunit 50101 ETIMSGets
         ContentHeaders.Add('Content-Type', 'application/json');
 
         RequestMessage.Content(HttpContent);
-
-
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             exit('Request failed');
 
@@ -925,7 +879,6 @@ codeunit 50101 ETIMSGets
 
         jsonResponse.Get('resultCd', tok);
         resultCd := tok.AsValue().AsText();
-
         if resultCd <> '000' then
             exit('ETIMS error');
 
@@ -934,8 +887,6 @@ codeunit 50101 ETIMSGets
         dataTok.AsObject().Get('saleList', purchaseTok);
 
         purchaseArray := purchaseTok.AsArray();
-
-
         foreach purchaseTok in purchaseArray do begin
 
             purchaseObj := purchaseTok.AsObject();
@@ -950,7 +901,6 @@ codeunit 50101 ETIMSGets
             PurchaseHeader.Reset();
             PurchaseHeader.SetRange("Supplier TIN", spplrTin);
             PurchaseHeader.SetRange("Invoice No", invNo);
-
             if not PurchaseHeader.FindFirst() then begin
                 PurchaseHeader.Init();
                 PurchaseHeader."Supplier TIN" := spplrTin;
@@ -970,12 +920,9 @@ codeunit 50101 ETIMSGets
                 _ETIMSHelperFunctions.GetDecimalOrZero(purchaseObj, 'totTaxAmt');
 
             PurchaseHeader.Modify(true);
-
-
             if purchaseObj.Get('itemList', lineTok) then begin
 
                 lineArray := lineTok.AsArray();
-
                 foreach lineTok in lineArray do begin
 
                     lineObj := lineTok.AsObject();
@@ -986,7 +933,6 @@ codeunit 50101 ETIMSGets
                     PurchaseLine.SetRange(
                         "Item Seq",
                         _ETIMSHelperFunctions.GetIntegerOrZero(lineObj, 'itemSeq'));
-
                     if not PurchaseLine.FindFirst() then begin
                         PurchaseLine.Init();
                         PurchaseLine."Supplier TIN" := spplrTin;
@@ -1017,14 +963,11 @@ codeunit 50101 ETIMSGets
                         _ETIMSHelperFunctions.GetDecimalOrZero(lineObj, 'totAmt');
 
                     PurchaseLine.Modify(true);
-
                 end;
             end;
-
         end;
 
         exit('Purchases updated');
-
     end;
 
     procedure SelectETIMSStock(): Text
@@ -1091,7 +1034,6 @@ codeunit 50101 ETIMSGets
         ContentHeaders.Add('Content-Type', 'application/json');
 
         RequestMessage.Content(HttpContent);
-
         if not HttpClient.Send(RequestMessage, ResponseMessage) then
             exit('Request failed');
 
@@ -1104,7 +1046,6 @@ codeunit 50101 ETIMSGets
 
         jsonResponse.Get('resultCd', tok);
         resultCd := tok.AsValue().AsText();
-
         if resultCd <> '000' then
             exit('ETIMS error');
 
@@ -1112,7 +1053,6 @@ codeunit 50101 ETIMSGets
         dataTok.AsObject().Get('stockList', stockTok);
 
         stockArray := stockTok.AsArray();
-
         foreach stockTok in stockArray do begin
 
             stockObj := stockTok.AsObject();
@@ -1125,7 +1065,6 @@ codeunit 50101 ETIMSGets
             StockHeader.SetRange("Customer TIN", custTin);
             StockHeader.SetRange("Customer Branch ID", bhfId);
             StockHeader.SetRange("SAR No", sarNo);
-
             if not StockHeader.FindFirst() then begin
                 StockHeader.Init();
                 StockHeader."Customer TIN" := custTin;
@@ -1154,7 +1093,6 @@ codeunit 50101 ETIMSGets
             if stockObj.Get('itemList', lineTok) then begin
 
                 lineArray := lineTok.AsArray();
-
                 foreach lineTok in lineArray do begin
 
                     lineObj := lineTok.AsObject();
@@ -1165,7 +1103,6 @@ codeunit 50101 ETIMSGets
                     StockLine.SetRange("SAR No", sarNo);
                     StockLine.SetRange("Item Seq",
                         _ETIMSHelperFunctions.GetIntegerOrZero(lineObj, 'itemSeq'));
-
                     if not StockLine.FindFirst() then begin
                         StockLine.Init();
                         StockLine."Customer TIN" := custTin;
@@ -1197,10 +1134,8 @@ codeunit 50101 ETIMSGets
                         _ETIMSHelperFunctions.GetDecimalOrZero(lineObj, 'totAmt');
 
                     StockLine.Modify(true);
-
                 end;
             end;
-
         end;
 
         exit('Stock updated');

@@ -134,7 +134,6 @@ Page 72375 "Multi Year Plan Card"
             {
                 Caption = 'Multi Year Work';
                 SubPageLink = "Road Work Program ID" = field(Code);
-                ToolTip = 'Multi Year Work';
             }
         }
     }

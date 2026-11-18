@@ -11,7 +11,7 @@ Page 57033 "Imprest Memo"
     Permissions = TableData "Approval Entry" = RIMD;
     PromotedActionCategories = 'New,Process,Report,New Document,Approve,Request Approval,Prices and Discounts,Navigate,Customer';
     ApplicationArea = All;
-    Caption = 'Activity Budget';
+    Caption = 'Per Diem Claim Request';
 
     layout
     {

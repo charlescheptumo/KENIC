@@ -1015,7 +1015,7 @@ page 50197 "General Correspondence Card"
 
     begin
         if UserSetup.Get(userId) then
-            EmployeeNo := UserSetup."Employee No."
+            EmployeeNo := UserSetup."Employee No"
         else
             Error('Employee No. on the User Setup is blank');
         if Rec."Document No" = '' then begin

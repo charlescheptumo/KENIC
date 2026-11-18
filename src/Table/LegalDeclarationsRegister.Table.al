@@ -237,7 +237,7 @@ Table 50034 "Legal Declarations Register"
                 UserSetup.Reset;
                 UserSetup.SetRange("User ID", "Assigned User ID");
                 if UserSetup.FindSet then
-                    "Assigned Legal Officer" := UserSetup."Employee No.";
+                    "Assigned Legal Officer" := UserSetup."Employee No";
                 "Assigned Employee Name" := UserSetup."Employee Name"
             end;
         }
@@ -409,7 +409,7 @@ Table 50034 "Legal Declarations Register"
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then
             if UserSetup."Portal User" = false then begin
-                "Employee No" := UserSetup."Employee No.";
+                "Employee No" := UserSetup."Employee No";
                 "Employee Name" := UserSetup."Employee Name";
                 Description := Format("Process Type");
             end;

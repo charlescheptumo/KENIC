@@ -565,7 +565,7 @@ TableExtension 50012 "Purchase Header Ext" extends "Purchase Header"
                     if UsersRec."Portal User" = false then begin //exempt the portal user name
                                                                  //"Requester ID":=USERID;
                         "Request-By Name" := UsersRec."Employee Name";
-                        "Request-By No." := UsersRec."Employee No.";
+                        "Request-By No." := UsersRec."Employee No";
                         "Responsibility Center" := UsersRec."Purchase Resp. Ctr. Filter";
                         //"Shortcut Dimension 1 Code" := UsersRec."Region Code";
                         // Message("Shortcut Dimension 1 Code");
@@ -3109,7 +3109,7 @@ TableExtension 50012 "Purchase Header Ext" extends "Purchase Header"
        "Assigned User ID":=USERID;
        "Purchaser Code":=UserSetup."Salespers./Purch. Code";
        "Request-By Name":=UsersRec."Employee Name";
-       "Request-By No.":=UsersRec."Employee No.";
+       "Request-By No.":=UsersRec."Employee No";
        "Responsibility Center":=UsersRec."Purchase Resp. Ctr. Filter";
        "Location Code":=UsersRec."Purchase Resp. Ctr. Filter";
        // MESSAGE("Responsibility Center");
@@ -3190,7 +3190,7 @@ TableExtension 50012 "Purchase Header Ext" extends "Purchase Header"
     //Autopopulate The Dimension Values From Employee
     IF UserSetup.GET(USERID) THEN BEGIN
       Empl.RESET;
-      Empl.SETRANGE(Empl."No.",UserSetup."Employee No.");
+      Empl.SETRANGE(Empl."No.",UserSetup."Employee No");
       IF Empl.FINDSET THEN BEGIN
         "Shortcut Dimension 1 Code":=Empl."Global Dimension 1 Code";
         VALIDATE("Shortcut Dimension 1 Code");

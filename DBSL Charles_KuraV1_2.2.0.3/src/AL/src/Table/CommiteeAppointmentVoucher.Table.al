@@ -187,9 +187,9 @@ Table 69638 "Commitee Appointment Voucher"
         "Raised By" := UserId;
         UserSetup.Reset;
         if UserSetup.Get(UserId) then begin
-            UserSetup.TestField("Employee No.");
+            UserSetup.TestField("Employee No");
             Employee.Reset;
-            Employee.SetRange("No.", UserSetup."Employee No.");
+            Employee.SetRange("No.", UserSetup."Employee No");
             if Employee.FindFirst then begin
                 Name := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
                 "Staff ID" := Employee."No.";

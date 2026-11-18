@@ -275,22 +275,17 @@ Page 75301 "Framework Contract Card"
             {
                 Caption = 'O&rder';
                 Image = "Order";
-                action(Statistics)
+                action(PurchaseOrderStatistics)
                 {
-                    ApplicationArea = Suite;
+                    ApplicationArea = Basic, Suite;
                     Caption = 'Statistics';
+                    Enabled = Rec."No." <> '';
                     Image = Statistics;
-                    Promoted = true;
-                    PromotedCategory = Category8;
-                    PromotedIsBig = true;
                     ShortCutKey = 'F7';
+                    Visible = true;
                     ToolTip = 'View statistical information, such as the value of posted entries, for the record.';
-
-                    trigger OnAction()
-                    begin
-                        Rec.OpenPurchaseOrderStatistics;
-                        // PurchCalcDiscByType.ResetRecalculateInvoiceDisc(Rec);
-                    end;
+                    RunObject = Page "Purchase Order Statistics";
+                    RunPageOnRec = true;
                 }
                 action(Card)
                 {

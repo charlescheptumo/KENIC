@@ -383,7 +383,7 @@ Table 57024 "Inter Bank Transfer"
         if UserSetup.Get(UserId) then begin
             UserSetup.TestField(UserSetup."Purchase Resp. Ctr. Filter");
             "Responsibility Center" := UserSetup."Purchase Resp. Ctr. Filter";
-            if Emp.Get(UserSetup."Employee No.") then begin
+            if Emp.Get(UserSetup."Employee No") then begin
                 "Region Code" := "Responsibility Center";
                 //VALIDATE("Region Code");
                 //"Constituency Code":=Emp."Global Dimension 2 Code";

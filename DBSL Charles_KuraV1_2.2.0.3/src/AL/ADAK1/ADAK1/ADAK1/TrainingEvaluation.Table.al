@@ -252,8 +252,8 @@ Table 69040 "Training Evaluation"
         /*//"Request ID":=USERID;
          IF UserSetup.GET(USERID) THEN
          BEGIN
-         "Employee No":=UserSetup."Employee No.";
-          IF empl.GET(UserSetup."Employee No.") THEN
+         "Employee No":=UserSetup."Employee No";
+          IF empl.GET(UserSetup."Employee No") THEN
           "Employee Name":=empl."First Name"+ ' '+empl."Middle Name"+' '+empl."Last Name";
           "Department Code":=empl."Global Dimension 1 Code";
            Designation:=empl."Job Title";

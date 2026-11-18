@@ -281,7 +281,7 @@ page 50065 "CEO Appointment"
         end;
         UserSet.Get(UserId);
         if Rec."Requested By Employee No" = '' then begin
-            Rec."Requested By Employee No" := UserSet."Employee No.";
+            Rec."Requested By Employee No" := UserSet."Employee No";
             Rec."Requested by Employee Name" := UserSet."Employee Name";
         end
     end;
@@ -289,10 +289,10 @@ page 50065 "CEO Appointment"
     trigger OnAfterGetRecord()
     begin
         UserSet.Get(UserId);
-        Rec."Requested by Employee No" := UserSet."Employee No.";
+        Rec."Requested by Employee No" := UserSet."Employee No";
         Rec."Requested by Employee Name" := UserSet."Employee Name";
         if Rec."Requested By Employee No" = '' then begin
-            Rec."Requested By Employee No" := UserSet."Employee No.";
+            Rec."Requested By Employee No" := UserSet."Employee No";
             Rec."Requested By Employee Name" := UserSet."Employee Name";
         end
     end;

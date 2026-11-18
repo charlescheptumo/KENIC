@@ -103,7 +103,7 @@ Table 56201 "Quarterly Appraisal"
         "Created By" := UserId;
 
         Usersetup.Get("Created By");
-        "Employee No" := Usersetup."Employee No.";
+        "Employee No" := Usersetup."Employee No";
         "Employee Name" := Usersetup."Employee Name";
         ApproverUSerID := Usersetup."Approver ID";
 

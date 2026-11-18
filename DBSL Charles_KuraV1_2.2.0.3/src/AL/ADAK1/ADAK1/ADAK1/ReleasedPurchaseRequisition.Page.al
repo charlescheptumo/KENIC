@@ -123,7 +123,7 @@ Page 70020 "Released Purchase Requisition"
                     trigger OnAction()
                     begin
                         if UserSetup.Get(UserId) then
-                            if Rec."Employee Code" <> UserSetup."Employee No." then begin
+                            if Rec."Employee Code" <> UserSetup."Employee No" then begin
                                 Message('You can only send for approval the document that you prepared');
                                 exit;
                             end;

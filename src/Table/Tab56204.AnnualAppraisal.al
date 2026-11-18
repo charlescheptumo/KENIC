@@ -125,7 +125,7 @@ Table 56204 "Annual Appraisal"
         "Created By" := UserId;
 
         Usersetup.Get("Created By");
-        "Employee No" := Usersetup."Employee No.";
+        "Employee No" := Usersetup."Employee No";
         "Employee Name" := Usersetup."Employee Name";
         ApproverUSerID := Usersetup."Approver ID";
 

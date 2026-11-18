@@ -869,14 +869,14 @@ Codeunit 50012 "HRPortal"
     //     UserSetup: Record "User Setup";
     // begin
     //     /*UserSetup.RESET;
-    //     UserSetup.SETRANGE("Employee No.",employeeNo);
+    //     UserSetup.SETRANGE("Employee No",employeeNo);
     //     IF UserSetup.FINDSET THEN BEGIN
     //       Hremployee.RESET;
     //       Hremployee.SETRANGE("No.",employeeNo);
     //       IF Hremployee.FINDSET THEN BEGIN
     //         IF needsNo = '' THEN BEGIN
     //           trainingNeedsHeader.INIT;
-    //           trainingNeedsHeader."Employee No":=UserSetup."Employee No.";
+    //           trainingNeedsHeader."Employee No":=UserSetup."Employee No";
     //           trainingNeedsHeader."Employee Name":=UserSetup."Employee Name";
     //           trainingNeedsHeader.Department:=Hremployee.Department;
     //           trainingNeedsHeader."Job Title":=Hremployee."Job Title";
@@ -1387,7 +1387,7 @@ Codeunit 50012 "HRPortal"
     begin
         status := 'danger*Your training requisition could not be captured';
         Usersetup.Reset();
-        Usersetup.SetRange("Employee No.", empNo);
+        Usersetup.SetRange("Employee No", empNo);
         if Usersetup.FindFirst() THEN BEGIN
             Name := Usersetup."Employee Name";
             UserID := Usersetup."User ID";
@@ -2863,7 +2863,7 @@ Codeunit 50012 "HRPortal"
                 ImprestMemo."Funding Source" := '15% OPS';
             ImprestMemo.Project := job;
             tbl_userSetup.Reset;
-            tbl_userSetup.SetRange("Employee No.", employeeNo);
+            tbl_userSetup.SetRange("Employee No", employeeNo);
             if tbl_userSetup.FindFirst then
                 if not tbl_userSetup."Allow Create Imprest" then
                     error('Only Administrators can create imprests.');
@@ -3804,7 +3804,7 @@ Codeunit 50012 "HRPortal"
         userid: Code[50];
     begin
         UserSetup.Reset;
-        UserSetup.SetRange("Employee No.", employeeNo);
+        UserSetup.SetRange("Employee No", employeeNo);
         if UserSetup.FindFirst then begin
             employeeName := UserSetup."Employee Name";
             userid := UserSetup."User ID";
@@ -4201,7 +4201,7 @@ Codeunit 50012 "HRPortal"
     // begin
     //     status := 'danger*Your Loan surrender could not be captured';
     //     Setup.Init();
-    //     Setup.Setrange("Employee No.", region);
+    //     Setup.Setrange("Employee No", region);
     //     if Setup.Findfirst() then begin
     //         EmployeeName := Setup."Employee Name";
     //     end;
@@ -4358,7 +4358,7 @@ Codeunit 50012 "HRPortal"
 
     //     // Fetch employee name using Employee No. (region)
     //     Setup.Reset();
-    //     Setup.SetRange("Employee No.", region);
+    //     Setup.SetRange("Employee No", region);
     //     if Setup.FindFirst() then
     //         EmployeeName := Setup."Employee Name"
     //     else
@@ -4510,7 +4510,7 @@ Codeunit 50012 "HRPortal"
         status := 'danger*Your Loan surrender could not be captured';
 
         Setup.Init();
-        Setup.Setrange("Employee No.", region);
+        Setup.Setrange("Employee No", region);
         if Setup.Findfirst() then begin
             EmployeeName := Setup."Employee Name";
         end else begin
@@ -5136,7 +5136,7 @@ Codeunit 50012 "HRPortal"
             myType := 'Purchase Requisition';
         status := 'danger*Your ' + myType + ' could not be captured';
         UserSetup.Reset();
-        UserSetup.SetRange("Employee No.", employeeNo);
+        UserSetup.SetRange("Employee No", employeeNo);
         If UserSetup.FindFirst() then begin
             userID := UserSetup."User ID";
         end;
@@ -7066,7 +7066,7 @@ Codeunit 50012 "HRPortal"
                     PurchaseHeader."Pay-to Vendor No." := 'VEND0001';
             END;
             UserSetup.Reset();
-            UserSetup.SetRange("Employee No.", PurchaseHeader."Request-By No.");
+            UserSetup.SetRange("Employee No", PurchaseHeader."Request-By No.");
             if UserSetup.Find('-') then begin
                 PurchaseHeader."Requester ID" := UserSetup."User ID";
             end;
@@ -7118,7 +7118,7 @@ Codeunit 50012 "HRPortal"
     //         //  IF CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) THEN
     //         //     CustomApprovals.OnSendDocForApproval(VarVariant);
     //         UserSetup.Reset();
-    //         UserSetup.SetRange("Employee No.", PurchaseHeader."Request-By No.");
+    //         UserSetup.SetRange("Employee No", PurchaseHeader."Request-By No.");
     //         if UserSetup.Find('-') then begin
     //             PurchaseHeader."Requester ID" := UserSetup."User ID";
     //         end;
@@ -7158,7 +7158,7 @@ Codeunit 50012 "HRPortal"
     //                 PurchaseHeader."Pay-to Vendor No." := 'VEND0001';
     //         END;
     //         UserSetup.Reset();
-    //         UserSetup.SetRange("Employee No.", PurchaseHeader."Request-By No.");
+    //         UserSetup.SetRange("Employee No", PurchaseHeader."Request-By No.");
     //         if UserSetup.Find('-') then begin
     //             PurchaseHeader."Requester ID" := UserSetup."User ID";
     //         end;
@@ -7244,7 +7244,7 @@ Codeunit 50012 "HRPortal"
     //         //  IF CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) THEN
     //         //     CustomApprovals.OnSendDocForApproval(VarVariant);
     //         UserSetup.Reset();
-    //         UserSetup.SetRange("Employee No.", PurchaseHeader."Request-By No.");
+    //         UserSetup.SetRange("Employee No", PurchaseHeader."Request-By No.");
     //         if UserSetup.Find('-') then begin
     //             PurchaseHeader."Requester ID" := UserSetup."User ID";
     //         end;
@@ -7286,7 +7286,7 @@ Codeunit 50012 "HRPortal"
     //                 PurchaseHeader."Pay-to Vendor No." := 'VEND0001';
     //         END;
     //         UserSetup.Reset();
-    //         UserSetup.SetRange("Employee No.", PurchaseHeader."Request-By No.");
+    //         UserSetup.SetRange("Employee No", PurchaseHeader."Request-By No.");
     //         if UserSetup.Find('-') then begin
     //             PurchaseHeader."Requester ID" := UserSetup."User ID";
     //         end;
@@ -8507,7 +8507,7 @@ Codeunit 50012 "HRPortal"
         ICTHelpdeskCategory: Record "ICT Helpdesk Category";
     begin
         UserSetup.Reset;
-        UserSetup.SetRange("Employee No.", empNo);
+        UserSetup.SetRange("Employee No", empNo);
         If UserSetup.Findset() then begin
             UserID := UserSetup."User ID";
             empName := UserSetup."Employee Name";
@@ -8845,7 +8845,7 @@ Codeunit 50012 "HRPortal"
                 helpdesk."Assigned Date" := Today();
                 helpdesk."Assigned Time" := Time;
                 helpdesk.Status := helpdesk.Status::Assigned;
-                helpdesk."Assigned To EmpNo" := UserSetup."Employee No.";
+                helpdesk."Assigned To EmpNo" := UserSetup."Employee No";
 
 
                 if helpdesk.Modify(true) then begin
@@ -8911,7 +8911,7 @@ Codeunit 50012 "HRPortal"
                 helpdesk.Status := helpdesk.Status::Escalated;
                 helpdesk."Escalated By" := helpdesk."Assigned To";
                 helpdesk."Ascalation Details" := description;
-                helpdesk."Escalated To EmpNo" := UserSetup."Employee No.";
+                helpdesk."Escalated To EmpNo" := UserSetup."Employee No";
                 if helpdesk.Modify(true) then begin
                     //Notify the requester that the issue has been escalated
                     ObjComInfo.Get;
@@ -11498,7 +11498,7 @@ Codeunit 50012 "HRPortal"
             helpdesk.Status := helpdesk.Status::"Escalated To Vendor";
             helpdesk."Escalated By" := helpdesk."Assigned To";
             helpdesk."Ascalation Details" := description;
-            //helpdesk.Escalated T:= UserSetup."Employee No.";
+            //helpdesk.Escalated T:= UserSetup."Employee No";
             if helpdesk.Modify(true) then begin
                 //Notify the requester that the issue has been escalated
 
@@ -14744,7 +14744,7 @@ Codeunit 50012 "HRPortal"
 
     begin
         tbl_userSetup.Reset();
-        tbl_userSetup.Setrange("Employee No.", employeeNo);
+        tbl_userSetup.Setrange("Employee No", employeeNo);
         if tbl_userSetup.Findset() then begin
             userid := tbl_userSetup."User ID";
         end;
@@ -18239,7 +18239,7 @@ Codeunit 50012 "HRPortal"
         EmployeeName: Text;
     begin
         Setup.Init();
-        Setup.Setrange("Employee No.", empNo);
+        Setup.Setrange("Employee No", empNo);
         if Setup.Findfirst() then begin
             EmployeeName := Setup."Employee Name";
         end;

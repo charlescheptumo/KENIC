@@ -10,7 +10,7 @@ Page 57032 "Imprest Memos"
                             Posted = const(false),
                             "Document Type" = const("Imprest Memo"));
     UsageCategory = Lists;
-    Caption = 'Activity Budgets';
+    Caption = 'Per Diem Claim Requests';
 
     layout
     {

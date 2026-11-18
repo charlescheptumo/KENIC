@@ -397,9 +397,9 @@ Table 69220 "Training Requests"
         UserSetup.Reset;
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then begin
-            "Employee Name" := UserSetup."Employee No.";
-            "Employee No." := UserSetup."Employee No.";
-            if HREmp.Get(UserSetup."Employee No.") then begin
+            "Employee Name" := UserSetup."Employee No";
+            "Employee No." := UserSetup."Employee No";
+            if HREmp.Get(UserSetup."Employee No") then begin
                 "Employee Department" := HREmp."Department Code";
                 "Employee Name" := HREmp.FullName;
 

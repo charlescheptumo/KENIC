@@ -1846,7 +1846,11 @@ Codeunit 50032 NewEboard
     var
         CommitteeMember: Record "Committee Board Members";
         MeetingPlan: Record "Meeting Plans";
+        DeadlineEnforcer: Codeunit "Resolution Deadline Enforcer";
+        VotingMgt: Codeunit "Board Voting Mgt.";
     begin
+        DeadlineEnforcer.CloseOverdueMeetingPlans();
+
         CommitteeMember.Reset();
         CommitteeMember.SetRange("Director No", directorNo);
         if CommitteeMember.FindSet() then
@@ -1856,7 +1860,9 @@ Codeunit 50032 NewEboard
                 MeetingPlan.SetRange("Voting Status", MeetingPlan."Voting Status"::Open);
                 if MeetingPlan.FindSet() then
                     repeat
-                        status += MeetingPlan."Id" + '*' + MeetingPlan.Title + '*' + MeetingPlan."Committee Description" + '*' + Format(MeetingPlan.Year) + '*' + Format(MeetingPlan.Quarter) + '::::';
+                        // fields 5-6 (deadline UTC, hide vote count) added for the voting rules
+                        status += MeetingPlan."Id" + '*' + MeetingPlan.Title + '*' + MeetingPlan."Committee Description" + '*' + Format(MeetingPlan.Year) + '*' + Format(MeetingPlan.Quarter) + '*' +
+                                  VotingMgt.FormatUtc(MeetingPlan."Poll Deadline") + '*' + VotingMgt.YesNo(MeetingPlan."Hide Vote Count") + '::::';
                     until MeetingPlan.Next() = 0;
             until CommitteeMember.Next() = 0;
     end;
@@ -1865,8 +1871,14 @@ Codeunit 50032 NewEboard
     var
         DateOption: Record "Meeting Date Options";
         DatePoll: Record "Meeting Date Polls";
+        MeetingPlan: Record "Meeting Plans";
         hasVoted: Boolean;
+        hideCount: Boolean;
+        voteCountTxt: Text;
     begin
+        if MeetingPlan.Get(meetingPlanId) then
+            hideCount := MeetingPlan."Hide Vote Count";
+
         DateOption.Reset();
         DateOption.SetRange("Meeting Plan Id", meetingPlanId);
         if DateOption.FindSet() then
@@ -1880,63 +1892,34 @@ Codeunit 50032 NewEboard
                 if DatePoll.FindFirst() then
                     hasVoted := DatePoll."Has Voted";
 
-                status += Format(DateOption."Id") + '*' + Format(DateOption."Proposed Date") + '*' + Format(DateOption."Start Time") + '*' + Format(DateOption."End Time") + '*' + DateOption.Venue + '*' + Format(DateOption."Vote Count") + '*' + Format(hasVoted) + '::::';
+                if hideCount then
+                    voteCountTxt := 'Hidden'
+                else
+                    voteCountTxt := Format(DateOption."Vote Count");
+
+                status += Format(DateOption."Id") + '*' + Format(DateOption."Proposed Date") + '*' + Format(DateOption."Start Time") + '*' + Format(DateOption."End Time") + '*' + DateOption.Venue + '*' + voteCountTxt + '*' + Format(hasVoted) + '::::';
             until DateOption.Next() = 0;
     end;
 
     procedure fnCastMeetingDateVote(meetingPlanId: Code[20]; optionId: Integer; memberNo: Code[20]) status: Text
     var
-        MeetingPlan: Record "Meeting Plans";
-        DatePoll: Record "Meeting Date Polls";
+        VotingMgt: Codeunit "Board Voting Mgt.";
     begin
-        status := 'danger*Could not record your vote';
+        exit(VotingMgt.CastMeetingDateVote(meetingPlanId, optionId, memberNo, '', '', '', '', ''));
+    end;
 
-        if not MeetingPlan.Get(meetingPlanId) then begin
-            status := 'danger*Meeting plan not found';
-            exit(status);
-        end;
-
-        if MeetingPlan."Voting Status" <> MeetingPlan."Voting Status"::Open then begin
-            status := 'danger*Voting is not currently open for this meeting plan';
-            exit(status);
-        end;
-
-        DatePoll.Reset();
-        DatePoll.SetRange("Meeting Plan Id", meetingPlanId);
-        DatePoll.SetRange("Meeting Date Option Id", optionId);
-        DatePoll.SetRange("Member No.", memberNo);
-        if DatePoll.FindFirst() then begin
-            DatePoll.Validate("Has Voted", true);
-            if DatePoll.Modify(true) then begin
-                status := 'success*Your vote has been recorded';
-            end else begin
-                status := 'danger*Could not save your vote';
-            end;
-        end else begin
-            status := 'danger*You are not eligible to vote on this option';
-        end;
+    procedure fnCastMeetingDateVoteEx(meetingPlanId: Code[20]; optionId: Integer; memberNo: Code[20]; ipAddress: Text; browser: Text; operatingSystem: Text; deviceType: Text; userAgent: Text) status: Text
+    var
+        VotingMgt: Codeunit "Board Voting Mgt.";
+    begin
+        exit(VotingMgt.CastMeetingDateVote(meetingPlanId, optionId, memberNo, ipAddress, browser, operatingSystem, deviceType, userAgent));
     end;
 
     procedure fnRemoveMeetingDateVote(meetingPlanId: Code[20]; optionId: Integer; memberNo: Code[20]) status: Text
     var
-        DatePoll: Record "Meeting Date Polls";
+        VotingMgt: Codeunit "Board Voting Mgt.";
     begin
-        status := 'danger*Could not remove your vote';
-
-        DatePoll.Reset();
-        DatePoll.SetRange("Meeting Plan Id", meetingPlanId);
-        DatePoll.SetRange("Meeting Date Option Id", optionId);
-        DatePoll.SetRange("Member No.", memberNo);
-        if DatePoll.FindFirst() then begin
-            DatePoll.Validate("Has Voted", false);
-            if DatePoll.Modify(true) then begin
-                status := 'success*Your vote has been removed';
-            end else begin
-                status := 'danger*Could not remove your vote';
-            end;
-        end else begin
-            status := 'danger*Vote record not found';
-        end;
+        exit(VotingMgt.RemoveMeetingDateVote(meetingPlanId, optionId, memberNo));
     end;
 
     procedure fnGetConfirmedMeetingDate(meetingPlanId: Code[20]) status: Text
@@ -2332,7 +2315,10 @@ Codeunit 50032 NewEboard
     procedure fnGetCommitteeResolutions(committeeId: Code[20]) status: Text
     var
         Resolution: Record "Meeting Resolutions";
+        DeadlineEnforcer: Codeunit "Resolution Deadline Enforcer";
     begin
+        DeadlineEnforcer.CloseOverdueResolutions();
+
         Resolution.Reset();
         Resolution.SetRange("Committee Id", committeeId);
         if Resolution.FindSet() then
@@ -2345,7 +2331,13 @@ Codeunit 50032 NewEboard
     procedure fnGetResolutionDetail(resolutionNo: Code[20]) status: Text
     var
         Resolution: Record "Meeting Resolutions";
+        DeadlineEnforcer: Codeunit "Resolution Deadline Enforcer";
+        forTxt: Text;
+        againstTxt: Text;
+        abstainTxt: Text;
     begin
+        DeadlineEnforcer.CloseOverdueResolutions();
+
         if not Resolution.Get(resolutionNo) then begin
             status := 'danger*Resolution not found';
             exit(status);
@@ -2353,10 +2345,20 @@ Codeunit 50032 NewEboard
 
         Resolution.CalcFields("For Votes", "Against Votes", "Abstain Votes", "Eligible Voters");
 
+        if Resolution."Hide Vote Count" then begin
+            forTxt := 'Hidden';
+            againstTxt := 'Hidden';
+            abstainTxt := 'Hidden';
+        end else begin
+            forTxt := Format(Resolution."For Votes");
+            againstTxt := Format(Resolution."Against Votes");
+            abstainTxt := Format(Resolution."Abstain Votes");
+        end;
+
         status := 'success*' + Resolution.Title + '*' + Resolution.Description + '*' + Format(Resolution."Resolution Type") + '*' +
                    Format(Resolution."Resolution Status") + '*' + Format(Resolution."Voting Status") + '*' +
-                   Format(Resolution."Majority Type") + '*' + Format(Resolution."For Votes") + '*' +
-                   Format(Resolution."Against Votes") + '*' + Format(Resolution."Abstain Votes") + '*' +
+                   Format(Resolution."Majority Type") + '*' + forTxt + '*' +
+                   againstTxt + '*' + abstainTxt + '*' +
                    Format(Resolution."Eligible Voters") + '*' + Format(Resolution.Outcome) + '*' + Resolution."Created By";
     end;
 
@@ -2373,23 +2375,39 @@ Codeunit 50032 NewEboard
 
     procedure fnCastResolutionVote(resolutionNo: Code[20]; directorNo: Code[50]; vote: Integer) status: Text
     var
-        ResolutionVote: Record "Resolution Votes";
+        VotingMgt: Codeunit "Board Voting Mgt.";
     begin
-        status := 'danger*Could not record your vote';
-
-        if not ResolutionVote.Get(resolutionNo, directorNo) then begin
-            status := 'danger*You are not eligible to vote on this resolution';
-            exit(status);
-        end;
-
-        ResolutionVote.Validate(Vote, vote);
-        if ResolutionVote.Modify(true) then begin
-            status := 'success*Your vote has been recorded';
-        end else begin
-            status := 'danger*Could not save your vote';
-        end;
+        exit(VotingMgt.CastResolutionVote(resolutionNo, directorNo, vote, '', '', '', '', ''));
     end;
 
+    procedure fnCastResolutionVoteEx(resolutionNo: Code[20]; directorNo: Code[50]; vote: Integer; ipAddress: Text; browser: Text; operatingSystem: Text; deviceType: Text; userAgent: Text) status: Text
+    var
+        VotingMgt: Codeunit "Board Voting Mgt.";
+    begin
+        exit(VotingMgt.CastResolutionVote(resolutionNo, directorNo, vote, ipAddress, browser, operatingSystem, deviceType, userAgent));
+    end;
+
+    // candidateLineNos = comma separated Line No. values of the chosen candidates, e.g. '10000,30000'
+    procedure fnCastElectionVote(resolutionNo: Code[20]; directorNo: Code[50]; candidateLineNos: Text; ipAddress: Text; browser: Text; operatingSystem: Text; deviceType: Text; userAgent: Text) status: Text
+    var
+        VotingMgt: Codeunit "Board Voting Mgt.";
+    begin
+        exit(VotingMgt.CastElectionVote(resolutionNo, directorNo, candidateLineNos, ipAddress, browser, operatingSystem, deviceType, userAgent));
+    end;
+
+    procedure fnGetResolutionCandidates(resolutionNo: Code[20]; directorNo: Code[50]) status: Text
+    var
+        VotingMgt: Codeunit "Board Voting Mgt.";
+    begin
+        exit(VotingMgt.GetCandidates(resolutionNo, directorNo));
+    end;
+
+    procedure fnGetResolutionVotingInfo(resolutionNo: Code[20]; directorNo: Code[50]) status: Text
+    var
+        VotingMgt: Codeunit "Board Voting Mgt.";
+    begin
+        exit(VotingMgt.GetResolutionVotingInfo(resolutionNo, directorNo));
+    end;
 
     procedure fnEscalateResolution(resolutionNo: Code[20]; directorNo: Code[50]; fullBoardMeetingCode: Code[20]) status: Text
     var

@@ -53,7 +53,7 @@ page 50384 "Batch EFT Voucher"
                 field("Value Date"; Rec."Value Date")
                 {
                     ToolTip = 'Specifies the value of the Value Date field.';
-                    Visible=false;
+                    Visible = false;
                 }
                 field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
@@ -103,8 +103,27 @@ page 50384 "Batch EFT Voucher"
                 ToolTip = 'Post the Batch EFT Voucher.';
 
                 trigger OnAction()
+                var
+                    pvRec: Record Payments;
+                    PVLines: Record "PV Lines";
+                    BatchEFTHeader: Record "Batch EFT Voucher";
+                    BatchEFTLines: Record "Batch EFT Lines";
                 begin
-                    PaymentsPost.PostBatchEFT(Rec);
+                    BatchEFTLines.reset();
+                    BatchEFTLines.setrange(BatchEFTLines."Document No", Rec."No.");
+                    if BatchEFTLines.FindSet then begin
+                        repeat
+                            pvRec.Reset();
+                            pvRec.Setrange(pvRec."No.", BatchEFTLines."PV No");
+                            if pvRec.Findset then begin
+                                PaymentsPost."Post Payment Voucher"(pvRec);
+                            end
+                        until BatchEFTLines.next = 0;
+                    end;
+                    //PaymentsPost.PostBatchEFT(Rec);
+                    Rec.Posted := true;
+                    Rec."Posted By" := UserId;
+                    Rec.Modify();
                     CurrPage.Update(false);
                 end;
             }

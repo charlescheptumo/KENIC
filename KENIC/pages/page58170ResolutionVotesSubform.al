@@ -24,9 +24,35 @@ page 58170 "Resolution Votes Subform"
                 {
                     ApplicationArea = All;
                 }
+                field("Election Voted"; Rec."Election Voted")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Candidate elections: the member has cast a ballot. Who they chose is secret.';
+                }
                 field("Voted At"; Rec."Voted At")
                 {
                     ApplicationArea = All;
+                }
+                field("Browser"; Rec."Browser")
+                {
+                    ApplicationArea = All;
+                }
+                field("Operating System"; Rec."Operating System")
+                {
+                    ApplicationArea = All;
+                }
+                field("Device Type"; Rec."Device Type")
+                {
+                    ApplicationArea = All;
+                }
+                field("IP Address"; Rec."IP Address")
+                {
+                    ApplicationArea = All;
+                }
+                field("User Agent"; Rec."User Agent")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
                 }
             }
         }

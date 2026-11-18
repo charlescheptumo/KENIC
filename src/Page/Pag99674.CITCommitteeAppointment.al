@@ -701,7 +701,7 @@ page 99674 "CIT Committee Appointment"
         UserSetup.Reset;
         UserSetup.SetRange("User ID", UserId);
         if UserSetup.FindSet then begin
-            ImprestReq.Requestor := UserSetup."Employee No.";
+            ImprestReq.Requestor := UserSetup."Employee No";
         end;
         ImprestReq.Validate(Requestor);
         ImprestReq.Date := Today;
@@ -735,7 +735,7 @@ page 99674 "CIT Committee Appointment"
             //notify every employee
             /*
                     UserSetup.RESET;
-                    UserSetup.SETRANGE("Employee No.",TrainingPart."Employee Code");
+                    UserSetup.SETRANGE("Employee No",TrainingPart."Employee Code");
                     IF UserSetup.FINDSET THEN BEGIN
                         Email:=UserSetup."E-Mail";
                         //send notification email
