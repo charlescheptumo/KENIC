@@ -938,7 +938,7 @@ TableExtension 50013 tableextension50013 extends "Purchase Line"
         {
             DataClassification = ToBeClassified;
         }
-        field(70029; Specifications; Text[250])
+        field(70029; Specifications; Text[2000])
         {
             DataClassification = ToBeClassified;
         }

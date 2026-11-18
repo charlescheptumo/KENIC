@@ -50,6 +50,7 @@ Page 75238 "Purchase Requisition Lines"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the value of the Description field.';
                 }
+                
                 field("Unit of Measure Code"; Rec."Unit of Measure Code")
                 {
                     ApplicationArea = Basic;
