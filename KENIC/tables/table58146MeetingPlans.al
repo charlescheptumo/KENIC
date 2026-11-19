@@ -168,6 +168,30 @@ table 58146 "Meeting Plans"
             Caption = 'Hide Vote Count from Members';
             DataClassification = ToBeClassified;
         }
+        field(22; "Allow Physical"; Boolean)
+        {
+            Caption = 'Offer Physical Meeting';
+            DataClassification = ToBeClassified;
+            InitValue = true;
+
+            trigger OnValidate()
+            begin
+                if Rec."Voting Status" <> Rec."Voting Status"::"Not Started" then
+                    Error(CannotChangeMeetingModeErr);
+            end;
+        }
+        field(23; "Allow Virtual"; Boolean)
+        {
+            Caption = 'Offer Virtual (Online) Meeting';
+            DataClassification = ToBeClassified;
+            InitValue = true;
+
+            trigger OnValidate()
+            begin
+                if Rec."Voting Status" <> Rec."Voting Status"::"Not Started" then
+                    Error(CannotChangeMeetingModeErr);
+            end;
+        }
     }
 
     keys
@@ -297,6 +321,9 @@ table 58146 "Meeting Plans"
         DateOption.SetRange("Meeting Plan Id", Rec."Id");
         if DateOption.Count() < 2 then
             Error(NeedAtLeastTwoDatesErr);
+
+        if (not Rec."Allow Physical") and (not Rec."Allow Virtual") then
+            Error(NeedMeetingModeErr);
 
         if (Rec."Poll Deadline" <> 0DT) and (Rec."Poll Deadline" <= CurrentDateTime()) then
             Error(DeadlineMustBeFutureErr);
@@ -457,4 +484,6 @@ table 58146 "Meeting Plans"
         CannotChangeDeadlineAfterClosedErr: Label 'You cannot change the poll deadline after the poll has closed.';
         DeadlineMustBeFutureErr: Label 'The poll deadline must be in the future.';
         TieDetectedMsg: Label 'Two or more dates received the same highest number of votes. Please use Select Winning Date to resolve the tie.';
+        CannotChangeMeetingModeErr: Label 'You cannot change the meeting mode options once voting has started or closed.';
+        NeedMeetingModeErr: Label 'Offer at least one meeting mode (Physical or Virtual) before opening the poll.';
 }

@@ -1861,8 +1861,10 @@ Codeunit 50032 NewEboard
                 if MeetingPlan.FindSet() then
                     repeat
                         // fields 5-6 (deadline UTC, hide vote count) added for the voting rules
+                        // fields 7-8 (physical offered, virtual offered) added for the meeting mode
                         status += MeetingPlan."Id" + '*' + MeetingPlan.Title + '*' + MeetingPlan."Committee Description" + '*' + Format(MeetingPlan.Year) + '*' + Format(MeetingPlan.Quarter) + '*' +
-                                  VotingMgt.FormatUtc(MeetingPlan."Poll Deadline") + '*' + VotingMgt.YesNo(MeetingPlan."Hide Vote Count") + '::::';
+                                  VotingMgt.FormatUtc(MeetingPlan."Poll Deadline") + '*' + VotingMgt.YesNo(MeetingPlan."Hide Vote Count") + '*' +
+                                  VotingMgt.YesNo(MeetingPlan."Allow Physical") + '*' + VotingMgt.YesNo(MeetingPlan."Allow Virtual") + '::::';
                     until MeetingPlan.Next() = 0;
             until CommitteeMember.Next() = 0;
     end;
@@ -1875,6 +1877,7 @@ Codeunit 50032 NewEboard
         hasVoted: Boolean;
         hideCount: Boolean;
         voteCountTxt: Text;
+        myModeTxt: Text;
     begin
         if MeetingPlan.Get(meetingPlanId) then
             hideCount := MeetingPlan."Hide Vote Count";
@@ -1885,19 +1888,28 @@ Codeunit 50032 NewEboard
             repeat
                 DateOption.CalcFields("Vote Count");
                 hasVoted := false;
+                myModeTxt := '';
                 DatePoll.Reset();
                 DatePoll.SetRange("Meeting Plan Id", meetingPlanId);
                 DatePoll.SetRange("Meeting Date Option Id", DateOption."Id");
                 DatePoll.SetRange("Member No.", memberNo);
-                if DatePoll.FindFirst() then
+                if DatePoll.FindFirst() then begin
                     hasVoted := DatePoll."Has Voted";
+                    case DatePoll."Preferred Mode" of
+                        DatePoll."Preferred Mode"::Physical:
+                            myModeTxt := 'Physical';
+                        DatePoll."Preferred Mode"::Virtual:
+                            myModeTxt := 'Virtual';
+                    end;
+                end;
 
                 if hideCount then
                     voteCountTxt := 'Hidden'
                 else
                     voteCountTxt := Format(DateOption."Vote Count");
 
-                status += Format(DateOption."Id") + '*' + Format(DateOption."Proposed Date") + '*' + Format(DateOption."Start Time") + '*' + Format(DateOption."End Time") + '*' + DateOption.Venue + '*' + voteCountTxt + '*' + Format(hasVoted) + '::::';
+                // field 7 (the member's chosen meeting mode) added for the meeting mode
+                status += Format(DateOption."Id") + '*' + Format(DateOption."Proposed Date") + '*' + Format(DateOption."Start Time") + '*' + Format(DateOption."End Time") + '*' + DateOption.Venue + '*' + voteCountTxt + '*' + Format(hasVoted) + '*' + myModeTxt + '::::';
             until DateOption.Next() = 0;
     end;
 
@@ -1913,6 +1925,14 @@ Codeunit 50032 NewEboard
         VotingMgt: Codeunit "Board Voting Mgt.";
     begin
         exit(VotingMgt.CastMeetingDateVote(meetingPlanId, optionId, memberNo, ipAddress, browser, operatingSystem, deviceType, userAgent));
+    end;
+
+    // meetingMode: 1 = Physical, 2 = Virtual (Online)
+    procedure fnCastMeetingDateVoteWithMode(meetingPlanId: Code[20]; optionId: Integer; memberNo: Code[20]; meetingMode: Integer; ipAddress: Text; browser: Text; operatingSystem: Text; deviceType: Text; userAgent: Text) status: Text
+    var
+        VotingMgt: Codeunit "Board Voting Mgt.";
+    begin
+        exit(VotingMgt.CastMeetingDateVoteWithMode(meetingPlanId, optionId, memberNo, meetingMode, ipAddress, browser, operatingSystem, deviceType, userAgent));
     end;
 
     procedure fnRemoveMeetingDateVote(meetingPlanId: Code[20]; optionId: Integer; memberNo: Code[20]) status: Text
@@ -1940,6 +1960,23 @@ Codeunit 50032 NewEboard
         end else begin
             status := 'danger*Meeting plan not found';
         end;
+    end;
+
+    // Returns the convener's full name from Board Members, using the meeting's Convener No.
+    procedure fnGetMeetingConvener(meetingCode: Code[200]) status: Text
+    var
+        BoardMeeting: Record "Board Meetings";
+        BoardMember: Record "Board Members";
+    begin
+        if not BoardMeeting.Get(meetingCode) then
+            exit('');
+        if BoardMeeting."Convener No." = '' then
+            exit('');
+        BoardMember.SetRange("Personal No", BoardMeeting."Convener No.");
+        if BoardMember.FindFirst() then
+            if ConsentFullName(BoardMember) <> '' then
+                exit(ConsentFullName(BoardMember));
+        exit(BoardMeeting."Convener No.");
     end;
 
     procedure fnIsMeetingConvener(meetingCode: Code[200]; directorNo: Code[50]) status: Boolean

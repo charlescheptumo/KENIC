@@ -71,17 +71,36 @@ table 58148 "Meeting Date Polls"
                             repeat
                                 OtherPoll."Has Voted" := false;
                                 OtherPoll."Voted At" := 0DT;
+                                OtherPoll."Preferred Mode" := OtherPoll."Preferred Mode"::" ";
                                 OtherPoll.Modify();
                             until OtherPoll.Next() = 0;
                     end;
-                end else
+                end else begin
                     "Voted At" := 0DT;
+                    "Preferred Mode" := "Preferred Mode"::" ";
+                end;
             end;
         }
         field(7; "Voted At"; DateTime)
         {
             Caption = 'Voted At';
             DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(8; "Venue"; Text[250])
+        {
+            Caption = 'Venue';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Meeting Date Options"."Venue" where("Meeting Plan Id" = field("Meeting Plan Id"),
+                                                                       "Id" = field("Meeting Date Option Id")));
+            Editable = false;
+        }
+        field(9; "Preferred Mode"; Option)
+        {
+            Caption = 'Physical / Virtual';
+            DataClassification = ToBeClassified;
+            OptionCaption = ' ,Physical,Virtual (Online)';
+            OptionMembers = " ",Physical,Virtual;
             Editable = false;
         }
         field(10; "IP Address"; Text[50])

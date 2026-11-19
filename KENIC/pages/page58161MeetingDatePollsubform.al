@@ -24,6 +24,14 @@ page 58161 "Meeting Date Polls Subform"
                 {
                     ApplicationArea = All;
                 }
+                field("Venue"; Rec."Venue")
+                {
+                    ApplicationArea = All;
+                }
+                field("Preferred Mode"; Rec."Preferred Mode")
+                {
+                    ApplicationArea = All;
+                }
                 field("Has Voted"; Rec."Has Voted")
                 {
                     ApplicationArea = All;

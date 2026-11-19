@@ -35,6 +35,50 @@ codeunit 58179 "Board Voting Mgt."
         exit('success*Your vote has been recorded');
     end;
 
+    // MeetingMode: 1 = Physical, 2 = Virtual (Online). Required when the plan offers a meeting mode.
+    procedure CastMeetingDateVoteWithMode(MeetingPlanId: Code[20]; OptionId: Integer; MemberNo: Code[20]; MeetingMode: Integer; IpAddress: Text; Browser: Text; OperatingSystem: Text; DeviceType: Text; UserAgent: Text): Text
+    var
+        MeetingPlan: Record "Meeting Plans";
+        DatePoll: Record "Meeting Date Polls";
+        Enforcer: Codeunit "Resolution Deadline Enforcer";
+    begin
+        Enforcer.CloseOverdueMeetingPlans();
+
+        if not MeetingPlan.Get(MeetingPlanId) then
+            exit('danger*Meeting plan not found');
+
+        if MeetingPlan."Voting Status" <> MeetingPlan."Voting Status"::Open then
+            exit('danger*Voting is closed for this meeting plan');
+
+        if MeetingPlan."Allow Physical" or MeetingPlan."Allow Virtual" then begin
+            if (MeetingMode <> 1) and (MeetingMode <> 2) then
+                exit('danger*Please choose Physical or Virtual (Online)');
+            if (MeetingMode = 1) and (not MeetingPlan."Allow Physical") then
+                exit('danger*A physical meeting is not offered for this meeting plan');
+            if (MeetingMode = 2) and (not MeetingPlan."Allow Virtual") then
+                exit('danger*A virtual meeting is not offered for this meeting plan');
+        end else
+            MeetingMode := 0;
+
+        DatePoll.SetRange("Meeting Plan Id", MeetingPlanId);
+        DatePoll.SetRange("Meeting Date Option Id", OptionId);
+        DatePoll.SetRange("Member No.", MemberNo);
+        if not DatePoll.FindFirst() then
+            exit('danger*You are not eligible to vote on this option');
+
+        DatePoll.Validate("Has Voted", true);
+        DatePoll."Preferred Mode" := MeetingMode;
+        DatePoll."IP Address" := CopyStr(IpAddress, 1, MaxStrLen(DatePoll."IP Address"));
+        DatePoll.Browser := CopyStr(Browser, 1, MaxStrLen(DatePoll.Browser));
+        DatePoll."Operating System" := CopyStr(OperatingSystem, 1, MaxStrLen(DatePoll."Operating System"));
+        DatePoll."Device Type" := CopyStr(DeviceType, 1, MaxStrLen(DatePoll."Device Type"));
+        DatePoll."User Agent" := CopyStr(UserAgent, 1, MaxStrLen(DatePoll."User Agent"));
+        if not DatePoll.Modify(true) then
+            exit('danger*Could not save your vote');
+
+        exit('success*Your vote has been recorded');
+    end;
+
     procedure RemoveMeetingDateVote(MeetingPlanId: Code[20]; OptionId: Integer; MemberNo: Code[20]): Text
     var
         MeetingPlan: Record "Meeting Plans";

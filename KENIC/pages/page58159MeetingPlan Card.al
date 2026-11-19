@@ -59,6 +59,18 @@ page 58159 "Meeting Plan Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Allow Physical"; Rec."Allow Physical")
+                {
+                    ApplicationArea = All;
+                    Editable = Rec."Voting Status" = Rec."Voting Status"::"Not Started";
+                    ToolTip = 'Members can choose a physical meeting when they vote.';
+                }
+                field("Allow Virtual"; Rec."Allow Virtual")
+                {
+                    ApplicationArea = All;
+                    Editable = Rec."Voting Status" = Rec."Voting Status"::"Not Started";
+                    ToolTip = 'Members can choose a virtual (online) meeting when they vote.';
+                }
                 field("Voting Status"; Rec."Voting Status")
                 {
                     ApplicationArea = All;
