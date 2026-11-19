@@ -1962,21 +1962,37 @@ Codeunit 50032 NewEboard
         end;
     end;
 
-    // Returns the convener's full name from Board Members, using the meeting's Convener No.
+    // Returns the convener from Board Members, using the meeting's Convener No.
+    // Format: Name*Phone*Email (phone = Mobile Phone No., else Phone No.; email = Company E-Mail, else E-Mail)
     procedure fnGetMeetingConvener(meetingCode: Code[200]) status: Text
     var
         BoardMeeting: Record "Board Meetings";
         BoardMember: Record "Board Members";
+        ConvenerName: Text;
+        ConvenerPhone: Text;
+        ConvenerEmail: Text;
     begin
         if not BoardMeeting.Get(meetingCode) then
             exit('');
         if BoardMeeting."Convener No." = '' then
             exit('');
+
+        ConvenerName := BoardMeeting."Convener No.";
         BoardMember.SetRange("Personal No", BoardMeeting."Convener No.");
-        if BoardMember.FindFirst() then
+        if BoardMember.FindFirst() then begin
             if ConsentFullName(BoardMember) <> '' then
-                exit(ConsentFullName(BoardMember));
-        exit(BoardMeeting."Convener No.");
+                ConvenerName := ConsentFullName(BoardMember);
+
+            ConvenerPhone := BoardMember."Mobile Phone No.";
+            if ConvenerPhone = '' then
+                ConvenerPhone := BoardMember."Phone No.";
+
+            ConvenerEmail := BoardMember."Company E-Mail";
+            if ConvenerEmail = '' then
+                ConvenerEmail := BoardMember."E-Mail";
+        end;
+
+        exit(ConvenerName + '*' + ConvenerPhone + '*' + ConvenerEmail);
     end;
 
     procedure fnIsMeetingConvener(meetingCode: Code[200]; directorNo: Code[50]) status: Boolean
