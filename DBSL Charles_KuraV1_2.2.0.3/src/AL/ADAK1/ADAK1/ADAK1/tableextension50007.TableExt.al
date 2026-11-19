@@ -109,6 +109,10 @@ TableExtension 50007 "tableextension50007" extends "Vendor Ledger Entry"
         
             ToolTip = 'Specifies the bank name associated with this G/L entry, if applicable.';
         }
+         field(70014; "Selected"; Boolean)
+         {
+
+         }
          
     }
 

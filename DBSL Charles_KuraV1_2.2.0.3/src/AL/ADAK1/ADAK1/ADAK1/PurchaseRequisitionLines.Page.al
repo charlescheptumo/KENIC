@@ -50,6 +50,14 @@ Page 75238 "Purchase Requisition Lines"
                     ShowMandatory = true;
                     ToolTip = 'Specifies the value of the Description field.';
                 }
+                Field(Specifications;Rec.Specifications)
+                {
+                    ApplicationArea = Basic;
+                    Editable = true;
+                    ShowMandatory = true;
+                    ToolTip = 'Specifies the value of the technical specifications of a product.';
+                }
+                
                 field("Unit of Measure Code"; Rec."Unit of Measure Code")
                 {
                     ApplicationArea = Basic;

@@ -4154,9 +4154,10 @@ Codeunit 57000 "Payments-Post"
             GenJnLine.Amount := -(PCASH."Total Amount");//Fred Added Mpesa Charges
             GenJnLine.Validate("Currency Code");
             GenJnLine.Validate(GenJnLine.Amount);//
-            GenJnLine."Bal. Account Type" := PCASH."Account Type";
-            GenJnLine."Bal. Account No." := PCASH."Account No.";
-            GenJnLine.Validate("Bal. Account No.");
+            //Commented by NZVKI for Kenic
+            // GenJnLine."Bal. Account Type" := PCASH."Account Type";
+            // GenJnLine."Bal. Account No." := PCASH."Account No.";
+            // GenJnLine.Validate("Bal. Account No.");
 
             GenJnLine."Dimension Set ID" := PCASH."Dimension Set ID";
             GenJnLine.Validate(GenJnLine."Dimension Set ID");
@@ -4176,8 +4177,11 @@ Codeunit 57000 "Payments-Post"
                         GenJnLine."Journal Template Name" := CMSetup."PCASH Journal Template";
                     GenJnLine."Journal Batch Name" := CMSetup."PCASH Journal Batch Name";
                     GenJnLine."Line No." := LineNo;
-                    GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
-                    GenJnLine."Account No." := PCASH."Paying Bank Account";
+                    //Changed by NZVKI for Kenic
+                    // GenJnLine."Account Type" := GenJnLine."account type"::"Bank Account";
+                    // GenJnLine."Account No." := PCASH."Paying Bank Account";
+                    GenJnLine."Account Type" := PCASHLines."Account Type";
+                    GenJnLine."Account No." := PCASHLines."Account No";
                     GenJnLine.Validate(GenJnLine."Account No.");
                     if PCASH.Date = 0D then
                         Error('You must specify the PCASH date');
@@ -4190,9 +4194,10 @@ Codeunit 57000 "Payments-Post"
                     GenJnLine.Amount := -(PCASH."Total Mpesa Charges");//Fred Added Mpesa Charges
                     GenJnLine.Validate("Currency Code");
                     GenJnLine.Validate(GenJnLine.Amount);//
-                    GenJnLine."Bal. Account Type" := PCASHLines."Account Type";
-                    GenJnLine."Bal. Account No." := CMSetup."Mpesa Settlement Account";
-                    GenJnLine.Validate("Bal. Account No.");
+                    //Commented by NZVKI for Kenic
+                    // GenJnLine."Bal. Account Type" := PCASHLines."Account Type";
+                    // GenJnLine."Bal. Account No." := CMSetup."Mpesa Settlement Account";
+                    //GenJnLine.Validate("Bal. Account No.");
 
                     GenJnLine."Dimension Set ID" := PCASH."Dimension Set ID";
                     GenJnLine.Validate(GenJnLine."Dimension Set ID");
@@ -7861,7 +7866,7 @@ Codeunit 57000 "Payments-Post"
         if ReceiptRec.Mpesa then begin
             CMSetup.TestField(Mpesa);
             NewReceipt."Pay Mode" := 'MPESA';
-            NewReceipt."Bank Code" := CMSetup.Mpesa;
+            NewReceipt."Bank Code" := CMSetup.Mpesa;    
         end else
             if ReceiptRec.IPay then begin
                 CMSetup.TestField(IPay);
