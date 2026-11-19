@@ -30,7 +30,7 @@ page 58167 "Meeting Resolution Card"
                 {
                     ApplicationArea = All;
                     Editable = not Rec."Posted";
-                    ValuesAllowed = Election, Approval, "Candidate Election";
+                    ValuesAllowed = Approval, "Candidate Election";
 
                     trigger OnValidate()
                     begin
