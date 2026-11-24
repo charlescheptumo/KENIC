@@ -47,6 +47,7 @@ Page 69645 "Vacancy Announcement Voucher"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Directorate field.';
+                    Visible = false;
                 }
                 field(Department; Rec.Department)
                 {
@@ -57,6 +58,7 @@ Page 69645 "Vacancy Announcement Voucher"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Region field.';
+                    Visible = false;
                 }
                 field("Financial Year Code"; Rec."Financial Year Code")
                 {
