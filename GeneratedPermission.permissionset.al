@@ -5233,6 +5233,7 @@ permissionset 50000 GeneratedPermission
         page "Candidate Shortlist Lines"=X,
         page "Candidate Shortlist Scoring"=X,
         page "Candidate Shortlist Voucher"=X,
+        page "Approved Shortlisted Candidates"=X,
         page "Candidate Shortlist Vouchers"=X,
         page "Candidate Statistics"=X,
         page Candidates=X,

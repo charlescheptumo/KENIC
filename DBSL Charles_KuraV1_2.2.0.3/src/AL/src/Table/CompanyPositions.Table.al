@@ -216,6 +216,28 @@ Table 69600 "Company Positions"
         {
             DataClassification = ToBeClassified;
         }
+        field(39; "Employee No."; Code[20])
+        {
+            Caption = 'Employee No.';
+            DataClassification = ToBeClassified;
+            TableRelation = Employee;
+
+            trigger OnValidate()
+            var
+                PositionEmployee: Record Employee;
+            begin
+                "Employee Name" := '';
+                if "Employee No." <> '' then
+                    if PositionEmployee.Get("Employee No.") then
+                        "Employee Name" := CopyStr(PositionEmployee.FullName(), 1, MaxStrLen("Employee Name"));
+            end;
+        }
+        field(40; "Employee Name"; Text[100])
+        {
+            Caption = 'Employee Name';
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
     }
 
     keys

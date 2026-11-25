@@ -96,20 +96,42 @@ Page 69706 "Candidate Shortlist Lines"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Employee No. field.';
                 }
-                field("Phone No."; Rec."Phone No.")
+                // Contact details are hidden from approvers of this shortlist
+                field("Phone No."; PhoneNoTxt)
                 {
                     ApplicationArea = Basic;
+                    Caption = 'Phone No.';
+                    Editable = not HideContactDetails;
                     ToolTip = 'Specifies the value of the Phone No. field.';
+
+                    trigger OnValidate()
+                    begin
+                        Rec."Phone No." := CopyStr(PhoneNoTxt, 1, MaxStrLen(Rec."Phone No."));
+                    end;
                 }
-                field("Mobile Phone No."; Rec."Mobile Phone No.")
+                field("Mobile Phone No."; MobilePhoneNoTxt)
                 {
                     ApplicationArea = Basic;
+                    Caption = 'Mobile Phone No.';
+                    Editable = not HideContactDetails;
                     ToolTip = 'Specifies the value of the Mobile Phone No. field.';
+
+                    trigger OnValidate()
+                    begin
+                        Rec."Mobile Phone No." := CopyStr(MobilePhoneNoTxt, 1, MaxStrLen(Rec."Mobile Phone No."));
+                    end;
                 }
-                field(Email; Rec.Email)
+                field(Email; EmailTxt)
                 {
                     ApplicationArea = Basic;
+                    Caption = 'Email';
+                    Editable = not HideContactDetails;
                     ToolTip = 'Specifies the value of the Email field.';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Email := CopyStr(EmailTxt, 1, MaxStrLen(Rec.Email));
+                    end;
                 }
                 field("Birth Date"; Rec."Birth Date")
                 {
@@ -245,7 +267,60 @@ Page 69706 "Candidate Shortlist Lines"
         CurrPage.Update(true);
     end;
 
+    trigger OnAfterGetRecord()
+    begin
+        SetContactDetails();
+    end;
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        PhoneNoTxt := '';
+        MobilePhoneNoTxt := '';
+        EmailTxt := '';
+    end;
+
+    local procedure SetContactDetails()
+    begin
+        HideContactDetails := IsCurrentUserApprover(Rec."Document No");
+        if HideContactDetails then begin
+            PhoneNoTxt := '';
+            MobilePhoneNoTxt := '';
+            EmailTxt := '';
+        end else begin
+            PhoneNoTxt := Rec."Phone No.";
+            MobilePhoneNoTxt := Rec."Mobile Phone No.";
+            EmailTxt := Rec.Email;
+        end;
+    end;
+
+    // True when the current user is (or was) an approver on this shortlist voucher
+    local procedure IsCurrentUserApprover(DocNo: Code[30]): Boolean
+    var
+        SelectionHeader: Record "Candidate Selection Header";
+        ApprovalEntry: Record "Approval Entry";
+    begin
+        if (DocNo = CachedDocNo) and CacheSet then
+            exit(CachedIsApprover);
+        CachedDocNo := DocNo;
+        CacheSet := true;
+        CachedIsApprover := false;
+        SelectionHeader.SetRange("Document No.", DocNo);
+        if SelectionHeader.FindFirst() then begin
+            ApprovalEntry.SetRange("Record ID to Approve", SelectionHeader.RecordId);
+            ApprovalEntry.SetRange("Approver ID", UserId);
+            CachedIsApprover := not ApprovalEntry.IsEmpty();
+        end;
+        exit(CachedIsApprover);
+    end;
+
     var
         JobApplications: Record "Job Applications";
+        PhoneNoTxt: Text[30];
+        MobilePhoneNoTxt: Text[30];
+        EmailTxt: Text[50];
+        HideContactDetails: Boolean;
+        CachedDocNo: Code[30];
+        CachedIsApprover: Boolean;
+        CacheSet: Boolean;
 }
 

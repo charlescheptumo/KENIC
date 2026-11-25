@@ -508,6 +508,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         OnCancelESignHeaderApprovalRequestTxt: label 'An Approval of E-Signature document is cancelled';
         RunWorkflowOnCancelESignHeaderForApprovalCode: label 'RUNWORKFLOWONCANCELESIGNHEADERFORAPPROVAL';
 
+        //Candidate Shortlist (Candidate Selection Header)
+        OnSendCandShortlistApprovalRequestTxt: label 'Approval of a Candidate Shortlist is requested';
+        RunWorkflowOnSendCandShortlistForApprovalCode: label 'RUNWORKFLOWONSENDCANDSHORTLISTFORAPPROVAL';
+        OnCancelCandShortlistApprovalRequestTxt: label 'An Approval of a Candidate Shortlist is cancelled';
+        RunWorkflowOnCancelCandShortlistForApprovalCode: label 'RUNWORKFLOWONCANCELCANDSHORTLISTFORAPPROVAL';
+
         //New Employee Workflow
         OnSendEmployeeCardApprovalRequestTxt: label 'Approval of a Employee Card is requested';
         RunWorkflowOnSendEmployeeCardForApprovalCode: label 'RUNWORKFLOWONSENDEMPLOYEECARDFORAPPROVAL';
@@ -799,6 +805,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //ESign Header
             Database::"ESign Header":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendESignHeaderForApprovalCode));
+
+            //Candidate Shortlist
+            Database::"Candidate Selection Header":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendCandShortlistForApprovalCode));
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1341,6 +1351,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelESignHeaderForApprovalCode, Database::"ESign Header", OnCancelESignHeaderApprovalRequestTxt, 0, false);
 
+        //Candidate Shortlist
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendCandShortlistForApprovalCode, Database::"Candidate Selection Header", OnSendCandShortlistApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelCandShortlistForApprovalCode, Database::"Candidate Selection Header", OnCancelCandShortlistApprovalRequestTxt, 0, false);
+
     end;
 
     local procedure RunWorkflowOnSendApprovalRequestCode(): Code[128]
@@ -1630,6 +1646,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //ESign Header
             Database::"ESign Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendESignHeaderForApprovalCode, Variant);
+
+            //Candidate Shortlist
+            Database::"Candidate Selection Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendCandShortlistForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1917,6 +1937,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //ESign Header
             Database::"ESign Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelESignHeaderForApprovalCode, Variant);
+
+            //Candidate Shortlist
+            Database::"Candidate Selection Header":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelCandShortlistForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -2047,6 +2071,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
+        CandidateSelectionHeader: Record "Candidate Selection Header";
         PerformanceLog: Record "Performance Diary Log"; 
     begin
         case RecRef.Number of
@@ -2829,6 +2854,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Handled := true;
                 end;
 
+            //Candidate Shortlist
+            Database::"Candidate Selection Header":
+                begin
+                    RecRef.SetTable(CandidateSelectionHeader);
+                    CandidateSelectionHeader.Validate("Approval Status", CandidateSelectionHeader."Approval Status"::Open);
+                    CandidateSelectionHeader.Modify;
+                    Variant := CandidateSelectionHeader;
+                    Handled := true;
+                end;
+
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end
@@ -2960,6 +2995,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
+        CandidateSelectionHeader: Record "Candidate Selection Header";
         PerformanceLog: Record "Performance Diary Log";
     begin
         Handled := true;
@@ -3710,6 +3746,15 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     ESignHeader.Modify();
                     Variant := ESignHeader;
                 end;
+
+            //Candidate Shortlist
+            Database::"Candidate Selection Header":
+                begin
+                    RecRef.SetTable(CandidateSelectionHeader);
+                    CandidateSelectionHeader.Validate("Approval Status", CandidateSelectionHeader."Approval Status"::Approved);
+                    CandidateSelectionHeader.Modify();
+                    Variant := CandidateSelectionHeader;
+                end;
             else
                 Handled := false;
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
@@ -3968,6 +4013,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         HRSalaryIncreamentHeader: Record "HR Salary Increament Header";
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
+        CandidateSelectionHeader: Record "Candidate Selection Header";
         PerformanceLog: Record "Performance Diary Log";
     begin
         RecRef.GetTable(Variant);
@@ -4784,6 +4830,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     ESignHeader.Validate("Approval Status", ESignHeader."Approval Status"::"Pending Approval");
                     ESignHeader.Modify;
                     Variant := ESignHeader;
+                    IsHandled := true;
+                end;
+
+            //Candidate Shortlist
+            Database::"Candidate Selection Header":
+                begin
+                    RecRef.SetTable(CandidateSelectionHeader);
+                    CandidateSelectionHeader.Validate("Approval Status", CandidateSelectionHeader."Approval Status"::"Pending Approval");
+                    CandidateSelectionHeader.Modify;
+                    Variant := CandidateSelectionHeader;
                     IsHandled := true;
                 end;
             else
@@ -6654,10 +6710,21 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Page Management", 'OnAfterGetPageID', '', false, false)]
     local procedure OnAfterGetPageID(var RecordRef: RecordRef; var PageID: Integer; ForceListPage: Boolean)
+    var
+        SelectionDocType: Integer;
     begin
         if RecordRef.Number = Database::"Overtime Header" then
             if not ForceListPage then
                 PageID := Page::"Overtime Header Page"; // Page 69173
+
+        // Candidate shortlist approvals open the Candidate Shortlist Voucher
+        if RecordRef.Number = Database::"Candidate Selection Header" then
+            if not ForceListPage then
+                begin
+                    SelectionDocType := RecordRef.Field(1).Value; // 0 = Candidate Shortlisting
+                    if SelectionDocType = 0 then
+                        PageID := Page::"Candidate Shortlist Voucher";
+                end;
     end;
 
     procedure CheckIFSApprovalPossible(VAR IFS: Record "Standard Purchase Code"): Boolean

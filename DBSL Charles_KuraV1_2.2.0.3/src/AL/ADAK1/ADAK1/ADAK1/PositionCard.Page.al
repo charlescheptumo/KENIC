@@ -23,6 +23,16 @@ Page 69601 "Position Card"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Job Title field.';
                 }
+                field("Employee No."; Rec."Employee No.")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the employee selected for this position.';
+                }
+                field("Employee Name"; Rec."Employee Name")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the name of the employee selected for this position.';
+                }
                 field("Directly Reports To"; Rec."Directly Reports To")
                 {
                     ApplicationArea = Basic;

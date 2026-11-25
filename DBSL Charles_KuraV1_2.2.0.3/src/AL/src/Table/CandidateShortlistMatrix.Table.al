@@ -98,6 +98,28 @@ Table 69709 "Candidate Shortlist Matrix"
         field(5; "Candidate No"; Code[30])
         {
             DataClassification = ToBeClassified;
+            // Dropdown of candidates who applied for this vacancy
+            TableRelation = "Job Applications"."Candidate No." where("Vacancy Id" = field("Vacancy ID"));
+            ValidateTableRelation = false;
+
+            trigger OnValidate()
+            var
+                CandidateApplication: Record "Job Applications";
+            begin
+                if "Candidate No" = '' then
+                    exit;
+                CandidateApplication.Reset();
+                CandidateApplication.SetRange("Candidate No.", "Candidate No");
+                if "Vacancy ID" <> '' then
+                    CandidateApplication.SetRange("Vacancy Id", "Vacancy ID");
+                if not CandidateApplication.FindFirst() then
+                    Error('Candidate %1 has no application for vacancy %2.', "Candidate No", "Vacancy ID");
+                if "Application No." = '' then
+                    Validate("Application No.", CandidateApplication."Application No.")
+                else
+                    if "Application No." <> CandidateApplication."Application No." then
+                        Error('This line is for application %1. Delete the line and add the candidate again.', "Application No.");
+            end;
         }
         field(6; "First Name"; Text[50])
         {
@@ -272,6 +294,14 @@ Table 69709 "Candidate Shortlist Matrix"
         field(42; Shortlisted; Boolean)
         {
             DataClassification = ToBeClassified;
+            Editable = false;
+        }
+        field(43; "Shortlist Approval Status"; Enum "App Status")
+        {
+            Caption = 'Shortlist Approval Status';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Candidate Selection Header"."Approval Status" where("Document Type" = const("Candidate Shortlisting"),
+                                                                                      "Document No." = field("Document No")));
             Editable = false;
         }
     }
