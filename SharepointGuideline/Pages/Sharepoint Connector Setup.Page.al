@@ -5,8 +5,8 @@ page 50199 "Sharepoint Connector Setup"
     UsageCategory = Administration;
     SourceTable = "Sharepoint Connector Setup";
     ModifyAllowed = true;
-    //InsertAllowed = false;
-    //DeleteAllowed = false;
+    InsertAllowed = false;
+    DeleteAllowed = false;
 
     layout
     {
@@ -584,6 +584,14 @@ page 50199 "Sharepoint Connector Setup"
             }
         }
     }
+    trigger OnOpenPage()
+    begin
+        Rec.Reset();
+        if not Rec.Get() then begin
+            Rec.Init();
+            Rec.Insert();
+        end;
+    end;
     var
         Connected: Boolean;
         SharePointClient: Codeunit "SharePoint Client";
