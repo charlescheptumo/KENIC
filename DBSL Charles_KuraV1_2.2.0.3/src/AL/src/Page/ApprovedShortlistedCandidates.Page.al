@@ -79,19 +79,6 @@ page 69731 "Approved Shortlist Candidates"
         }
     }
 
-    trigger OnOpenPage()
-    var
-        SelectionHeader: Record "Candidate Selection Header";
-    begin
-        if Rec.FindSet() then
-            repeat
-                if SelectionHeader.Get(SelectionHeader."Document Type"::"Candidate Shortlisting", Rec."Document No") then
-                    if SelectionHeader."Approval Status" = SelectionHeader."Approval Status"::Approved then
-                        Rec.Mark(true);
-            until Rec.Next() = 0;
-        Rec.MarkedOnly(true);
-    end;
-
     actions
     {
         area(navigation)
@@ -116,4 +103,17 @@ page 69731 "Approved Shortlist Candidates"
             }
         }
     }
+
+    trigger OnOpenPage()
+    var
+        SelectionHeader: Record "Candidate Selection Header";
+    begin
+        if Rec.FindSet() then
+            repeat
+                if SelectionHeader.Get(SelectionHeader."Document Type"::"Candidate Shortlisting", Rec."Document No") then
+                    if SelectionHeader."Approval Status" = SelectionHeader."Approval Status"::Approved then
+                        Rec.Mark(true);
+            until Rec.Next() = 0;
+        Rec.MarkedOnly(true);
+    end;
 }
