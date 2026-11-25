@@ -39,10 +39,11 @@ page 57345 EboardPortalUsers
                 // {
                 //     ToolTip = 'Specifies the value of the Employee No.', Comment = '%';
                 // }
-                // field(Department; Rec.Department)
-                // {
-                //     ToolTip = 'Specifies the value of the Name field.', Comment = '%';
-                // }
+                field(Department; Rec.Department)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the department shown on the E-Board portal.';
+                }
                 field(IDNoorRegNo; Rec.IDNoorRegNo)
                 {
                     ToolTip = 'Specifies the value of the IDNoorRegNo field.', Comment = '%';

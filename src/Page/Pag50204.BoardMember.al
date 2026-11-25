@@ -1,7 +1,7 @@
 page 50204 "Board Member"
 {
     ApplicationArea = All;
-    Caption = 'Board Member';
+    Caption = 'Member';
     PageType = Card;
     SourceTable = "Board Members";
 

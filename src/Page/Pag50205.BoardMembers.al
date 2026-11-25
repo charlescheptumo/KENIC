@@ -1,7 +1,7 @@
 page 50205 "Board Members"
 {
     ApplicationArea = All;
-    Caption = 'Board Members';
+    Caption = 'Members';
     PageType = List;
     SourceTable = "Board Members";
     UsageCategory = Lists;
