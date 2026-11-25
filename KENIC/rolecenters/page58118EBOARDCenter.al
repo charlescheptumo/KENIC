@@ -38,9 +38,9 @@ page 58118 "Head of E-Board"
                     action("Board Members")
                     {
                         ApplicationArea = Basic, Suite;
-                        Caption = 'Board Members';
+                        Caption = 'Members';
                         RunObject = Page "Board Members";
-                        ToolTip = 'Manage registered board members.';
+                        ToolTip = 'Manage registered members.';
                     }
                     action("Board and Committee")
                     {
