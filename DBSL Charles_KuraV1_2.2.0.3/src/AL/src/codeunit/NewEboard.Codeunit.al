@@ -965,14 +965,46 @@ Codeunit 50032 NewEboard
 
     end;
 
+    // Sends the E-Sign request for approval, same checks and steps as Send Approval Request on the E-Signature Document Card
     procedure fnSendEsignerForApproval(docNo: Text[50]) status: Text
     var
-    //objCircularResolutionLines: Record "Circular Resolution lines";
+        ESignHeader: Record "ESign Header";
+        ESignLines: Record "ESign Line";
+        DocLink: Record "Record Link";
+        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+        ESignature: Codeunit "ESIGNATURE";
+        VarVariant: Variant;
     begin
+        if not ESignHeader.Get(docNo) then
+            exit('danger*E-Sign document ' + docNo + ' was not found');
 
-        status := 'success*Successfully approved';
+        if (ESignHeader."Approval Status" <> ESignHeader."Approval Status"::Open) or (ESignHeader.Status <> ESignHeader.Status::Open) then
+            exit('danger*This E-Sign document has already been sent for approval');
 
+        ESignLines.Reset();
+        ESignLines.SetRange("Document No.", ESignHeader."No.");
+        if ESignLines.IsEmpty() then
+            exit('danger*You must add at least one person/signee to sign before sending for approval');
 
+        DocLink.Reset();
+        DocLink.SetRange("Record ID", ESignHeader.RecordId);
+        if (ESignHeader."Document URL" = '') and DocLink.IsEmpty() then
+            exit('danger*You must upload a document before sending this request for approval');
+
+        VarVariant := ESignHeader;
+        if not CustomApprovals.CheckApprovalsWorkflowEnabled(VarVariant) then
+            exit('danger*No approval workflow is enabled for E-Sign documents');
+
+        CustomApprovals.OnSendDocForApproval(VarVariant);
+        ESignature.SendApprovalRequestNotificationsForESignature(ESignHeader."No.");
+
+        ESignHeader.Get(ESignHeader."No.");
+        if ESignHeader."Approval Status" = ESignHeader."Approval Status"::"Pending Approval" then begin
+            ESignHeader.Status := ESignHeader.Status::Pending;
+            ESignHeader.Modify(true);
+        end;
+
+        exit('success*The E-Sign document has been sent for approval');
     end;
 
     procedure fnCancelEsignerApproval(docNo: Text[50]) status: Text
