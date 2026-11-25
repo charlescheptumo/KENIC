@@ -8,6 +8,7 @@ Page 69658 "Commitee Appointment Vouchers"
     SourceTable = "Commitee Appointment Voucher";
     SourceTableView = where("Document Type" = filter(Appointment));
     UsageCategory = Tasks;
+    Caption = 'Interview Panels';
 
     layout
     {

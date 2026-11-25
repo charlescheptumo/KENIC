@@ -4,6 +4,7 @@ Page 69662 "Commitee Appointment Voucher"
     PageType = Card;
     SourceTable = "Commitee Appointment Voucher";
     ApplicationArea = All;
+    Caption = 'Interview Panel';
 
     layout
     {
