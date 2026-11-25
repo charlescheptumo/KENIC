@@ -66,6 +66,7 @@ Page 69764 "Employment Offer"
                 {
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the External Document No. field.';
+                    Visible = false;
                 }
                 field("Offer Expiration Date"; Rec."Offer Expiration Date")
                 {
