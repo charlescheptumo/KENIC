@@ -100,7 +100,8 @@ codeunit 50050 "Adobe Sign Integration"
         Headers.Add('Content-Type', 'application/json');
 
         Request.Method('POST');
-        Request.SetRequestUri('http://41.90.10.39:9057/api/' + Endpoint);
+        // Adobe Sign service: IIS site KenicEsign (C:\inetpub\wwwroot\KenicEsign, KenicAdobeAPI) on port 9058
+        Request.SetRequestUri('http://41.90.10.39:9058/api/' + Endpoint);
         Request.Content := Content;
 
         Request.GetHeaders(Headers);
