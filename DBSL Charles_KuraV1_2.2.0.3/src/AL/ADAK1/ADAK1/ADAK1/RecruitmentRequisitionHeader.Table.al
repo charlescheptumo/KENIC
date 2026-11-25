@@ -399,6 +399,11 @@ Table 69619 "Recruitment Requisition Header"
         {
             DataClassification = ToBeClassified;
         }
+        field(62; "Requisition type"; option)
+        {
+            OptionCaption = 'Staff Requisition,Intern Requisition';
+            OptionMembers = "Staff Requisition","Intern Requisition";
+        }
     }
 
     keys

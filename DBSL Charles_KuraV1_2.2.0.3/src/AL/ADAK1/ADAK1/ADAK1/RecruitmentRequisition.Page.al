@@ -94,6 +94,11 @@ Page 69627 "Recruitment Requisition"
                     Importance = Additional;
                     ToolTip = 'Specifies the value of the Recruitment Justification field.';
                 }
+                field("Requisition type"; Rec."Requisition type")
+                {
+                    ApplicationArea = Basic;
+                    ToolTip = 'Specifies the value of the Requisition type field.';
+                }
                 field("Target Candidate Source"; Rec."Target Candidate Source")
                 {
                     ApplicationArea = Basic;
