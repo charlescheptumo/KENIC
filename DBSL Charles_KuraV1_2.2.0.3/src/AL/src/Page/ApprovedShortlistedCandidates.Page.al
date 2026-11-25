@@ -1,10 +1,9 @@
-page 69731 "Approved Shortlisted Candidates"
+page 69731 "Approved Shortlist Candidates"
 {
     Caption = 'Approved Shortlisted Candidates';
     PageType = List;
     SourceTable = "Candidate Shortlist Matrix";
-    SourceTableView = where("Document Type" = const("Candidate Shortlisting"),
-                            "Shortlist Approval Status" = const(Approved));
+    SourceTableView = where("Document Type" = const("Candidate Shortlisting"));
     ApplicationArea = All;
     UsageCategory = Lists;
     Editable = false;
@@ -76,14 +75,22 @@ page 69731 "Approved Shortlisted Candidates"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the committee remarks.';
                 }
-                field("Shortlist Approval Status"; Rec."Shortlist Approval Status")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the approval status of the shortlist.';
-                }
             }
         }
     }
+
+    trigger OnOpenPage()
+    var
+        SelectionHeader: Record "Candidate Selection Header";
+    begin
+        if Rec.FindSet() then
+            repeat
+                if SelectionHeader.Get(SelectionHeader."Document Type"::"Candidate Shortlisting", Rec."Document No") then
+                    if SelectionHeader."Approval Status" = SelectionHeader."Approval Status"::Approved then
+                        Rec.Mark(true);
+            until Rec.Next() = 0;
+        Rec.MarkedOnly(true);
+    end;
 
     actions
     {

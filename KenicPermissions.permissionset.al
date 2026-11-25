@@ -5246,7 +5246,7 @@ permissionset 50001 KenicPermissions
         page "Candidate Shortlist Lines"=X,
         page "Candidate Shortlist Scoring"=X,
         page "Candidate Shortlist Voucher"=X,
-        page "Approved Shortlisted Candidates"=X,
+        page "Approved Shortlist Candidates"=X,
         page "Candidate Shortlist Vouchers"=X,
         page "Candidate Statistics"=X,
         page Candidates=X,
