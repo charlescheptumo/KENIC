@@ -6,7 +6,7 @@ Page 55004 "Published Board Meeting List"
     PageType = List;
     SourceTable = "Board Meetings";
     UsageCategory = Lists;
-    SourceTableView = where(Published = const(true));
+    SourceTableView = where(Published = const(true), Closed = const(false));
 
     layout
     {

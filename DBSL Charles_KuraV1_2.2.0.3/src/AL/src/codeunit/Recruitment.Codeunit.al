@@ -684,7 +684,7 @@ Codeunit 69600 "Recruitment"
                                         SelectionLine."Document No" := SelectionHeader."Document No.";
                                         SelectionLine."Application No." := JobApplications."Application No.";
                                         SelectionLine.Validate("Application No.");
-                                        SelectionLine.Shortlisted := true;
+                                        SelectionLine.Validate(Shortlisted, true);
                                         SelectionLine.Insert(true);
                                     end;
                                 end;
@@ -834,7 +834,7 @@ Codeunit 69600 "Recruitment"
                         SelectionLine."Document No" := SelectionHeader."Document No.";
                         SelectionLine."Application No." := JobApplications."Application No.";
                         SelectionLine.Validate("Application No.");
-                        SelectionLine.Shortlisted := true;
+                        SelectionLine.Validate(Shortlisted, true);
                         SelectionLine.Insert(true);
                     end;
                 end;
@@ -2511,7 +2511,7 @@ Codeunit 69600 "Recruitment"
                                             SelectionLine."Document No" := SelectionHeader."Document No.";
                                             SelectionLine."Application No." := JobApplications."Application No.";
                                             SelectionLine.Validate("Application No.");
-                                            SelectionLine.Shortlisted := true;
+                                            SelectionLine.Validate(Shortlisted, true);
                                         //  SelectionLine .Insert(true);
                                         until JobApplications.Next = 0;
                                         Message('Successfully');
