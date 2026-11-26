@@ -9162,6 +9162,7 @@ permissionset 50000 GeneratedPermission
         codeunit ETimsWebService=X,
         codeunit "Per Diem Payroll Mgt."=X,
         codeunit "Resolution Deadline Enforcer"=X,
+        codeunit "E-Board Reminders"=X,
         codeunit "Board Voting Mgt."=X,
         xmlport "Batch EFT Bank File"=X,
         page "360 Closed Lines"=X,

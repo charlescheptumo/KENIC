@@ -94,6 +94,13 @@ table 58145 "ESign Line"
             Caption = 'Notification Sent';
             Editable = false;
         }
+
+        field(10; "Reminder Sent"; Boolean)
+        {
+            Caption = 'Reminder Sent';
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
     }
 
     keys

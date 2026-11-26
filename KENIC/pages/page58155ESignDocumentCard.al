@@ -44,6 +44,16 @@ page 58155 "ESign Document Card"
                     Editable = false;
                     ToolTip = 'Specifies the workflow approval status.';
                 }
+                field("Signing Deadline"; Rec."Signing Deadline")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies when signatories must have signed by. Used for the reminder email.';
+                }
+                field("Send Signing Reminder"; Rec."Send Signing Reminder")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Email signatories who have not signed one day before the signing deadline.';
+                }
                 field("Document URL"; Rec."Document URL")
                 {
                     ApplicationArea = All;

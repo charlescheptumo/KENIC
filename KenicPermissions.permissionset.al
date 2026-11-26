@@ -8996,6 +8996,7 @@ permissionset 50001 KenicPermissions
         report "Domain Renewals Report"=X,
         report "Successor Form"=X,
         codeunit "Resolution Deadline Enforcer"=X,
+        codeunit "E-Board Reminders"=X,
         codeunit "Board Voting Mgt."=X,
         codeunit "Teams Meeting Integration"=X,
         page "Approved Leave Planner List"=X,

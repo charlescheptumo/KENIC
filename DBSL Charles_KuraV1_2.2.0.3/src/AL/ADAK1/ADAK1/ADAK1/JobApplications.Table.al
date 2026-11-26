@@ -468,6 +468,9 @@ Table 69646 "Job Applications"
 
     fieldgroups
     {
+        fieldgroup(DropDown; "Candidate No.", "First Name", "Middle Name", "Last Name", "Application No.")
+        {
+        }
     }
 
     trigger OnInsert()

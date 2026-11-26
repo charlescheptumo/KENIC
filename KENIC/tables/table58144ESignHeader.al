@@ -101,6 +101,28 @@ table 58144 "ESign Header"
             Editable = true;
         }
 
+        field(14; "Signing Deadline"; DateTime)
+        {
+            Caption = 'Signing Deadline';
+            DataClassification = ToBeClassified;
+
+            trigger OnValidate()
+            var
+                SignLine: Record "ESign Line";
+            begin
+                // A new deadline gets a new reminder
+                SignLine.SetRange("Document No.", Rec."No.");
+                SignLine.ModifyAll("Reminder Sent", false);
+            end;
+        }
+
+        field(15; "Send Signing Reminder"; Boolean)
+        {
+            Caption = 'Send Signing Reminder';
+            DataClassification = ToBeClassified;
+            InitValue = true;
+        }
+
     }
 
     keys

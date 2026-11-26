@@ -80,6 +80,15 @@ page 58159 "Meeting Plan Card"
                     ApplicationArea = All;
                     Editable = Rec."Voting Status" <> Rec."Voting Status"::Closed;
                 }
+                field("Send Poll Reminder"; Rec."Send Poll Reminder")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Email members who have not voted one day before the poll deadline.';
+                }
+                field("Poll Reminder Sent"; Rec."Poll Reminder Sent")
+                {
+                    ApplicationArea = All;
+                }
                 field("Hide Vote Count"; Rec."Hide Vote Count")
                 {
                     ApplicationArea = All;

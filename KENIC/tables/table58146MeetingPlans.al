@@ -161,6 +161,9 @@ table 58146 "Meeting Plans"
 
                 if (Rec."Poll Deadline" <> 0DT) and (Rec."Poll Deadline" <= CurrentDateTime()) then
                     Error(DeadlineMustBeFutureErr);
+
+                // A new deadline gets a new reminder
+                Rec."Poll Reminder Sent" := false;
             end;
         }
         field(21; "Hide Vote Count"; Boolean)
@@ -191,6 +194,18 @@ table 58146 "Meeting Plans"
                 if Rec."Voting Status" <> Rec."Voting Status"::"Not Started" then
                     Error(CannotChangeMeetingModeErr);
             end;
+        }
+        field(24; "Send Poll Reminder"; Boolean)
+        {
+            Caption = 'Send Poll Reminder';
+            DataClassification = ToBeClassified;
+            InitValue = true;
+        }
+        field(25; "Poll Reminder Sent"; Boolean)
+        {
+            Caption = 'Poll Reminder Sent';
+            DataClassification = ToBeClassified;
+            Editable = false;
         }
     }
 
