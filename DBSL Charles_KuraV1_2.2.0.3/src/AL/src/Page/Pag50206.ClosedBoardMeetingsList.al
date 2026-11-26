@@ -4,7 +4,7 @@ page 50206 "Closed Board Meetings List"
     Caption = 'Closed Board Meetings List';
     PageType = List;
     SourceTable = "Board Meetings";
-    SourceTableView = where(Status = filter(Pending), Published = const(true), Closed = const(true));
+    SourceTableView = where(Closed = const(true));
     UsageCategory = Lists;
     CardPageID = "Board Meeting Card";
 

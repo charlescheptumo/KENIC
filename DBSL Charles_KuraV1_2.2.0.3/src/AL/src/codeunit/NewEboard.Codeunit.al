@@ -2200,6 +2200,8 @@ Codeunit 50032 NewEboard
         TrainingNeed: Record "Board Training Needs";
         NoSeriesMgt: Codeunit "No. Series";
         HRSetup: Record "Human Resources Setup";
+        CustomApprovals: Codeunit "Custom Approvals Codeunit";
+        VarVariant: Variant;
     begin
         status := 'danger*Could not submit training need';
 
@@ -2215,13 +2217,17 @@ Codeunit 50032 NewEboard
         TrainingNeed."Training Title" := trainingTitle;
         TrainingNeed.Justification := justification;
         TrainingNeed."Date Submitted" := Today;
-        TrainingNeed.Status := TrainingNeed.Status::"Pending Approval";
+        TrainingNeed.Status := TrainingNeed.Status::Open;
 
-        if TrainingNeed.Insert(true) then begin
-            status := 'success*' + TrainingNeed."Application No." + '*Training need submitted successfully';
-        end else begin
-            status := 'danger*Could not save training need';
-        end;
+        if not TrainingNeed.Insert(true) then
+            exit('danger*Could not save training need');
+
+        // Goes into the approval workflow straight away when one is enabled; otherwise stays Open for HR to send from the card
+        VarVariant := TrainingNeed;
+        if CustomApprovals.IsBoardTrainingNeedWorkflowEnabled(VarVariant) then
+            CustomApprovals.OnSendDocForApproval(VarVariant);
+
+        status := 'success*' + TrainingNeed."Application No." + '*Training need submitted successfully';
     end;
 
     procedure fnGetMyBoardTrainingNeeds(directorNo: Code[50]) status: Text

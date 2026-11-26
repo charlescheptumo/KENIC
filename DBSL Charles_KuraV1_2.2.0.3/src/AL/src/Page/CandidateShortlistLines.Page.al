@@ -56,6 +56,12 @@ Page 69706 "Candidate Shortlist Lines"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Complete Doc Submitted field.';
                 }
+                field(Shortlisted; Rec.Shortlisted)
+                {
+                    ApplicationArea = Basic;
+                    Caption = 'Shortlist';
+                    ToolTip = 'Tick to invite the candidate for interview. Unticked means Non-Responsive.';
+                }
                 field("Shortlisting Outcome"; Rec."Shortlisting Outcome")
                 {
                     ApplicationArea = Basic;

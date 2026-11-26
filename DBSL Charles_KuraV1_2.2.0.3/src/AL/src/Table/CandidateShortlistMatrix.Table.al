@@ -294,7 +294,15 @@ Table 69709 "Candidate Shortlist Matrix"
         field(42; Shortlisted; Boolean)
         {
             DataClassification = ToBeClassified;
-            Editable = false;
+
+            trigger OnValidate()
+            begin
+                // Ticked = Invite for Interview, unticked = Non-Responsive
+                if Shortlisted then
+                    "Shortlisting Outcome" := "Shortlisting Outcome"::"Invite for First Interview"
+                else
+                    "Shortlisting Outcome" := "Shortlisting Outcome"::"Non-Responsive";
+            end;
         }
         field(43; "Shortlist Approval Status"; Enum "App Status")
         {

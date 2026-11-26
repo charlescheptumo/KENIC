@@ -514,6 +514,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         OnCancelCandShortlistApprovalRequestTxt: label 'An Approval of a Candidate Shortlist is cancelled';
         RunWorkflowOnCancelCandShortlistForApprovalCode: label 'RUNWORKFLOWONCANCELCANDSHORTLISTFORAPPROVAL';
 
+        //Board Training Needs
+        OnSendBoardTrainingNeedApprovalRequestTxt: label 'Approval of a Board Training Need is requested';
+        RunWorkflowOnSendBoardTrainingNeedForApprovalCode: label 'RUNWORKFLOWONSENDBOARDTRAININGNEEDFORAPPROVAL';
+        OnCancelBoardTrainingNeedApprovalRequestTxt: label 'An Approval of a Board Training Need is cancelled';
+        RunWorkflowOnCancelBoardTrainingNeedForApprovalCode: label 'RUNWORKFLOWONCANCELBOARDTRAININGNEEDFORAPPROVAL';
+
         //New Employee Workflow
         OnSendEmployeeCardApprovalRequestTxt: label 'Approval of a Employee Card is requested';
         RunWorkflowOnSendEmployeeCardForApprovalCode: label 'RUNWORKFLOWONSENDEMPLOYEECARDFORAPPROVAL';
@@ -809,6 +815,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Candidate Shortlist
             Database::"Candidate Selection Header":
                 exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendCandShortlistForApprovalCode));
+
+            //Board Training Needs
+            Database::"Board Training Needs":
+                exit(CheckApprovalsWorkflowEnabledCode(Variant, RunWorkflowOnSendBoardTrainingNeedForApprovalCode));
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -842,6 +852,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         if UsesSalaryAdvanceWorkflow(Variant) then
             exit(RunWorkflowOnCancelSalaryAdvForApprovalCode);
         exit(RunWorkflowOnCancelPVForApprovalCode);
+    end;
+
+    // No error when the workflow is missing, so the portal can still save the training need
+    procedure IsBoardTrainingNeedWorkflowEnabled(var Variant: Variant): Boolean
+    begin
+        exit(WorkflowManagement.CanExecuteWorkflow(Variant, RunWorkflowOnSendBoardTrainingNeedForApprovalCode));
     end;
 
     procedure CheckApprovalsWorkflowEnabledCode(var Variant: Variant; CheckApprovalsWorkflowTxt: Text): Boolean
@@ -1357,6 +1373,12 @@ Codeunit 59500 "Custom Approvals Codeunit"
         WorkFlowEventHandling.AddEventToLibrary(
         RunWorkflowOnCancelCandShortlistForApprovalCode, Database::"Candidate Selection Header", OnCancelCandShortlistApprovalRequestTxt, 0, false);
 
+        //Board Training Needs
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnSendBoardTrainingNeedForApprovalCode, Database::"Board Training Needs", OnSendBoardTrainingNeedApprovalRequestTxt, 0, false);
+        WorkFlowEventHandling.AddEventToLibrary(
+        RunWorkflowOnCancelBoardTrainingNeedForApprovalCode, Database::"Board Training Needs", OnCancelBoardTrainingNeedApprovalRequestTxt, 0, false);
+
     end;
 
     local procedure RunWorkflowOnSendApprovalRequestCode(): Code[128]
@@ -1650,6 +1672,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Candidate Shortlist
             Database::"Candidate Selection Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnSendCandShortlistForApprovalCode, Variant);
+
+            //Board Training Needs
+            Database::"Board Training Needs":
+                WorkflowManagement.HandleEvent(RunWorkflowOnSendBoardTrainingNeedForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -1941,6 +1967,10 @@ Codeunit 59500 "Custom Approvals Codeunit"
             //Candidate Shortlist
             Database::"Candidate Selection Header":
                 WorkflowManagement.HandleEvent(RunWorkflowOnCancelCandShortlistForApprovalCode, Variant);
+
+            //Board Training Needs
+            Database::"Board Training Needs":
+                WorkflowManagement.HandleEvent(RunWorkflowOnCancelBoardTrainingNeedForApprovalCode, Variant);
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end;
@@ -2072,6 +2102,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
         CandidateSelectionHeader: Record "Candidate Selection Header";
+        BoardTrainingNeed: Record "Board Training Needs";
         PerformanceLog: Record "Performance Diary Log"; 
     begin
         case RecRef.Number of
@@ -2864,6 +2895,19 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     Handled := true;
                 end;
 
+            //Board Training Needs: Rejected if the last approval step was rejected, otherwise back to Open
+            Database::"Board Training Needs":
+                begin
+                    RecRef.SetTable(BoardTrainingNeed);
+                    if LastApprovalWasRejected(BoardTrainingNeed.RecordId) then
+                        BoardTrainingNeed.Validate(Status, BoardTrainingNeed.Status::Rejected)
+                    else
+                        BoardTrainingNeed.Validate(Status, BoardTrainingNeed.Status::Open);
+                    BoardTrainingNeed.Modify;
+                    Variant := BoardTrainingNeed;
+                    Handled := true;
+                end;
+
             else
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
         end
@@ -2996,6 +3040,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
         CandidateSelectionHeader: Record "Candidate Selection Header";
+        BoardTrainingNeed: Record "Board Training Needs";
         PerformanceLog: Record "Performance Diary Log";
     begin
         Handled := true;
@@ -3755,6 +3800,15 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     CandidateSelectionHeader.Modify();
                     Variant := CandidateSelectionHeader;
                 end;
+
+            //Board Training Needs
+            Database::"Board Training Needs":
+                begin
+                    RecRef.SetTable(BoardTrainingNeed);
+                    BoardTrainingNeed.Validate(Status, BoardTrainingNeed.Status::Approved);
+                    BoardTrainingNeed.Modify();
+                    Variant := BoardTrainingNeed;
+                end;
             else
                 Handled := false;
                 Error(UnsupportedRecordTypeErr, RecRef.Caption);
@@ -4014,6 +4068,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
         CircularResolutionHeader: Record "Circular Resolution Header";
         ESignHeader: Record "ESign Header";
         CandidateSelectionHeader: Record "Candidate Selection Header";
+        BoardTrainingNeed: Record "Board Training Needs";
         PerformanceLog: Record "Performance Diary Log";
     begin
         RecRef.GetTable(Variant);
@@ -4840,6 +4895,16 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     CandidateSelectionHeader.Validate("Approval Status", CandidateSelectionHeader."Approval Status"::"Pending Approval");
                     CandidateSelectionHeader.Modify;
                     Variant := CandidateSelectionHeader;
+                    IsHandled := true;
+                end;
+
+            //Board Training Needs
+            Database::"Board Training Needs":
+                begin
+                    RecRef.SetTable(BoardTrainingNeed);
+                    BoardTrainingNeed.Validate(Status, BoardTrainingNeed.Status::"Pending Approval");
+                    BoardTrainingNeed.Modify;
+                    Variant := BoardTrainingNeed;
                     IsHandled := true;
                 end;
             else
@@ -6725,6 +6790,54 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
                     if SelectionDocType = 0 then
                         PageID := Page::"Candidate Shortlist Voucher";
                 end;
+
+        // Board training need approvals open the Board Training Needs Card
+        if RecordRef.Number = Database::"Board Training Needs" then
+            if not ForceListPage then
+                PageID := Page::"Board Training Needs Card";
+    end;
+
+    // Keeps the shortlist header in step with its approval entries:
+    // once the last open approval entry is approved, the header becomes Approved
+    [EventSubscriber(ObjectType::Table, Database::"Approval Entry", 'OnAfterModifyEvent', '', false, false)]
+    local procedure SyncCandShortlistApprovalStatus(var Rec: Record "Approval Entry"; var xRec: Record "Approval Entry"; RunTrigger: Boolean)
+    var
+        SelectionHeader: Record "Candidate Selection Header";
+        OtherEntries: Record "Approval Entry";
+        HeaderRecRef: RecordRef;
+    begin
+        if Rec.IsTemporary() then
+            exit;
+        if Rec."Table ID" <> Database::"Candidate Selection Header" then
+            exit;
+        if Rec.Status <> Rec.Status::Approved then
+            exit;
+
+        OtherEntries.SetRange("Table ID", Rec."Table ID");
+        OtherEntries.SetRange("Record ID to Approve", Rec."Record ID to Approve");
+        OtherEntries.SetFilter(Status, '%1|%2', OtherEntries.Status::Created, OtherEntries.Status::Open);
+        if not OtherEntries.IsEmpty() then
+            exit;
+
+        if not HeaderRecRef.Get(Rec."Record ID to Approve") then
+            exit;
+        HeaderRecRef.SetTable(SelectionHeader);
+        if SelectionHeader."Approval Status" <> SelectionHeader."Approval Status"::"Pending Approval" then
+            exit;
+        SelectionHeader."Approval Status" := SelectionHeader."Approval Status"::Approved;
+        SelectionHeader.Modify();
+    end;
+
+    local procedure LastApprovalWasRejected(RecId: RecordId): Boolean
+    var
+        ApprovalEntry: Record "Approval Entry";
+    begin
+        ApprovalEntry.SetCurrentKey("Entry No.");
+        ApprovalEntry.SetRange("Record ID to Approve", RecId);
+        ApprovalEntry.SetFilter(Status, '<>%1', ApprovalEntry.Status::Canceled);
+        if ApprovalEntry.FindLast() then
+            exit(ApprovalEntry.Status = ApprovalEntry.Status::Rejected);
+        exit(false);
     end;
 
     procedure CheckIFSApprovalPossible(VAR IFS: Record "Standard Purchase Code"): Boolean
