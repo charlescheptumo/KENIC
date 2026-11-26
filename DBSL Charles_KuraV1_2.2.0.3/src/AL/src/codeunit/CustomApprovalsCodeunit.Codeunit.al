@@ -3798,6 +3798,7 @@ Codeunit 59500 "Custom Approvals Codeunit"
                     RecRef.SetTable(CandidateSelectionHeader);
                     CandidateSelectionHeader.Validate("Approval Status", CandidateSelectionHeader."Approval Status"::Approved);
                     CandidateSelectionHeader.Modify();
+                    MarkUntickedCandidatesNonResponsive(CandidateSelectionHeader."Document No.");
                     Variant := CandidateSelectionHeader;
                 end;
 
@@ -6826,6 +6827,19 @@ Table39_No_OnBeforeTestStatusOpen(CallingFieldNo: Integer; var IsHandled: Boolea
             exit;
         SelectionHeader."Approval Status" := SelectionHeader."Approval Status"::Approved;
         SelectionHeader.Modify();
+        MarkUntickedCandidatesNonResponsive(SelectionHeader."Document No.");
+    end;
+
+    // On approval, candidates the approver did not tick become Non-Responsive
+    local procedure MarkUntickedCandidatesNonResponsive(DocNo: Code[30])
+    var
+        ShortlistLine: Record "Candidate Shortlist Matrix";
+    begin
+        ShortlistLine.SetRange("Document Type", ShortlistLine."Document Type"::"Candidate Shortlisting");
+        ShortlistLine.SetRange("Document No", DocNo);
+        ShortlistLine.SetRange(Shortlisted, false);
+        ShortlistLine.SetRange("Shortlisting Outcome", ShortlistLine."Shortlisting Outcome"::" ");
+        ShortlistLine.ModifyAll("Shortlisting Outcome", ShortlistLine."Shortlisting Outcome"::"Non-Responsive");
     end;
 
     local procedure LastApprovalWasRejected(RecId: RecordId): Boolean

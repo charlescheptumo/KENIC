@@ -194,16 +194,19 @@ Page 69672 "Job Application"
                 field("Mobile Phone No."; Rec."Mobile Phone No.")
                 {
                     ApplicationArea = Basic;
+                    Visible = not HideContactDetails;
                     ToolTip = 'Specifies the value of the Mobile Phone No. field.';
                 }
                 field("Phone No."; Rec."Phone No.")
                 {
                     ApplicationArea = Basic;
+                    Visible = not HideContactDetails;
                     ToolTip = 'Specifies the value of the Phone No. field.';
                 }
                 field("E-Mail"; Rec."E-Mail")
                 {
                     ApplicationArea = Basic;
+                    Visible = not HideContactDetails;
                     ToolTip = 'Specifies the value of the Email field.';
                 }
                 field(Address; Rec.Address)
@@ -593,6 +596,13 @@ Page 69672 "Job Application"
 
     var
         Fullnames: text[250];
+        HideContactDetails: Boolean;
+
+    // Called from the Candidate Shortlist Lines so approvers do not see candidate contact details
+    procedure SetHideContactDetails(Hide: Boolean)
+    begin
+        HideContactDetails := Hide;
+    end;
 
     procedure sendFirstInterview(Recepnt: List of [Text])
     var

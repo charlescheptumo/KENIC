@@ -34,7 +34,12 @@ Page 69706 "Candidate Shortlist Lines"
                 field("Candidate No"; Rec."Candidate No")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Candidate No field.';
+                    ToolTip = 'Specifies the candidate. Drill down to open the candidate''s application card.';
+
+                    trigger OnDrillDown()
+                    begin
+                        OpenCandidateCard();
+                    end;
                 }
                 field("First Name"; Rec."First Name")
                 {
@@ -56,16 +61,20 @@ Page 69706 "Candidate Shortlist Lines"
                     ApplicationArea = Basic;
                     ToolTip = 'Specifies the value of the Complete Doc Submitted field.';
                 }
+                // Only the approver shortlists, while the voucher is pending their approval
                 field(Shortlisted; Rec.Shortlisted)
                 {
                     ApplicationArea = Basic;
                     Caption = 'Shortlist';
+                    Visible = CanShortlist;
+                    Editable = CanShortlist;
                     ToolTip = 'Tick to invite the candidate for interview. Unticked means Non-Responsive.';
                 }
                 field("Shortlisting Outcome"; Rec."Shortlisting Outcome")
                 {
                     ApplicationArea = Basic;
-                    ToolTip = 'Specifies the value of the Shortlisting Outcome field.';
+                    Editable = false;
+                    ToolTip = 'Set by the approver through the Shortlist tick: Invite for Interview or Non-Responsive.';
                 }
                 field("Committee Remarks"; Rec."Committee Remarks")
                 {
@@ -252,6 +261,18 @@ Page 69706 "Candidate Shortlist Lines"
     {
         area(processing)
         {
+            action(CandidateCard)
+            {
+                ApplicationArea = Basic;
+                Caption = 'Candidate Card';
+                Image = Card;
+                ToolTip = 'Open the selected candidate''s application card.';
+
+                trigger OnAction()
+                begin
+                    OpenCandidateCard();
+                end;
+            }
             group("Candidate Score")
             {
                 action("Candidate Shortlist Score")
@@ -287,6 +308,7 @@ Page 69706 "Candidate Shortlist Lines"
 
     local procedure SetContactDetails()
     begin
+        CanShortlist := IsPendingWithCurrentUser(Rec."Document No");
         HideContactDetails := IsCurrentUserApprover(Rec."Document No");
         if HideContactDetails then begin
             PhoneNoTxt := '';
@@ -297,6 +319,47 @@ Page 69706 "Candidate Shortlist Lines"
             MobilePhoneNoTxt := Rec."Mobile Phone No.";
             EmailTxt := Rec.Email;
         end;
+    end;
+
+    // Opens the candidate's Job Application card read-only; approvers do not see contact details there either
+    local procedure OpenCandidateCard()
+    var
+        JobApplication: Record "Job Applications";
+        JobApplicationCard: Page "Job Application";
+    begin
+        if Rec."Application No." = '' then
+            Error('Select a candidate first.');
+        if not JobApplication.Get(Rec."Application No.") then
+            Error('Job application %1 was not found.', Rec."Application No.");
+        JobApplication.SetRecFilter();
+        JobApplicationCard.SetTableView(JobApplication);
+        JobApplicationCard.SetRecord(JobApplication);
+        JobApplicationCard.SetHideContactDetails(IsCurrentUserApprover(Rec."Document No"));
+        JobApplicationCard.Editable(false);
+        JobApplicationCard.Run();
+    end;
+
+    // True while the voucher is Pending Approval and the current user has an open approval entry on it
+    local procedure IsPendingWithCurrentUser(DocNo: Code[30]): Boolean
+    var
+        SelectionHeader: Record "Candidate Selection Header";
+        ApprovalEntry: Record "Approval Entry";
+    begin
+        if (DocNo = CachedPendingDocNo) and PendingCacheSet then
+            exit(CachedCanShortlist);
+        CachedPendingDocNo := DocNo;
+        PendingCacheSet := true;
+        CachedCanShortlist := false;
+        SelectionHeader.SetRange("Document Type", SelectionHeader."Document Type"::"Candidate Shortlisting");
+        SelectionHeader.SetRange("Document No.", DocNo);
+        if SelectionHeader.FindFirst() then
+            if SelectionHeader."Approval Status" = SelectionHeader."Approval Status"::"Pending Approval" then begin
+                ApprovalEntry.SetRange("Record ID to Approve", SelectionHeader.RecordId);
+                ApprovalEntry.SetRange("Approver ID", UserId);
+                ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+                CachedCanShortlist := not ApprovalEntry.IsEmpty();
+            end;
+        exit(CachedCanShortlist);
     end;
 
     // True when the current user is (or was) an approver on this shortlist voucher
@@ -328,5 +391,9 @@ Page 69706 "Candidate Shortlist Lines"
         CachedDocNo: Code[30];
         CachedIsApprover: Boolean;
         CacheSet: Boolean;
+        CanShortlist: Boolean;
+        CachedPendingDocNo: Code[30];
+        CachedCanShortlist: Boolean;
+        PendingCacheSet: Boolean;
 }
 
