@@ -2120,11 +2120,35 @@ Codeunit 50032 NewEboard
     var
         BoardMember: Record "Board Members";
     begin
+        if FindConsentBoardMember(directorNo, BoardMember) then
+            exit(BoardMember."Data Consent Given");
+        exit(false);
+    end;
+
+    // Finds the Board Member for a portal login: by Personal No first, then by the portal user's email
+    // (covers portal users whose Customer No does not match the member's Personal No)
+    local procedure FindConsentBoardMember(directorNo: Code[50]; var BoardMember: Record "Board Members"): Boolean
+    var
+        PortalUser: Record portalusers;
+    begin
         BoardMember.Reset();
         BoardMember.SetRange("Personal No", directorNo);
         if BoardMember.FindFirst() then
-            exit(BoardMember."Data Consent Given");
-        exit(false);
+            exit(true);
+
+        PortalUser.SetRange("customer No", directorNo);
+        if not PortalUser.FindFirst() then
+            exit(false);
+        if PortalUser.Email = '' then
+            exit(false);
+
+        BoardMember.Reset();
+        BoardMember.SetRange("E-Mail", PortalUser.Email);
+        if BoardMember.FindFirst() then
+            exit(true);
+        BoardMember.Reset();
+        BoardMember.SetRange("Company E-Mail", PortalUser.Email);
+        exit(BoardMember.FindFirst());
     end;
 
     procedure fnRecordDataConsent(directorNo: Code[50]; consentVersion: Text; portalUser: Text; ipAddress: Text; userAgent: Text) status: Text
@@ -2132,10 +2156,8 @@ Codeunit 50032 NewEboard
         BoardMember: Record "Board Members";
         ConsentTime: DateTime;
     begin
-        BoardMember.Reset();
-        BoardMember.SetRange("Personal No", directorNo);
-        if not BoardMember.FindFirst() then
-            exit('danger*Member record not found');
+        if not FindConsentBoardMember(directorNo, BoardMember) then
+            exit('danger*Member record not found. Ask the administrator to check that your portal account (EboardPortalUsers) is linked to your Board Member record.');
 
         ConsentTime := CurrentDateTime;
         InsertConsentLog(directorNo, ConsentFullName(BoardMember), 0, ConsentTime, consentVersion, portalUser, ipAddress, userAgent);
@@ -2155,9 +2177,7 @@ Codeunit 50032 NewEboard
         BoardMember: Record "Board Members";
         FullName: Text;
     begin
-        BoardMember.Reset();
-        BoardMember.SetRange("Personal No", directorNo);
-        if BoardMember.FindFirst() then
+        if FindConsentBoardMember(directorNo, BoardMember) then
             FullName := ConsentFullName(BoardMember);
 
         InsertConsentLog(directorNo, FullName, 1, CurrentDateTime, consentVersion, portalUser, ipAddress, userAgent);
